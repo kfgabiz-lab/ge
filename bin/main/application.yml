@@ -1,0 +1,40 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/bo
+    username: postgres
+    password: "1234"
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 8002
+
+# JWT 설정
+app:
+  jwt:
+    secret: "bo-backoffice-ge-america-secret-key-256bit-secure-2026"
+    expiration: 3600        # 1시간 (초)
+    refresh-expiration: 604800  # 7일 (초)
+
+# CORS 설정
+cors:
+  allowed-origins: "http://localhost:3002"
+
+# 페이지 템플릿 TSX 파일 출력 경로
+page-template:
+  output-dir: "../bo/src/app/admin/generated"
+
+# 로깅 설정
+logging:
+  level:
+    com.ge.bo: DEBUG
+    org.springframework.security: DEBUG

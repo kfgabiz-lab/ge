@@ -1,0 +1,86 @@
+package com.ge.bo.config;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import com.ge.bo.security.JwtAuthenticationFilter;
+
+import java.util.List;
+
+/**
+ * Spring Security 설정 - JWT Stateless 방식, CORS 허용, RBAC 적용
+ */
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity // @PreAuthorize 어노테이션 활성화
+@RequiredArgsConstructor
+public class SecurityConfig {
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Value("${cors.allowed-origins}")
+    private String allowedOrigins;
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                // CSRF 비활성화 (REST API Stateless 방식)
+                .csrf(AbstractHttpConfigurer::disable)
+                // CORS 설정 적용
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                // 세션 비활성화 (JWT 사용)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                // URL 접근 권한 설정
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/v1/auth/**").permitAll() // 로그인은 인증 없이 허용
+                        .requestMatchers("/api/v1/health").permitAll() // 헬스 체크 허용
+                        .requestMatchers("/api/v1/admins/**").authenticated() // 관리자 API — 인증 필요 (@PreAuthorize로 SUPER_ADMIN 제한)
+                        .requestMatchers("/api/v1/roles/**").authenticated() // 역할 API — 인증 필요 (@PreAuthorize로 SUPER_ADMIN 제한)
+                        .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
+                )
+                // 미인증 요청 시 403 대신 401 반환 (FE 인터셉터의 토큰 갱신 로직이 동작하도록)
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(401);
+                            response.setContentType("application/json;charset=UTF-8");
+                            response.getWriter().write("{\"code\":\"UNAUTHORIZED\",\"message\":\"인증이 필요합니다.\"}");
+                        })
+                )
+                // JWT 필터를 UsernamePasswordAuthenticationFilter 앞에 추가
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(12); // BCrypt rounds=12
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of(allowedOrigins));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/api/**", configuration);
+        return source;
+    }
+}
