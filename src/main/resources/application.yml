@@ -1,11 +1,10 @@
 spring:
   main:
     allow-bean-definition-overriding: true
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/bo
-    username: postgres
-    password: "1234"
+  servlet:
+    multipart:
+      max-file-size: 50MB       # 파일 1개 최대 크기
+      max-request-size: 200MB   # 요청 전체 최대 크기
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
@@ -25,9 +24,9 @@ app:
     expiration: 3600        # 1시간 (초)
     refresh-expiration: 604800  # 7일 (초)
 
-# CORS 설정
-cors:
-  allowed-origins: "http://localhost:3002"
+# 파일 업로드 루트 경로
+file:
+  upload-root: "/uploads"
 
 # 페이지 템플릿 TSX 파일 출력 경로
 page-template:

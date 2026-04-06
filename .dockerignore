@@ -1,0 +1,17 @@
+# 빌드 결과물 (Docker 내부에서 새로 빌드)
+build/
+.gradle/
+
+# IDE 설정
+.idea/
+*.iml
+
+# 바이너리 클래스 파일
+bin/
+
+# 로그
+*.log
+
+# OS 파일
+.DS_Store
+Thumbs.db
