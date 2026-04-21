@@ -29,6 +29,9 @@ public interface PageTemplateRepository extends JpaRepository<PageTemplate, Long
     /** slug로 단건 조회 */
     Optional<PageTemplate> findBySlug(String slug);
 
+    /** slug로 전체 조회 (동일 slug가 여러 type으로 존재할 수 있음) */
+    List<PageTemplate> findAllBySlug(String slug);
+
     /** slug + type으로 단건 조회 — upsert 판단용 */
     Optional<PageTemplate> findBySlugAndTemplateType(String slug, String templateType);
 }

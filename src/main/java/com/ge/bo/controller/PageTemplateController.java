@@ -1,5 +1,6 @@
 package com.ge.bo.controller;
 
+import com.ge.bo.annotation.ApiLinkedEntity;
 import com.ge.bo.dto.PageTemplateGenerateRequest;
 import com.ge.bo.dto.PageTemplateRequest;
 import com.ge.bo.dto.PageTemplateResponse;
@@ -21,6 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/page-templates")
 @RequiredArgsConstructor
+@ApiLinkedEntity("PageTemplate")
 public class PageTemplateController {
 
     private final PageTemplateService pageTemplateService;
@@ -37,18 +39,19 @@ public class PageTemplateController {
         return ResponseEntity.ok(pageTemplateService.getById(id));
     }
 
-    /** 단건 조회 (slug) — type 파라미터로 LIST/LAYER 구분 (기본값 LIST) */
+    /** 단건 조회 (slug) — type 파라미터 미전달 시 slug만으로 조회 */
     @GetMapping("/by-slug/{slug}")
     public ResponseEntity<PageTemplateResponse> getBySlug(
             @PathVariable String slug,
-            @RequestParam(defaultValue = "LIST") String type) {
+            @RequestParam(required = false) String type) {
         return ResponseEntity.ok(pageTemplateService.getBySlug(slug, type));
     }
 
     /** 파일만 생성 (DB 저장 없음) — 방식 B (생성 방식) */
     @PostMapping("/generate")
     public ResponseEntity<Map<String, String>> generate(@Valid @RequestBody PageTemplateGenerateRequest request) {
-        String pageUrl = pageTemplateService.generateFile(request.getSlug(), request.getTsxCode(), request.getTemplateType(), request.getFileName());
+        String pageUrl = pageTemplateService.generateFile(request.getSlug(), request.getTsxCode(),
+                request.getTemplateType(), request.getFileName());
         return ResponseEntity.ok(Map.of("pageUrl", pageUrl));
     }
 

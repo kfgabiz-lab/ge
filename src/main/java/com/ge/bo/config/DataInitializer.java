@@ -18,6 +18,8 @@ public class DataInitializer implements ApplicationRunner {
     private final RoleMenuRepository roleMenuRepository;
     private final CodeGroupRepository codeGroupRepository;
     private final CodeDetailRepository codeDetailRepository;
+    private final ApiInfoRepository apiInfoRepository;
+    private final SlugRegistryRepository slugRegistryRepository;
     private final PasswordEncoder passwordEncoder;
 
     public DataInitializer(RoleRepository roleRepository,
@@ -26,6 +28,8 @@ public class DataInitializer implements ApplicationRunner {
             RoleMenuRepository roleMenuRepository,
             CodeGroupRepository codeGroupRepository,
             CodeDetailRepository codeDetailRepository,
+            ApiInfoRepository apiInfoRepository,
+            SlugRegistryRepository slugRegistryRepository,
             @Lazy PasswordEncoder passwordEncoder) {
         this.roleRepository = roleRepository;
         this.adminRepository = adminRepository;
@@ -33,6 +37,8 @@ public class DataInitializer implements ApplicationRunner {
         this.roleMenuRepository = roleMenuRepository;
         this.codeGroupRepository = codeGroupRepository;
         this.codeDetailRepository = codeDetailRepository;
+        this.apiInfoRepository = apiInfoRepository;
+        this.slugRegistryRepository = slugRegistryRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -56,6 +62,17 @@ public class DataInitializer implements ApplicationRunner {
 
         // 6. Entity 메뉴 등록 (신규 추가 — 멱등성 보장)
         initEntityMenu();
+
+        // 7. API_CATEGORY 공통코드 + api_info 초기 데이터
+        initApiCategoryCodes();
+        initApiInfoData();
+
+        // 8. API 메뉴 등록 (멱등성 보장)
+        initApiInfoMenu();
+
+        // 9. Slug 레지스트리 초기 데이터 + 메뉴 등록
+        initSlugRegistry();
+        initSlugRegistryMenu();
     }
 
     private void insertRoleIfAbsent(String code, String displayName, String description, String color,
@@ -104,10 +121,6 @@ public class DataInitializer implements ApplicationRunner {
         /* 1depth: Form */
         Menu form = menuRepository.save(Menu.builder().name("Form").icon("FileText").parent(catTpl).menuType("BO").sortOrder(3).build());
         menuRepository.save(Menu.builder().name("Layout(Right)").url("/admin/templates/form/layout-right").icon("FileText").parent(form).menuType("BO").sortOrder(1).build());
-
-        /* 1depth: Layer */
-        Menu layer = menuRepository.save(Menu.builder().name("Layer").icon("PanelRight").parent(catTpl).menuType("BO").sortOrder(4).build());
-        menuRepository.save(Menu.builder().name("Right").url("/admin/templates/layer/right").icon("PanelRight").parent(layer).menuType("BO").sortOrder(1).build());
 
         /* 1depth: Make */
         Menu make = menuRepository.save(Menu.builder().name("Make").icon("Wand2").parent(catTpl).menuType("BO").sortOrder(5).build());
@@ -236,6 +249,157 @@ public class DataInitializer implements ApplicationRunner {
                         roleMenuRepository.save(RoleMenu.builder()
                                 .roleId(superAdmin.getId())
                                 .menuId(entityMenu.getId())
+                                .build())
+                );
+    }
+
+    /**
+     * API_CATEGORY 공통코드 그룹 + 상세 초기 데이터
+     * 이미 존재하면 스킵 (멱등성 보장)
+     */
+    private void initApiCategoryCodes() {
+        if (codeGroupRepository.existsByGroupCode("API_CATEGORY")) return;
+
+        CodeGroup group = codeGroupRepository.save(CodeGroup.builder()
+                .groupCode("API_CATEGORY")
+                .groupName("API 카테고리")
+                .description("API 정보 관리 카테고리 구분")
+                .build());
+
+        codeDetailRepository.save(CodeDetail.builder().group(group).code("MENU").name("메뉴").sortOrder(1).build());
+        codeDetailRepository.save(CodeDetail.builder().group(group).code("CODE").name("공통코드").sortOrder(2).build());
+        codeDetailRepository.save(CodeDetail.builder().group(group).code("PAGE_DATA").name("페이지데이터").sortOrder(3).build());
+        codeDetailRepository.save(CodeDetail.builder().group(group).code("PAGE_TEMPLATE").name("페이지템플릿").sortOrder(4).build());
+        codeDetailRepository.save(CodeDetail.builder().group(group).code("ADMIN_USER").name("관리자").sortOrder(5).build());
+        codeDetailRepository.save(CodeDetail.builder().group(group).code("ETC").name("기타").sortOrder(99).build());
+    }
+
+    /**
+     * api_info 초기 데이터 — 기존 BE API 목록
+     * 이미 데이터가 있으면 스킵 (멱등성 보장)
+     */
+    private void initApiInfoData() {
+        if (apiInfoRepository.count() > 0) return;
+
+        /* 메뉴 */
+        saveApi("MENU",          "메뉴 목록 조회",      "GET",    "/api/v1/menus",                         "전체 메뉴 트리 조회");
+        saveApi("MENU",          "메뉴 등록",           "POST",   "/api/v1/menus",                         "신규 메뉴 등록");
+        saveApi("MENU",          "메뉴 수정",           "PUT",    "/api/v1/menus/{id}",                    "메뉴 정보 수정");
+        saveApi("MENU",          "메뉴 삭제",           "DELETE", "/api/v1/menus/{id}",                    "메뉴 삭제");
+        /* 공통코드 */
+        saveApi("CODE",          "공통코드 그룹 목록",   "GET",    "/api/v1/codes",                         "공통코드 그룹 전체 목록");
+        saveApi("CODE",          "공통코드 그룹 등록",   "POST",   "/api/v1/codes",                         "공통코드 그룹 신규 등록");
+        saveApi("CODE",          "공통코드 상세 등록",   "POST",   "/api/v1/codes/{groupId}/details",        "공통코드 상세항목 등록");
+        /* 페이지데이터 */
+        saveApi("PAGE_DATA",     "페이지 데이터 목록",  "GET",    "/api/v1/page-data/{slug}",              "slug 기반 페이지 데이터 목록");
+        saveApi("PAGE_DATA",     "페이지 데이터 등록",  "POST",   "/api/v1/page-data/{slug}",              "slug 기반 페이지 데이터 등록");
+        saveApi("PAGE_DATA",     "페이지 데이터 수정",  "PUT",    "/api/v1/page-data/{slug}/{id}",          "slug+id 기반 데이터 수정");
+        saveApi("PAGE_DATA",     "페이지 데이터 삭제",  "DELETE", "/api/v1/page-data/{slug}/{id}",          "slug+id 기반 데이터 삭제");
+        /* 페이지템플릿 */
+        saveApi("PAGE_TEMPLATE", "템플릿 목록 조회",    "GET",    "/api/v1/page-templates",                "페이지 템플릿 목록 조회");
+        saveApi("PAGE_TEMPLATE", "템플릿 slug 조회",    "GET",    "/api/v1/page-templates/by-slug/{slug}", "slug로 템플릿 단건 조회");
+        saveApi("PAGE_TEMPLATE", "템플릿 저장",         "POST",   "/api/v1/page-templates",                "템플릿 신규 저장");
+        saveApi("PAGE_TEMPLATE", "템플릿 수정",         "PUT",    "/api/v1/page-templates/{id}",           "템플릿 수정");
+        /* 관리자 */
+        saveApi("ADMIN_USER",    "관리자 목록 조회",    "GET",    "/api/v1/admin-users",                   "관리자 계정 목록 조회");
+        saveApi("ADMIN_USER",    "관리자 등록",         "POST",   "/api/v1/admin-users",                   "관리자 계정 등록");
+        /* API 정보 */
+        saveApi("ETC",           "API 정보 목록",       "GET",    "/api/v1/api-infos",                     "API 정보 목록 조회");
+        saveApi("ETC",           "API 정보 등록",       "POST",   "/api/v1/api-infos",                     "API 정보 등록");
+        saveApi("ETC",           "API 정보 수정",       "PUT",    "/api/v1/api-infos/{id}",                "API 정보 수정");
+        saveApi("ETC",           "API 정보 삭제",       "DELETE", "/api/v1/api-infos/{id}",               "API 정보 삭제");
+    }
+
+    private void saveApi(String category, String name, String method, String urlPattern, String description) {
+        apiInfoRepository.save(ApiInfo.builder()
+                .category(category)
+                .name(name)
+                .method(method)
+                .urlPattern(urlPattern)
+                .description(description)
+                .active(true)
+                .build());
+    }
+
+    /**
+     * API 메뉴 등록 — System > API
+     * 이미 존재하면 스킵 (멱등성 보장)
+     */
+    private void initApiInfoMenu() {
+        boolean exists = menuRepository.findAll().stream()
+                .anyMatch(m -> "/admin/system/api".equals(m.getUrl()));
+        if (exists) return;
+
+        /* System 그룹 탐색 (isCategory=true, name=SYSTEM) */
+        Menu systemGroup = menuRepository.findAll().stream()
+                .filter(m -> Boolean.TRUE.equals(m.getIsCategory()) && "SYSTEM".equals(m.getName()))
+                .findFirst().orElse(null);
+        if (systemGroup == null) return;
+
+        Menu apiMenu = menuRepository.save(Menu.builder()
+                .name("API")
+                .url("/admin/system/api")
+                .icon("Plug")
+                .parent(systemGroup)
+                .menuType("BO")
+                .sortOrder(3)
+                .build());
+
+        /* SUPER_ADMIN 역할에 권한 부여 */
+        roleRepository.findAll().stream()
+                .filter(r -> "SUPER_ADMIN".equals(r.getCode()))
+                .findFirst()
+                .ifPresent(superAdmin ->
+                        roleMenuRepository.save(RoleMenu.builder()
+                                .roleId(superAdmin.getId())
+                                .menuId(apiMenu.getId())
+                                .build())
+                );
+    }
+
+    /**
+     * Slug 레지스트리 초기 데이터
+     * 이미 데이터가 있으면 스킵 (멱등성 보장)
+     */
+    private void initSlugRegistry() {
+        if (slugRegistryRepository.count() > 0) return;
+
+        slugRegistryRepository.save(SlugRegistry.builder()
+                .slug("boardListSave").name("게시판 목록").type("PAGE_DATA").active(true).build());
+        slugRegistryRepository.save(SlugRegistry.builder()
+                .slug("board-search").name("게시판 검색").type("PAGE_DATA").active(true).build());
+    }
+
+    /**
+     * DB Slug 관리 메뉴 등록 — Settings 하위
+     * 이미 존재하면 스킵 (멱등성 보장)
+     */
+    private void initSlugRegistryMenu() {
+        boolean exists = menuRepository.findAll().stream()
+                .anyMatch(m -> "/admin/settings/slug-registry".equals(m.getUrl()));
+        if (exists) return;
+
+        Menu settings = menuRepository.findAll().stream()
+                .filter(m -> "Settings".equals(m.getName()) && m.getParent() != null)
+                .findFirst().orElse(null);
+        if (settings == null) return;
+
+        Menu slugMenu = menuRepository.save(Menu.builder()
+                .name("DB Slug 관리")
+                .url("/admin/settings/slug-registry")
+                .icon("Database")
+                .parent(settings)
+                .menuType("BO")
+                .sortOrder(5)
+                .build());
+
+        roleRepository.findAll().stream()
+                .filter(r -> "SUPER_ADMIN".equals(r.getCode()))
+                .findFirst()
+                .ifPresent(superAdmin ->
+                        roleMenuRepository.save(RoleMenu.builder()
+                                .roleId(superAdmin.getId())
+                                .menuId(slugMenu.getId())
                                 .build())
                 );
     }

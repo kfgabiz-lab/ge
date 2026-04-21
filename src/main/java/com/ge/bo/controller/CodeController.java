@@ -1,5 +1,6 @@
 package com.ge.bo.controller;
 
+import com.ge.bo.annotation.ApiLinkedEntity;
 import com.ge.bo.dto.*;
 import com.ge.bo.service.CodeService;
 import jakarta.validation.Valid;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequestMapping("/api/v1/codes")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('SUPER_ADMIN')")
+@ApiLinkedEntity("CodeGroup")
 public class CodeController {
 
     private final CodeService codeService;
@@ -42,7 +44,8 @@ public class CodeController {
 
     /* 그룹 수정 */
     @PutMapping("/{id}")
-    public ResponseEntity<CodeGroupResponse> updateGroup(@PathVariable Long id, @Valid @RequestBody CodeGroupRequest request) {
+    public ResponseEntity<CodeGroupResponse> updateGroup(@PathVariable Long id,
+            @Valid @RequestBody CodeGroupRequest request) {
         return ResponseEntity.ok(codeService.updateGroup(id, request));
     }
 
@@ -55,13 +58,15 @@ public class CodeController {
 
     /* 코드 추가 */
     @PostMapping("/{groupId}/details")
-    public ResponseEntity<CodeDetailResponse> createDetail(@PathVariable Long groupId, @Valid @RequestBody CodeDetailRequest request) {
+    public ResponseEntity<CodeDetailResponse> createDetail(@PathVariable Long groupId,
+            @Valid @RequestBody CodeDetailRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(codeService.createDetail(groupId, request));
     }
 
     /* 코드 수정 */
     @PutMapping("/{groupId}/details/{detailId}")
-    public ResponseEntity<CodeDetailResponse> updateDetail(@PathVariable Long groupId, @PathVariable Long detailId, @Valid @RequestBody CodeDetailRequest request) {
+    public ResponseEntity<CodeDetailResponse> updateDetail(@PathVariable Long groupId, @PathVariable Long detailId,
+            @Valid @RequestBody CodeDetailRequest request) {
         return ResponseEntity.ok(codeService.updateDetail(groupId, detailId, request));
     }
 

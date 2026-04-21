@@ -41,10 +41,10 @@ public class PageDataService {
     /**
      * 목록 조회 — 동적 JSONB 검색 + 페이지네이션
      *
-     * @param slug         페이지 식별자
-     * @param allParams    요청 Query Params 전체 (page/size 포함)
-     * @param page         페이지 번호 (0-based)
-     * @param size         페이지 크기
+     * @param slug      페이지 식별자
+     * @param allParams 요청 Query Params 전체 (page/size 포함)
+     * @param page      페이지 번호 (0-based)
+     * @param size      페이지 크기
      */
     @Transactional(readOnly = true)
     public PageDataListResponse search(String slug, Map<String, String> allParams, int page, int size) {
@@ -58,22 +58,13 @@ public class PageDataService {
 
         // WHERE 절 동적 생성
         StringBuilder whereClause = new StringBuilder("WHERE template_slug = :slug");
-        searchParams.forEach((key, value) -> {
-            // SQL Injection 방지: 키는 영문자/숫자/언더스코어만 허용
-            if (key.matches("[a-zA-Z0-9_]+")) {
-                whereClause.append(" AND data_json->>'").append(key).append("' ILIKE :p_").append(key);
-            }
-        });
+        appendWhereConditions(whereClause, searchParams);
 
         // 전체 건수 조회
         String countSql = "SELECT COUNT(*) FROM page_data " + whereClause;
         Query countQuery = entityManager.createNativeQuery(countSql);
         countQuery.setParameter("slug", slug);
-        searchParams.forEach((key, value) -> {
-            if (key.matches("[a-zA-Z0-9_]+")) {
-                countQuery.setParameter("p_" + key, "%" + value + "%");
-            }
-        });
+        bindSearchParams(countQuery, searchParams);
         long totalElements = ((Number) countQuery.getSingleResult()).longValue();
 
         if (totalElements == 0) {
@@ -102,11 +93,7 @@ public class PageDataService {
         dataQuery.setParameter("slug", slug);
         dataQuery.setParameter("size", size);
         dataQuery.setParameter("offset", (long) page * size);
-        searchParams.forEach((key, value) -> {
-            if (key.matches("[a-zA-Z0-9_]+")) {
-                dataQuery.setParameter("p_" + key, "%" + value + "%");
-            }
-        });
+        bindSearchParams(dataQuery, searchParams);
 
         @SuppressWarnings("unchecked")
         List<Object[]> rows = dataQuery.getResultList();
@@ -121,6 +108,8 @@ public class PageDataService {
                 .totalPages(totalPages)
                 .page(page)
                 .size(size)
+                .last((page + 1) >= totalPages)
+                .first(page == 0)
                 .build();
     }
 
@@ -139,18 +128,23 @@ public class PageDataService {
 
     /**
      * 등록 — 네이티브 쿼리로 직접 INSERT하여 ::jsonb 캐스팅 적용
+     * pkKeys 있으면 PK 중복 여부 선행 체크 후 INSERT
      *
      * @param slug    페이지 식별자
-     * @param request 등록 요청 (dataJson Map)
+     * @param request 등록 요청 (dataJson Map, pkKeys 목록)
      */
     @Transactional
     public PageDataResponse create(String slug, PageDataRequest request) {
+        // PK 중복 체크 — pkKeys가 있을 때만 수행
+        if (request.getPkKeys() != null && !request.getPkKeys().isEmpty()) {
+            checkPkDuplicate(slug, request.getPkKeys(), request.getDataJson(), null);
+        }
+
         String dataJsonStr = serializeDataJson(request.getDataJson());
         // JPA save() 대신 네이티브 쿼리 사용: String → JSONB 타입 명시적 캐스팅
         Query insertQuery = entityManager.createNativeQuery(
                 "INSERT INTO page_data (template_slug, data_json, created_at, updated_at) " +
-                "VALUES (:slug, CAST(:dataJson AS jsonb), NOW(), NOW()) RETURNING id"
-        );
+                        "VALUES (:slug, CAST(:dataJson AS jsonb), NOW(), NOW()) RETURNING id");
         insertQuery.setParameter("slug", slug);
         insertQuery.setParameter("dataJson", dataJsonStr);
         Long newId = ((Number) insertQuery.getSingleResult()).longValue();
@@ -173,8 +167,7 @@ public class PageDataService {
         // JPA save() 대신 네이티브 쿼리 사용: String → JSONB 타입 명시적 캐스팅
         Query updateQuery = entityManager.createNativeQuery(
                 "UPDATE page_data SET data_json = CAST(:dataJson AS jsonb), updated_at = NOW() " +
-                "WHERE id = :id AND template_slug = :slug"
-        );
+                        "WHERE id = :id AND template_slug = :slug");
         updateQuery.setParameter("dataJson", dataJsonStr);
         updateQuery.setParameter("id", id);
         updateQuery.setParameter("slug", slug);
@@ -201,6 +194,55 @@ public class PageDataService {
     }
 
     /**
+     * PK 기반 삭제 — pkKeys + dataJson 값으로 레코드 id를 찾아 기존 delete() 재사용
+     * Form 위젯에서 삭제 버튼 클릭 시 사용 (id를 모르는 경우)
+     *
+     * @param slug     페이지 식별자
+     * @param pkKeys   PK 필드 키 목록
+     * @param dataJson 폼 입력 값 맵
+     */
+    @Transactional
+    public void deleteByPk(String slug, List<String> pkKeys, Map<String, Object> dataJson) {
+        // pkKeys 필수 검증
+        if (pkKeys == null || pkKeys.isEmpty()) {
+            throw ErrorCode.PAGE_DATA_PK_REQUIRED.toException();
+        }
+
+        // 유효한 키만 필터링 (SQL Injection 방지)
+        List<String> validKeys = pkKeys.stream()
+                .filter(k -> k != null && k.matches("[a-zA-Z0-9_]+"))
+                .toList();
+        if (validKeys.isEmpty()) {
+            throw ErrorCode.PAGE_DATA_PK_REQUIRED.toException();
+        }
+
+        // pkKeys + dataJson 값으로 id 조회
+        StringBuilder sql = new StringBuilder(
+                "SELECT id FROM page_data WHERE template_slug = :slug");
+        for (String key : validKeys) {
+            sql.append(" AND data_json->>'").append(key).append("' = :pk_").append(key);
+        }
+        sql.append(" LIMIT 1");
+
+        Query query = entityManager.createNativeQuery(sql.toString());
+        query.setParameter("slug", slug);
+        for (String key : validKeys) {
+            Object val = dataJson.get(key);
+            query.setParameter("pk_" + key, val != null ? val.toString() : "");
+        }
+
+        @SuppressWarnings("unchecked")
+        List<Object> results = query.getResultList();
+        if (results.isEmpty()) {
+            throw ErrorCode.PAGE_DATA_NOT_FOUND.toException();
+        }
+
+        Long id = ((Number) results.get(0)).longValue();
+        // 기존 delete() 재사용 — 연관 파일 정리 포함
+        delete(slug, id);
+    }
+
+    /**
      * 전체 데이터 조회 — LIMIT/OFFSET 없이 전체 조회 (엑셀 다운로드 전용)
      * 검색 조건은 search()와 동일하게 적용
      *
@@ -224,11 +266,7 @@ public class PageDataService {
 
         // WHERE 절 동적 생성 (search()와 동일 로직)
         StringBuilder whereClause = new StringBuilder("WHERE template_slug = :slug");
-        searchParams.forEach((key, value) -> {
-            if (key.matches("[a-zA-Z0-9_]+")) {
-                whereClause.append(" AND data_json->>'").append(key).append("' ILIKE :p_").append(key);
-            }
-        });
+        appendWhereConditions(whereClause, searchParams);
 
         // LIMIT/OFFSET 없이 전체 조회
         String dataSql = "SELECT id, template_slug, data_json::text, created_by, created_at, updated_by, updated_at "
@@ -236,11 +274,7 @@ public class PageDataService {
                 + " ORDER BY created_at DESC";
         Query dataQuery = entityManager.createNativeQuery(dataSql);
         dataQuery.setParameter("slug", slug);
-        searchParams.forEach((key, value) -> {
-            if (key.matches("[a-zA-Z0-9_]+")) {
-                dataQuery.setParameter("p_" + key, "%" + value + "%");
-            }
-        });
+        bindSearchParams(dataQuery, searchParams);
 
         @SuppressWarnings("unchecked")
         List<Object[]> rows = dataQuery.getResultList();
@@ -252,7 +286,8 @@ public class PageDataService {
                     try {
                         if (row[2] != null) {
                             dataMap = objectMapper.readValue(row[2].toString(),
-                                    new com.fasterxml.jackson.core.type.TypeReference<>() {});
+                                    new com.fasterxml.jackson.core.type.TypeReference<>() {
+                                    });
                         }
                     } catch (Exception e) {
                         log.warn("exportAll dataJson 파싱 실패: {}", e.getMessage());
@@ -263,6 +298,48 @@ public class PageDataService {
     }
 
     // ── private 헬퍼 ──────────────────────────────────────────
+
+    /**
+     * PK 중복 체크 — pkKeys에 해당하는 필드 값이 동일한 레코드가 이미 존재하면 예외 발생
+     *
+     * @param slug      페이지 식별자
+     * @param pkKeys    PK 필드 키 목록 (영문자/숫자/언더스코어만 허용)
+     * @param dataJson  저장할 데이터 맵
+     * @param excludeId 수정 시 자신 제외용 ID (등록 시 null)
+     */
+    private void checkPkDuplicate(String slug, List<String> pkKeys,
+                                   Map<String, Object> dataJson, Long excludeId) {
+        // 유효한 키만 필터링 (SQL Injection 방지)
+        List<String> validKeys = pkKeys.stream()
+                .filter(k -> k != null && k.matches("[a-zA-Z0-9_]+"))
+                .toList();
+        if (validKeys.isEmpty()) return;
+
+        // WHERE 절 동적 생성
+        StringBuilder sql = new StringBuilder(
+                "SELECT COUNT(*) FROM page_data WHERE template_slug = :slug");
+        for (String key : validKeys) {
+            sql.append(" AND data_json->>'").append(key).append("' = :pk_").append(key);
+        }
+        if (excludeId != null) {
+            sql.append(" AND id != :excludeId");
+        }
+
+        Query query = entityManager.createNativeQuery(sql.toString());
+        query.setParameter("slug", slug);
+        for (String key : validKeys) {
+            Object val = dataJson.get(key);
+            query.setParameter("pk_" + key, val != null ? val.toString() : "");
+        }
+        if (excludeId != null) {
+            query.setParameter("excludeId", excludeId);
+        }
+
+        long count = ((Number) query.getSingleResult()).longValue();
+        if (count > 0) {
+            throw ErrorCode.PAGE_DATA_PK_DUPLICATE.toException();
+        }
+    }
 
     /** Map → JSON 문자열 직렬화 */
     private String serializeDataJson(Map<String, Object> dataMap) {
@@ -276,14 +353,16 @@ public class PageDataService {
 
     /**
      * 네이티브 쿼리 결과 행(Object[]) → PageDataResponse 변환
-     * 컬럼 순서: id, template_slug, data_json::text, created_by, created_at, updated_by, updated_at
+     * 컬럼 순서: id, template_slug, data_json::text, created_by, created_at,
+     * updated_by, updated_at
      */
     private PageDataResponse mapRowToResponse(Object[] row) {
         Map<String, Object> dataMap = Collections.emptyMap();
         try {
             if (row[2] != null) {
                 dataMap = objectMapper.readValue(row[2].toString(),
-                        new com.fasterxml.jackson.core.type.TypeReference<>() {});
+                        new com.fasterxml.jackson.core.type.TypeReference<>() {
+                        });
             }
         } catch (Exception e) {
             log.warn("dataJson 파싱 실패: {}", e.getMessage());
@@ -305,9 +384,61 @@ public class PageDataService {
      * Hibernate 6에서 TIMESTAMP는 LocalDateTime 또는 java.sql.Timestamp로 반환될 수 있음
      */
     private java.time.LocalDateTime toLocalDateTime(Object obj) {
-        if (obj instanceof java.time.LocalDateTime ldt) return ldt;
-        if (obj instanceof java.sql.Timestamp ts) return ts.toLocalDateTime();
+        if (obj instanceof java.time.LocalDateTime ldt)
+            return ldt;
+        if (obj instanceof java.sql.Timestamp ts)
+            return ts.toLocalDateTime();
         return null;
+    }
+
+    /**
+     * WHERE 절에 검색 조건 추가
+     * - 값에 '~' 포함: 날짜/숫자 range 검색 (>= start, <= end)
+     * - 일반 값: ILIKE 부분 문자열 검색
+     * SQL Injection 방지: 키는 영문자/숫자/언더스코어만 허용
+     */
+    private void appendWhereConditions(StringBuilder whereClause, Map<String, String> searchParams) {
+        searchParams.forEach((key, value) -> {
+            if (!key.matches("[a-zA-Z0-9_]+"))
+                return;
+            if (value.contains("~")) {
+                String[] parts = value.split("~", 2);
+                String start = parts[0].trim();
+                String end = parts.length > 1 ? parts[1].trim() : "";
+                if (!start.isEmpty()) {
+                    whereClause.append(" AND data_json->>'").append(key).append("' >= :p_").append(key)
+                            .append("_start");
+                }
+                if (!end.isEmpty()) {
+                    whereClause.append(" AND data_json->>'").append(key).append("' <= :p_").append(key).append("_end");
+                }
+            } else {
+                whereClause.append(" AND data_json->>'").append(key).append("' ILIKE :p_").append(key);
+            }
+        });
+    }
+
+    /**
+     * 쿼리에 검색 파라미터 바인딩
+     * - '~' range 값: p_{key}_start / p_{key}_end 바인딩
+     * - 일반 값: p_{key} ILIKE 패턴 바인딩
+     */
+    private void bindSearchParams(Query query, Map<String, String> searchParams) {
+        searchParams.forEach((key, value) -> {
+            if (!key.matches("[a-zA-Z0-9_]+"))
+                return;
+            if (value.contains("~")) {
+                String[] parts = value.split("~", 2);
+                String start = parts[0].trim();
+                String end = parts.length > 1 ? parts[1].trim() : "";
+                if (!start.isEmpty())
+                    query.setParameter("p_" + key + "_start", start);
+                if (!end.isEmpty())
+                    query.setParameter("p_" + key + "_end", end);
+            } else {
+                query.setParameter("p_" + key, "%" + value + "%");
+            }
+        });
     }
 
     /** 검색 결과 없을 때 빈 응답 생성 */
@@ -318,6 +449,8 @@ public class PageDataService {
                 .totalPages(0)
                 .page(page)
                 .size(size)
+                .last(true)
+                .first(true)
                 .build();
     }
 }

@@ -46,9 +46,18 @@ public enum ErrorCode {
 
     /* 페이지 데이터 */
     PAGE_DATA_NOT_FOUND(HttpStatus.NOT_FOUND, "PAGE_DATA_NOT_FOUND", "해당 데이터를 찾을 수 없습니다."),
+    PAGE_DATA_PK_DUPLICATE(HttpStatus.CONFLICT, "PAGE_DATA_PK_DUPLICATE", "이미 동일한 키 값의 데이터가 존재합니다."),
+    PAGE_DATA_PK_REQUIRED(HttpStatus.BAD_REQUEST, "PAGE_DATA_PK_REQUIRED", "삭제하려면 PK 키가 필요합니다."),
 
     /* TSX 생성 이력 */
     TSX_GENERATION_NOT_FOUND(HttpStatus.NOT_FOUND, "TSX_GENERATION_NOT_FOUND", "해당 생성 이력을 찾을 수 없습니다."),
+
+    /* API 정보 */
+    API_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "API_INFO_NOT_FOUND", "해당 API 정보를 찾을 수 없습니다."),
+
+    /* Slug 레지스트리 */
+    SLUG_REGISTRY_NOT_FOUND(HttpStatus.NOT_FOUND, "SLUG_REGISTRY_NOT_FOUND", "해당 slug를 찾을 수 없습니다."),
+    SLUG_REGISTRY_SLUG_DUPLICATE(HttpStatus.CONFLICT, "SLUG_REGISTRY_SLUG_DUPLICATE", "이미 사용 중인 slug입니다."),
 
     /* 파일 업로드 */
     FILE_REQUIRED(HttpStatus.BAD_REQUEST, "FILE_REQUIRED", "파일은 필수입니다."),

@@ -41,13 +41,22 @@ public class PageTemplateService {
         return PageTemplateResponse.from(template);
     }
 
-    /** 단건 조회 (slug + type) — LIST/LAYER 타입 구분하여 조회 */
+    /** 단건 조회 (slug + type) — type 미전달 시 slug만으로 조회 */
     @Transactional(readOnly = true)
     public PageTemplateResponse getBySlug(String slug, String type) {
-        // slug만으로 조회 시 동일 slug가 LIST/LAYER 양쪽에 존재하면 2개 반환 → 예외 발생
-        // type 파라미터로 명시적 구분
-        PageTemplate template = pageTemplateRepository.findBySlugAndTemplateType(slug, type)
-                .orElseThrow(ErrorCode.PAGE_TEMPLATE_NOT_FOUND::toException);
+        PageTemplate template;
+        if (type == null || type.isBlank()) {
+            // type 미전달: slug로 전체 조회 후 ID가 가장 큰(최신) 항목 사용
+            // 동일 slug가 여러 templateType으로 중복 저장된 경우를 안전하게 처리
+            List<PageTemplate> candidates = pageTemplateRepository.findAllBySlug(slug);
+            template = candidates.stream()
+                    .max(java.util.Comparator.comparingLong(PageTemplate::getId))
+                    .orElseThrow(ErrorCode.PAGE_TEMPLATE_NOT_FOUND::toException);
+        } else {
+            // type 전달: 기존 방식 (LIST/LAYER 명시적 구분)
+            template = pageTemplateRepository.findBySlugAndTemplateType(slug, type)
+                    .orElseThrow(ErrorCode.PAGE_TEMPLATE_NOT_FOUND::toException);
+        }
         return PageTemplateResponse.from(template);
     }
 
@@ -66,7 +75,8 @@ public class PageTemplateService {
             // 파일 덮어쓰기
             String filePath = existing.getFilePath();
             if (request.getTsxCode() != null && !request.getTsxCode().isBlank()) {
-                filePath = pageTemplateFileService.writeFile(request.getSlug(), request.getTsxCode(), templateType, request.getFileName());
+                filePath = pageTemplateFileService.writeFile(request.getSlug(), request.getTsxCode(), templateType,
+                        request.getFileName());
             }
             existing.setName(request.getName());
             existing.setDescription(request.getDescription());
@@ -84,7 +94,8 @@ public class PageTemplateService {
         // tsxCode가 있을 때만 TSX 파일 생성 (없으면 DB만 저장)
         String filePath = "";
         if (request.getTsxCode() != null && !request.getTsxCode().isBlank()) {
-            filePath = pageTemplateFileService.writeFile(request.getSlug(), request.getTsxCode(), templateType, request.getFileName());
+            filePath = pageTemplateFileService.writeFile(request.getSlug(), request.getTsxCode(), templateType,
+                    request.getFileName());
         }
 
         // DB 저장
@@ -109,12 +120,16 @@ public class PageTemplateService {
         PageTemplate template = pageTemplateRepository.findById(id)
                 .orElseThrow(ErrorCode.PAGE_TEMPLATE_NOT_FOUND::toException);
 
-        String templateType = request.getTemplateType() != null ? request.getTemplateType() : template.getTemplateType();
+        String templateType = request.getTemplateType() != null ? request.getTemplateType()
+                : template.getTemplateType();
         // 이름 중복 검사 — 자신 제외, 같은 templateType 안에서만
         if (pageTemplateRepository.existsByNameAndTemplateTypeAndIdNot(request.getName(), templateType, id)) {
             throw ErrorCode.PAGE_TEMPLATE_NAME_DUPLICATE.toException();
         }
-        // slug 중복 검사 제거 — 파일 덮어쓰기 허용
+        // slug 중복 검사 — 자신 제외, 같은 templateType 안에서만 (500 에러 방지)
+        if (pageTemplateRepository.existsBySlugAndTemplateTypeAndIdNot(request.getSlug(), templateType, id)) {
+            throw ErrorCode.PAGE_TEMPLATE_SLUG_DUPLICATE.toException();
+        }
 
         // tsxCode가 있을 때만 파일 처리
         String newFilePath = template.getFilePath();

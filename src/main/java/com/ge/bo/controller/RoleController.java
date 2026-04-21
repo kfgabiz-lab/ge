@@ -11,9 +11,12 @@ import com.ge.bo.service.RoleService;
 
 import java.util.List;
 
+import com.ge.bo.annotation.ApiLinkedEntity;
+
 @RestController
 @RequestMapping("/api/v1/roles")
 @RequiredArgsConstructor
+@ApiLinkedEntity("Role")
 public class RoleController {
 
     private final RoleService roleService;

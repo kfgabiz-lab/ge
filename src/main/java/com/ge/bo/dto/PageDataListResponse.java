@@ -26,4 +26,10 @@ public class PageDataListResponse {
 
     /** 페이지 크기 */
     private int size;
+
+    /** 마지막 페이지 여부 */
+    private boolean last;
+
+    /** 첫 번째 페이지 여부 */
+    private boolean first;
 }

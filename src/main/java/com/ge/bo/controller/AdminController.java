@@ -11,10 +11,13 @@ import com.ge.bo.service.AdminService;
 
 import java.util.List;
 
+import com.ge.bo.annotation.ApiLinkedEntity;
+
 @RestController
 @RequestMapping("/api/v1/admins")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('SUPER_ADMIN')")
+@ApiLinkedEntity("AdminUser")
 public class AdminController {
 
     private final AdminService adminService;

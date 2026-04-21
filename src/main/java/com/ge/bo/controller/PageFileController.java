@@ -1,5 +1,7 @@
 package com.ge.bo.controller;
 
+import com.ge.bo.annotation.ApiLinkedEntity;
+
 import com.ge.bo.dto.PageFileDataIdRequest;
 import com.ge.bo.dto.PageFileResponse;
 import com.ge.bo.service.PageFileService;
@@ -21,8 +23,9 @@ import java.util.List;
  * 기준: /api/page-files
  */
 @RestController
-@RequestMapping("/api/page-files")
+@RequestMapping("/api/v1/page-files")
 @RequiredArgsConstructor
+@ApiLinkedEntity("PageFile")
 public class PageFileController {
 
     private final PageFileService pageFileService;
@@ -36,8 +39,7 @@ public class PageFileController {
     public ResponseEntity<PageFileResponse> upload(
             @RequestParam("file") MultipartFile file,
             @RequestParam("templateSlug") String templateSlug,
-            @RequestParam("fieldKey") String fieldKey
-    ) {
+            @RequestParam("fieldKey") String fieldKey) {
         PageFileResponse response = pageFileService.upload(file, templateSlug, fieldKey);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

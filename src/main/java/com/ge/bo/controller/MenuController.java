@@ -1,5 +1,6 @@
 package com.ge.bo.controller;
 
+import com.ge.bo.annotation.ApiLinkedEntity;
 import com.ge.bo.dto.MenuRequest;
 import com.ge.bo.dto.MenuResponse;
 import com.ge.bo.dto.RoleMenuResponse;
@@ -21,6 +22,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/menus")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('SUPER_ADMIN')")
+@ApiLinkedEntity("Menu")
 public class MenuController {
 
     private final MenuService menuService;
@@ -77,10 +79,9 @@ public class MenuController {
     /** 역할 매핑 변경 */
     @PutMapping("/{menuId}/roles/{roleId}")
     public ResponseEntity<Void> updateRoleMenuMapping(
-        @PathVariable Long menuId,
-        @PathVariable Long roleId,
-        @RequestBody Map<String, Boolean> body
-    ) {
+            @PathVariable Long menuId,
+            @PathVariable Long roleId,
+            @RequestBody Map<String, Boolean> body) {
         Boolean hasAccess = body.get("hasAccess");
         if (hasAccess == null) {
             return ResponseEntity.badRequest().build();
