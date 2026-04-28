@@ -39,6 +39,10 @@ public class Menu {
     @Column(nullable = false, length = 50)
     private String name;
 
+    /** 메뉴 설명 (페이지 상단에 표시, 선택) */
+    @Column(length = 500)
+    private String description;
+
     /** 메뉴 URL (대메뉴는 NULL 가능) */
     @Column(length = 200)
     private String url;

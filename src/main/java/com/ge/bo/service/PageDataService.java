@@ -393,26 +393,35 @@ public class PageDataService {
 
     /**
      * WHERE 절에 검색 조건 추가
+     * - eq_ 접두사: 정확 일치 (ex: eq_parentId=1 → data_json->>'parentId' = '1')
      * - 값에 '~' 포함: 날짜/숫자 range 검색 (>= start, <= end)
      * - 일반 값: ILIKE 부분 문자열 검색
-     * SQL Injection 방지: 키는 영문자/숫자/언더스코어만 허용
+     * SQL Injection 방지: 키(또는 eq_ 제거 후 fieldKey)는 영문자/숫자/언더스코어만 허용
      */
     private void appendWhereConditions(StringBuilder whereClause, Map<String, String> searchParams) {
         searchParams.forEach((key, value) -> {
-            if (!key.matches("[a-zA-Z0-9_]+"))
+            // eq_ 접두사 → 정확 일치 조건
+            if (key.startsWith("eq_")) {
+                String fieldKey = key.substring(3); // "eq_" 제거
+                if (!fieldKey.matches("[a-zA-Z0-9_]+")) return; // SQL Injection 방지
+                whereClause.append(" AND data_json->>'").append(fieldKey).append("' = :p_").append(key);
                 return;
+            }
+            // 일반 파라미터
+            if (!key.matches("[a-zA-Z0-9_]+")) return; // SQL Injection 방지
             if (value.contains("~")) {
+                // range 검색
                 String[] parts = value.split("~", 2);
                 String start = parts[0].trim();
                 String end = parts.length > 1 ? parts[1].trim() : "";
                 if (!start.isEmpty()) {
-                    whereClause.append(" AND data_json->>'").append(key).append("' >= :p_").append(key)
-                            .append("_start");
+                    whereClause.append(" AND data_json->>'").append(key).append("' >= :p_").append(key).append("_start");
                 }
                 if (!end.isEmpty()) {
                     whereClause.append(" AND data_json->>'").append(key).append("' <= :p_").append(key).append("_end");
                 }
             } else {
+                // ILIKE 부분 일치
                 whereClause.append(" AND data_json->>'").append(key).append("' ILIKE :p_").append(key);
             }
         });
@@ -420,22 +429,30 @@ public class PageDataService {
 
     /**
      * 쿼리에 검색 파라미터 바인딩
+     * - eq_ 접두사: 값 그대로 바인딩 (정확 일치)
      * - '~' range 값: p_{key}_start / p_{key}_end 바인딩
      * - 일반 값: p_{key} ILIKE 패턴 바인딩
      */
     private void bindSearchParams(Query query, Map<String, String> searchParams) {
         searchParams.forEach((key, value) -> {
-            if (!key.matches("[a-zA-Z0-9_]+"))
+            // eq_ 접두사 → 값 그대로 바인딩 (정확 일치)
+            if (key.startsWith("eq_")) {
+                String fieldKey = key.substring(3);
+                if (!fieldKey.matches("[a-zA-Z0-9_]+")) return; // SQL Injection 방지
+                query.setParameter("p_" + key, value);
                 return;
+            }
+            // 일반 파라미터
+            if (!key.matches("[a-zA-Z0-9_]+")) return; // SQL Injection 방지
             if (value.contains("~")) {
+                // range 바인딩
                 String[] parts = value.split("~", 2);
                 String start = parts[0].trim();
                 String end = parts.length > 1 ? parts[1].trim() : "";
-                if (!start.isEmpty())
-                    query.setParameter("p_" + key + "_start", start);
-                if (!end.isEmpty())
-                    query.setParameter("p_" + key + "_end", end);
+                if (!start.isEmpty()) query.setParameter("p_" + key + "_start", start);
+                if (!end.isEmpty()) query.setParameter("p_" + key + "_end", end);
             } else {
+                // ILIKE 패턴 바인딩
                 query.setParameter("p_" + key, "%" + value + "%");
             }
         });

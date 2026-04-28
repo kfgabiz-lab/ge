@@ -12,6 +12,9 @@ public record MenuRequest(
              message = "메뉴명은 한글, 영문, 숫자, 공백, -, _, ()만 사용 가능합니다.")
     String name,
 
+    @Size(max = 500, message = "메뉴 설명은 500자 이하로 입력해주세요.")
+    String description,
+
     @Size(max = 200, message = "URL은 200자 이하로 입력해주세요.")
     @Pattern(regexp = "^$|^/[a-zA-Z0-9\\-_/]*$",
              message = "URL은 /로 시작하는 경로를 입력해주세요.")

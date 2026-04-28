@@ -69,6 +69,7 @@ public class MenuService {
 
         Menu menu = Menu.builder()
             .name(trimmedName)
+            .description(request.description())
             .url(cleanUrl)
             .icon(request.icon())
             .parent(parent)
@@ -112,6 +113,7 @@ public class MenuService {
         validateSlugDuplicate(sanitizeSlug(request.slug()), id);
 
         menu.setName(trimmedName);
+        menu.setDescription(request.description());
         menu.setUrl(cleanUrl);
         menu.setIcon(request.icon());
         menu.setSortOrder(request.sortOrder() != null ? request.sortOrder() : menu.getSortOrder());

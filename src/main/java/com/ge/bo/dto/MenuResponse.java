@@ -11,6 +11,7 @@ import java.util.List;
 public record MenuResponse(
     Long id,
     String name,
+    String description,
     String url,
     String icon,
     Long parentId,
@@ -28,6 +29,7 @@ public record MenuResponse(
         return new MenuResponse(
             menu.getId(),
             menu.getName(),
+            menu.getDescription(),
             menu.getUrl(),
             menu.getIcon(),
             menu.getParent() != null ? menu.getParent().getId() : null,
