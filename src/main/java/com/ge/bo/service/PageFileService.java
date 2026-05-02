@@ -188,6 +188,22 @@ public class PageFileService {
         deleteFromFileSystem(pageFile.getFilePath(), pageFile.getSaveName());
     }
 
+    // ── dataId로 파일 목록 조회 ──────────────────────────────
+
+    /**
+     * dataId로 해당 데이터에 연결된 파일 목록 조회
+     * 수정 모드 진입 시 기존 파일 메타 표시용
+     *
+     * @param dataId page_data.id
+     * @return 파일 메타데이터 목록
+     */
+    @Transactional(readOnly = true)
+    public List<PageFileResponse> getByDataId(Long dataId) {
+        return pageFileRepository.findByDataId(dataId).stream()
+                .map(PageFileResponse::from)
+                .toList();
+    }
+
     // ── page_data 삭제 시 연관 파일 일괄 삭제 ─────────────────
 
     /**
