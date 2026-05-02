@@ -148,6 +148,16 @@ public class PageDataService {
         insertQuery.setParameter("slug", slug);
         insertQuery.setParameter("dataJson", dataJsonStr);
         Long newId = ((Number) insertQuery.getSingleResult()).longValue();
+
+        // 생성된 id를 dataJson에 자동 주입 — 카테고리 계층 등 id 참조가 필요한 모든 곳에서 활용
+        Map<String, Object> dataJsonWithId = new LinkedHashMap<>(request.getDataJson());
+        dataJsonWithId.put("id", newId);
+        Query updateIdQuery = entityManager.createNativeQuery(
+                "UPDATE page_data SET data_json = CAST(:dataJson AS jsonb) WHERE id = :id");
+        updateIdQuery.setParameter("dataJson", serializeDataJson(dataJsonWithId));
+        updateIdQuery.setParameter("id", newId);
+        updateIdQuery.executeUpdate();
+
         return getById(slug, newId);
     }
 
@@ -163,7 +173,10 @@ public class PageDataService {
         // 존재 여부 확인 (없으면 404)
         pageDataRepository.findByIdAndTemplateSlug(id, slug)
                 .orElseThrow(ErrorCode.PAGE_DATA_NOT_FOUND::toException);
-        String dataJsonStr = serializeDataJson(request.getDataJson());
+        // 수정 시에도 id 보장 — dataJson에 id 항상 포함
+        Map<String, Object> dataJsonWithId = new LinkedHashMap<>(request.getDataJson());
+        dataJsonWithId.put("id", id);
+        String dataJsonStr = serializeDataJson(dataJsonWithId);
         // JPA save() 대신 네이티브 쿼리 사용: String → JSONB 타입 명시적 캐스팅
         Query updateQuery = entityManager.createNativeQuery(
                 "UPDATE page_data SET data_json = CAST(:dataJson AS jsonb), updated_at = NOW() " +

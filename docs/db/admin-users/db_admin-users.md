@@ -8,13 +8,14 @@
 | 컬럼명 | 논리명 | 타입 | Nullable | PK/FK | 기본값 | 설명 |
 | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
 | `id` | 식별자 | BIGINT | N | PK | | AI (Auto Increment) |
-| `email` | 이메일(ID) | VARCHAR(100) | N | UK | | 로그인 아이디로 사용 |
+| `employee_id` | 사번 | VARCHAR(50) | Y | UK | | 고유 사원 번호,로그인 아이디로 사용 |
+| `email` | 이메일 | VARCHAR(100) | N |  | | 이메일 |
 | `name` | 성명 | VARCHAR(50) | N | | | 관리자 실명 |
+| `dept_name` | 부서명| VARCHAR(50) | N | | | 부서명 |
 | `password_hash` | 비밀번호해시 | VARCHAR(255) | N | | | 암호화된 비밀번호 |
-| `role` | 권한그룹 | VARCHAR(20) | N | | | SUPER_ADMIN, EDITOR 등 |
-| `employee_id` | 사번 | VARCHAR(50) | Y | UK | | 고유 사원 번호 |
+| `role` | 권한그룹 | VARCHAR(20) | N | | |  |
 | `is_active` | 활성화여부 | TINYINT(1) | N | | 1 | 1: 활성, 0: 잠김 |
-| `last_login_at` | 마지막로그인 | DATETIME | Y | | | 마직막 접속 일시 |
+| `last_login_at` | 마지막로그인 | DATETIME | Y | | | 마wl막 접속 일시 |
 | `created_at` | 등록일시 | DATETIME | N | | CURRENT_TIMESTAMP | 생성일시 |
 | `updated_at` | 수정일시 | DATETIME | N | | CURRENT_TIMESTAMP | 최종 수정일시 |
 | `reg_dt` | 등록일 | CHAR(8) | N | | | 생성일 (yyyymmdd) |
@@ -22,7 +23,6 @@
 
 ## 3. 인덱스 설계
 - **PK**: `id`
-- **UK_ADMIN_USER_EMAIL**: `email` (고유성 보장)
 - **UK_ADMIN_USER_EMP_ID**: `employee_id` (고유성 보장)
 - **IDX_ADMIN_USER_ROLE**: `role` (권한별 필터링 최적화)
 

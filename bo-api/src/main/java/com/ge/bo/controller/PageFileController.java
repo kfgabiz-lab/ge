@@ -89,6 +89,16 @@ public class PageFileController {
     }
 
     /**
+     * dataId로 파일 목록 조회
+     * GET /api/page-files/by-data/{dataId}
+     * 수정 모드 진입 시 기존 파일 메타 표시용
+     */
+    @GetMapping("/by-data/{dataId}")
+    public ResponseEntity<List<PageFileResponse>> getByDataId(@PathVariable Long dataId) {
+        return ResponseEntity.ok(pageFileService.getByDataId(dataId));
+    }
+
+    /**
      * 파일 삭제 (DB + 파일시스템)
      * DELETE /api/page-files/{id}
      */
