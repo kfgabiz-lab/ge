@@ -3,11 +3,12 @@ package com.ge.bo.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.ge.bo.dto.AdminDto;
+import com.ge.bo.dto.SiteDto;
 import com.ge.bo.service.AdminService;
+import com.ge.bo.service.SiteService;
 
 import java.util.List;
 
@@ -16,15 +17,20 @@ import com.ge.bo.annotation.ApiLinkedEntity;
 @RestController
 @RequestMapping("/api/v1/admins")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('SUPER_ADMIN')")
 @ApiLinkedEntity("AdminUser")
 public class AdminController {
 
     private final AdminService adminService;
+    private final SiteService siteService;
 
     @GetMapping
     public ResponseEntity<List<AdminDto.Response>> getAllAdmins() {
         return ResponseEntity.ok(adminService.getAllAdmins());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AdminDto.Response> getAdmin(@PathVariable Long id) {
+        return ResponseEntity.ok(adminService.getAdminById(id));
     }
 
     @PostMapping
@@ -53,5 +59,18 @@ public class AdminController {
     public ResponseEntity<Void> deleteAdmin(@PathVariable Long id) {
         adminService.deleteAdmin(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /* 관리자별 홈페이지 매핑 조회 */
+    @GetMapping("/{id}/sites")
+    public ResponseEntity<List<SiteDto.Response>> getAdminSites(@PathVariable Long id) {
+        return ResponseEntity.ok(siteService.getSitesByAdminUser(id));
+    }
+
+    /* 관리자 홈페이지 매핑 일괄 변경 */
+    @PutMapping("/{id}/sites")
+    public ResponseEntity<List<SiteDto.Response>> updateAdminSites(@PathVariable Long id,
+            @Valid @RequestBody SiteDto.SiteMappingRequest request) {
+        return ResponseEntity.ok(siteService.updateAdminUserSites(id, request));
     }
 }

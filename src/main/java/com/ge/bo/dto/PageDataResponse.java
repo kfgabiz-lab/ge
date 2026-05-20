@@ -23,6 +23,8 @@ public class PageDataResponse {
     private Long id;
     private String templateSlug;
     private Map<String, Object> dataJson;
+    /** 다중 slug 저장 그룹 식별자 (UUID) — 단일 저장 시 null */
+    private String groupId;
     private String createdBy;
     private LocalDateTime createdAt;
     private String updatedBy;
@@ -37,6 +39,7 @@ public class PageDataResponse {
                 .id(entity.getId())
                 .templateSlug(entity.getTemplateSlug())
                 .dataJson(dataMap)
+                .groupId(entity.getGroupId())
                 .createdBy(entity.getCreatedBy())
                 .createdAt(entity.getCreatedAt())
                 .updatedBy(entity.getUpdatedBy())

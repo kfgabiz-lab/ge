@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ge.bo.dto.AdminDto;
 import com.ge.bo.entity.AdminUser;
+import com.ge.bo.entity.Role;
 import com.ge.bo.exception.BusinessException;
 import com.ge.bo.repository.AdminRepository;
 import com.ge.bo.repository.RoleRepository;
@@ -14,6 +15,7 @@ import com.ge.bo.repository.RoleRepository;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -26,42 +28,52 @@ public class AdminService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
+    public AdminDto.Response getAdminById(Long id) {
+        AdminUser adminUser = adminRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "ADMIN_NOT_FOUND", "관리자를 찾을 수 없습니다."));
+        /* is_system=true 역할 계정은 존재하지 않는 것처럼 처리 */
+        if (isSystemRole(adminUser.getRole())) {
+            throw new BusinessException(HttpStatus.NOT_FOUND, "ADMIN_NOT_FOUND", "관리자를 찾을 수 없습니다.");
+        }
+        return convertToResponse(adminUser);
+    }
+
+    @Transactional(readOnly = true)
     public List<AdminDto.Response> getAllAdmins() {
+        /* is_system=true 역할 코드 Set을 한 번만 조회 후 필터 — N+1 방지 */
+        Set<String> systemRoleCodes = roleRepository.findAllByOrderByIdAsc().stream()
+                .filter(Role::isSystem)
+                .map(Role::getCode)
+                .collect(Collectors.toSet());
+
         List<AdminUser> admins = adminRepository.findAll(org.springframework.data.domain.Sort.by(
                 org.springframework.data.domain.Sort.Order.desc("createdAt"),
                 org.springframework.data.domain.Sort.Order.desc("id")));
+        /* is_system=true 역할 계정은 목록에서 완전 제외 */
         return admins.stream()
+                .filter(a -> !systemRoleCodes.contains(a.getRole()))
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
 
     @Transactional
     public AdminDto.Response createAdmin(AdminDto.CreateRequest request) {
-        // Generate employeeId if not provided
-        String employeeId = request.getEmployeeId();
-        if (employeeId == null || employeeId.trim().isEmpty() || employeeId.startsWith("BO-2026-")) {
-            String maxId = adminRepository.findMaxEmployeeIdByPrefix().orElse("BO-2026-00000");
-            int nextSequence = Integer.parseInt(maxId.substring(8)) + 1;
-            employeeId = String.format("BO-2026-%05d", nextSequence);
-        }
-
         if (!roleRepository.existsByCode(request.getRole())) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "INVALID_ROLE", "유효하지 않은 역할 코드입니다.");
         }
         if (adminRepository.existsByEmail(request.getEmail())) {
-            throw new BusinessException(HttpStatus.BAD_REQUEST, "DUPLICATE_EMAIL", "이미 등록된 이메일 계정입니다.");
-        }
-        if (adminRepository.existsByEmployeeId(employeeId)) {
-            throw new BusinessException(HttpStatus.BAD_REQUEST, "DUPLICATE_EMPLOYEE_ID", "이미 등록된 사번입니다.");
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "DUPLICATE_EMAIL", "이미 등록된 아이디입니다.");
         }
 
-        // Always generate temporary password on backend
+        /* 임시 비밀번호 자동 생성 */
         String rawPassword = UUID.randomUUID().toString().substring(0, 12);
 
         AdminUser adminUser = AdminUser.builder()
                 .email(request.getEmail())
                 .name(request.getName())
-                .employeeId(employeeId)
+                .deptCode(request.getDeptCode())
+                .deptName(request.getDeptName())
+                .remark(request.getRemark())
                 .passwordHash(passwordEncoder.encode(rawPassword))
                 .role(request.getRole())
                 .isActive(request.isActive())
@@ -85,7 +97,9 @@ public class AdminService {
         }
 
         adminUser.setName(request.getName());
-        adminUser.setEmployeeId(request.getEmployeeId());
+        adminUser.setDeptCode(request.getDeptCode());
+        adminUser.setDeptName(request.getDeptName());
+        adminUser.setRemark(request.getRemark());
         adminUser.setRole(request.getRole());
         adminUser.setActive(request.isActive());
 
@@ -121,12 +135,25 @@ public class AdminService {
         adminRepository.deleteById(id);
     }
 
+    /**
+     * 해당 역할 코드가 is_system=true인지 확인
+     * role.is_system DB 값 기반으로 판별 (코드 하드코딩 방식 사용 금지)
+     */
+    private boolean isSystemRole(String roleCode) {
+        if (roleCode == null) return false;
+        return roleRepository.findByCode(roleCode)
+                .map(Role::isSystem)
+                .orElse(false);
+    }
+
     private AdminDto.Response convertToResponse(AdminUser user) {
         return AdminDto.Response.builder()
                 .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getName())
-                .employeeId(user.getEmployeeId())
+                .deptCode(user.getDeptCode())
+                .deptName(user.getDeptName())
+                .remark(user.getRemark())
                 .role(user.getRole())
                 .isActive(user.isActive())
                 .lastLoginAt(user.getLastLoginAt())

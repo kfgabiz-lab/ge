@@ -1,0 +1,107 @@
+package com.ge.bo.service;
+
+import com.ge.bo.dto.MessageResourceDto;
+import com.ge.bo.entity.MessageResource;
+import com.ge.bo.exception.BusinessException;
+import com.ge.bo.repository.MessageResourceRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+public class MessageResourceService {
+
+    private final MessageResourceRepository messageResourceRepository;
+
+    /**
+     * 목록 조회 (검색 조건 AND 조합, 페이징)
+     * - active 파라미터: "true"/"false" 문자열 → Boolean 변환, "전체"/""/null이면 null로 처리
+     */
+    @Transactional(readOnly = true)
+    public MessageResourceDto.PageResponse getList(
+            String key, String ko, String en, String activeStr, int page, int size) {
+
+        /* 사용여부 문자열 → Boolean 변환 */
+        Boolean active = null;
+        if ("true".equals(activeStr) || "사용".equals(activeStr))   active = true;
+        if ("false".equals(activeStr) || "미사용".equals(activeStr)) active = false;
+
+        Page<MessageResource> result = messageResourceRepository.search(
+                key, ko, en, active, PageRequest.of(page, size));
+
+        return MessageResourceDto.PageResponse.builder()
+                .content(result.getContent().stream().map(this::toResponse).toList())
+                .totalElements(result.getTotalElements())
+                .totalPages(result.getTotalPages())
+                .currentPage(result.getNumber())
+                .size(result.getSize())
+                .build();
+    }
+
+    /**
+     * 등록
+     * - key 중복 시 409 CONFLICT
+     */
+    @Transactional
+    public MessageResourceDto.Response create(MessageResourceDto.CreateRequest request) {
+        /* key 중복 확인 */
+        if (messageResourceRepository.existsByKey(request.getKey())) {
+            throw BusinessException.conflict("이미 사용 중인 번역 키입니다.");
+        }
+
+        MessageResource entity = MessageResource.builder()
+                .key(request.getKey())
+                .ko(request.getKo())
+                .en(request.getEn())
+                .active(true) /* 등록 시 기본 사용 상태 */
+                .build();
+
+        return toResponse(messageResourceRepository.save(entity));
+    }
+
+    /**
+     * 수정 — key 변경 불가 (ko, en, active만 수정)
+     * - 존재하지 않는 id → 404 NOT_FOUND
+     */
+    @Transactional
+    public MessageResourceDto.Response update(Long id, MessageResourceDto.UpdateRequest request) {
+        MessageResource entity = messageResourceRepository.findById(id)
+                .orElseThrow(() -> BusinessException.notFound("다국어 항목을 찾을 수 없습니다."));
+
+        entity.setKo(request.getKo());
+        entity.setEn(request.getEn());
+        entity.setActive(request.getActive());
+
+        return toResponse(messageResourceRepository.save(entity));
+    }
+
+    /**
+     * 삭제
+     * - 존재하지 않는 id → 404 NOT_FOUND
+     */
+    @Transactional
+    public void delete(Long id) {
+        if (!messageResourceRepository.existsById(id)) {
+            throw BusinessException.notFound("다국어 항목을 찾을 수 없습니다.");
+        }
+        messageResourceRepository.deleteById(id);
+    }
+
+    /** Entity → Response DTO 변환 */
+    private MessageResourceDto.Response toResponse(MessageResource entity) {
+        return MessageResourceDto.Response.builder()
+                .id(entity.getId())
+                .key(entity.getKey())
+                .ko(entity.getKo())
+                .en(entity.getEn())
+                .active(entity.isActive())
+                .createdBy(entity.getCreatedBy())
+                .createdAt(entity.getCreatedAt())
+                .updatedBy(entity.getUpdatedBy())
+                .updatedAt(entity.getUpdatedAt())
+                .build();
+    }
+}

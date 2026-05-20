@@ -3,7 +3,7 @@
 
 $projectPath = "C:\Users\Administrator\.gemini\workspace\Bo\bo-api"
 $buildPath   = "$projectPath\build\libs"
-$profile     = "dev"
+$profile     = "local"
 $port        = 8002
 
 Write-Host "=== Bo BE 재시작 시작 ==="
@@ -11,16 +11,17 @@ Write-Host "=== Bo BE 재시작 시작 ==="
 # 8002 포트 사용 중인 프로세스 종료
 $conn = netstat -ano | Select-String ":$port\s"
 if ($conn) {
-    $pid = ($conn -split '\s+')[-1]
-    Stop-Process -Id $pid -Force -ErrorAction SilentlyContinue
-    Write-Host "기존 프로세스(PID: $pid) 종료"
+    $procId = ($conn -split '\s+')[-1]
+    Stop-Process -Id $procId -Force -ErrorAction SilentlyContinue
+    Write-Host "기존 프로세스(PID: $procId) 종료"
     Start-Sleep -Seconds 3
 } else {
     Write-Host "실행 중인 BE 프로세스 없음"
 }
 
-# 최신 jar 파일 선택
+# 최신 jar 파일 선택 (plain.jar 제외 — Spring Boot 실행 불가)
 $jar = Get-ChildItem -Path $buildPath -Filter "*.jar" |
+       Where-Object { $_.Name -notlike "*-plain.jar" } |
        Sort-Object LastWriteTime -Descending |
        Select-Object -First 1
 

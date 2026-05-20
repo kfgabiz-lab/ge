@@ -15,8 +15,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -38,12 +41,65 @@ public class MenuService {
     /*  조회                                  */
     /* ══════════════════════════════════════ */
 
-    /** 타입별 메뉴 트리 조회 */
+    /**
+     * 메뉴 트리 조회
+     * - BO: 공통 관리 — 사이트 무관하게 전체 조회
+     * - FO: 사이트별 분리 — siteId 필터링 적용
+     * - 시스템관리자(role.is_system=true)가 아닌 경우 isSystem=true 메뉴 제외
+     * @param forNav true = 사이드바 네비게이션용 (FO 전용 분기), false = 관리 페이지용
+     */
     @Transactional(readOnly = true)
-    public List<MenuResponse> getMenuTree(String menuType) {
+    public List<MenuResponse> getMenuTree(String menuType, Long siteId, boolean forNav) {
         validateMenuType(menuType);
+
+        boolean isSystemAdmin = isCurrentUserSystemAdmin();
+
+        /* BO는 사이트 무관 — 공통 메뉴 전체 반환 */
+        if ("BO".equals(menuType)) {
+            List<Menu> allMenus = menuRepository.findByMenuTypeAndParentIsNullOrderBySortOrderAsc(menuType);
+
+            /* 시스템관리자(role.is_system=true): 전체 반환 */
+            if (isSystemAdmin) {
+                return allMenus.stream().map(MenuResponse::from).toList();
+            }
+
+            /* 사이드바 네비게이션용 — role_menu 기반 필터링 적용 */
+            if (forNav) {
+                Set<Long> allowedMenuIds = resolveAllowedMenuIds();
+                return allMenus.stream()
+                    .filter(m -> !m.isSystem())
+                    .filter(m -> MenuResponse.isAllowed(m, allowedMenuIds))
+                    .map(m -> MenuResponse.fromFiltered(m, allowedMenuIds))
+                    .toList();
+            }
+
+            /* 관리 페이지용 — isSystem 필터링만 적용 (전체 메뉴 표시) */
+            return allMenus.stream()
+                .filter(m -> !m.isSystem())
+                .map(MenuResponse::from).toList();
+        }
+
+        /* FO: 네비게이션용 — 공통(NULL) + 해당 사이트 메뉴 */
+        if (siteId != null && forNav) {
+            return menuRepository.findNavMenusByTypeAndSite(menuType, siteId)
+                    .stream()
+                    .filter(m -> isSystemAdmin || !m.isSystem())
+                    .map(MenuResponse::from).toList();
+        }
+
+        /* FO: 관리 페이지용 — 해당 사이트 전용 메뉴만 */
+        if (siteId != null) {
+            return menuRepository.findByMenuTypeAndSiteIdAndParentIsNullOrderBySortOrderAsc(menuType, siteId)
+                    .stream()
+                    .filter(m -> isSystemAdmin || !m.isSystem())
+                    .map(MenuResponse::from).toList();
+        }
+
+        /* fallback — 사이트 미선택 시 전체 */
         return menuRepository.findByMenuTypeAndParentIsNullOrderBySortOrderAsc(menuType)
-                .stream().map(MenuResponse::from).toList();
+                .stream()
+                .filter(m -> isSystemAdmin || !m.isSystem())
+                .map(MenuResponse::from).toList();
     }
 
     /** 메뉴 단건 조회 */
@@ -58,15 +114,13 @@ public class MenuService {
 
     /** 메뉴 생성 */
     @Transactional
-    public MenuResponse createMenu(MenuRequest request) {
+    public MenuResponse createMenu(MenuRequest request, Long siteId) {
         String trimmedName = sanitizeName(request.name());
         String cleanUrl = sanitizeUrl(request.url());
         Menu parent = resolveParent(request.parentId(), request.menuType());
 
         validateChildUrl(parent, cleanUrl);
         validateUrlFormat(cleanUrl);
-        validateNameDuplicate(trimmedName, parent, request.menuType(), null);
-        validateUrlDuplicate(cleanUrl, null);
 
         Menu menu = Menu.builder()
             .name(trimmedName)
@@ -77,7 +131,7 @@ public class MenuService {
             .menuType(request.menuType())
             .sortOrder(request.sortOrder() != null ? request.sortOrder() : 1)
             .visible(request.visible() != null ? request.visible() : true)
-            .isCategory(request.isCategory() != null ? request.isCategory() : false)
+            .siteId(siteId)
             .build();
 
         return MenuResponse.from(menuRepository.save(menu));
@@ -108,8 +162,6 @@ public class MenuService {
 
         validateChildUrl(menu.getParent(), cleanUrl);
         validateUrlFormat(cleanUrl);
-        validateNameDuplicate(trimmedName, menu.getParent(), menu.getMenuType(), id);
-        validateUrlDuplicate(cleanUrl, id);
 
         menu.setName(trimmedName);
         menu.setDescription(request.description());
@@ -117,7 +169,6 @@ public class MenuService {
         menu.setIcon(request.icon());
         menu.setSortOrder(request.sortOrder() != null ? request.sortOrder() : menu.getSortOrder());
         menu.setVisible(request.visible() != null ? request.visible() : menu.getVisible());
-        menu.setIsCategory(request.isCategory() != null ? request.isCategory() : menu.getIsCategory());
 
         return MenuResponse.from(menu);
     }
@@ -175,11 +226,14 @@ public class MenuService {
     @Transactional(readOnly = true)
     public List<RoleMenuResponse> getRoleMenuMappings(Long menuId) {
         findMenuOrThrow(menuId);
-        List<Role> allRoles = roleRepository.findAll();
+        /* is_system=true 역할은 제외 — 일반 사용자에게 시스템관리자 역할 존재 자체를 숨김 */
+        List<Role> roles = roleRepository.findAllByOrderByIdAsc().stream()
+                .filter(r -> !r.isSystem())
+                .collect(java.util.stream.Collectors.toList());
         Set<Long> mappedRoleIds = roleMenuRepository.findByMenuId(menuId)
                 .stream().map(RoleMenu::getRoleId).collect(Collectors.toSet());
 
-        return allRoles.stream()
+        return roles.stream()
             .map(role -> new RoleMenuResponse(
                 menuId, role.getId(), role.getCode(), role.getDisplayName(),
                 mappedRoleIds.contains(role.getId())
@@ -209,6 +263,45 @@ public class MenuService {
     private Menu findMenuOrThrow(Long id) {
         return menuRepository.findById(id)
             .orElseThrow(ErrorCode.MENU_NOT_FOUND::toException);
+    }
+
+    /** 현재 로그인한 사용자가 시스템관리자인지 확인 — role.is_system 기반 */
+    private boolean isCurrentUserSystemAdmin() {
+        String roleCode = SecurityContextHolder.getContext().getAuthentication()
+            .getAuthorities().stream()
+            .findFirst()
+            .map(a -> {
+                String auth = a.getAuthority();
+                return auth.startsWith("ROLE_") ? auth.substring(5) : auth;
+            })
+            .orElse("");
+
+        return roleRepository.findByCode(roleCode)
+            .map(role -> role.isSystem())
+            .orElse(false);
+    }
+
+    /**
+     * 현재 로그인한 사용자의 역할에 허용된 menuId Set 반환
+     * SecurityContextHolder → role 코드 → Role ID → role_menu 조회
+     * 역할이 없거나 매핑이 없으면 빈 Set 반환 (메뉴 전체 숨김)
+     */
+    private Set<Long> resolveAllowedMenuIds() {
+        String authority = SecurityContextHolder.getContext().getAuthentication()
+            .getAuthorities().stream()
+            .findFirst()
+            .map(a -> a.getAuthority())
+            .orElse("");
+
+        /* "ROLE_SUPER_ADMIN" → "SUPER_ADMIN" 변환 */
+        String roleCode = authority.startsWith("ROLE_") ? authority.substring(5) : authority;
+
+        return roleRepository.findByCode(roleCode)
+            .map(role -> roleMenuRepository.findByRoleId(role.getId())
+                .stream()
+                .map(RoleMenu::getMenuId)
+                .collect(Collectors.toSet()))
+            .orElse(Set.of());
     }
 
     /* ══════════════════════════════════════ */
@@ -247,23 +340,6 @@ public class MenuService {
         if (url != null && !url.isEmpty() && url.contains("//")) {
             throw ErrorCode.MENU_URL_INVALID.toException();
         }
-    }
-
-    /** 이름 중복 검증 (excludeId: 수정 시 자신 제외) */
-    private void validateNameDuplicate(String name, Menu parent, String menuType, Long excludeId) {
-        boolean duplicate = excludeId == null
-            ? menuRepository.existsByNameAndParentAndMenuType(name, parent, menuType)
-            : menuRepository.existsByNameAndParentAndMenuTypeAndIdNot(name, parent, menuType, excludeId);
-        if (duplicate) throw ErrorCode.MENU_NAME_DUPLICATE.toException();
-    }
-
-    /** URL 중복 검증 (excludeId: 수정 시 자신 제외) */
-    private void validateUrlDuplicate(String url, Long excludeId) {
-        if (url == null || url.isEmpty()) return;
-        boolean duplicate = excludeId == null
-            ? menuRepository.existsByUrl(url)
-            : menuRepository.existsByUrlAndIdNot(url, excludeId);
-        if (duplicate) throw ErrorCode.MENU_URL_DUPLICATE.toException();
     }
 
     /* ══════════════════════════════════════ */

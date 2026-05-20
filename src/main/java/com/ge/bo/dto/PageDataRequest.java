@@ -23,4 +23,7 @@ public class PageDataRequest {
 
     /** PK 필드 키 목록 — FE 폼 빌더에서 isPk=true로 설정된 fieldKey 목록 */
     private List<String> pkKeys;
+
+    /** 다중 slug 저장 그룹 식별자 — FE에서 UUID 생성 후 같은 그룹의 모든 slug에 동일값 전달 */
+    private String groupId;
 }
