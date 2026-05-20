@@ -14,6 +14,7 @@ import com.ge.bo.dto.LoginResponse;
 import com.ge.bo.entity.AdminUser;
 import com.ge.bo.exception.BusinessException;
 import com.ge.bo.repository.AdminRepository;
+import com.ge.bo.repository.RoleRepository;
 import com.ge.bo.security.JwtTokenProvider;
 
 import java.time.Duration;
@@ -27,6 +28,7 @@ public class AuthService {
     private static final int LOCK_DURATION_MINUTES = 30;
 
     private final AdminRepository adminRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -96,6 +98,11 @@ public class AuthService {
     }
 
     private LoginResponse buildLoginResponse(String accessToken, AdminUser admin) {
+        /* role.is_system 조회 — 시스템관리자 여부 판별 */
+        boolean isSystem = roleRepository.findByCode(admin.getRole())
+                .map(role -> role.isSystem())
+                .orElse(false);
+
         return LoginResponse.builder()
                 .accessToken(accessToken)
                 .expiresIn(3600)
@@ -104,6 +111,7 @@ public class AuthService {
                         .name(admin.getName())
                         .email(admin.getEmail())
                         .role(admin.getRole())
+                        .isSystem(isSystem)
                         .build())
                 .build();
     }

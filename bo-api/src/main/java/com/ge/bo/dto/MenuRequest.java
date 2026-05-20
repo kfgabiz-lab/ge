@@ -8,8 +8,8 @@ import jakarta.validation.constraints.*;
 public record MenuRequest(
     @NotBlank(message = "메뉴명을 입력해주세요.")
     @Size(max = 50, message = "메뉴명은 50자 이하로 입력해주세요.")
-    @Pattern(regexp = "^[가-힣a-zA-Z0-9\\s\\-_()]{1,50}$",
-             message = "메뉴명은 한글, 영문, 숫자, 공백, -, _, ()만 사용 가능합니다.")
+    @Pattern(regexp = "^[가-힣a-zA-Z0-9\\s\\-_()&]{1,50}$",
+             message = "메뉴명은 한글, 영문, 숫자, 공백, -, _, (), &만 사용 가능합니다.")
     String name,
 
     @Size(max = 500, message = "메뉴 설명은 500자 이하로 입력해주세요.")
@@ -20,7 +20,7 @@ public record MenuRequest(
              message = "URL은 /로 시작하는 경로를 입력해주세요.")
     String url,
 
-    @NotBlank(message = "아이콘을 선택해주세요.")
+    @Size(max = 30, message = "아이콘명은 30자 이하여야 합니다.")
     String icon,
 
     Long parentId,
@@ -34,7 +34,5 @@ public record MenuRequest(
     @Max(value = 999, message = "정렬 순서는 999 이하여야 합니다.")
     Integer sortOrder,
 
-    Boolean visible,
-
-    Boolean isCategory
+    Boolean visible
 ) {}

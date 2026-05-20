@@ -17,10 +17,6 @@ import java.util.List;
  */
 @Entity
 @Table(name = "menu",
-    uniqueConstraints = @UniqueConstraint(
-        name = "uq_menu_name_parent_type",
-        columnNames = {"name", "parent_id", "menu_type"}
-    ),
     indexes = @Index(name = "idx_menu_type_parent", columnList = "menu_type, parent_id")
 )
 @Getter
@@ -47,10 +43,10 @@ public class Menu {
     @Column(length = 200)
     private String url;
 
-    /** 아이콘명 (lucide-react) */
+    /** 아이콘명 (lucide-react) — 빈 문자열이면 아이콘 없음 */
     @Column(nullable = false, length = 30)
     @Builder.Default
-    private String icon = "Folder";
+    private String icon = "";
 
     /** 상위 메뉴 (self-join) */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -77,10 +73,14 @@ public class Menu {
     @Builder.Default
     private Boolean visible = true;
 
-    /** 카테고리 여부 (MAIN, MANAGEMENT, TEMPLATES, SYSTEM 등 그룹 라벨) */
-    @Column(name = "is_category", nullable = false)
+    /** 소속 사이트 (NULL = 전체 공통, 값 있으면 해당 사이트 전용) */
+    @Column(name = "site_id")
+    private Long siteId;
+
+    /** 시스템 전용 메뉴 (SYSTEM_ADMIN만 사이드바에서 볼 수 있음) */
+    @Column(name = "is_system", nullable = false)
     @Builder.Default
-    private Boolean isCategory = false;
+    private boolean isSystem = false;
 
     @CreatedBy
     @Column(name = "created_by", nullable = false, updatable = false, length = 50)

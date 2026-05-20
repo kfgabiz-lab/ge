@@ -28,6 +28,22 @@ public class RoleService {
                 .collect(Collectors.toList());
     }
 
+    /** is_system=false 역할만 반환 — 관리자 폼 권한 드롭다운용 */
+    @Transactional(readOnly = true)
+    public List<RoleDto.Response> getAssignableRoles() {
+        return roleRepository.findAll().stream()
+                .filter(r -> !r.isSystem())
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public RoleDto.Response getRoleById(Long id) {
+        Role role = roleRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, "ROLE_NOT_FOUND", "역할을 찾을 수 없습니다."));
+        return toResponse(role);
+    }
+
     @Transactional
     public RoleDto.Response createRole(RoleDto.CreateRequest request) {
         if (roleRepository.existsByCode(request.getCode())) {

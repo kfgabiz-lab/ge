@@ -316,15 +316,7 @@ New-NetFirewallRule -DisplayName "Gitea HTTP" -Direction Inbound -Protocol TCP -
 
 # Gitea SSH
 New-NetFirewallRule -DisplayName "Gitea SSH" -Direction Inbound -Protocol TCP -LocalPort 2222 -Action Allow
-
-# Jenkins 웹
-New-NetFirewallRule -DisplayName "Jenkins" -Direction Inbound -Protocol TCP -LocalPort 8000 -Action Allow
-
-# Jenkins 에이전트
-New-NetFirewallRule -DisplayName "Jenkins Agent" -Direction Inbound -Protocol TCP -LocalPort 50000 -Action Allow
-
-# Bo FE
-New-NetFirewallRule -DisplayName "Bo FE" -Direction Inbound -Protocol TCP -LocalPort 3002 -Action Allow
+Action Allow
 
 # Bo BE
 New-NetFirewallRule -DisplayName "Bo BE" -Direction Inbound -Protocol TCP -LocalPort 8002 -Action Allow

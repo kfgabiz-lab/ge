@@ -65,6 +65,10 @@ public enum ErrorCode {
     FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "FILE_NOT_FOUND", "해당 파일을 찾을 수 없습니다."),
     FILE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "FILE_UPLOAD_FAILED", "파일 저장 중 오류가 발생했습니다."),
 
+    /* 다국어 리소스 */
+    MESSAGE_RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "MESSAGE_RESOURCE_NOT_FOUND", "다국어 항목을 찾을 수 없습니다."),
+    DUPLICATE_MESSAGE_KEY(HttpStatus.CONFLICT, "DUPLICATE_MESSAGE_KEY", "이미 사용 중인 번역 키입니다."),
+
     /* 공통 */
     DATA_INTEGRITY_VIOLATION(HttpStatus.CONFLICT, "DATA_INTEGRITY", "데이터 무결성 제약조건 위반이 발생했습니다.");
 

@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll() // 로그인은 인증 없이 허용
                         .requestMatchers("/api/v1/health").permitAll() // 헬스 체크 허용
+                        .requestMatchers("/api/v1/public/**").permitAll() // 공개 API — 인증 없이 허용
                         .requestMatchers("/api/v1/admins/**").authenticated() // 관리자 API — 인증 필요 (@PreAuthorize로 SUPER_ADMIN 제한)
                         .requestMatchers("/api/v1/roles/**").authenticated() // 역할 API — 인증 필요 (@PreAuthorize로 SUPER_ADMIN 제한)
                         .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요

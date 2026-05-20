@@ -46,8 +46,9 @@ public class PageDataController {
                         @PathVariable String slug,
                         @RequestParam Map<String, String> allParams,
                         @RequestParam(defaultValue = "0") int page,
-                        @RequestParam(defaultValue = "20") int size) {
-                return ResponseEntity.ok(pageDataService.search(slug, allParams, page, size));
+                        @RequestParam(defaultValue = "20") int size,
+                        @RequestHeader(value = "X-Site-Id", required = false) Long siteId) {
+                return ResponseEntity.ok(pageDataService.search(slug, allParams, page, size, siteId));
         }
 
         /** 단건 조회 */
@@ -62,8 +63,9 @@ public class PageDataController {
         @PostMapping
         public ResponseEntity<PageDataResponse> create(
                         @PathVariable String slug,
-                        @Valid @RequestBody PageDataRequest request) {
-                return ResponseEntity.status(HttpStatus.CREATED).body(pageDataService.create(slug, request));
+                        @Valid @RequestBody PageDataRequest request,
+                        @RequestHeader(value = "X-Site-Id", required = false) Long siteId) {
+                return ResponseEntity.status(HttpStatus.CREATED).body(pageDataService.create(slug, request, siteId));
         }
 
         /** 수정 */
@@ -93,6 +95,29 @@ public class PageDataController {
                         @PathVariable String slug,
                         @RequestBody PageDataRequest request) {
                 pageDataService.deleteByPk(slug, request.getPkKeys(), request.getDataJson());
+                return ResponseEntity.noContent().build();
+        }
+
+        /**
+         * group_id + slug 조합 단건 조회 — 다중 slug 수정 모드에서 각 slug 데이터 로드
+         * GET /api/v1/page-data/{slug}/group/{groupId}
+         */
+        @GetMapping("/group/{groupId}")
+        public ResponseEntity<PageDataResponse> findByGroupId(
+                        @PathVariable String slug,
+                        @PathVariable String groupId) {
+                return ResponseEntity.ok(pageDataService.findByGroupIdAndSlug(groupId, slug));
+        }
+
+        /**
+         * group_id 기반 일괄 삭제 — 다중 slug 저장 그룹 전체 삭제
+         * DELETE /api/v1/page-data/{slug}/group/{groupId}
+         */
+        @DeleteMapping("/group/{groupId}")
+        public ResponseEntity<Void> deleteByGroupId(
+                        @PathVariable String slug,
+                        @PathVariable String groupId) {
+                pageDataService.deleteByGroupId(groupId);
                 return ResponseEntity.noContent().build();
         }
 

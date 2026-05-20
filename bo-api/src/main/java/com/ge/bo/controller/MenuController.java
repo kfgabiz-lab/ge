@@ -22,7 +22,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/menus")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('SUPER_ADMIN')")
 @ApiLinkedEntity("Menu")
 public class MenuController {
 
@@ -30,8 +29,11 @@ public class MenuController {
 
     /** 타입별 메뉴 트리 조회 */
     @GetMapping
-    public ResponseEntity<List<MenuResponse>> getMenuTree(@RequestParam String type) {
-        return ResponseEntity.ok(menuService.getMenuTree(type));
+    public ResponseEntity<List<MenuResponse>> getMenuTree(
+            @RequestParam String type,
+            @RequestParam(defaultValue = "false") boolean forNav,
+            @RequestHeader(value = "X-Site-Id", required = false) Long siteId) {
+        return ResponseEntity.ok(menuService.getMenuTree(type, siteId, forNav));
     }
 
     /** 메뉴 단건 조회 */
@@ -42,8 +44,10 @@ public class MenuController {
 
     /** 메뉴 생성 */
     @PostMapping
-    public ResponseEntity<MenuResponse> createMenu(@Valid @RequestBody MenuRequest request) {
-        MenuResponse response = menuService.createMenu(request);
+    public ResponseEntity<MenuResponse> createMenu(
+            @Valid @RequestBody MenuRequest request,
+            @RequestHeader(value = "X-Site-Id", required = false) Long siteId) {
+        MenuResponse response = menuService.createMenu(request, siteId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

@@ -35,8 +35,17 @@ public class AdminUser {
     @Column(nullable = false, length = 20)
     private String role; // SUPER_ADMIN, EDITOR
 
-    @Column(unique = true, length = 50)
-    private String employeeId;
+    /* 부서코드 */
+    @Column(length = 50)
+    private String deptCode;
+
+    /* 부서명 */
+    @Column(length = 100)
+    private String deptName;
+
+    /* 비고 */
+    @Column(length = 500)
+    private String remark;
 
     private LocalDateTime lastLoginAt;
 

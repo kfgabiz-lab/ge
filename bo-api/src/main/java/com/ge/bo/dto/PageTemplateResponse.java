@@ -44,7 +44,7 @@ public class PageTemplateResponse {
                 .configJson(entity.getConfigJson())
                 .collapsible(entity.getCollapsible())
                 .filePath(entity.getFilePath())
-                .pageUrl("/admin/generated/" + entity.getSlug())
+                .pageUrl("/admin/widgetSub/" + entity.getSlug())
                 .createdBy(entity.getCreatedBy())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())

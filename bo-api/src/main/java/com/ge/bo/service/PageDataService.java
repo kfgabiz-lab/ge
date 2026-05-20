@@ -47,7 +47,7 @@ public class PageDataService {
      * @param size      페이지 크기
      */
     @Transactional(readOnly = true)
-    public PageDataListResponse search(String slug, Map<String, String> allParams, int page, int size) {
+    public PageDataListResponse search(String slug, Map<String, String> allParams, int page, int size, Long siteId) {
         // 검색 조건 파라미터 추출 (예약어 제거 + 빈 값 제거)
         Map<String, String> searchParams = new LinkedHashMap<>();
         allParams.forEach((key, value) -> {
@@ -58,12 +58,17 @@ public class PageDataService {
 
         // WHERE 절 동적 생성
         StringBuilder whereClause = new StringBuilder("WHERE template_slug = :slug");
+        if (siteId != null) {
+            // 해당 사이트 데이터 + 공통(NULL) 데이터 함께 조회
+            whereClause.append(" AND (site_id = :siteId OR site_id IS NULL)");
+        }
         appendWhereConditions(whereClause, searchParams);
 
         // 전체 건수 조회
         String countSql = "SELECT COUNT(*) FROM page_data " + whereClause;
         Query countQuery = entityManager.createNativeQuery(countSql);
         countQuery.setParameter("slug", slug);
+        if (siteId != null) countQuery.setParameter("siteId", siteId);
         bindSearchParams(countQuery, searchParams);
         long totalElements = ((Number) countQuery.getSingleResult()).longValue();
 
@@ -85,7 +90,7 @@ public class PageDataService {
         }
 
         // 데이터 조회
-        String dataSql = "SELECT id, template_slug, data_json::text, created_by, created_at, updated_by, updated_at "
+        String dataSql = "SELECT id, template_slug, data_json::text, group_id, created_by, created_at, updated_by, updated_at "
                 + "FROM page_data " + whereClause
                 + orderBy
                 + " LIMIT :size OFFSET :offset";
@@ -93,6 +98,7 @@ public class PageDataService {
         dataQuery.setParameter("slug", slug);
         dataQuery.setParameter("size", size);
         dataQuery.setParameter("offset", (long) page * size);
+        if (siteId != null) dataQuery.setParameter("siteId", siteId);
         bindSearchParams(dataQuery, searchParams);
 
         @SuppressWarnings("unchecked")
@@ -134,19 +140,28 @@ public class PageDataService {
      * @param request 등록 요청 (dataJson Map, pkKeys 목록)
      */
     @Transactional
-    public PageDataResponse create(String slug, PageDataRequest request) {
+    public PageDataResponse create(String slug, PageDataRequest request, Long siteId) {
         // PK 중복 체크 — pkKeys가 있을 때만 수행
         if (request.getPkKeys() != null && !request.getPkKeys().isEmpty()) {
             checkPkDuplicate(slug, request.getPkKeys(), request.getDataJson(), null);
         }
 
         String dataJsonStr = serializeDataJson(request.getDataJson());
-        // JPA save() 대신 네이티브 쿼리 사용: String → JSONB 타입 명시적 캐스팅
-        Query insertQuery = entityManager.createNativeQuery(
-                "INSERT INTO page_data (template_slug, data_json, created_at, updated_at) " +
-                        "VALUES (:slug, CAST(:dataJson AS jsonb), NOW(), NOW()) RETURNING id");
+        // group_id 있으면 함께 저장 (다중 slug 저장 그룹), 없으면 기존 방식
+        final Query insertQuery;
+        if (request.getGroupId() != null && !request.getGroupId().isBlank()) {
+            insertQuery = entityManager.createNativeQuery(
+                    "INSERT INTO page_data (template_slug, data_json, site_id, group_id, created_at, updated_at) " +
+                            "VALUES (:slug, CAST(:dataJson AS jsonb), :siteId, :groupId, NOW(), NOW()) RETURNING id");
+            insertQuery.setParameter("groupId", request.getGroupId());
+        } else {
+            insertQuery = entityManager.createNativeQuery(
+                    "INSERT INTO page_data (template_slug, data_json, site_id, created_at, updated_at) " +
+                            "VALUES (:slug, CAST(:dataJson AS jsonb), :siteId, NOW(), NOW()) RETURNING id");
+        }
         insertQuery.setParameter("slug", slug);
         insertQuery.setParameter("dataJson", dataJsonStr);
+        insertQuery.setParameter("siteId", siteId);
         Long newId = ((Number) insertQuery.getSingleResult()).longValue();
 
         // 생성된 id를 dataJson에 자동 주입 — 카테고리 계층 등 id 참조가 필요한 모든 곳에서 활용
@@ -310,6 +325,36 @@ public class PageDataService {
                 .toList();
     }
 
+    /**
+     * group_id + templateSlug 조합 단건 조회
+     * 다중 slug 수정 모드에서 각 slug별 데이터 로드에 사용
+     *
+     * @param groupId      그룹 식별자 (UUID)
+     * @param slug         페이지 식별자
+     */
+    @Transactional(readOnly = true)
+    public PageDataResponse findByGroupIdAndSlug(String groupId, String slug) {
+        PageData pageData = pageDataRepository.findByGroupIdAndTemplateSlug(groupId, slug)
+                .orElseThrow(ErrorCode.PAGE_DATA_NOT_FOUND::toException);
+        return PageDataResponse.from(pageData);
+    }
+
+    /**
+     * group_id 기반 일괄 삭제
+     * 다중 slug 저장 그룹 전체를 한 번에 삭제 (연관 파일 포함)
+     *
+     * @param groupId 그룹 식별자 (UUID)
+     */
+    @Transactional
+    public void deleteByGroupId(String groupId) {
+        List<PageData> list = pageDataRepository.findByGroupId(groupId);
+        if (list.isEmpty()) throw ErrorCode.PAGE_DATA_NOT_FOUND.toException();
+        for (PageData pd : list) {
+            pageFileService.deleteByDataId(pd.getId());
+            pageDataRepository.delete(pd);
+        }
+    }
+
     // ── private 헬퍼 ──────────────────────────────────────────
 
     /**
@@ -366,8 +411,8 @@ public class PageDataService {
 
     /**
      * 네이티브 쿼리 결과 행(Object[]) → PageDataResponse 변환
-     * 컬럼 순서: id, template_slug, data_json::text, created_by, created_at,
-     * updated_by, updated_at
+     * 컬럼 순서: id, template_slug, data_json::text, group_id, created_by,
+     * created_at, updated_by, updated_at
      */
     private PageDataResponse mapRowToResponse(Object[] row) {
         Map<String, Object> dataMap = Collections.emptyMap();
@@ -385,10 +430,11 @@ public class PageDataService {
                 .id(((Number) row[0]).longValue())
                 .templateSlug((String) row[1])
                 .dataJson(dataMap)
-                .createdBy((String) row[3])
-                .createdAt(row[4] != null ? toLocalDateTime(row[4]) : null)
-                .updatedBy((String) row[5])
-                .updatedAt(row[6] != null ? toLocalDateTime(row[6]) : null)
+                .groupId((String) row[3])
+                .createdBy((String) row[4])
+                .createdAt(row[5] != null ? toLocalDateTime(row[5]) : null)
+                .updatedBy((String) row[6])
+                .updatedAt(row[7] != null ? toLocalDateTime(row[7]) : null)
                 .build();
     }
 
@@ -413,11 +459,14 @@ public class PageDataService {
      */
     private void appendWhereConditions(StringBuilder whereClause, Map<String, String> searchParams) {
         searchParams.forEach((key, value) -> {
-            // eq_ 접두사 → 정확 일치 조건
+            // eq_ 접두사 → 정확 일치 조건 (최상위 + contentKey 1단계 중첩 동시 검색)
             if (key.startsWith("eq_")) {
                 String fieldKey = key.substring(3); // "eq_" 제거
                 if (!fieldKey.matches("[a-zA-Z0-9_]+")) return; // SQL Injection 방지
-                whereClause.append(" AND data_json->>'").append(fieldKey).append("' = :p_").append(key);
+                whereClause.append(" AND (data_json->>'").append(fieldKey).append("' = :p_").append(key)
+                        .append(" OR EXISTS (SELECT 1 FROM jsonb_each(data_json) kv")
+                        .append(" WHERE jsonb_typeof(kv.value) = 'object'")
+                        .append(" AND kv.value->>'").append(fieldKey).append("' = :p_").append(key).append("))");
                 return;
             }
             // 일반 파라미터
@@ -434,8 +483,11 @@ public class PageDataService {
                     whereClause.append(" AND data_json->>'").append(key).append("' <= :p_").append(key).append("_end");
                 }
             } else {
-                // ILIKE 부분 일치
-                whereClause.append(" AND data_json->>'").append(key).append("' ILIKE :p_").append(key);
+                // ILIKE 부분 일치 (최상위 + contentKey 1단계 중첩 동시 검색)
+                whereClause.append(" AND (data_json->>'").append(key).append("' ILIKE :p_").append(key)
+                        .append(" OR EXISTS (SELECT 1 FROM jsonb_each(data_json) kv")
+                        .append(" WHERE jsonb_typeof(kv.value) = 'object'")
+                        .append(" AND kv.value->>'").append(key).append("' ILIKE :p_").append(key).append("))");
             }
         });
     }

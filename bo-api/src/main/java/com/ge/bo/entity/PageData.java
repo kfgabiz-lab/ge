@@ -43,6 +43,14 @@ public class PageData {
     @Column(name = "data_json", nullable = false, columnDefinition = "jsonb")
     private String dataJson;
 
+    /** 소속 사이트 (NULL = 공통, 값 있으면 해당 사이트 전용) */
+    @Column(name = "site_id")
+    private Long siteId;
+
+    /** 다중 slug 저장 그룹 식별자 (UUID) — 단일 slug 저장 시 NULL */
+    @Column(name = "group_id", length = 36)
+    private String groupId;
+
     @CreatedBy
     @Column(name = "created_by", updatable = false, length = 100)
     private String createdBy;

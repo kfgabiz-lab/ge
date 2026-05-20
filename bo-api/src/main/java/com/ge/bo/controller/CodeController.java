@@ -18,7 +18,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/codes")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('SUPER_ADMIN')")
 @ApiLinkedEntity("CodeGroup")
 public class CodeController {
 
