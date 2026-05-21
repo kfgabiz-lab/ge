@@ -113,7 +113,9 @@
       "PowerShell(Get-Content \"C:\\\\Users\\\\Administrator\\\\.gemini\\\\workspace\\\\Bo\\\\bo-api\\\\be_startup_new.log\" | Where-Object { $_.Trim\\(\\) -ne \"\" -and $_ -notmatch \"^[\\\\s>]+$\" } | Select-Object -Last 50)",
       "PowerShell(\\(Get-Content \"C:\\\\Users\\\\Administrator\\\\.gemini\\\\workspace\\\\Bo\\\\bo-api\\\\be_startup_new.log\" -Raw\\) -split \"`n\" | Where-Object { $_.Trim\\(\\) -ne \"\" } | Select-Object -Last 80)",
       "PowerShell(\\(Get-Content \"C:\\\\Users\\\\Administrator\\\\.gemini\\\\workspace\\\\Bo\\\\bo-api\\\\be_startup_new.log\" -Raw\\) -split \"`n\" | Where-Object { $_.Trim\\(\\) -ne \"\" } | Select-Object -Last 30)",
-      "PowerShell(\\(Get-Content \"C:\\\\Users\\\\Administrator\\\\.gemini\\\\workspace\\\\Bo\\\\bo-api\\\\be_startup_new.log\" -Raw\\) -split \"`n\" | Where-Object { $_.Trim\\(\\) -ne \"\" } | Select-Object -Last 15)"
+      "PowerShell(\\(Get-Content \"C:\\\\Users\\\\Administrator\\\\.gemini\\\\workspace\\\\Bo\\\\bo-api\\\\be_startup_new.log\" -Raw\\) -split \"`n\" | Where-Object { $_.Trim\\(\\) -ne \"\" } | Select-Object -Last 15)",
+      "PowerShell(Get-Content \"C:\\\\Users\\\\Administrator\\\\.gemini\\\\workspace\\\\Bo\\\\bo\\\\fe_build.log\" | Where-Object { $_.Trim\\(\\) -ne \"\" } | Select-Object -Last 50)",
+      "PowerShell(Get-Content \"C:\\\\Users\\\\Administrator\\\\.gemini\\\\workspace\\\\Bo\\\\bo\\\\fe_build.log\" | Where-Object { $_.Trim\\(\\) -ne \"\" } | Select-Object -Last 30)"
     ]
   },
   "hooks": {
