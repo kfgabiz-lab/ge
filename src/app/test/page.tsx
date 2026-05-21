@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import api from '@/lib/api';
 
 interface CodeDetail {
     id: number;
@@ -16,20 +17,14 @@ interface CodeGroup {
     details: CodeDetail[];
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://10.153.10.150:8080/api/v1';
-
 export default function TestPage() {
     const [groups, setGroups] = useState<CodeGroup[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch(`${API_URL}/public/codes`)
-            .then(res => {
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                return res.json();
-            })
-            .then((data: CodeGroup[]) => setGroups(data))
+        api.get<CodeGroup[]>('/public/codes')
+            .then(res => setGroups(res.data))
             .catch(err => setError(String(err)))
             .finally(() => setLoading(false));
     }, []);
@@ -38,7 +33,7 @@ export default function TestPage() {
         <div style={{ padding: '24px', fontFamily: 'monospace' }}>
             <h1 style={{ fontSize: '18px', marginBottom: '8px' }}>API 연결 테스트</h1>
             <p style={{ fontSize: '12px', color: '#888', marginBottom: '16px' }}>
-                {API_URL}/public/codes
+                {process.env.NEXT_PUBLIC_API_URL}/public/codes
             </p>
 
             {loading && <p>로딩 중...</p>}
