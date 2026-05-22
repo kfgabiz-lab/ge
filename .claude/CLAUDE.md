@@ -79,8 +79,8 @@ STEP 6. 개발 (BE → FE 순)
 ## 4. 모든 주석은 한글로 작성
 
 ## 5. 꼭 해당 PORT에서 열기, 타 port 실행금지
-FO (Next.js): 3001
-BO (Next.js): 3002
+FO (Next.js): 3002
+BO (Next.js): 3001
 BE (API): 8080
 profile : local
 엣지 브라우저에서 실행!
