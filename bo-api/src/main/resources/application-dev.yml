@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://10.153.11.120:5432/postgres
+    username: lsedbadmin
+    password: lsis@2026!@#
 
 cors:
-  allowed-origins: "http://localhost:3002,http://localhost:3001"
+  allowed-origins: "http://localhost:3002,http://localhost:3001,http://10.153.9.150"
