@@ -12,6 +12,8 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -147,21 +149,24 @@ public class PageDataService {
         }
 
         String dataJsonStr = serializeDataJson(request.getDataJson());
+        String currentUser = getCurrentUser();
         // group_id 있으면 함께 저장 (다중 slug 저장 그룹), 없으면 기존 방식
         final Query insertQuery;
         if (request.getGroupId() != null && !request.getGroupId().isBlank()) {
             insertQuery = entityManager.createNativeQuery(
-                    "INSERT INTO page_data (template_slug, data_json, site_id, group_id, created_at, updated_at) " +
-                            "VALUES (:slug, CAST(:dataJson AS jsonb), :siteId, :groupId, NOW(), NOW()) RETURNING id");
+                    "INSERT INTO page_data (template_slug, data_json, site_id, group_id, created_by, created_at, updated_by, updated_at) " +
+                            "VALUES (:slug, CAST(:dataJson AS jsonb), :siteId, :groupId, :createdBy, NOW(), :updatedBy, NOW()) RETURNING id");
             insertQuery.setParameter("groupId", request.getGroupId());
         } else {
             insertQuery = entityManager.createNativeQuery(
-                    "INSERT INTO page_data (template_slug, data_json, site_id, created_at, updated_at) " +
-                            "VALUES (:slug, CAST(:dataJson AS jsonb), :siteId, NOW(), NOW()) RETURNING id");
+                    "INSERT INTO page_data (template_slug, data_json, site_id, created_by, created_at, updated_by, updated_at) " +
+                            "VALUES (:slug, CAST(:dataJson AS jsonb), :siteId, :createdBy, NOW(), :updatedBy, NOW()) RETURNING id");
         }
         insertQuery.setParameter("slug", slug);
         insertQuery.setParameter("dataJson", dataJsonStr);
         insertQuery.setParameter("siteId", siteId);
+        insertQuery.setParameter("createdBy", currentUser);
+        insertQuery.setParameter("updatedBy", currentUser);
         Long newId = ((Number) insertQuery.getSingleResult()).longValue();
 
         // 생성된 id를 dataJson에 자동 주입 — 카테고리 계층 등 id 참조가 필요한 모든 곳에서 활용
@@ -192,11 +197,14 @@ public class PageDataService {
         Map<String, Object> dataJsonWithId = new LinkedHashMap<>(request.getDataJson());
         dataJsonWithId.put("id", id);
         String dataJsonStr = serializeDataJson(dataJsonWithId);
+        String currentUser = getCurrentUser();
         // JPA save() 대신 네이티브 쿼리 사용: String → JSONB 타입 명시적 캐스팅
+        // 수정 시 updated_by/updated_at만 변경, created_by/created_at은 유지
         Query updateQuery = entityManager.createNativeQuery(
-                "UPDATE page_data SET data_json = CAST(:dataJson AS jsonb), updated_at = NOW() " +
+                "UPDATE page_data SET data_json = CAST(:dataJson AS jsonb), updated_by = :updatedBy, updated_at = NOW() " +
                         "WHERE id = :id AND template_slug = :slug");
         updateQuery.setParameter("dataJson", dataJsonStr);
+        updateQuery.setParameter("updatedBy", currentUser);
         updateQuery.setParameter("id", id);
         updateQuery.setParameter("slug", slug);
         updateQuery.executeUpdate();
@@ -397,6 +405,15 @@ public class PageDataService {
         if (count > 0) {
             throw ErrorCode.PAGE_DATA_PK_DUPLICATE.toException();
         }
+    }
+
+    /** 현재 로그인 사용자명 반환 (비로그인 시 null) */
+    private String getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+            return null;
+        }
+        return auth.getName();
     }
 
     /** Map → JSON 문자열 직렬화 */

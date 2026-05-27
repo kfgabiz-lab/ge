@@ -35,7 +35,7 @@ public class SlugRegistryController {
     public ResponseEntity<Page<SlugRegistryResponse>> getList(
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String keyword,
-            @PageableDefault(size = 20, sort = "slug", direction = Sort.Direction.ASC) Pageable pageable) {
+            @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(slugRegistryService.getList(type, keyword, pageable));
     }
 

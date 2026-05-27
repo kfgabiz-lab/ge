@@ -122,14 +122,6 @@ public class PageTemplateService {
 
         String templateType = request.getTemplateType() != null ? request.getTemplateType()
                 : template.getTemplateType();
-        // 이름 중복 검사 — 자신 제외, 같은 templateType 안에서만
-        if (pageTemplateRepository.existsByNameAndTemplateTypeAndIdNot(request.getName(), templateType, id)) {
-            throw ErrorCode.PAGE_TEMPLATE_NAME_DUPLICATE.toException();
-        }
-        // slug 중복 검사 — 자신 제외, 같은 templateType 안에서만 (500 에러 방지)
-        if (pageTemplateRepository.existsBySlugAndTemplateTypeAndIdNot(request.getSlug(), templateType, id)) {
-            throw ErrorCode.PAGE_TEMPLATE_SLUG_DUPLICATE.toException();
-        }
 
         // tsxCode가 있을 때만 파일 처리
         String newFilePath = template.getFilePath();
