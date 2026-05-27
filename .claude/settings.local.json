@@ -115,7 +115,14 @@
       "PowerShell(\\(Get-Content \"C:\\\\Users\\\\Administrator\\\\.gemini\\\\workspace\\\\Bo\\\\bo-api\\\\be_startup_new.log\" -Raw\\) -split \"`n\" | Where-Object { $_.Trim\\(\\) -ne \"\" } | Select-Object -Last 30)",
       "PowerShell(\\(Get-Content \"C:\\\\Users\\\\Administrator\\\\.gemini\\\\workspace\\\\Bo\\\\bo-api\\\\be_startup_new.log\" -Raw\\) -split \"`n\" | Where-Object { $_.Trim\\(\\) -ne \"\" } | Select-Object -Last 15)",
       "PowerShell(Get-Content \"C:\\\\Users\\\\Administrator\\\\.gemini\\\\workspace\\\\Bo\\\\bo\\\\fe_build.log\" | Where-Object { $_.Trim\\(\\) -ne \"\" } | Select-Object -Last 50)",
-      "PowerShell(Get-Content \"C:\\\\Users\\\\Administrator\\\\.gemini\\\\workspace\\\\Bo\\\\bo\\\\fe_build.log\" | Where-Object { $_.Trim\\(\\) -ne \"\" } | Select-Object -Last 30)"
+      "PowerShell(Get-Content \"C:\\\\Users\\\\Administrator\\\\.gemini\\\\workspace\\\\Bo\\\\bo\\\\fe_build.log\" | Where-Object { $_.Trim\\(\\) -ne \"\" } | Select-Object -Last 30)",
+      "mcp__ide__getDiagnostics",
+      "PowerShell($env:JAVA_HOME; Get-ChildItem \"C:\\\\Users\\\\Administrator\\\\.gemini\\\\workspace\\\\Bo\\\\bo-api\\\\scripts\" -ErrorAction SilentlyContinue | Select-Object Name)",
+      "PowerShell(gh repo list kfgabiz-lab --limit 20 --json name,url | ConvertFrom-Json | ForEach-Object { \"$\\($_.name\\) - $\\($_.url\\)\" })",
+      "PowerShell(Start-Process \"msedge\" \"http://localhost:3001\")",
+      "Edit",
+      "Write",
+      "MultiEdit"
     ]
   },
   "hooks": {

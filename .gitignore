@@ -19,6 +19,20 @@ Thumbs.db
 
 # 빌드 산출물 (각 하위 프로젝트에서 관리)
 # bo/.next, bo-api/target 은 하위 .gitignore에서 처리
+bo-api/bin/
+
+# 스크린샷/캡처 파일
+*.png
+
+# 툴 내부 디렉토리
+.claude/agents/
+.serena/
+.playwright-mcp/
+agent-monitor/
+
+# 테스트/임시 파일
+test-upload.txt
+session-report-*.html
 
 # 플러그인 내부 resolved 파일 (바이너리/캐시성)
 .plugin/**/*.resolved
