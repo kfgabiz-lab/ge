@@ -7,14 +7,16 @@ public record CodeGroupResponse(
     Long id,
     String groupCode,
     String groupName,
+    String groupNameMsgKey,
     String description,
     Boolean active,
     List<CodeDetailResponse> details
 ) {
-    public static CodeGroupResponse from(CodeGroup g) {
-        return new CodeGroupResponse(
-            g.getId(), g.getGroupCode(), g.getGroupName(), g.getDescription(), g.getActive(),
+  public static CodeGroupResponse from(CodeGroup g) {
+    return new CodeGroupResponse(
+            g.getId(), g.getGroupCode(), g.getGroupName(), g.getGroupNameMsgKey(),
+            g.getDescription(), g.getActive(),
             g.getDetails() != null ? g.getDetails().stream().map(CodeDetailResponse::from).toList() : List.of()
         );
-    }
+  }
 }

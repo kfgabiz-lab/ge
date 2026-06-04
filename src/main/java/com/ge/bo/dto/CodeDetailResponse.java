@@ -6,6 +6,7 @@ public record CodeDetailResponse(
     Long id,
     String code,
     String name,
+    String nameMsgKey,
     String description,
     Integer sortOrder,
     Boolean active,
@@ -15,11 +16,11 @@ public record CodeDetailResponse(
     String extra4,
     String extra5
 ) {
-    public static CodeDetailResponse from(CodeDetail d) {
-        return new CodeDetailResponse(
-            d.getId(), d.getCode(), d.getName(), d.getDescription(),
+  public static CodeDetailResponse from(CodeDetail d) {
+    return new CodeDetailResponse(
+            d.getId(), d.getCode(), d.getName(), d.getNameMsgKey(), d.getDescription(),
             d.getSortOrder(), d.getActive(),
             d.getExtra1(), d.getExtra2(), d.getExtra3(), d.getExtra4(), d.getExtra5()
         );
-    }
+  }
 }

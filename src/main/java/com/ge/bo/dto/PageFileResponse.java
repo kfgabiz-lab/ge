@@ -4,7 +4,7 @@ import com.ge.bo.entity.PageFile;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 /**
  * 파일 업로드/조회 응답 DTO
@@ -14,18 +14,18 @@ import java.time.LocalDateTime;
 @Builder
 public class PageFileResponse {
 
-    private Long id;
-    private String templateSlug;
-    private Long dataId;
-    private String fieldKey;
-    private String origName;
-    private Long fileSize;
-    private String mimeType;
-    private LocalDateTime createdAt;
+  private Long id;
+  private String templateSlug;
+  private Long dataId;
+  private String fieldKey;
+  private String origName;
+  private Long fileSize;
+  private String mimeType;
+  private OffsetDateTime createdAt;
 
     /** PageFile 엔티티 → 응답 DTO 변환 */
-    public static PageFileResponse from(PageFile pageFile) {
-        return PageFileResponse.builder()
+  public static PageFileResponse from(PageFile pageFile) {
+    return PageFileResponse.builder()
                 .id(pageFile.getId())
                 .templateSlug(pageFile.getTemplateSlug())
                 .dataId(pageFile.getDataId())
@@ -35,5 +35,5 @@ public class PageFileResponse {
                 .mimeType(pageFile.getMimeType())
                 .createdAt(pageFile.getCreatedAt())
                 .build();
-    }
+  }
 }

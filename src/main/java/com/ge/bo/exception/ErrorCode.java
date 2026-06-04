@@ -72,12 +72,12 @@ public enum ErrorCode {
     /* 공통 */
     DATA_INTEGRITY_VIOLATION(HttpStatus.CONFLICT, "DATA_INTEGRITY", "데이터 무결성 제약조건 위반이 발생했습니다.");
 
-    private final HttpStatus status;
-    private final String code;
-    private final String message;
+  private final HttpStatus status;
+  private final String code;
+  private final String message;
 
     /** BusinessException 생성 헬퍼 */
-    public BusinessException toException() {
-        return new BusinessException(this.status, this.code, this.message);
-    }
+  public BusinessException toException() {
+    return new BusinessException(this.status, this.code, this.message);
+  }
 }

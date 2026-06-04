@@ -3,7 +3,7 @@ package com.ge.bo.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 /**
  * 역할-메뉴 매핑 엔티티 (복합 PK)
@@ -18,19 +18,19 @@ import java.time.LocalDateTime;
 @IdClass(RoleMenuId.class)
 public class RoleMenu {
 
-    @Id
+  @Id
     @Column(name = "role_id")
     private Long roleId;
 
-    @Id
+  @Id
     @Column(name = "menu_id")
     private Long menuId;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+  @Column(name = "created_at", nullable = false, updatable = false)
+    private OffsetDateTime createdAt;
 
-    @PrePersist
+  @PrePersist
     public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-    }
+    this.createdAt = OffsetDateTime.now();
+  }
 }

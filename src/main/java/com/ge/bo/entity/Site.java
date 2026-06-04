@@ -8,7 +8,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 /**
  * 홈페이지(Site) 엔티티
@@ -23,36 +23,41 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class Site {
 
-    @Id
+  @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    /** 사이트명 (한국어 기본값) */
+  @Column(nullable = false)
     private String name;
 
-    @Column
+    /** 사이트명 다국어 키 (message_resource.key 참조, 예: site.1.name) */
+  @Column(name = "name_msg_key")
+    private String nameMsgKey;
+
+  @Column
     private String description;
 
-    @Column
+  @Column
     private String domain;
 
-    @Builder.Default
+  @Builder.Default
     @Column(name = "is_active", nullable = false)
     private boolean isActive = true;
 
-    @CreatedBy
+  @CreatedBy
     @Column(name = "created_by", nullable = false, updatable = false)
     private String createdBy;
 
-    @CreatedDate
+  @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
-    @LastModifiedBy
+  @LastModifiedBy
     @Column(name = "updated_by", nullable = false)
     private String updatedBy;
 
-    @LastModifiedDate
+  @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 }

@@ -11,5 +11,5 @@ import java.util.List;
 public interface SiteRepository extends JpaRepository<Site, Long> {
 
     /** 사용여부 기준 목록 조회 */
-    List<Site> findByIsActive(boolean isActive);
+  List<Site> findByIsActive(boolean isActive);
 }

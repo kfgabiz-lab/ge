@@ -12,14 +12,14 @@ import java.util.List;
 public interface RoleMenuRepository extends JpaRepository<RoleMenu, RoleMenuId> {
 
     /** 특정 메뉴의 역할 매핑 전체 조회 */
-    List<RoleMenu> findByMenuId(Long menuId);
+  List<RoleMenu> findByMenuId(Long menuId);
 
     /** 특정 역할의 허용된 menuId 목록 조회 */
-    List<RoleMenu> findByRoleId(Long roleId);
+  List<RoleMenu> findByRoleId(Long roleId);
 
     /** 매핑 존재 확인 */
-    boolean existsByRoleIdAndMenuId(Long roleId, Long menuId);
+  boolean existsByRoleIdAndMenuId(Long roleId, Long menuId);
 
     /** 매핑 삭제 */
-    void deleteByRoleIdAndMenuId(Long roleId, Long menuId);
+  void deleteByRoleIdAndMenuId(Long roleId, Long menuId);
 }

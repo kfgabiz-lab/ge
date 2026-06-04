@@ -3,33 +3,83 @@ package com.ge.bo.controller;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.ge.bo.dto.LoginRequest;
 import com.ge.bo.dto.LoginResponse;
+import com.ge.bo.dto.TotpDto;
 import com.ge.bo.service.AuthService;
+import com.ge.bo.service.TotpService;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
+  private final AuthService authService;
+  private final TotpService totpService;
 
-    @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest request, HttpServletResponse response) {
-        return authService.login(request, response);
-    }
+  /**
+   * 1단계 로그인 (이메일/비밀번호/reCAPTCHA 검증 → tempToken 발급)
+   * JWT는 2FA 완료 후 발급됨
+   */
+  @PostMapping("/login")
+  public LoginResponse login(@RequestBody LoginRequest request) {
+    return authService.login(request);
+  }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<LoginResponse> refresh(
-            @CookieValue(name = "refreshToken", required = false) String refreshToken) {
-        return ResponseEntity.ok(authService.refresh(refreshToken));
-    }
+  /**
+   * TOTP QR 코드 발급 (최초 2FA 미등록 계정 전용)
+   * POST /auth/totp/qr
+   */
+  @PostMapping("/totp/qr")
+  public TotpDto.SetupResponse totpQr(@RequestBody TotpDto.SetupRequest request) {
+    return totpService.setup(request);
+  }
 
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletResponse response) {
-        authService.logout(response);
-        return ResponseEntity.ok().build();
-    }
+  /**
+   * TOTP 등록 완료 (6자리 코드 검증 → JWT 발급)
+   * POST /auth/totp/registrations
+   */
+  @PostMapping("/totp/registrations")
+  public TotpDto.VerifyResponse totpRegistration(
+      @RequestBody TotpDto.ConfirmRequest request, HttpServletResponse response) {
+    TotpDto.VerifyResponse result = totpService.confirm(request);
+    authService.issueRefreshTokenCookie(response, result.getAdminInfo().getEmail());
+    return result;
+  }
+
+  /**
+   * TOTP 로그인 세션 발급 (OTP 또는 복구코드 검증 → JWT 발급)
+   * POST /auth/totp/sessions
+   */
+  @PostMapping("/totp/sessions")
+  public TotpDto.VerifyResponse totpSession(
+      @RequestBody TotpDto.VerifyRequest request, HttpServletResponse response) {
+    TotpDto.VerifyResponse result = totpService.verify(request);
+    authService.issueRefreshTokenCookie(response, result.getAdminInfo().getEmail());
+    return result;
+  }
+
+  /**
+   * 액세스 토큰 재발급 (Refresh Token 쿠키 기반)
+   */
+  @PostMapping("/refresh")
+  public ResponseEntity<LoginResponse> refresh(
+      @CookieValue(name = "refreshToken", required = false) String refreshToken) {
+    return ResponseEntity.ok(authService.refresh(refreshToken));
+  }
+
+  /**
+   * 로그아웃 (Refresh Token 쿠키 만료 처리)
+   */
+  @PostMapping("/logout")
+  public ResponseEntity<Void> logout(HttpServletResponse response) {
+    authService.logout(response);
+    return ResponseEntity.ok().build();
+  }
 }

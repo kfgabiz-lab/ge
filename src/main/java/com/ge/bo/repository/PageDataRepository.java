@@ -18,7 +18,7 @@ public interface PageDataRepository extends JpaRepository<PageData, Long> {
      * @param id           데이터 PK
      * @param templateSlug 페이지 식별자
      */
-    Optional<PageData> findByIdAndTemplateSlug(Long id, String templateSlug);
+  Optional<PageData> findByIdAndTemplateSlug(Long id, String templateSlug);
 
     /**
      * id + templateSlug 조합 삭제 — 다른 slug 데이터 삭제 차단
@@ -26,7 +26,7 @@ public interface PageDataRepository extends JpaRepository<PageData, Long> {
      * @param id           데이터 PK
      * @param templateSlug 페이지 식별자
      */
-    void deleteByIdAndTemplateSlug(Long id, String templateSlug);
+  void deleteByIdAndTemplateSlug(Long id, String templateSlug);
 
     /**
      * group_id + templateSlug 조합 단건 조회 — 다중 slug 저장 수정 모드에서 사용
@@ -34,12 +34,12 @@ public interface PageDataRepository extends JpaRepository<PageData, Long> {
      * @param groupId      그룹 식별자 (UUID)
      * @param templateSlug 페이지 식별자
      */
-    Optional<PageData> findByGroupIdAndTemplateSlug(String groupId, String templateSlug);
+  Optional<PageData> findByGroupIdAndTemplateSlug(String groupId, String templateSlug);
 
     /**
      * group_id 기반 전체 조회 — 그룹 삭제 시 대상 레코드 일괄 수집
      *
      * @param groupId 그룹 식별자 (UUID)
      */
-    List<PageData> findByGroupId(String groupId);
+  List<PageData> findByGroupId(String groupId);
 }

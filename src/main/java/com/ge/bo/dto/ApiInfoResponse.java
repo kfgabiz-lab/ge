@@ -1,7 +1,7 @@
 package com.ge.bo.dto;
 
 import com.ge.bo.entity.ApiInfo;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public record ApiInfoResponse(
         Long id,
@@ -13,13 +13,13 @@ public record ApiInfoResponse(
         String connectedEntity,
         Boolean active,
         String createdBy,
-        LocalDateTime createdAt,
+        OffsetDateTime createdAt,
         String updatedBy,
-        LocalDateTime updatedAt) {
-    public static ApiInfoResponse from(ApiInfo e) {
-        return new ApiInfoResponse(
+        OffsetDateTime updatedAt) {
+  public static ApiInfoResponse from(ApiInfo e) {
+    return new ApiInfoResponse(
                 e.getId(), e.getCategory(), e.getName(), e.getMethod(),
                 e.getUrlPattern(), e.getDescription(), e.getConnectedEntity(), e.getActive(),
                 e.getCreatedBy(), e.getCreatedAt(), e.getUpdatedBy(), e.getUpdatedAt());
-    }
+  }
 }

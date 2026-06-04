@@ -7,9 +7,9 @@ import com.ge.bo.entity.AdminUser;
 import java.util.Optional;
 
 public interface AdminRepository extends JpaRepository<AdminUser, Long> {
-    Optional<AdminUser> findByEmail(String email);
+  Optional<AdminUser> findByEmail(String email);
 
-    boolean existsByEmail(String email);
+  boolean existsByEmail(String email);
 
-    long countByRole(String role);
+  long countByRole(String role);
 }

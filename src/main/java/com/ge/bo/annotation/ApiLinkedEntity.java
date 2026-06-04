@@ -16,5 +16,5 @@ public @interface ApiLinkedEntity {
     /**
      * @return 연결하려는 JPA Entity 의 클래스명 (예: "AdminUser", "CodeGroup")
      */
-    String value();
+  String value();
 }

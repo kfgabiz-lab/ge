@@ -13,25 +13,27 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SecurityService {
 
-    private final RoleRepository roleRepository;
+  private final RoleRepository roleRepository;
 
     /**
      * 현재 인증 사용자가 시스템관리자인지 판별
      * SecurityContext authority에서 role code 추출 → role.is_system 조회
      */
-    public boolean isSystemAdmin(Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) return false;
+  public boolean isSystemAdmin(Authentication authentication) {
+    if (authentication == null || !authentication.isAuthenticated()) {
+      return false;
+    }
 
-        String roleCode = authentication.getAuthorities().stream()
+    String roleCode = authentication.getAuthorities().stream()
                 .findFirst()
                 .map(a -> {
-                    String auth = a.getAuthority();
-                    return auth.startsWith("ROLE_") ? auth.substring(5) : auth;
+                  String auth = a.getAuthority();
+                  return auth.startsWith("ROLE_") ? auth.substring(5) : auth;
                 })
                 .orElse("");
 
-        return roleRepository.findByCode(roleCode)
+    return roleRepository.findByCode(roleCode)
                 .map(role -> role.isSystem())
                 .orElse(false);
-    }
+  }
 }

@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface CodeGroupRepository extends JpaRepository<CodeGroup, Long> {
 
-    @EntityGraph(attributePaths = {"details"})
+  @EntityGraph(attributePaths = {"details"})
     List<CodeGroup> findAllByOrderByIdDesc();
 
-    boolean existsByGroupCode(String groupCode);
+  boolean existsByGroupCode(String groupCode);
 }

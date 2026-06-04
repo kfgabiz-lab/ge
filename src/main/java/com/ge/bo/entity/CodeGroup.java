@@ -8,7 +8,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,41 +21,44 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 public class CodeGroup {
 
-    @Id
+  @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "group_code", nullable = false, unique = true, length = 30)
+  @Column(name = "group_code", nullable = false, unique = true, length = 30)
     private String groupCode;
 
-    @Column(name = "group_name", nullable = false, length = 50)
+  @Column(name = "group_name", nullable = false, length = 50)
     private String groupName;
 
-    @Column(length = 200)
+  @Column(name = "group_name_msg_key", length = 255)
+    private String groupNameMsgKey;
+
+  @Column(length = 200)
     private String description;
 
-    @Column(nullable = false)
+  @Column(name = "is_active", nullable = false)
     @Builder.Default
     private Boolean active = true;
 
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("sortOrder ASC")
     @Builder.Default
     private List<CodeDetail> details = new ArrayList<>();
 
-    @CreatedBy
+  @CreatedBy
     @Column(name = "created_by", nullable = false, updatable = false, length = 50)
     private String createdBy;
 
-    @CreatedDate
+  @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
-    @LastModifiedBy
+  @LastModifiedBy
     @Column(name = "updated_by", nullable = false, length = 50)
     private String updatedBy;
 
-    @LastModifiedDate
+  @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 }

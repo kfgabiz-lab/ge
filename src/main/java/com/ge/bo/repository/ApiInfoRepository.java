@@ -11,5 +11,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 public interface ApiInfoRepository extends JpaRepository<ApiInfo, Long>, JpaSpecificationExecutor<ApiInfo> {
 
     /** method + urlPattern 조합 중복 여부 확인 (동기화 시 사용) */
-    boolean existsByMethodAndUrlPattern(String method, String urlPattern);
+  boolean existsByMethodAndUrlPattern(String method, String urlPattern);
 }

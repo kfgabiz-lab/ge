@@ -12,8 +12,8 @@ import java.util.List;
 public interface AdminUserSiteRepository extends JpaRepository<AdminUserSite, AdminUserSiteId> {
 
     /** 관리자별 매핑된 홈페이지 ID 목록 조회 */
-    List<AdminUserSite> findByAdminUserId(Long adminUserId);
+  List<AdminUserSite> findByAdminUserId(Long adminUserId);
 
     /** 관리자의 전체 매핑 삭제 (일괄 변경 시 사용) */
-    void deleteByAdminUserId(Long adminUserId);
+  void deleteByAdminUserId(Long adminUserId);
 }

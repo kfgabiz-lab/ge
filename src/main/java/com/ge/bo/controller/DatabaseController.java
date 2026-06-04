@@ -21,16 +21,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DatabaseController {
 
-    private final DatabaseService databaseService;
+  private final DatabaseService databaseService;
 
     /**
      * 테이블 목록 조회
      * GET /api/v1/database/tables
      */
-    @GetMapping("/tables")
+  @GetMapping("/tables")
     public ResponseEntity<List<TableInfoResponse>> getTables() {
-        return ResponseEntity.ok(databaseService.getTables());
-    }
+    return ResponseEntity.ok(databaseService.getTables());
+  }
 
     /**
      * 특정 테이블의 컬럼 정보 조회
@@ -38,19 +38,19 @@ public class DatabaseController {
      *
      * @param tableName 조회할 테이블명
      */
-    @GetMapping("/tables/{tableName}/columns")
+  @GetMapping("/tables/{tableName}/columns")
     public ResponseEntity<List<ColumnInfoResponse>> getColumns(@PathVariable String tableName) {
-        return ResponseEntity.ok(databaseService.getColumns(tableName));
-    }
+    return ResponseEntity.ok(databaseService.getColumns(tableName));
+  }
 
     /**
      * JPA 엔티티 목록 조회
      * GET /api/v1/database/entities
      */
-    @GetMapping("/entities")
+  @GetMapping("/entities")
     public ResponseEntity<List<EntityInfoResponse>> getEntities() {
-        return ResponseEntity.ok(databaseService.getEntities());
-    }
+    return ResponseEntity.ok(databaseService.getEntities());
+  }
 
     /**
      * 특정 엔티티의 필드 목록 조회
@@ -58,8 +58,8 @@ public class DatabaseController {
      *
      * @param entityName JPA 엔티티 클래스명
      */
-    @GetMapping("/entities/{entityName}/fields")
+  @GetMapping("/entities/{entityName}/fields")
     public ResponseEntity<List<FieldInfoResponse>> getEntityFields(@PathVariable String entityName) {
-        return ResponseEntity.ok(databaseService.getEntityFields(entityName));
-    }
+    return ResponseEntity.ok(databaseService.getEntityFields(entityName));
+  }
 }
