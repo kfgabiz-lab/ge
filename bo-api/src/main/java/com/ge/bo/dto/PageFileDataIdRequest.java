@@ -16,10 +16,10 @@ import java.util.List;
 public class PageFileDataIdRequest {
 
     /** 연결할 page_file.id 목록 */
-    @NotEmpty(message = "파일 ID 목록은 필수입니다.")
+  @NotEmpty(message = "파일 ID 목록은 필수입니다.")
     private List<Long> fileIds;
 
     /** 연결할 page_data.id */
-    @NotNull(message = "dataId는 필수입니다.")
+  @NotNull(message = "dataId는 필수입니다.")
     private Long dataId;
 }

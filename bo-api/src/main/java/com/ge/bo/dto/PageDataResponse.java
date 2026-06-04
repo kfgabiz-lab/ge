@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Map;
 
@@ -20,22 +20,22 @@ import java.util.Map;
 @Builder
 public class PageDataResponse {
 
-    private Long id;
-    private String templateSlug;
-    private Map<String, Object> dataJson;
+  private Long id;
+  private String templateSlug;
+  private Map<String, Object> dataJson;
     /** 다중 slug 저장 그룹 식별자 (UUID) — 단일 저장 시 null */
-    private String groupId;
-    private String createdBy;
-    private LocalDateTime createdAt;
-    private String updatedBy;
-    private LocalDateTime updatedAt;
+  private String groupId;
+  private String createdBy;
+  private OffsetDateTime createdAt;
+  private String updatedBy;
+  private OffsetDateTime updatedAt;
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     /** PageData 엔티티 → 응답 DTO 변환 */
-    public static PageDataResponse from(PageData entity) {
-        Map<String, Object> dataMap = parseDataJson(entity.getDataJson());
-        return PageDataResponse.builder()
+  public static PageDataResponse from(PageData entity) {
+    Map<String, Object> dataMap = parseDataJson(entity.getDataJson());
+    return PageDataResponse.builder()
                 .id(entity.getId())
                 .templateSlug(entity.getTemplateSlug())
                 .dataJson(dataMap)
@@ -45,15 +45,15 @@ public class PageDataResponse {
                 .updatedBy(entity.getUpdatedBy())
                 .updatedAt(entity.getUpdatedAt())
                 .build();
-    }
+  }
 
     /** JSON 문자열 → Map 파싱 (파싱 실패 시 빈 Map 반환) */
-    private static Map<String, Object> parseDataJson(String json) {
-        try {
-            return OBJECT_MAPPER.readValue(json, new TypeReference<>() {});
-        } catch (Exception e) {
-            log.warn("dataJson 파싱 실패: {}", e.getMessage());
-            return Collections.emptyMap();
-        }
+  private static Map<String, Object> parseDataJson(String json) {
+    try {
+      return OBJECT_MAPPER.readValue(json, new TypeReference<>() {});
+    } catch (Exception e) {
+      log.warn("dataJson 파싱 실패: {}", e.getMessage());
+      return Collections.emptyMap();
     }
+  }
 }

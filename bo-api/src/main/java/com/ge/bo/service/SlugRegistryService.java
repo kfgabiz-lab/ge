@@ -23,41 +23,41 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SlugRegistryService {
 
-    private final SlugRegistryRepository slugRegistryRepository;
+  private final SlugRegistryRepository slugRegistryRepository;
 
     /* ══════════ 목록 조회 (관리 페이지용 — 페이징) ══════════ */
 
-    @Transactional(readOnly = true)
+  @Transactional(readOnly = true)
     public Page<SlugRegistryResponse> getList(String type, String keyword, Pageable pageable) {
-        return slugRegistryRepository.findAll(buildSpec(type, keyword), pageable)
+    return slugRegistryRepository.findAll(buildSpec(type, keyword), pageable)
                 .map(SlugRegistryResponse::from);
-    }
+  }
 
     /* ══════════ 활성 목록 (위젯 빌더용 — 페이징 없음) ══════════ */
 
-    @Transactional(readOnly = true)
+  @Transactional(readOnly = true)
     public List<SlugRegistryResponse> getActiveList() {
-        return slugRegistryRepository.findAllByActiveTrueOrderBySlugAsc()
+    return slugRegistryRepository.findAllByActiveTrueOrderBySlugAsc()
                 .stream().map(SlugRegistryResponse::from).toList();
-    }
+  }
 
     /* ══════════ 단건 조회 ══════════ */
 
-    @Transactional(readOnly = true)
+  @Transactional(readOnly = true)
     public SlugRegistryResponse getOne(Long id) {
-        return SlugRegistryResponse.from(findOrThrow(id));
-    }
+    return SlugRegistryResponse.from(findOrThrow(id));
+  }
 
     /* ══════════ 등록 ══════════ */
 
-    @Transactional
+  @Transactional
     public SlugRegistryResponse create(SlugRegistryRequest request) {
         /* slug 중복 확인 */
-        if (slugRegistryRepository.existsBySlug(request.slug())) {
-            throw ErrorCode.SLUG_REGISTRY_SLUG_DUPLICATE.toException();
-        }
+    if (slugRegistryRepository.existsBySlug(request.slug())) {
+      throw ErrorCode.SLUG_REGISTRY_SLUG_DUPLICATE.toException();
+    }
 
-        SlugRegistry entity = SlugRegistry.builder()
+    SlugRegistry entity = SlugRegistry.builder()
                 .slug(request.slug().trim())
                 .name(request.name().trim())
                 .type(request.type().trim())
@@ -65,63 +65,65 @@ public class SlugRegistryService {
                 .active(request.active() != null ? request.active() : true)
                 .build();
 
-        return SlugRegistryResponse.from(slugRegistryRepository.save(entity));
-    }
+    return SlugRegistryResponse.from(slugRegistryRepository.save(entity));
+  }
 
     /* ══════════ 수정 (slug는 변경 불가) ══════════ */
 
-    @Transactional
+  @Transactional
     public SlugRegistryResponse update(Long id, SlugRegistryRequest request) {
-        SlugRegistry entity = findOrThrow(id);
+    SlugRegistry entity = findOrThrow(id);
 
         /* slug는 수정하지 않음 — 등록 시 확정된 값 유지 */
-        entity.setName(request.name().trim());
-        entity.setType(request.type().trim());
-        entity.setDescription(trimOrNull(request.description()));
-        if (request.active() != null) entity.setActive(request.active());
-
-        return SlugRegistryResponse.from(entity);
+    entity.setName(request.name().trim());
+    entity.setType(request.type().trim());
+    entity.setDescription(trimOrNull(request.description()));
+    if (request.active() != null) {
+      entity.setActive(request.active());
     }
+
+    return SlugRegistryResponse.from(entity);
+  }
 
     /* ══════════ 삭제 ══════════ */
 
-    @Transactional
+  @Transactional
     public void delete(Long id) {
-        slugRegistryRepository.delete(findOrThrow(id));
-    }
+    slugRegistryRepository.delete(findOrThrow(id));
+  }
 
     /* ══════════ 헬퍼 ══════════ */
 
-    private SlugRegistry findOrThrow(Long id) {
-        return slugRegistryRepository.findById(id)
+  private SlugRegistry findOrThrow(Long id) {
+    return slugRegistryRepository.findById(id)
                 .orElseThrow(ErrorCode.SLUG_REGISTRY_NOT_FOUND::toException);
-    }
+  }
 
-    private String trimOrNull(String value) {
-        return (value == null || value.trim().isEmpty()) ? null : value.trim();
-    }
+  private String trimOrNull(String value) {
+    return (value == null || value.trim().isEmpty()) ? null : value.trim();
+  }
 
     /**
      * 동적 필터 Specification 구성
      * - type: 정확히 일치
      * - keyword: slug 또는 name LIKE %keyword%
      */
-    private Specification<SlugRegistry> buildSpec(String type, String keyword) {
-        return (root, query, cb) -> {
-            List<Predicate> predicates = new ArrayList<>();
+  private Specification<SlugRegistry> buildSpec(String type, String keyword) {
+    return (root, query, cb) -> {
+      List<Predicate> predicates = new ArrayList<>();
 
-            if (type != null && !type.isBlank()) {
-                predicates.add(cb.equal(root.get("type"), type.trim()));
-            }
-            if (keyword != null && !keyword.isBlank()) {
-                String like = "%" + keyword.trim() + "%";
-                predicates.add(cb.or(
+      if (type != null && !type.isBlank()) {
+        predicates.add(cb.equal(root.get("type"), type.trim()));
+      }
+      if (keyword != null && !keyword.isBlank()) {
+        String like = "%" + keyword.trim() + "%";
+        predicates.add(cb.or(
                         cb.like(root.get("slug"), like),
                         cb.like(root.get("name"), like)
                 ));
-            }
+      }
 
-            return cb.and(predicates.toArray(new Predicate[0]));
-        };
-    }
+      return cb.and(predicates.toArray(new Predicate[0]));
+    };
+  }
 }

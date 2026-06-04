@@ -12,31 +12,31 @@ import com.ge.bo.repository.AdminRepository;
 @Component
 public class DataInitializer implements ApplicationRunner {
 
-    private final AdminRepository adminRepository;
-    private final PasswordEncoder passwordEncoder;
+  private final AdminRepository adminRepository;
+  private final PasswordEncoder passwordEncoder;
 
-    public DataInitializer(AdminRepository adminRepository,
+  public DataInitializer(AdminRepository adminRepository,
             @Lazy PasswordEncoder passwordEncoder) {
-        this.adminRepository = adminRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    this.adminRepository = adminRepository;
+    this.passwordEncoder = passwordEncoder;
+  }
 
-    @Override
+  @Override
     public void run(ApplicationArguments args) {
         /* 
         insertAdminIfAbsent("admin@ge.com", "시스템 관리자", "P@ssw0rd123", "SUPER_ADMIN");
         */
-    }
+  }
 
-    private void insertAdminIfAbsent(String email, String name, String password, String role) {
-        if (!adminRepository.existsByEmail(email)) {
-            adminRepository.save(AdminUser.builder()
+  private void insertAdminIfAbsent(String email, String name, String password, String role) {
+    if (!adminRepository.existsByEmail(email)) {
+      adminRepository.save(AdminUser.builder()
                     .email(email)
                     .name(name)
                     .passwordHash(passwordEncoder.encode(password))
                     .role(role)
                     .isActive(true)
                     .build());
-        }
     }
+  }
 }

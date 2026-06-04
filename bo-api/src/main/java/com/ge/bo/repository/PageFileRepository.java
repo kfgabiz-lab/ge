@@ -17,7 +17,7 @@ public interface PageFileRepository extends JpaRepository<PageFile, Long> {
      *
      * @param dataId page_data.id
      */
-    List<PageFile> findByDataId(Long dataId);
+  List<PageFile> findByDataId(Long dataId);
 
     /**
      * data_id + field_key로 특정 필드의 파일 목록 조회
@@ -25,5 +25,5 @@ public interface PageFileRepository extends JpaRepository<PageFile, Long> {
      * @param dataId   page_data.id
      * @param fieldKey 필드 키 (예: attachFiles)
      */
-    List<PageFile> findByDataIdAndFieldKey(Long dataId, String fieldKey);
+  List<PageFile> findByDataIdAndFieldKey(Long dataId, String fieldKey);
 }

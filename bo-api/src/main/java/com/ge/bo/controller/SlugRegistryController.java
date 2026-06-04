@@ -27,51 +27,51 @@ import java.util.List;
 @ApiLinkedEntity("SlugRegistry")
 public class SlugRegistryController {
 
-    private final SlugRegistryService slugRegistryService;
+  private final SlugRegistryService slugRegistryService;
 
     /** 목록 조회 (type/keyword 필터 + 페이징, 관리자 전용) */
-    @GetMapping
+  @GetMapping
     @PreAuthorize("@securityService.isSystemAdmin(authentication)")
     public ResponseEntity<Page<SlugRegistryResponse>> getList(
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String keyword,
             @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(slugRegistryService.getList(type, keyword, pageable));
-    }
+    return ResponseEntity.ok(slugRegistryService.getList(type, keyword, pageable));
+  }
 
     /** 활성 slug 전체 목록 (프론트 빌더 셀렉트다운용, 인증 사용자 접근 가능) */
-    @GetMapping("/active")
+  @GetMapping("/active")
     public ResponseEntity<List<SlugRegistryResponse>> getActiveList() {
-        return ResponseEntity.ok(slugRegistryService.getActiveList());
-    }
+    return ResponseEntity.ok(slugRegistryService.getActiveList());
+  }
 
     /** 단건 조회 */
-    @GetMapping("/{id}")
+  @GetMapping("/{id}")
     @PreAuthorize("@securityService.isSystemAdmin(authentication)")
     public ResponseEntity<SlugRegistryResponse> getOne(@PathVariable Long id) {
-        return ResponseEntity.ok(slugRegistryService.getOne(id));
-    }
+    return ResponseEntity.ok(slugRegistryService.getOne(id));
+  }
 
     /** 등록 */
-    @PostMapping
+  @PostMapping
     @PreAuthorize("@securityService.isSystemAdmin(authentication)")
     public ResponseEntity<SlugRegistryResponse> create(@Valid @RequestBody SlugRegistryRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(slugRegistryService.create(request));
-    }
+    return ResponseEntity.status(HttpStatus.CREATED).body(slugRegistryService.create(request));
+  }
 
     /** 수정 (slug는 서비스에서 변경 무시) */
-    @PutMapping("/{id}")
+  @PutMapping("/{id}")
     @PreAuthorize("@securityService.isSystemAdmin(authentication)")
     public ResponseEntity<SlugRegistryResponse> update(@PathVariable Long id,
             @Valid @RequestBody SlugRegistryRequest request) {
-        return ResponseEntity.ok(slugRegistryService.update(id, request));
-    }
+    return ResponseEntity.ok(slugRegistryService.update(id, request));
+  }
 
     /** 삭제 */
-    @DeleteMapping("/{id}")
+  @DeleteMapping("/{id}")
     @PreAuthorize("@securityService.isSystemAdmin(authentication)")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        slugRegistryService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
+    slugRegistryService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 }

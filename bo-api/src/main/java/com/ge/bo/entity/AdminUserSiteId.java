@@ -13,6 +13,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class AdminUserSiteId implements Serializable {
-    private Long adminUserId;
-    private Long siteId;
+  private Long adminUserId;
+  private Long siteId;
 }

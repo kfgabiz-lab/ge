@@ -24,15 +24,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TsxGenerationService {
 
-    private final TsxGenerationRepository tsxGenerationRepository;
+  private final TsxGenerationRepository tsxGenerationRepository;
 
     /**
      * 생성 이력 저장
      * [생성] 버튼 클릭 시 TSX 파일 생성과 동시에 호출
      */
-    @Transactional
+  @Transactional
     public TsxGenerationResponse save(TsxGenerationRequest request) {
-        TsxGeneration entity = TsxGeneration.builder()
+    TsxGeneration entity = TsxGeneration.builder()
                 .name(request.getName())
                 .folderName(request.getFolderName())
                 .fileName(request.getFileName())
@@ -41,8 +41,8 @@ public class TsxGenerationService {
                 .tsxCode(request.getTsxCode())
                 .build();
 
-        return TsxGenerationResponse.from(tsxGenerationRepository.save(entity));
-    }
+    return TsxGenerationResponse.from(tsxGenerationRepository.save(entity));
+  }
 
     /**
      * 이력 목록 조회 (created_at DESC 정렬 + 페이지네이션)
@@ -51,49 +51,49 @@ public class TsxGenerationService {
      * @param page         페이지 번호 (0-based)
      * @param size         페이지 크기
      */
-    @Transactional(readOnly = true)
+  @Transactional(readOnly = true)
     public TsxGenerationListResponse getList(String templateType, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+    Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        Page<TsxGeneration> result = (templateType != null && !templateType.isBlank())
+    Page<TsxGeneration> result = (templateType != null && !templateType.isBlank())
                 ? tsxGenerationRepository.findAllByTemplateType(templateType, pageable)
                 : tsxGenerationRepository.findAll(pageable);
 
-        List<TsxGenerationResponse> content = result.getContent()
+    List<TsxGenerationResponse> content = result.getContent()
                 .stream()
                 .map(TsxGenerationResponse::from)
                 .toList();
 
-        return TsxGenerationListResponse.builder()
+    return TsxGenerationListResponse.builder()
                 .content(content)
                 .totalElements(result.getTotalElements())
                 .totalPages(result.getTotalPages())
                 .page(page)
                 .size(size)
                 .build();
-    }
+  }
 
     /**
      * 단건 조회 — 빌더 재편집용 configJson 반환
      *
      * @param id 이력 PK
      */
-    @Transactional(readOnly = true)
+  @Transactional(readOnly = true)
     public TsxGenerationResponse getById(Long id) {
-        TsxGeneration entity = tsxGenerationRepository.findById(id)
+    TsxGeneration entity = tsxGenerationRepository.findById(id)
                 .orElseThrow(ErrorCode.TSX_GENERATION_NOT_FOUND::toException);
-        return TsxGenerationResponse.from(entity);
-    }
+    return TsxGenerationResponse.from(entity);
+  }
 
     /**
      * 이력 삭제
      *
      * @param id 이력 PK
      */
-    @Transactional
+  @Transactional
     public void delete(Long id) {
-        TsxGeneration entity = tsxGenerationRepository.findById(id)
+    TsxGeneration entity = tsxGenerationRepository.findById(id)
                 .orElseThrow(ErrorCode.TSX_GENERATION_NOT_FOUND::toException);
-        tsxGenerationRepository.delete(entity);
-    }
+    tsxGenerationRepository.delete(entity);
+  }
 }

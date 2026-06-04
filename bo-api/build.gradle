@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'checkstyle'
     id 'org.springframework.boot' version '3.5.0'
     id 'io.spring.dependency-management' version '1.1.7'
 }
@@ -44,6 +45,9 @@ dependencies {
     // Apache POI — xlsx/csv 엑셀 파일 생성
     implementation 'org.apache.poi:poi-ooxml:5.3.0'
 
+    // TOTP 2차 인증 (Google/Microsoft Authenticator 지원)
+    implementation 'dev.samstevens.totp:totp:1.7.1'
+
     // Lombok (코드 자동생성) — Java 25 지원 버전 고정
     compileOnly 'org.projectlombok:lombok:1.18.40'
     annotationProcessor 'org.projectlombok:lombok:1.18.40'
@@ -56,4 +60,11 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+checkstyle {
+    toolVersion = '10.21.0'
+    configFile = file('config/checkstyle/checkstyle.xml')
+    ignoreFailures = false
+    maxWarnings = 0
 }

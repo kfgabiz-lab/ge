@@ -10,7 +10,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 /**
  * 페이지 데이터 엔티티
@@ -30,40 +30,40 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class PageData {
 
-    @Id
+  @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /** 페이지 식별자 — page_template.slug와 논리적으로 동일한 값 */
-    @Column(name = "template_slug", nullable = false, length = 255)
+  @Column(name = "template_slug", nullable = false, length = 255)
     private String templateSlug;
 
     /** 폼 필드 데이터 JSON — { "name": "홍길동", "status": "active" } */
-    @Type(JsonStringType.class)
+  @Type(JsonStringType.class)
     @Column(name = "data_json", nullable = false, columnDefinition = "jsonb")
     private String dataJson;
 
     /** 소속 사이트 (NULL = 공통, 값 있으면 해당 사이트 전용) */
-    @Column(name = "site_id")
+  @Column(name = "site_id")
     private Long siteId;
 
     /** 다중 slug 저장 그룹 식별자 (UUID) — 단일 slug 저장 시 NULL */
-    @Column(name = "group_id", length = 36)
+  @Column(name = "group_id", length = 36)
     private String groupId;
 
-    @CreatedBy
+  @CreatedBy
     @Column(name = "created_by", updatable = false, length = 100)
     private String createdBy;
 
-    @CreatedDate
+  @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 
-    @LastModifiedBy
+  @LastModifiedBy
     @Column(name = "updated_by", length = 100)
     private String updatedBy;
 
-    @LastModifiedDate
+  @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt;
+    private OffsetDateTime updatedAt;
 }

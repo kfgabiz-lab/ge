@@ -13,17 +13,17 @@ import java.util.List;
 public class TsxGenerationListResponse {
 
     /** 현재 페이지 이력 목록 */
-    private List<TsxGenerationResponse> content;
+  private List<TsxGenerationResponse> content;
 
     /** 전체 이력 수 */
-    private long totalElements;
+  private long totalElements;
 
     /** 전체 페이지 수 */
-    private int totalPages;
+  private int totalPages;
 
     /** 현재 페이지 번호 (0-based) */
-    private int page;
+  private int page;
 
     /** 페이지 크기 */
-    private int size;
+  private int size;
 }

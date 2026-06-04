@@ -13,6 +13,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class RoleMenuId implements Serializable {
-    private Long roleId;
-    private Long menuId;
+  private Long roleId;
+  private Long menuId;
 }

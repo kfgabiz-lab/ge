@@ -13,23 +13,23 @@ import java.util.List;
 public class PageDataListResponse {
 
     /** 현재 페이지 데이터 목록 */
-    private List<PageDataResponse> content;
+  private List<PageDataResponse> content;
 
     /** 전체 데이터 수 */
-    private long totalElements;
+  private long totalElements;
 
     /** 전체 페이지 수 */
-    private int totalPages;
+  private int totalPages;
 
     /** 현재 페이지 번호 (0-based) */
-    private int page;
+  private int page;
 
     /** 페이지 크기 */
-    private int size;
+  private int size;
 
     /** 마지막 페이지 여부 */
-    private boolean last;
+  private boolean last;
 
     /** 첫 번째 페이지 여부 */
-    private boolean first;
+  private boolean first;
 }

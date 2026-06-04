@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.Objects;
 
 /**
  * 페이지 데이터 비즈니스 로직
@@ -30,15 +29,15 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class PageDataService {
 
-    private final PageDataRepository pageDataRepository;
-    private final ObjectMapper objectMapper;
-    private final PageFileService pageFileService;
+  private final PageDataRepository pageDataRepository;
+  private final ObjectMapper objectMapper;
+  private final PageFileService pageFileService;
 
-    @PersistenceContext
+  @PersistenceContext
     private EntityManager entityManager;
 
     /** 예약 파라미터 — 검색 조건에서 제외 */
-    private static final Set<String> RESERVED_PARAMS = Set.of("page", "size", "sort");
+  private static final Set<String> RESERVED_PARAMS = Set.of("page", "size", "sort");
 
     /**
      * 목록 조회 — 동적 JSONB 검색 + 페이지네이션
@@ -48,69 +47,74 @@ public class PageDataService {
      * @param page      페이지 번호 (0-based)
      * @param size      페이지 크기
      */
-    @Transactional(readOnly = true)
+  @Transactional(readOnly = true)
     public PageDataListResponse search(String slug, Map<String, String> allParams, int page, int size, Long siteId) {
         // 검색 조건 파라미터 추출 (예약어 제거 + 빈 값 제거)
-        Map<String, String> searchParams = new LinkedHashMap<>();
-        allParams.forEach((key, value) -> {
-            if (!RESERVED_PARAMS.contains(key) && value != null && !value.isBlank()) {
-                searchParams.put(key, value);
-            }
-        });
+    Map<String, String> searchParams = new LinkedHashMap<>();
+    allParams.forEach((key, value) -> {
+      if (!RESERVED_PARAMS.contains(key) && value != null && !value.isBlank()) {
+        searchParams.put(key, value);
+      }
+    });
 
         // WHERE 절 동적 생성
-        StringBuilder whereClause = new StringBuilder("WHERE template_slug = :slug");
-        if (siteId != null) {
+    StringBuilder whereClause = new StringBuilder("WHERE template_slug = :slug");
+    if (siteId != null) {
             // 해당 사이트 데이터 + 공통(NULL) 데이터 함께 조회
-            whereClause.append(" AND (site_id = :siteId OR site_id IS NULL)");
-        }
-        appendWhereConditions(whereClause, searchParams);
+      whereClause.append(" AND (site_id = :siteId OR site_id IS NULL)");
+    }
+    appendWhereConditions(whereClause, searchParams);
 
         // 전체 건수 조회
-        String countSql = "SELECT COUNT(*) FROM page_data " + whereClause;
-        Query countQuery = entityManager.createNativeQuery(countSql);
-        countQuery.setParameter("slug", slug);
-        if (siteId != null) countQuery.setParameter("siteId", siteId);
-        bindSearchParams(countQuery, searchParams);
-        long totalElements = ((Number) countQuery.getSingleResult()).longValue();
+    String countSql = "SELECT COUNT(*) FROM page_data " + whereClause;
+    Query countQuery = entityManager.createNativeQuery(countSql);
+    countQuery.setParameter("slug", slug);
+    if (siteId != null) {
+      countQuery.setParameter("siteId", siteId);
+    }
+    bindSearchParams(countQuery, searchParams);
+    long totalElements = ((Number) countQuery.getSingleResult()).longValue();
 
-        if (totalElements == 0) {
-            return buildEmptyResponse(page, size);
-        }
+    if (totalElements == 0) {
+      return buildEmptyResponse(page, size);
+    }
 
         // 정렬 조건 파싱 — "컬럼키,asc|desc" 형식, SQL Injection 방지
-        String orderBy = " ORDER BY created_at DESC"; // 기본값
-        String sortParam = allParams.get("sort");
-        if (sortParam != null && !sortParam.isBlank()) {
-            String[] parts = sortParam.split(",", 2);
-            String sortCol = parts[0].trim();
-            String sortDir = parts.length > 1 && "desc".equalsIgnoreCase(parts[1].trim()) ? "DESC" : "ASC";
+    String orderBy = " ORDER BY created_at DESC"; // 기본값
+    String sortParam = allParams.get("sort");
+    if (sortParam != null && !sortParam.isBlank()) {
+      String[] parts = sortParam.split(",", 2);
+      String sortCol = parts[0].trim();
+      String sortDir = parts.length > 1 && "desc".equalsIgnoreCase(parts[1].trim()) ? "DESC" : "ASC";
             // 컬럼키 유효성 검증 (영문자/숫자/언더스코어만 허용)
-            if (sortCol.matches("[a-zA-Z0-9_]+")) {
-                orderBy = " ORDER BY data_json->>'" + sortCol + "' " + sortDir;
-            }
-        }
+      if (sortCol.matches("[a-zA-Z0-9_]+")) {
+        orderBy = " ORDER BY data_json->>'" + sortCol + "' " + sortDir;
+      }
+    }
 
         // 데이터 조회
-        String dataSql = "SELECT id, template_slug, data_json::text, group_id, created_by, created_at, updated_by, updated_at "
+    String dataSql = "SELECT id, template_slug, data_json::text, group_id,"
+                + " created_by, created_at, updated_by, updated_at "
                 + "FROM page_data " + whereClause
                 + orderBy
                 + " LIMIT :size OFFSET :offset";
-        Query dataQuery = entityManager.createNativeQuery(dataSql);
-        dataQuery.setParameter("slug", slug);
-        dataQuery.setParameter("size", size);
-        dataQuery.setParameter("offset", (long) page * size);
-        if (siteId != null) dataQuery.setParameter("siteId", siteId);
-        bindSearchParams(dataQuery, searchParams);
+    Query dataQuery = entityManager.createNativeQuery(dataSql);
+    dataQuery.setParameter("slug", slug);
+    dataQuery.setParameter("size", size);
+    dataQuery.setParameter("offset", (long) page * size);
+    if (siteId != null) {
+      dataQuery.setParameter("siteId", siteId);
+    }
+    bindSearchParams(dataQuery, searchParams);
 
-        @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
         List<Object[]> rows = dataQuery.getResultList();
-        List<PageDataResponse> content = rows.stream()
+    List<PageDataResponse> content = rows.stream()
                 .map(this::mapRowToResponse)
                 .toList();
 
-        int totalPages = (int) Math.ceil((double) totalElements / size);
-        return PageDataListResponse.builder()
+    int totalPages = (int) Math.ceil((double) totalElements / size);
+    return PageDataListResponse.builder()
                 .content(content)
                 .totalElements(totalElements)
                 .totalPages(totalPages)
@@ -119,7 +123,7 @@ public class PageDataService {
                 .last((page + 1) >= totalPages)
                 .first(page == 0)
                 .build();
-    }
+  }
 
     /**
      * 단건 조회
@@ -127,12 +131,12 @@ public class PageDataService {
      * @param slug 페이지 식별자
      * @param id   데이터 PK
      */
-    @Transactional(readOnly = true)
+  @Transactional(readOnly = true)
     public PageDataResponse getById(String slug, Long id) {
-        PageData pageData = pageDataRepository.findByIdAndTemplateSlug(id, slug)
+    PageData pageData = pageDataRepository.findByIdAndTemplateSlug(id, slug)
                 .orElseThrow(ErrorCode.PAGE_DATA_NOT_FOUND::toException);
-        return PageDataResponse.from(pageData);
-    }
+    return PageDataResponse.from(pageData);
+  }
 
     /**
      * 등록 — 네이티브 쿼리로 직접 INSERT하여 ::jsonb 캐스팅 적용
@@ -141,45 +145,49 @@ public class PageDataService {
      * @param slug    페이지 식별자
      * @param request 등록 요청 (dataJson Map, pkKeys 목록)
      */
-    @Transactional
+  @Transactional
     public PageDataResponse create(String slug, PageDataRequest request, Long siteId) {
         // PK 중복 체크 — pkKeys가 있을 때만 수행
-        if (request.getPkKeys() != null && !request.getPkKeys().isEmpty()) {
-            checkPkDuplicate(slug, request.getPkKeys(), request.getDataJson(), null);
-        }
+    if (request.getPkKeys() != null && !request.getPkKeys().isEmpty()) {
+      checkPkDuplicate(slug, request.getPkKeys(), request.getDataJson(), null);
+    }
 
-        String dataJsonStr = serializeDataJson(request.getDataJson());
-        String currentUser = getCurrentUser();
+    String dataJsonStr = serializeDataJson(request.getDataJson());
+    String currentUser = getCurrentUser();
         // group_id 있으면 함께 저장 (다중 slug 저장 그룹), 없으면 기존 방식
-        final Query insertQuery;
-        if (request.getGroupId() != null && !request.getGroupId().isBlank()) {
-            insertQuery = entityManager.createNativeQuery(
-                    "INSERT INTO page_data (template_slug, data_json, site_id, group_id, created_by, created_at, updated_by, updated_at) " +
-                            "VALUES (:slug, CAST(:dataJson AS jsonb), :siteId, :groupId, :createdBy, NOW(), :updatedBy, NOW()) RETURNING id");
-            insertQuery.setParameter("groupId", request.getGroupId());
-        } else {
-            insertQuery = entityManager.createNativeQuery(
-                    "INSERT INTO page_data (template_slug, data_json, site_id, created_by, created_at, updated_by, updated_at) " +
-                            "VALUES (:slug, CAST(:dataJson AS jsonb), :siteId, :createdBy, NOW(), :updatedBy, NOW()) RETURNING id");
-        }
-        insertQuery.setParameter("slug", slug);
-        insertQuery.setParameter("dataJson", dataJsonStr);
-        insertQuery.setParameter("siteId", siteId);
-        insertQuery.setParameter("createdBy", currentUser);
-        insertQuery.setParameter("updatedBy", currentUser);
-        Long newId = ((Number) insertQuery.getSingleResult()).longValue();
+    final Query insertQuery;
+    if (request.getGroupId() != null && !request.getGroupId().isBlank()) {
+      insertQuery = entityManager.createNativeQuery(
+          "INSERT INTO page_data"
+          + " (template_slug, data_json, site_id, group_id, created_by, created_at, updated_by, updated_at)"
+          + " VALUES (:slug, CAST(:dataJson AS jsonb), :siteId, :groupId, :createdBy, NOW(), :updatedBy, NOW())"
+          + " RETURNING id");
+      insertQuery.setParameter("groupId", request.getGroupId());
+    } else {
+      insertQuery = entityManager.createNativeQuery(
+          "INSERT INTO page_data"
+          + " (template_slug, data_json, site_id, created_by, created_at, updated_by, updated_at)"
+          + " VALUES (:slug, CAST(:dataJson AS jsonb), :siteId, :createdBy, NOW(), :updatedBy, NOW())"
+          + " RETURNING id");
+    }
+    insertQuery.setParameter("slug", slug);
+    insertQuery.setParameter("dataJson", dataJsonStr);
+    insertQuery.setParameter("siteId", siteId);
+    insertQuery.setParameter("createdBy", currentUser);
+    insertQuery.setParameter("updatedBy", currentUser);
+    Long newId = ((Number) insertQuery.getSingleResult()).longValue();
 
         // 생성된 id를 dataJson에 자동 주입 — 카테고리 계층 등 id 참조가 필요한 모든 곳에서 활용
-        Map<String, Object> dataJsonWithId = new LinkedHashMap<>(request.getDataJson());
-        dataJsonWithId.put("id", newId);
-        Query updateIdQuery = entityManager.createNativeQuery(
+    Map<String, Object> dataJsonWithId = new LinkedHashMap<>(request.getDataJson());
+    dataJsonWithId.put("id", newId);
+    Query updateIdQuery = entityManager.createNativeQuery(
                 "UPDATE page_data SET data_json = CAST(:dataJson AS jsonb) WHERE id = :id");
-        updateIdQuery.setParameter("dataJson", serializeDataJson(dataJsonWithId));
-        updateIdQuery.setParameter("id", newId);
-        updateIdQuery.executeUpdate();
+    updateIdQuery.setParameter("dataJson", serializeDataJson(dataJsonWithId));
+    updateIdQuery.setParameter("id", newId);
+    updateIdQuery.executeUpdate();
 
-        return getById(slug, newId);
-    }
+    return getById(slug, newId);
+  }
 
     /**
      * 수정 — 네이티브 쿼리로 직접 UPDATE하여 ::jsonb 캐스팅 적용
@@ -188,28 +196,29 @@ public class PageDataService {
      * @param id      데이터 PK
      * @param request 수정 요청 (dataJson Map)
      */
-    @Transactional
+  @Transactional
     public PageDataResponse update(String slug, Long id, PageDataRequest request) {
         // 존재 여부 확인 (없으면 404)
-        pageDataRepository.findByIdAndTemplateSlug(id, slug)
+    pageDataRepository.findByIdAndTemplateSlug(id, slug)
                 .orElseThrow(ErrorCode.PAGE_DATA_NOT_FOUND::toException);
         // 수정 시에도 id 보장 — dataJson에 id 항상 포함
-        Map<String, Object> dataJsonWithId = new LinkedHashMap<>(request.getDataJson());
-        dataJsonWithId.put("id", id);
-        String dataJsonStr = serializeDataJson(dataJsonWithId);
-        String currentUser = getCurrentUser();
+    Map<String, Object> dataJsonWithId = new LinkedHashMap<>(request.getDataJson());
+    dataJsonWithId.put("id", id);
+    String dataJsonStr = serializeDataJson(dataJsonWithId);
+    String currentUser = getCurrentUser();
         // JPA save() 대신 네이티브 쿼리 사용: String → JSONB 타입 명시적 캐스팅
         // 수정 시 updated_by/updated_at만 변경, created_by/created_at은 유지
-        Query updateQuery = entityManager.createNativeQuery(
-                "UPDATE page_data SET data_json = CAST(:dataJson AS jsonb), updated_by = :updatedBy, updated_at = NOW() " +
-                        "WHERE id = :id AND template_slug = :slug");
-        updateQuery.setParameter("dataJson", dataJsonStr);
-        updateQuery.setParameter("updatedBy", currentUser);
-        updateQuery.setParameter("id", id);
-        updateQuery.setParameter("slug", slug);
-        updateQuery.executeUpdate();
-        return getById(slug, id);
-    }
+    Query updateQuery = entityManager.createNativeQuery(
+        "UPDATE page_data"
+        + " SET data_json = CAST(:dataJson AS jsonb), updated_by = :updatedBy, updated_at = NOW()"
+        + " WHERE id = :id AND template_slug = :slug");
+    updateQuery.setParameter("dataJson", dataJsonStr);
+    updateQuery.setParameter("updatedBy", currentUser);
+    updateQuery.setParameter("id", id);
+    updateQuery.setParameter("slug", slug);
+    updateQuery.executeUpdate();
+    return getById(slug, id);
+  }
 
     /**
      * 삭제
@@ -218,16 +227,16 @@ public class PageDataService {
      * @param slug 페이지 식별자
      * @param id   데이터 PK
      */
-    @Transactional
+  @Transactional
     public void delete(String slug, Long id) {
-        pageDataRepository.findByIdAndTemplateSlug(id, slug)
+    pageDataRepository.findByIdAndTemplateSlug(id, slug)
                 .orElseThrow(ErrorCode.PAGE_DATA_NOT_FOUND::toException);
 
         // 연관 파일 일괄 삭제 (파일시스템 + DB)
-        pageFileService.deleteByDataId(id);
+    pageFileService.deleteByDataId(id);
 
-        pageDataRepository.deleteByIdAndTemplateSlug(id, slug);
-    }
+    pageDataRepository.deleteByIdAndTemplateSlug(id, slug);
+  }
 
     /**
      * PK 기반 삭제 — pkKeys + dataJson 값으로 레코드 id를 찾아 기존 delete() 재사용
@@ -237,46 +246,46 @@ public class PageDataService {
      * @param pkKeys   PK 필드 키 목록
      * @param dataJson 폼 입력 값 맵
      */
-    @Transactional
+  @Transactional
     public void deleteByPk(String slug, List<String> pkKeys, Map<String, Object> dataJson) {
         // pkKeys 필수 검증
-        if (pkKeys == null || pkKeys.isEmpty()) {
-            throw ErrorCode.PAGE_DATA_PK_REQUIRED.toException();
-        }
+    if (pkKeys == null || pkKeys.isEmpty()) {
+      throw ErrorCode.PAGE_DATA_PK_REQUIRED.toException();
+    }
 
         // 유효한 키만 필터링 (SQL Injection 방지)
-        List<String> validKeys = pkKeys.stream()
+    List<String> validKeys = pkKeys.stream()
                 .filter(k -> k != null && k.matches("[a-zA-Z0-9_]+"))
                 .toList();
-        if (validKeys.isEmpty()) {
-            throw ErrorCode.PAGE_DATA_PK_REQUIRED.toException();
-        }
+    if (validKeys.isEmpty()) {
+      throw ErrorCode.PAGE_DATA_PK_REQUIRED.toException();
+    }
 
         // pkKeys + dataJson 값으로 id 조회
-        StringBuilder sql = new StringBuilder(
+    StringBuilder sql = new StringBuilder(
                 "SELECT id FROM page_data WHERE template_slug = :slug");
-        for (String key : validKeys) {
-            sql.append(" AND data_json->>'").append(key).append("' = :pk_").append(key);
-        }
-        sql.append(" LIMIT 1");
-
-        Query query = entityManager.createNativeQuery(sql.toString());
-        query.setParameter("slug", slug);
-        for (String key : validKeys) {
-            Object val = dataJson.get(key);
-            query.setParameter("pk_" + key, val != null ? val.toString() : "");
-        }
-
-        @SuppressWarnings("unchecked")
-        List<Object> results = query.getResultList();
-        if (results.isEmpty()) {
-            throw ErrorCode.PAGE_DATA_NOT_FOUND.toException();
-        }
-
-        Long id = ((Number) results.get(0)).longValue();
-        // 기존 delete() 재사용 — 연관 파일 정리 포함
-        delete(slug, id);
+    for (String key : validKeys) {
+      sql.append(" AND data_json->>'").append(key).append("' = :pk_").append(key);
     }
+    sql.append(" LIMIT 1");
+
+    Query query = entityManager.createNativeQuery(sql.toString());
+    query.setParameter("slug", slug);
+    for (String key : validKeys) {
+      Object val = dataJson.get(key);
+      query.setParameter("pk_" + key, val != null ? val.toString() : "");
+    }
+
+    @SuppressWarnings("unchecked")
+        List<Object> results = query.getResultList();
+    if (results.isEmpty()) {
+      throw ErrorCode.PAGE_DATA_NOT_FOUND.toException();
+    }
+
+    Long id = ((Number) results.get(0)).longValue();
+        // 기존 delete() 재사용 — 연관 파일 정리 포함
+    delete(slug, id);
+  }
 
     /**
      * 전체 데이터 조회 — LIMIT/OFFSET 없이 전체 조회 (엑셀 다운로드 전용)
@@ -286,52 +295,52 @@ public class PageDataService {
      * @param allParams 검색 조건 (export/format/headers/keys 등 예약어는 제외됨)
      * @return 전체 데이터 목록 (Map<키, 값> 형태)
      */
-    @Transactional(readOnly = true)
+  @Transactional(readOnly = true)
     public List<Map<String, Object>> exportAll(String slug, Map<String, String> allParams) {
         // 예약 파라미터 확장 (export 전용 파라미터 추가)
-        Set<String> reservedForExport = new HashSet<>(RESERVED_PARAMS);
-        reservedForExport.addAll(Set.of("format", "headers", "keys"));
+    Set<String> reservedForExport = new HashSet<>(RESERVED_PARAMS);
+    reservedForExport.addAll(Set.of("format", "headers", "keys"));
 
         // 검색 조건 파라미터 추출
-        Map<String, String> searchParams = new LinkedHashMap<>();
-        allParams.forEach((key, value) -> {
-            if (!reservedForExport.contains(key) && value != null && !value.isBlank()) {
-                searchParams.put(key, value);
-            }
-        });
+    Map<String, String> searchParams = new LinkedHashMap<>();
+    allParams.forEach((key, value) -> {
+      if (!reservedForExport.contains(key) && value != null && !value.isBlank()) {
+        searchParams.put(key, value);
+      }
+    });
 
         // WHERE 절 동적 생성 (search()와 동일 로직)
-        StringBuilder whereClause = new StringBuilder("WHERE template_slug = :slug");
-        appendWhereConditions(whereClause, searchParams);
+    StringBuilder whereClause = new StringBuilder("WHERE template_slug = :slug");
+    appendWhereConditions(whereClause, searchParams);
 
         // LIMIT/OFFSET 없이 전체 조회
-        String dataSql = "SELECT id, template_slug, data_json::text, created_by, created_at, updated_by, updated_at "
+    String dataSql = "SELECT id, template_slug, data_json::text, created_by, created_at, updated_by, updated_at "
                 + "FROM page_data " + whereClause
                 + " ORDER BY created_at DESC";
-        Query dataQuery = entityManager.createNativeQuery(dataSql);
-        dataQuery.setParameter("slug", slug);
-        bindSearchParams(dataQuery, searchParams);
+    Query dataQuery = entityManager.createNativeQuery(dataSql);
+    dataQuery.setParameter("slug", slug);
+    bindSearchParams(dataQuery, searchParams);
 
-        @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
         List<Object[]> rows = dataQuery.getResultList();
 
         // Map<키, 값> 형태로 변환 (ExcelService에서 keys 기준으로 값 추출)
-        return rows.stream()
+    return rows.stream()
                 .map(row -> {
-                    Map<String, Object> dataMap = new LinkedHashMap<>();
-                    try {
-                        if (row[2] != null) {
-                            dataMap = objectMapper.readValue(row[2].toString(),
-                                    new com.fasterxml.jackson.core.type.TypeReference<>() {
-                                    });
-                        }
-                    } catch (Exception e) {
-                        log.warn("exportAll dataJson 파싱 실패: {}", e.getMessage());
+                  Map<String, Object> dataMap = new LinkedHashMap<>();
+                  try {
+                    if (row[2] != null) {
+                      dataMap = objectMapper.readValue(row[2].toString(),
+                        new com.fasterxml.jackson.core.type.TypeReference<>() {
+                        });
                     }
-                    return dataMap;
+                  } catch (Exception e) {
+                    log.warn("exportAll dataJson 파싱 실패: {}", e.getMessage());
+                  }
+                  return dataMap;
                 })
                 .toList();
-    }
+  }
 
     /**
      * group_id + templateSlug 조합 단건 조회
@@ -340,12 +349,12 @@ public class PageDataService {
      * @param groupId      그룹 식별자 (UUID)
      * @param slug         페이지 식별자
      */
-    @Transactional(readOnly = true)
+  @Transactional(readOnly = true)
     public PageDataResponse findByGroupIdAndSlug(String groupId, String slug) {
-        PageData pageData = pageDataRepository.findByGroupIdAndTemplateSlug(groupId, slug)
+    PageData pageData = pageDataRepository.findByGroupIdAndTemplateSlug(groupId, slug)
                 .orElseThrow(ErrorCode.PAGE_DATA_NOT_FOUND::toException);
-        return PageDataResponse.from(pageData);
-    }
+    return PageDataResponse.from(pageData);
+  }
 
     /**
      * group_id 기반 일괄 삭제
@@ -353,15 +362,17 @@ public class PageDataService {
      *
      * @param groupId 그룹 식별자 (UUID)
      */
-    @Transactional
+  @Transactional
     public void deleteByGroupId(String groupId) {
-        List<PageData> list = pageDataRepository.findByGroupId(groupId);
-        if (list.isEmpty()) throw ErrorCode.PAGE_DATA_NOT_FOUND.toException();
-        for (PageData pd : list) {
-            pageFileService.deleteByDataId(pd.getId());
-            pageDataRepository.delete(pd);
-        }
+    List<PageData> list = pageDataRepository.findByGroupId(groupId);
+    if (list.isEmpty()) {
+      throw ErrorCode.PAGE_DATA_NOT_FOUND.toException();
     }
+    for (PageData pd : list) {
+      pageFileService.deleteByDataId(pd.getId());
+      pageDataRepository.delete(pd);
+    }
+  }
 
     // ── private 헬퍼 ──────────────────────────────────────────
 
@@ -373,99 +384,103 @@ public class PageDataService {
      * @param dataJson  저장할 데이터 맵
      * @param excludeId 수정 시 자신 제외용 ID (등록 시 null)
      */
-    private void checkPkDuplicate(String slug, List<String> pkKeys,
+  private void checkPkDuplicate(String slug, List<String> pkKeys,
                                    Map<String, Object> dataJson, Long excludeId) {
         // 유효한 키만 필터링 (SQL Injection 방지)
-        List<String> validKeys = pkKeys.stream()
+    List<String> validKeys = pkKeys.stream()
                 .filter(k -> k != null && k.matches("[a-zA-Z0-9_]+"))
                 .toList();
-        if (validKeys.isEmpty()) return;
+    if (validKeys.isEmpty()) {
+      return;
+    }
 
         // WHERE 절 동적 생성
-        StringBuilder sql = new StringBuilder(
+    StringBuilder sql = new StringBuilder(
                 "SELECT COUNT(*) FROM page_data WHERE template_slug = :slug");
-        for (String key : validKeys) {
-            sql.append(" AND data_json->>'").append(key).append("' = :pk_").append(key);
-        }
-        if (excludeId != null) {
-            sql.append(" AND id != :excludeId");
-        }
-
-        Query query = entityManager.createNativeQuery(sql.toString());
-        query.setParameter("slug", slug);
-        for (String key : validKeys) {
-            Object val = dataJson.get(key);
-            query.setParameter("pk_" + key, val != null ? val.toString() : "");
-        }
-        if (excludeId != null) {
-            query.setParameter("excludeId", excludeId);
-        }
-
-        long count = ((Number) query.getSingleResult()).longValue();
-        if (count > 0) {
-            throw ErrorCode.PAGE_DATA_PK_DUPLICATE.toException();
-        }
+    for (String key : validKeys) {
+      sql.append(" AND data_json->>'").append(key).append("' = :pk_").append(key);
     }
+    if (excludeId != null) {
+      sql.append(" AND id != :excludeId");
+    }
+
+    Query query = entityManager.createNativeQuery(sql.toString());
+    query.setParameter("slug", slug);
+    for (String key : validKeys) {
+      Object val = dataJson.get(key);
+      query.setParameter("pk_" + key, val != null ? val.toString() : "");
+    }
+    if (excludeId != null) {
+      query.setParameter("excludeId", excludeId);
+    }
+
+    long count = ((Number) query.getSingleResult()).longValue();
+    if (count > 0) {
+      throw ErrorCode.PAGE_DATA_PK_DUPLICATE.toException();
+    }
+  }
 
     /** 현재 로그인 사용자명 반환 (비로그인 시 null) */
-    private String getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
-            return null;
-        }
-        return auth.getName();
+  private String getCurrentUser() {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+      return null;
     }
+    return auth.getName();
+  }
 
     /** Map → JSON 문자열 직렬화 */
-    private String serializeDataJson(Map<String, Object> dataMap) {
-        try {
-            return objectMapper.writeValueAsString(dataMap);
-        } catch (Exception e) {
-            log.error("dataJson 직렬화 실패: {}", e.getMessage());
-            return "{}";
-        }
+  private String serializeDataJson(Map<String, Object> dataMap) {
+    try {
+      return objectMapper.writeValueAsString(dataMap);
+    } catch (Exception e) {
+      log.error("dataJson 직렬화 실패: {}", e.getMessage());
+      return "{}";
     }
+  }
 
     /**
      * 네이티브 쿼리 결과 행(Object[]) → PageDataResponse 변환
      * 컬럼 순서: id, template_slug, data_json::text, group_id, created_by,
      * created_at, updated_by, updated_at
      */
-    private PageDataResponse mapRowToResponse(Object[] row) {
-        Map<String, Object> dataMap = Collections.emptyMap();
-        try {
-            if (row[2] != null) {
-                dataMap = objectMapper.readValue(row[2].toString(),
-                        new com.fasterxml.jackson.core.type.TypeReference<>() {
-                        });
-            }
-        } catch (Exception e) {
-            log.warn("dataJson 파싱 실패: {}", e.getMessage());
-        }
+  private PageDataResponse mapRowToResponse(Object[] row) {
+    Map<String, Object> dataMap = Collections.emptyMap();
+    try {
+      if (row[2] != null) {
+        dataMap = objectMapper.readValue(row[2].toString(),
+          new com.fasterxml.jackson.core.type.TypeReference<>() {
+          });
+      }
+    } catch (Exception e) {
+      log.warn("dataJson 파싱 실패: {}", e.getMessage());
+    }
 
-        return PageDataResponse.builder()
+    return PageDataResponse.builder()
                 .id(((Number) row[0]).longValue())
                 .templateSlug((String) row[1])
                 .dataJson(dataMap)
                 .groupId((String) row[3])
                 .createdBy((String) row[4])
-                .createdAt(row[5] != null ? toLocalDateTime(row[5]) : null)
+                .createdAt(row[5] != null ? toOffsetDateTime(row[5]) : null)
                 .updatedBy((String) row[6])
-                .updatedAt(row[7] != null ? toLocalDateTime(row[7]) : null)
+                .updatedAt(row[7] != null ? toOffsetDateTime(row[7]) : null)
                 .build();
-    }
+  }
 
     /**
      * 네이티브 쿼리 결과의 타임스탬프 변환
-     * Hibernate 6에서 TIMESTAMP는 LocalDateTime 또는 java.sql.Timestamp로 반환될 수 있음
+     * Hibernate 6에서 TIMESTAMPTZ는 OffsetDateTime 또는 java.sql.Timestamp로 반환될 수 있음
      */
-    private java.time.LocalDateTime toLocalDateTime(Object obj) {
-        if (obj instanceof java.time.LocalDateTime ldt)
-            return ldt;
-        if (obj instanceof java.sql.Timestamp ts)
-            return ts.toLocalDateTime();
-        return null;
+  private java.time.OffsetDateTime toOffsetDateTime(Object obj) {
+    if (obj instanceof java.time.OffsetDateTime odt) {
+      return odt;
     }
+    if (obj instanceof java.sql.Timestamp ts) {
+      return ts.toInstant().atOffset(java.time.ZoneOffset.UTC);
+    }
+    return null;
+  }
 
     /**
      * WHERE 절에 검색 조건 추가
@@ -474,40 +489,44 @@ public class PageDataService {
      * - 일반 값: ILIKE 부분 문자열 검색
      * SQL Injection 방지: 키(또는 eq_ 제거 후 fieldKey)는 영문자/숫자/언더스코어만 허용
      */
-    private void appendWhereConditions(StringBuilder whereClause, Map<String, String> searchParams) {
-        searchParams.forEach((key, value) -> {
+  private void appendWhereConditions(StringBuilder whereClause, Map<String, String> searchParams) {
+    searchParams.forEach((key, value) -> {
             // eq_ 접두사 → 정확 일치 조건 (최상위 + contentKey 1단계 중첩 동시 검색)
-            if (key.startsWith("eq_")) {
-                String fieldKey = key.substring(3); // "eq_" 제거
-                if (!fieldKey.matches("[a-zA-Z0-9_]+")) return; // SQL Injection 방지
-                whereClause.append(" AND (data_json->>'").append(fieldKey).append("' = :p_").append(key)
+      if (key.startsWith("eq_")) {
+        String fieldKey = key.substring(3); // "eq_" 제거
+        if (!fieldKey.matches("[a-zA-Z0-9_]+")) {
+          return; // SQL Injection 방지
+        }
+        whereClause.append(" AND (data_json->>'").append(fieldKey).append("' = :p_").append(key)
                         .append(" OR EXISTS (SELECT 1 FROM jsonb_each(data_json) kv")
                         .append(" WHERE jsonb_typeof(kv.value) = 'object'")
                         .append(" AND kv.value->>'").append(fieldKey).append("' = :p_").append(key).append("))");
-                return;
-            }
+        return;
+      }
             // 일반 파라미터
-            if (!key.matches("[a-zA-Z0-9_]+")) return; // SQL Injection 방지
-            if (value.contains("~")) {
+      if (!key.matches("[a-zA-Z0-9_]+")) {
+        return; // SQL Injection 방지
+      }
+      if (value.contains("~")) {
                 // range 검색
-                String[] parts = value.split("~", 2);
-                String start = parts[0].trim();
-                String end = parts.length > 1 ? parts[1].trim() : "";
-                if (!start.isEmpty()) {
-                    whereClause.append(" AND data_json->>'").append(key).append("' >= :p_").append(key).append("_start");
-                }
-                if (!end.isEmpty()) {
-                    whereClause.append(" AND data_json->>'").append(key).append("' <= :p_").append(key).append("_end");
-                }
-            } else {
+        String[] parts = value.split("~", 2);
+        String start = parts[0].trim();
+        String end = parts.length > 1 ? parts[1].trim() : "";
+        if (!start.isEmpty()) {
+          whereClause.append(" AND data_json->>'").append(key).append("' >= :p_").append(key).append("_start");
+        }
+        if (!end.isEmpty()) {
+          whereClause.append(" AND data_json->>'").append(key).append("' <= :p_").append(key).append("_end");
+        }
+      } else {
                 // ILIKE 부분 일치 (최상위 + contentKey 1단계 중첩 동시 검색)
-                whereClause.append(" AND (data_json->>'").append(key).append("' ILIKE :p_").append(key)
+        whereClause.append(" AND (data_json->>'").append(key).append("' ILIKE :p_").append(key)
                         .append(" OR EXISTS (SELECT 1 FROM jsonb_each(data_json) kv")
                         .append(" WHERE jsonb_typeof(kv.value) = 'object'")
                         .append(" AND kv.value->>'").append(key).append("' ILIKE :p_").append(key).append("))");
-            }
-        });
-    }
+      }
+    });
+  }
 
     /**
      * 쿼리에 검색 파라미터 바인딩
@@ -515,34 +534,42 @@ public class PageDataService {
      * - '~' range 값: p_{key}_start / p_{key}_end 바인딩
      * - 일반 값: p_{key} ILIKE 패턴 바인딩
      */
-    private void bindSearchParams(Query query, Map<String, String> searchParams) {
-        searchParams.forEach((key, value) -> {
+  private void bindSearchParams(Query query, Map<String, String> searchParams) {
+    searchParams.forEach((key, value) -> {
             // eq_ 접두사 → 값 그대로 바인딩 (정확 일치)
-            if (key.startsWith("eq_")) {
-                String fieldKey = key.substring(3);
-                if (!fieldKey.matches("[a-zA-Z0-9_]+")) return; // SQL Injection 방지
-                query.setParameter("p_" + key, value);
-                return;
-            }
+      if (key.startsWith("eq_")) {
+        String fieldKey = key.substring(3);
+        if (!fieldKey.matches("[a-zA-Z0-9_]+")) {
+          return; // SQL Injection 방지
+        }
+        query.setParameter("p_" + key, value);
+        return;
+      }
             // 일반 파라미터
-            if (!key.matches("[a-zA-Z0-9_]+")) return; // SQL Injection 방지
-            if (value.contains("~")) {
+      if (!key.matches("[a-zA-Z0-9_]+")) {
+        return; // SQL Injection 방지
+      }
+      if (value.contains("~")) {
                 // range 바인딩
-                String[] parts = value.split("~", 2);
-                String start = parts[0].trim();
-                String end = parts.length > 1 ? parts[1].trim() : "";
-                if (!start.isEmpty()) query.setParameter("p_" + key + "_start", start);
-                if (!end.isEmpty()) query.setParameter("p_" + key + "_end", end);
-            } else {
+        String[] parts = value.split("~", 2);
+        String start = parts[0].trim();
+        String end = parts.length > 1 ? parts[1].trim() : "";
+        if (!start.isEmpty()) {
+          query.setParameter("p_" + key + "_start", start);
+        }
+        if (!end.isEmpty()) {
+          query.setParameter("p_" + key + "_end", end);
+        }
+      } else {
                 // ILIKE 패턴 바인딩
-                query.setParameter("p_" + key, "%" + value + "%");
-            }
-        });
-    }
+        query.setParameter("p_" + key, "%" + value + "%");
+      }
+    });
+  }
 
     /** 검색 결과 없을 때 빈 응답 생성 */
-    private PageDataListResponse buildEmptyResponse(int page, int size) {
-        return PageDataListResponse.builder()
+  private PageDataListResponse buildEmptyResponse(int page, int size) {
+    return PageDataListResponse.builder()
                 .content(Collections.emptyList())
                 .totalElements(0)
                 .totalPages(0)
@@ -551,5 +578,5 @@ public class PageDataService {
                 .last(true)
                 .first(true)
                 .build();
-    }
+  }
 }

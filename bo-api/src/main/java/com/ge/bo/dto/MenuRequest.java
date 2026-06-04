@@ -4,16 +4,16 @@ import jakarta.validation.constraints.*;
 
 /**
  * 메뉴 생성/수정 요청 DTO
+ * 메뉴명·설명은 다국어관리(message_resource)에서 key를 선택하여 전달한다.
  */
 public record MenuRequest(
-    @NotBlank(message = "메뉴명을 입력해주세요.")
-    @Size(max = 50, message = "메뉴명은 50자 이하로 입력해주세요.")
-    @Pattern(regexp = "^[가-힣a-zA-Z0-9\\s\\-_()&]{1,50}$",
-             message = "메뉴명은 한글, 영문, 숫자, 공백, -, _, (), &만 사용 가능합니다.")
-    String name,
 
-    @Size(max = 500, message = "메뉴 설명은 500자 이하로 입력해주세요.")
-    String description,
+    /** 메뉴명 다국어 키 — message_resource.key (WORD 타입) */
+    @NotBlank(message = "메뉴명 다국어 키를 선택해주세요.")
+    String nameMsgKey,
+
+    /** 메뉴 설명 다국어 키 — message_resource.key (WORD/SENTENCE 타입, 선택) */
+    String descriptionMsgKey,
 
     @Size(max = 200, message = "URL은 200자 이하로 입력해주세요.")
     @Pattern(regexp = "^$|^/[a-zA-Z0-9\\-_/]*$",

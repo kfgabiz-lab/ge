@@ -19,11 +19,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PublicController {
 
-    private final CodeService codeService;
+  private final CodeService codeService;
 
     /* 공통코드 전체 조회 — 인증 불필요 */
-    @GetMapping("/codes")
+  @GetMapping("/codes")
     public ResponseEntity<List<CodeGroupResponse>> getCodes() {
-        return ResponseEntity.ok(codeService.getAllGroups());
-    }
+    return ResponseEntity.ok(codeService.getAllGroups());
+  }
 }

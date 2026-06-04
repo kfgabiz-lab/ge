@@ -16,5 +16,5 @@ public interface TsxGenerationRepository extends JpaRepository<TsxGeneration, Lo
      * @param templateType 템플릿 유형 (LIST 또는 LAYER)
      * @param pageable     페이지네이션 + 정렬
      */
-    Page<TsxGeneration> findAllByTemplateType(String templateType, Pageable pageable);
+  Page<TsxGeneration> findAllByTemplateType(String templateType, Pageable pageable);
 }

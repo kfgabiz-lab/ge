@@ -1,0 +1,42 @@
+# 환경 2: 개발자 — 로컬 PC + 공용 개발서버 DB
+# Git Remote: ge-bo (FE), ge-api (BE) / 개발자 개인 작업 환경
+recaptcha:
+  secret-key: "6LfNdAYtAAAAAIhC2g663sKwYXo_mFrUCTAg8h_5"
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://10.153.11.120:5432/postgres
+    username: lsedbadmin
+    password: lsis@2026!@#
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update   # 개발 단계 — 스키마 자동 반영
+    properties:
+      hibernate:
+        format_sql: true
+
+# CORS — 로컬 FE 주소 (각자 로컬에서 FE 실행)
+cors:
+  allowed-origins: "http://localhost:3002,http://localhost:3001"
+
+# 파일 업로드 루트 경로
+file:
+  upload-root: "/uploads"
+
+# 페이지 템플릿 TSX 파일 출력 경로
+page-template:
+  output-dir: "../bo/src/app/admin/generated"
+
+# 개발자 디버깅용 상세 로그
+logging:
+  level:
+    com.ge.bo: DEBUG
+    org.springframework.security: DEBUG
+    # SQL 파라미터 실제 값 출력
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    # 트랜잭션 커밋/롤백 로그
+    org.springframework.transaction: TRACE
+    org.springframework.orm.jpa: DEBUG

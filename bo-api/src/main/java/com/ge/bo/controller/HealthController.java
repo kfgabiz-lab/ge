@@ -15,11 +15,11 @@ import java.util.Map;
 @RequestMapping("/api/v1")
 public class HealthController {
 
-    @GetMapping("/health")
+  @GetMapping("/health")
     public ResponseEntity<Map<String, Object>> healthCheck() {
-        return ResponseEntity.ok(Map.of(
+    return ResponseEntity.ok(Map.of(
                 "status", "OK",
                 "message", "bo America 백오피스 API 서버가 정상 동작 중입니다.",
                 "timestamp", LocalDateTime.now().toString()));
-    }
+  }
 }

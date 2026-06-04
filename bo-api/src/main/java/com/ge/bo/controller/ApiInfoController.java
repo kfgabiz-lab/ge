@@ -27,52 +27,52 @@ import org.springframework.web.bind.annotation.*;
 @ApiLinkedEntity("ApiInfo")
 public class ApiInfoController {
 
-    private final ApiInfoService apiInfoService;
+  private final ApiInfoService apiInfoService;
 
     /** 목록 조회 (카테고리/메서드/키워드 필터 + 페이징) */
-    @GetMapping
+  @GetMapping
     public ResponseEntity<Page<ApiInfoResponse>> getList(
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String method,
             @RequestParam(required = false) String keyword,
             @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
-        return ResponseEntity.ok(apiInfoService.getList(category, method, keyword, pageable));
-    }
+    return ResponseEntity.ok(apiInfoService.getList(category, method, keyword, pageable));
+  }
 
     /** 단건 조회 */
-    @GetMapping("/{id}")
+  @GetMapping("/{id}")
     public ResponseEntity<ApiInfoResponse> getOne(@PathVariable Long id) {
-        return ResponseEntity.ok(apiInfoService.getOne(id));
-    }
+    return ResponseEntity.ok(apiInfoService.getOne(id));
+  }
 
     /** 등록 */
-    @PostMapping
+  @PostMapping
     public ResponseEntity<ApiInfoResponse> create(@Valid @RequestBody ApiInfoRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(apiInfoService.create(request));
-    }
+    return ResponseEntity.status(HttpStatus.CREATED).body(apiInfoService.create(request));
+  }
 
     /** 수정 */
-    @PutMapping("/{id}")
+  @PutMapping("/{id}")
     public ResponseEntity<ApiInfoResponse> update(@PathVariable Long id, @Valid @RequestBody ApiInfoRequest request) {
-        return ResponseEntity.ok(apiInfoService.update(id, request));
-    }
+    return ResponseEntity.ok(apiInfoService.update(id, request));
+  }
 
     /** 삭제 */
-    @DeleteMapping("/{id}")
+  @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        apiInfoService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
+    apiInfoService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 
     /** Spring MVC 엔드포인트 스캔 후 DB에 없는 것만 추가 */
-    @PostMapping("/sync")
+  @PostMapping("/sync")
     public ResponseEntity<ApiInfoSyncResponse> sync() {
-        return ResponseEntity.ok(apiInfoService.sync());
-    }
+    return ResponseEntity.ok(apiInfoService.sync());
+  }
 
     /** 어노테이션 기반으로 연결 엔티티 자동 매핑 (syncEntities) */
-    @PostMapping("/sync-entities")
+  @PostMapping("/sync-entities")
     public ResponseEntity<Integer> syncEntities() {
-        return ResponseEntity.ok(apiInfoService.syncEntities());
-    }
+    return ResponseEntity.ok(apiInfoService.syncEntities());
+  }
 }

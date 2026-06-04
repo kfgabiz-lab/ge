@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CodeDetailRepository extends JpaRepository<CodeDetail, Long> {
 
-    boolean existsByGroupAndCode(CodeGroup group, String code);
+  boolean existsByGroupAndCode(CodeGroup group, String code);
 
-    boolean existsByGroupAndCodeAndIdNot(CodeGroup group, String code, Long id);
+  boolean existsByGroupAndCodeAndIdNot(CodeGroup group, String code, Long id);
 }
