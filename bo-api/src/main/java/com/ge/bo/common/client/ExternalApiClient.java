@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.core.env.Environment;
 import org.springframework.web.client.RestClient;
 
 import javax.net.ssl.HostnameVerifier;
@@ -38,17 +39,21 @@ public class ExternalApiClient {
     // SSL 전체 신뢰 컨텍스트 (한 번만 생성해서 재사용)
     private final SSLContext trustAllSslContext;
 
-    public ExternalApiClient(RestClient.Builder builder) {
-        // SSL 컨텍스트 초기화
-        this.trustAllSslContext = createTrustAllSslContext();
+    public ExternalApiClient(RestClient.Builder builder, Environment environment) {
+        // developer profile 인 경우에만 SSL 우회 컨텍스트 초기화
+        if (environment.matchesProfiles("developer")) {
+            this.trustAllSslContext = createTrustAllSslContext();
+        } else {
+            this.trustAllSslContext = null;
+        }
 
         // SimpleClientHttpRequestFactory를 익명 클래스로 확장해 prepareConnection 오버라이드
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory() {
             @Override
             protected void prepareConnection(HttpURLConnection conn, String httpMethod)
                     throws IOException {
-                // 사내 SSL 검사 우회 (운영 시 회사 CA를 Java truststore에 등록 권장)
-                if (conn instanceof HttpsURLConnection https) {
+                // developer profile 일 때만 SSL 우회 적용 (운영 시 회사 CA를 Java truststore에 등록 권장)
+                if (trustAllSslContext != null && conn instanceof HttpsURLConnection https) {
                     https.setSSLSocketFactory(trustAllSslContext.getSocketFactory());
                     https.setHostnameVerifier((h, s) -> true);
                 }
