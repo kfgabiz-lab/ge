@@ -60,6 +60,10 @@ public enum ErrorCode {
     SLUG_REGISTRY_NOT_FOUND(HttpStatus.NOT_FOUND, "SLUG_REGISTRY_NOT_FOUND", "해당 slug를 찾을 수 없습니다."),
     SLUG_REGISTRY_SLUG_DUPLICATE(HttpStatus.CONFLICT, "SLUG_REGISTRY_SLUG_DUPLICATE", "이미 사용 중인 slug입니다."),
 
+    /* Slug Entity */
+    SLUG_ENTITY_NOT_FOUND(HttpStatus.NOT_FOUND, "SLUG_ENTITY_NOT_FOUND", "해당 entity를 찾을 수 없습니다."),
+    SLUG_ENTITY_SLUG_DUPLICATE(HttpStatus.CONFLICT, "SLUG_ENTITY_SLUG_DUPLICATE", "이미 사용 중인 slug입니다."),
+
     /* 파일 업로드 */
     FILE_REQUIRED(HttpStatus.BAD_REQUEST, "FILE_REQUIRED", "파일은 필수입니다."),
     FILE_EMPTY(HttpStatus.BAD_REQUEST, "FILE_EMPTY", "비어있는 파일은 업로드할 수 없습니다."),
