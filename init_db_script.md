@@ -114,6 +114,9 @@ INSERT INTO public.menu
 VALUES('BO', 4, true, '2026-04-15 07:12:54.028', 57, 40, '2026-05-15 02:24:34.003', 'Database', 'system', 'DB Slug 관리', 'admin@ge.com', '/admin/settings/slug-registry', NULL, NULL, 1, false, 'common.label.dbslugmanage', NULL);
 INSERT INTO public.menu
 (menu_type, sort_order, is_visible, created_at, id, parent_id, updated_at, icon, created_by, "name", updated_by, url, slug, description, site_id, is_system, name_msg_key, description_msg_key)
+VALUES('BO', 5, true, '2026-06-07 00:00:00.000', 110, 40, '2026-06-07 00:00:00.000', 'Layers', 'system', 'Entity 관리', 'system', '/admin/settings/slug-entity', NULL, NULL, 1, false, 'common.label.entitymanage', NULL);
+INSERT INTO public.menu
+(menu_type, sort_order, is_visible, created_at, id, parent_id, updated_at, icon, created_by, "name", updated_by, url, slug, description, site_id, is_system, name_msg_key, description_msg_key)
 VALUES('BO', 1, true, '2026-04-20 06:18:10.425', 59, 76, '2026-05-15 02:22:44.845', 'PanelRight', 'admin@ge.com', 'Quick-Page(Detail)', 'admin@ge.com', '/admin/templates/make/quick-detail', NULL, NULL, 1, false, 'common.label.quickpagedetail', NULL);
 INSERT INTO public.menu
 (menu_type, sort_order, is_visible, created_at, id, parent_id, updated_at, icon, created_by, "name", updated_by, url, slug, description, site_id, is_system, name_msg_key, description_msg_key)
@@ -879,3 +882,7 @@ VALUES(465, 'boardListSave', '{"b": "b", "c": true, "title": "이벤트274", "na
 INSERT INTO public.page_data
 (id, template_slug, data_json, created_by, created_at, updated_by, updated_at, site_id, group_id)
 VALUES(466, 'boardListSave', '{"b": "a", "c": true, "title": "업데이트275", "nation": "COMM00103"}'::jsonb, NULL, '2026-04-20 10:07:49.719', NULL, '2026-04-20 10:07:49.719', NULL, NULL);
+-- =============================
+-- slug_registry entity_id 컬럼 추가 (2026-06-08)
+-- =============================
+ALTER TABLE slug_registry ADD COLUMN IF NOT EXISTS entity_id BIGINT NULL REFERENCES slug_entity(id) ON DELETE SET NULL;

@@ -2,8 +2,10 @@ package com.ge.bo.service;
 
 import com.ge.bo.dto.SlugRegistryRequest;
 import com.ge.bo.dto.SlugRegistryResponse;
+import com.ge.bo.entity.SlugEntity;
 import com.ge.bo.entity.SlugRegistry;
 import com.ge.bo.exception.ErrorCode;
+import com.ge.bo.repository.SlugEntityRepository;
 import com.ge.bo.repository.SlugRegistryRepository;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ import java.util.List;
 public class SlugRegistryService {
 
   private final SlugRegistryRepository slugRegistryRepository;
+  private final SlugEntityRepository slugEntityRepository;
 
     /* ══════════ 목록 조회 (관리 페이지용 — 페이징) ══════════ */
 
@@ -57,12 +60,15 @@ public class SlugRegistryService {
       throw ErrorCode.SLUG_REGISTRY_SLUG_DUPLICATE.toException();
     }
 
+    SlugEntity slugEntity = resolveSlugEntity(request);
+
     SlugRegistry entity = SlugRegistry.builder()
                 .slug(request.slug().trim())
                 .name(request.name().trim())
                 .type(request.type().trim())
                 .description(trimOrNull(request.description()))
                 .active(request.active() != null ? request.active() : true)
+                .slugEntity(slugEntity)
                 .build();
 
     return SlugRegistryResponse.from(slugRegistryRepository.save(entity));
@@ -81,6 +87,7 @@ public class SlugRegistryService {
     if (request.active() != null) {
       entity.setActive(request.active());
     }
+    entity.setSlugEntity(resolveSlugEntity(request));
 
     return SlugRegistryResponse.from(entity);
   }
@@ -101,6 +108,18 @@ public class SlugRegistryService {
 
   private String trimOrNull(String value) {
     return (value == null || value.trim().isEmpty()) ? null : value.trim();
+  }
+
+    /**
+     * 요청의 entityId로 SlugEntity 조회 (null이면 null 반환)
+     * PAGE_DATA 타입 외에는 entityId를 무시하고 null 처리
+     */
+  private SlugEntity resolveSlugEntity(SlugRegistryRequest request) {
+    if (request.entityId() == null || !"PAGE_DATA".equals(request.type())) {
+      return null;
+    }
+    return slugEntityRepository.findById(request.entityId())
+                .orElse(null);
   }
 
     /**

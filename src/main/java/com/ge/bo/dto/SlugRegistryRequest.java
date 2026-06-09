@@ -23,5 +23,8 @@ public record SlugRegistryRequest(
 
     String description,
 
-    Boolean active
+    Boolean active,
+
+    /** 연결 entity ID — PAGE_DATA 타입일 때만 사용, 선택 */
+    Long entityId
 ) {}
