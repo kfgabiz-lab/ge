@@ -2,6 +2,7 @@ package com.ge.bo.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,13 +23,15 @@ public class RoleService {
   private final AdminRepository adminRepository;
 
   /**
-   * 전체 역할 목록 조회
+   * 역할 목록 조회 — 시스템관리자이면 전체, 아니면 is_system=false 역할만 반환
    *
    * @return 역할 응답 DTO 목록
    */
   @Transactional(readOnly = true)
   public List<RoleDto.Response> getAllRoles() {
+    boolean isSystemAdmin = isCurrentUserSystemAdmin();
     return roleRepository.findAll().stream()
+        .filter(r -> isSystemAdmin || !r.isSystem())
         .map(this::toResponse)
         .collect(Collectors.toList());
   }
@@ -126,6 +129,25 @@ public class RoleService {
     }
 
     roleRepository.deleteById(id);
+  }
+
+  /** 현재 로그인한 사용자가 시스템관리자(role.is_system=true)인지 판별 */
+  private boolean isCurrentUserSystemAdmin() {
+    try {
+      String authority = SecurityContextHolder.getContext().getAuthentication()
+          .getAuthorities().stream()
+          .findFirst()
+          .map(a -> {
+            String auth = a.getAuthority();
+            return auth.startsWith("ROLE_") ? auth.substring(5) : auth;
+          })
+          .orElse("");
+      return roleRepository.findByCode(authority)
+          .map(Role::isSystem)
+          .orElse(false);
+    } catch (Exception e) {
+      return false;
+    }
   }
 
   private RoleDto.Response toResponse(Role role) {

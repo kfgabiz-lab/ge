@@ -16,7 +16,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
+totp:
+  issuer: "Ge Admin"
 # CORS — 로컬 FE 주소
 cors:
   allowed-origins: "http://localhost:3002,http://localhost:3001"
