@@ -5,7 +5,6 @@ import com.ge.bo.service.MessageResourceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,7 +36,6 @@ public class MessageResourceController {
      * 등록
      */
   @PostMapping
-    @PreAuthorize("@securityService.isSystemAdmin(authentication)")
     public ResponseEntity<MessageResourceDto.Response> create(
             @Valid @RequestBody MessageResourceDto.CreateRequest request) {
     return ResponseEntity.ok(messageResourceService.create(request));
@@ -47,7 +45,6 @@ public class MessageResourceController {
      * 수정 — key 변경 불가
      */
   @PutMapping("/{id}")
-    @PreAuthorize("@securityService.isSystemAdmin(authentication)")
     public ResponseEntity<MessageResourceDto.Response> update(
             @PathVariable Long id,
             @Valid @RequestBody MessageResourceDto.UpdateRequest request) {
@@ -58,7 +55,6 @@ public class MessageResourceController {
      * 삭제
      */
   @DeleteMapping("/{id}")
-    @PreAuthorize("@securityService.isSystemAdmin(authentication)")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
     messageResourceService.delete(id);
     return ResponseEntity.noContent().build();

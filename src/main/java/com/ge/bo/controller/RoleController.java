@@ -27,7 +27,6 @@ public class RoleController {
    * @return 역할 응답 DTO 목록
    */
   @GetMapping
-  @PreAuthorize("@securityService.isSystemAdmin(authentication)")
   public ResponseEntity<List<RoleDto.Response>> getAllRoles() {
     return ResponseEntity.ok(roleService.getAllRoles());
   }
@@ -49,7 +48,6 @@ public class RoleController {
    * @return 역할 응답 DTO
    */
   @GetMapping("/{id}")
-  @PreAuthorize("@securityService.isSystemAdmin(authentication)")
   public ResponseEntity<RoleDto.Response> getRoleById(@PathVariable Long id) {
     return ResponseEntity.ok(roleService.getRoleById(id));
   }
@@ -61,7 +59,6 @@ public class RoleController {
    * @return 등록된 역할 응답 DTO
    */
   @PostMapping
-  @PreAuthorize("@securityService.isSystemAdmin(authentication)")
   public ResponseEntity<RoleDto.Response> createRole(
       @Valid @RequestBody RoleDto.CreateRequest request) {
     return ResponseEntity.ok(roleService.createRole(request));
@@ -75,7 +72,6 @@ public class RoleController {
    * @return 수정된 역할 응답 DTO
    */
   @PatchMapping("/{id}")
-  @PreAuthorize("@securityService.isSystemAdmin(authentication)")
   public ResponseEntity<RoleDto.Response> updateRole(
       @PathVariable Long id,
       @Valid @RequestBody RoleDto.UpdateRequest request) {
@@ -89,7 +85,6 @@ public class RoleController {
    * @return 204 No Content
    */
   @DeleteMapping("/{id}")
-  @PreAuthorize("@securityService.isSystemAdmin(authentication)")
   public ResponseEntity<Void> deleteRole(@PathVariable Long id) {
     roleService.deleteRole(id);
     return ResponseEntity.noContent().build();
