@@ -24,12 +24,18 @@ public class AuthController {
   private final TotpService totpService;
 
   /**
-   * 1단계 로그인 (이메일/비밀번호/reCAPTCHA 검증 → tempToken 발급)
-   * JWT는 2FA 완료 후 발급됨
+   * 1단계 로그인 (이메일/비밀번호/reCAPTCHA 검증)
+   * totp.enabled=true  → tempToken 반환 (2FA 단계 진행)
+   * totp.enabled=false → accessToken 직접 반환 + refreshToken 쿠키 발급
    */
   @PostMapping("/login")
-  public LoginResponse login(@RequestBody LoginRequest request) {
-    return authService.login(request);
+  public LoginResponse login(@RequestBody LoginRequest request, HttpServletResponse response) {
+    LoginResponse result = authService.login(request);
+    // 2FA 비활성화 시 accessToken이 바로 발급되므로 refreshToken 쿠키도 함께 발급
+    if (result.getAccessToken() != null && result.getAdminInfo() != null) {
+      authService.issueRefreshTokenCookie(response, result.getAdminInfo().getEmail());
+    }
+    return result;
   }
 
   /**
