@@ -52,6 +52,7 @@ be_startup_new.log
 
 # 백업 파일
 *.bak
+bo/_archive/
 
 # 임시 테스트 페이지
 bo/src/app/admin/test1/
