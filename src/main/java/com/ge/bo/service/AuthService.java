@@ -2,6 +2,7 @@ package com.ge.bo.service;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -28,6 +29,10 @@ public class AuthService {
   private static final int LOCK_DURATION_MINUTES = 30;
   private static final long REFRESH_TOKEN_DAYS = 7L;
 
+  /** application.yml totp.enabled — false 시 2차인증 스킵하고 바로 JWT 발급 */
+  @Value("${totp.enabled:true}")
+  private boolean totpEnabled;
+
   private final AdminRepository adminRepository;
   private final RoleRepository roleRepository;
   private final PasswordEncoder passwordEncoder;
@@ -35,11 +40,12 @@ public class AuthService {
   private final RecaptchaService recaptchaService;
 
   /**
-   * 1단계 로그인 (reCAPTCHA + 비밀번호 검증 → tempToken 발급)
-   * JWT는 2FA 완료 후 TotpService에서 발급
+   * 1단계 로그인 (reCAPTCHA + 비밀번호 검증)
+   * totp.enabled=true  → tempToken 발급 후 2FA 단계 진행
+   * totp.enabled=false → 바로 accessToken 발급 (2FA 스킵)
    *
    * @param request 로그인 요청 DTO (이메일, 비밀번호, reCAPTCHA 토큰)
-   * @return tempToken + 2FA 상태 플래그
+   * @return LoginResponse (2FA 활성 시 tempToken, 비활성 시 accessToken)
    */
   @Transactional
   public LoginResponse login(LoginRequest request) {
@@ -74,9 +80,28 @@ public class AuthService {
       throw BusinessException.unauthorized("이메일 또는 비밀번호가 일치하지 않습니다.");
     }
 
-    // 비밀번호 검증 성공 — 실패 카운터 초기화 (2FA 완료 전이므로 lastLoginAt 미갱신)
+    // 비밀번호 검증 성공 — 실패 카운터 초기화
     admin.setFailedLoginAttempts(0);
     admin.setLockedUntil(null);
+
+    // 2차인증 비활성화 시 바로 accessToken 발급
+    if (!totpEnabled) {
+      boolean isSystem = roleRepository.findByCode(admin.getRole())
+          .map(role -> role.isSystem())
+          .orElse(false);
+      String accessToken = jwtTokenProvider.generateAccessToken(admin.getEmail(), admin.getRole());
+      return LoginResponse.builder()
+          .accessToken(accessToken)
+          .expiresIn(3600L)
+          .adminInfo(LoginResponse.AdminInfo.builder()
+              .id(admin.getId())
+              .name(admin.getName())
+              .email(admin.getEmail())
+              .role(admin.getRole())
+              .isSystem(isSystem)
+              .build())
+          .build();
+    }
 
     // 2FA 미완료 상태 임시 토큰 발급 (10분 유효)
     String tempToken = jwtTokenProvider.generateTotpPendingToken(admin.getEmail());

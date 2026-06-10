@@ -3,6 +3,10 @@
 recaptcha:
   secret-key: "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
 
+totp:
+  issuer: "LSE Admin"
+  enabled: false   # true = 2차인증 활성화 / false = 비밀번호만으로 로그인
+
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
