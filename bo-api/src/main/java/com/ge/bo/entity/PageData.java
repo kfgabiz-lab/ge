@@ -47,6 +47,10 @@ public class PageData {
   @Column(name = "site_id")
     private Long siteId;
 
+    /** 데이터 식별 slug — 조회·수정·삭제 기준 (기존 template_slug 역할) */
+  @Column(name = "data_slug", length = 255)
+    private String dataSlug;
+
     /** 다중 slug 저장 그룹 식별자 (UUID) — 단일 slug 저장 시 NULL */
   @Column(name = "group_id", length = 36)
     private String groupId;

@@ -26,4 +26,7 @@ public class PageDataRequest {
 
     /** 다중 slug 저장 그룹 식별자 — FE에서 UUID 생성 후 같은 그룹의 모든 slug에 동일값 전달 */
   private String groupId;
+
+    /** 페이지 식별 slug — 저장 전용 (조회에 미사용, 어느 페이지에서 생성된 데이터인지 추적) */
+  private String templateSlug;
 }

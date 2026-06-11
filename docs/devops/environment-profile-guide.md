@@ -274,14 +274,26 @@ logging:
 
 ## 8. Git Remote 연계 전략
 
+> 리모트는 모두 **GitHub** 기반이다. 자세한 구조는 `docs/ge_guide/source-control-guide_v1.0.md` 참조.
+
+### 리모트 목록
+
+| 리모트명 | GitHub URL | 대상 |
+|---------|-----------|------|
+| `ge` | https://github.com/kfgabiz-lab/ge | 루트 monorepo 전체 |
+| `ge-bo` | https://github.com/kfgabiz-lab/ge-bo | `bo/` BO 프론트 서브트리 |
+| `ge-api` | https://github.com/kfgabiz-lab/ge-api | `bo-api/` BE API 서브트리 |
+
+### 환경별 연계
+
 ```
 환경 1 (local) — 개발마스터
-  remote: ge / 브랜치: master
+  remote: ge (GitHub) / 브랜치: master
   목적: 공통 개발 기능 완료 후 공유용 push
   application.yml active: local 상태로 커밋 유지
 
 환경 2 (developer) — 개발자
-  remote: ge-bo (FE), ge-api (BE) / 브랜치: 개인 feature 브랜치
+  remote: ge-bo (FE 서브트리), ge-api (BE 서브트리) / 브랜치: master
   목적: 개발자 개인 작업, 개발 DB 바라보며 실제 데이터 검증
   application.yml active: developer → 작업 후 local로 되돌려 커밋
 
@@ -289,6 +301,21 @@ logging:
   목적: ge remote로부터 받은 결과물을 서버에 배포 후 실행
   application.yml active: dev → 배포 완료 후 local로 되돌려 커밋
 ```
+
+### Push 순서 (루트 → 서브트리 순)
+
+```bash
+# ① 루트 전체 push
+git push ge master
+
+# ② BO 프론트 서브트리 push
+git subtree push --prefix=bo ge-bo master
+
+# ③ BE API 서브트리 push
+git subtree push --prefix=bo-api ge-api master
+```
+
+> `git subtree push`는 해당 prefix 디렉토리의 변경만 추출하여 각 GitHub 리포지토리로 push한다.
 
 ---
 

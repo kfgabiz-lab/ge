@@ -58,7 +58,7 @@ public class PageDataService {
     });
 
         // WHERE 절 동적 생성
-    StringBuilder whereClause = new StringBuilder("WHERE template_slug = :slug");
+    StringBuilder whereClause = new StringBuilder("WHERE data_slug = :slug");
     if (siteId != null) {
             // 해당 사이트 데이터 + 공통(NULL) 데이터 함께 조회
       whereClause.append(" AND (site_id = :siteId OR site_id IS NULL)");
@@ -133,7 +133,7 @@ public class PageDataService {
      */
   @Transactional(readOnly = true)
     public PageDataResponse getById(String slug, Long id) {
-    PageData pageData = pageDataRepository.findByIdAndTemplateSlug(id, slug)
+    PageData pageData = pageDataRepository.findByIdAndDataSlug(id, slug)
                 .orElseThrow(ErrorCode.PAGE_DATA_NOT_FOUND::toException);
     return PageDataResponse.from(pageData);
   }
@@ -159,17 +159,19 @@ public class PageDataService {
     if (request.getGroupId() != null && !request.getGroupId().isBlank()) {
       insertQuery = entityManager.createNativeQuery(
           "INSERT INTO page_data"
-          + " (template_slug, data_json, site_id, group_id, created_by, created_at, updated_by, updated_at)"
-          + " VALUES (:slug, CAST(:dataJson AS jsonb), :siteId, :groupId, :createdBy, NOW(), :updatedBy, NOW())"
+          + " (template_slug, data_slug, data_json, site_id, group_id, created_by, created_at, updated_by, updated_at)"
+          + " VALUES (:templateSlug, :slug, CAST(:dataJson AS jsonb), :siteId, :groupId, :createdBy, NOW(), :updatedBy, NOW())"
           + " RETURNING id");
       insertQuery.setParameter("groupId", request.getGroupId());
     } else {
       insertQuery = entityManager.createNativeQuery(
           "INSERT INTO page_data"
-          + " (template_slug, data_json, site_id, created_by, created_at, updated_by, updated_at)"
-          + " VALUES (:slug, CAST(:dataJson AS jsonb), :siteId, :createdBy, NOW(), :updatedBy, NOW())"
+          + " (template_slug, data_slug, data_json, site_id, created_by, created_at, updated_by, updated_at)"
+          + " VALUES (:templateSlug, :slug, CAST(:dataJson AS jsonb), :siteId, :createdBy, NOW(), :updatedBy, NOW())"
           + " RETURNING id");
     }
+        // data_slug: path의 slug (조회 기준), template_slug: 페이지 slug (저장 전용)
+    insertQuery.setParameter("templateSlug", request.getTemplateSlug() != null ? request.getTemplateSlug() : slug);
     insertQuery.setParameter("slug", slug);
     insertQuery.setParameter("dataJson", dataJsonStr);
     insertQuery.setParameter("siteId", siteId);
@@ -199,7 +201,7 @@ public class PageDataService {
   @Transactional
     public PageDataResponse update(String slug, Long id, PageDataRequest request) {
         // 존재 여부 확인 (없으면 404)
-    pageDataRepository.findByIdAndTemplateSlug(id, slug)
+    pageDataRepository.findByIdAndDataSlug(id, slug)
                 .orElseThrow(ErrorCode.PAGE_DATA_NOT_FOUND::toException);
         // 수정 시에도 id 보장 — dataJson에 id 항상 포함
     Map<String, Object> dataJsonWithId = new LinkedHashMap<>(request.getDataJson());
@@ -211,9 +213,11 @@ public class PageDataService {
     Query updateQuery = entityManager.createNativeQuery(
         "UPDATE page_data"
         + " SET data_json = CAST(:dataJson AS jsonb), updated_by = :updatedBy, updated_at = NOW()"
-        + " WHERE id = :id AND template_slug = :slug");
+        + ", template_slug = :templateSlug"
+        + " WHERE id = :id AND data_slug = :slug");
     updateQuery.setParameter("dataJson", dataJsonStr);
     updateQuery.setParameter("updatedBy", currentUser);
+    updateQuery.setParameter("templateSlug", request.getTemplateSlug() != null ? request.getTemplateSlug() : slug);
     updateQuery.setParameter("id", id);
     updateQuery.setParameter("slug", slug);
     updateQuery.executeUpdate();
@@ -229,13 +233,13 @@ public class PageDataService {
      */
   @Transactional
     public void delete(String slug, Long id) {
-    pageDataRepository.findByIdAndTemplateSlug(id, slug)
+    pageDataRepository.findByIdAndDataSlug(id, slug)
                 .orElseThrow(ErrorCode.PAGE_DATA_NOT_FOUND::toException);
 
         // 연관 파일 일괄 삭제 (파일시스템 + DB)
     pageFileService.deleteByDataId(id);
 
-    pageDataRepository.deleteByIdAndTemplateSlug(id, slug);
+    pageDataRepository.deleteByIdAndDataSlug(id, slug);
   }
 
     /**
@@ -263,7 +267,7 @@ public class PageDataService {
 
         // pkKeys + dataJson 값으로 id 조회
     StringBuilder sql = new StringBuilder(
-                "SELECT id FROM page_data WHERE template_slug = :slug");
+                "SELECT id FROM page_data WHERE data_slug = :slug");
     for (String key : validKeys) {
       sql.append(" AND data_json->>'").append(key).append("' = :pk_").append(key);
     }
@@ -310,7 +314,7 @@ public class PageDataService {
     });
 
         // WHERE 절 동적 생성 (search()와 동일 로직)
-    StringBuilder whereClause = new StringBuilder("WHERE template_slug = :slug");
+    StringBuilder whereClause = new StringBuilder("WHERE data_slug = :slug");
     appendWhereConditions(whereClause, searchParams);
 
         // LIMIT/OFFSET 없이 전체 조회
@@ -351,7 +355,7 @@ public class PageDataService {
      */
   @Transactional(readOnly = true)
     public PageDataResponse findByGroupIdAndSlug(String groupId, String slug) {
-    PageData pageData = pageDataRepository.findByGroupIdAndTemplateSlug(groupId, slug)
+    PageData pageData = pageDataRepository.findByGroupIdAndDataSlug(groupId, slug)
                 .orElseThrow(ErrorCode.PAGE_DATA_NOT_FOUND::toException);
     return PageDataResponse.from(pageData);
   }
@@ -396,7 +400,7 @@ public class PageDataService {
 
         // WHERE 절 동적 생성
     StringBuilder sql = new StringBuilder(
-                "SELECT COUNT(*) FROM page_data WHERE template_slug = :slug");
+                "SELECT COUNT(*) FROM page_data WHERE data_slug = :slug");
     for (String key : validKeys) {
       sql.append(" AND data_json->>'").append(key).append("' = :pk_").append(key);
     }
