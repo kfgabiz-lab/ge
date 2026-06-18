@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ge.bo.dto.PageDataListResponse;
 import com.ge.bo.dto.PageDataRequest;
 import com.ge.bo.dto.PageDataResponse;
+import com.ge.bo.entity.AdminUser;
 import com.ge.bo.entity.PageData;
 import com.ge.bo.exception.ErrorCode;
+import com.ge.bo.repository.AdminRepository;
 import com.ge.bo.repository.PageDataRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -30,6 +32,7 @@ import java.util.*;
 public class PageDataService {
 
   private final PageDataRepository pageDataRepository;
+  private final AdminRepository adminRepository;
   private final ObjectMapper objectMapper;
   private final PageFileService pageFileService;
 
@@ -93,8 +96,13 @@ public class PageDataService {
           orderBy = " ORDER BY " + buildJsonPath(segs) + " " + sortDir;
         }
       } else if (sortCol.matches("[a-zA-Z0-9_]+")) {
-        // 단순 키 정렬
-        orderBy = " ORDER BY data_json->>'" + sortCol + "' " + sortDir;
+        // 감사 컬럼(createdAt 등)은 테이블 실제 컬럼으로 매핑, 나머지는 data_json 경로
+        String auditCol = toAuditColumn(sortCol);
+        if (auditCol != null) {
+          orderBy = " ORDER BY " + auditCol + " " + sortDir;
+        } else {
+          orderBy = " ORDER BY data_json->>'" + sortCol + "' " + sortDir;
+        }
       }
     }
 
@@ -115,8 +123,12 @@ public class PageDataService {
 
     @SuppressWarnings("unchecked")
         List<Object[]> rows = dataQuery.getResultList();
+
+        // createdBy/updatedBy unique id 추출 → 한 번에 조회하여 id→name 맵 구성 (N+1 방지)
+    Map<Long, String> userNameMap = buildUserNameMap(rows, 4, 6);
+
     List<PageDataResponse> content = rows.stream()
-                .map(this::mapRowToResponse)
+                .map(row -> mapRowToResponse(row, userNameMap))
                 .toList();
 
     int totalPages = (int) Math.ceil((double) totalElements / size);
@@ -141,7 +153,12 @@ public class PageDataService {
     public PageDataResponse getById(String slug, Long id) {
     PageData pageData = pageDataRepository.findByIdAndDataSlug(id, slug)
                 .orElseThrow(ErrorCode.PAGE_DATA_NOT_FOUND::toException);
-    return PageDataResponse.from(pageData);
+    PageDataResponse response = PageDataResponse.from(pageData);
+        // createdBy/updatedBy id → name 변환
+    return response.withUserNames(
+        resolveUserName(pageData.getCreatedBy()),
+        resolveUserName(pageData.getUpdatedBy())
+    );
   }
 
     /**
@@ -159,7 +176,7 @@ public class PageDataService {
     }
 
     String dataJsonStr = serializeDataJson(request.getDataJson());
-    String currentUser = getCurrentUser();
+    String currentUser = getCurrentUserId();
         // group_id 있으면 함께 저장 (다중 slug 저장 그룹), 없으면 기존 방식
     final Query insertQuery;
     if (request.getGroupId() != null && !request.getGroupId().isBlank()) {
@@ -213,7 +230,7 @@ public class PageDataService {
     Map<String, Object> dataJsonWithId = new LinkedHashMap<>(request.getDataJson());
     dataJsonWithId.put("id", id);
     String dataJsonStr = serializeDataJson(dataJsonWithId);
-    String currentUser = getCurrentUser();
+    String currentUser = getCurrentUserId();
         // JPA save() 대신 네이티브 쿼리 사용: String → JSONB 타입 명시적 캐스팅
         // 수정 시 updated_by/updated_at만 변경, created_by/created_at은 유지
     Query updateQuery = entityManager.createNativeQuery(
@@ -479,13 +496,16 @@ public class PageDataService {
     }
   }
 
-    /** 현재 로그인 사용자명 반환 (비로그인 시 null) */
-  private String getCurrentUser() {
+  /** 현재 로그인 사용자 id 반환 — created_by/updated_by 저장용 (비로그인 시 null) */
+  private String getCurrentUserId() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
       return null;
     }
-    return auth.getName();
+    String email = auth.getName();
+    return adminRepository.findByEmail(email)
+        .map(u -> String.valueOf(u.getId()))
+        .orElse(null);
   }
 
     /** Map → JSON 문자열 직렬화 */
@@ -502,8 +522,9 @@ public class PageDataService {
      * 네이티브 쿼리 결과 행(Object[]) → PageDataResponse 변환
      * 컬럼 순서: id, template_slug, data_json::text, group_id, created_by,
      * created_at, updated_by, updated_at
+     * userNameMap: admin_user id→name 맵 (미리 일괄 조회하여 N+1 방지)
      */
-  private PageDataResponse mapRowToResponse(Object[] row) {
+  private PageDataResponse mapRowToResponse(Object[] row, Map<Long, String> userNameMap) {
     Map<String, Object> dataMap = Collections.emptyMap();
     try {
       if (row[2] != null) {
@@ -520,11 +541,56 @@ public class PageDataService {
                 .templateSlug((String) row[1])
                 .dataJson(dataMap)
                 .groupId((String) row[3])
-                .createdBy((String) row[4])
+                .createdBy(resolveUserName((String) row[4], userNameMap))
                 .createdAt(row[5] != null ? toOffsetDateTime(row[5]) : null)
-                .updatedBy((String) row[6])
+                .updatedBy(resolveUserName((String) row[6], userNameMap))
                 .updatedAt(row[7] != null ? toOffsetDateTime(row[7]) : null)
                 .build();
+  }
+
+  /**
+   * rows에서 지정 컬럼 인덱스의 id값을 모아 AdminUser 일괄 조회 후 id→name 맵 반환
+   * 숫자가 아닌 값(기존 email 형식 등)은 무시하여 하위 호환 유지
+   */
+  private Map<Long, String> buildUserNameMap(List<Object[]> rows, int... colIndexes) {
+    Set<Long> ids = new HashSet<>();
+    for (Object[] row : rows) {
+      for (int idx : colIndexes) {
+        if (row[idx] == null) continue;
+        try { ids.add(Long.parseLong(row[idx].toString())); } catch (NumberFormatException ignored) {}
+      }
+    }
+    if (ids.isEmpty()) return Collections.emptyMap();
+    return adminRepository.findAllById(ids).stream()
+        .collect(java.util.stream.Collectors.toMap(AdminUser::getId, AdminUser::getName));
+  }
+
+  /**
+   * id 문자열 → 사용자명 변환 (userNameMap 없는 단건 조회 전용)
+   * 숫자 파싱 실패 시 원래 값 반환 (기존 email 데이터 하위 호환)
+   */
+  private String resolveUserName(String idStr) {
+    if (idStr == null) return null;
+    try {
+      Long id = Long.parseLong(idStr);
+      return adminRepository.findById(id).map(AdminUser::getName).orElse(idStr);
+    } catch (NumberFormatException e) {
+      return idStr;
+    }
+  }
+
+  /**
+   * id 문자열 → 사용자명 변환 (userNameMap 활용)
+   * 맵에 없거나 숫자 파싱 실패 시 원래 값 반환
+   */
+  private String resolveUserName(String idStr, Map<Long, String> userNameMap) {
+    if (idStr == null) return null;
+    try {
+      Long id = Long.parseLong(idStr);
+      return userNameMap.getOrDefault(id, idStr);
+    } catch (NumberFormatException e) {
+      return idStr;
+    }
   }
 
     /**
@@ -563,12 +629,16 @@ public class PageDataService {
           String paramName = "p_" + key.replace(".", "_");
           whereClause.append(" AND ").append(buildJsonPath(segments)).append(" = :").append(paramName);
         } else {
-          // 단순 키 정확 일치 (최상위 + 1단계 중첩 동시 검색)
+          // 단순 키 정확 일치 — 최상위 + 1단계(contentKey) + 2단계(tabKey+contentKey) 동시 탐색
+          // eq_ 파라미터가 있을 때만 이 블록 진입 (무조건 붙지 않음)
           if (!fieldKey.matches("[a-zA-Z0-9_]+")) return;
           whereClause.append(" AND (data_json->>'").append(fieldKey).append("' = :p_").append(key)
-              .append(" OR EXISTS (SELECT 1 FROM jsonb_each(data_json) kv")
-              .append(" WHERE jsonb_typeof(kv.value) = 'object'")
-              .append(" AND kv.value->>'").append(fieldKey).append("' = :p_").append(key).append("))");
+              .append(" OR EXISTS (SELECT 1 FROM jsonb_each(data_json) kv1")
+              .append(" WHERE jsonb_typeof(kv1.value) = 'object'")
+              .append(" AND (kv1.value->>'").append(fieldKey).append("' = :p_").append(key)
+              .append(" OR EXISTS (SELECT 1 FROM jsonb_each(kv1.value) kv2")
+              .append(" WHERE jsonb_typeof(kv2.value) = 'object'")
+              .append(" AND kv2.value->>'").append(fieldKey).append("' = :p_").append(key).append("))))");
         }
         return;
       }
@@ -688,6 +758,17 @@ public class PageDataService {
         query.setParameter("p_" + key, "%" + value + "%");
       }
     });
+  }
+
+  /** 감사 컬럼 camelCase 키 → 실제 테이블 컬럼명 매핑 (해당 없으면 null) */
+  private String toAuditColumn(String key) {
+    return switch (key) {
+      case "createdAt" -> "created_at";
+      case "updatedAt" -> "updated_at";
+      case "createdBy" -> "created_by";
+      case "updatedBy" -> "updated_by";
+      default -> null;
+    };
   }
 
     /** 검색 결과 없을 때 빈 응답 생성 */
