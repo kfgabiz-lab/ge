@@ -47,6 +47,20 @@ public class PageDataResponse {
                 .build();
   }
 
+  /** createdBy/updatedBy를 이름으로 치환한 새 인스턴스 반환 */
+  public PageDataResponse withUserNames(String createdByName, String updatedByName) {
+    return PageDataResponse.builder()
+                .id(this.id)
+                .templateSlug(this.templateSlug)
+                .dataJson(this.dataJson)
+                .groupId(this.groupId)
+                .createdBy(createdByName)
+                .createdAt(this.createdAt)
+                .updatedBy(updatedByName)
+                .updatedAt(this.updatedAt)
+                .build();
+  }
+
     /** JSON 문자열 → Map 파싱 (파싱 실패 시 빈 Map 반환) */
   private static Map<String, Object> parseDataJson(String json) {
     try {
