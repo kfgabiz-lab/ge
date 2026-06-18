@@ -366,3 +366,4 @@ application-prod.yml
 
 > `ddl-auto: update`는 **운영 환경에서 절대 사용 금지**.  
 > 운영은 반드시 `validate` 또는 `none`으로 설정하고 DB 마이그레이션은 별도 스크립트로 관리한다.
+asdfsafdsafd
