@@ -619,6 +619,66 @@ public class PageDataService {
      */
   private void appendWhereConditions(StringBuilder whereClause, Map<String, String> searchParams) {
     searchParams.forEach((key, value) -> {
+      // drs_ 접두사 → dateRangeStatus 날짜 범위 쿼리
+      // 형식: drs_{rangeKey}=before|in_range|after
+      // rangeKey: dateRange 컬럼의 accessor (단순 키 또는 dot notation)
+      if (key.startsWith("drs_")) {
+        String rangeKey = key.substring(4);
+        String fromPart, toPart;
+        if (rangeKey.contains(".")) {
+          // dot notation: 명시적 경로 지정 → 중첩 탐색 불필요
+          String[] segs = rangeKey.split("\\.");
+          if (!isValidSegments(segs)) return;
+          String jsonPath = buildJsonPath(segs);
+          fromPart = "SPLIT_PART(" + jsonPath + ", '~', 1)";
+          toPart   = "SPLIT_PART(" + jsonPath + ", '~', 2)";
+          switch (value) {
+            case "before":
+              whereClause.append(" AND ").append(fromPart).append(" > CURRENT_DATE::text");
+              break;
+            case "in_range":
+              whereClause.append(" AND ").append(fromPart).append(" <= CURRENT_DATE::text")
+                         .append(" AND ").append(toPart).append(" >= CURRENT_DATE::text");
+              break;
+            case "after":
+              whereClause.append(" AND ").append(toPart).append(" < CURRENT_DATE::text");
+              break;
+            default: break;
+          }
+        } else {
+          // 단순 키: 최상위 + 1단계 중첩 동시 탐색 (기존 일반 검색과 동일 패턴)
+          if (!rangeKey.matches("[a-zA-Z0-9_]+")) return;
+          String fromRoot   = "SPLIT_PART(data_json->>'" + rangeKey + "', '~', 1)";
+          String toRoot     = "SPLIT_PART(data_json->>'" + rangeKey + "', '~', 2)";
+          String fromNested = "SPLIT_PART(kv.value->>'" + rangeKey + "', '~', 1)";
+          String toNested   = "SPLIT_PART(kv.value->>'" + rangeKey + "', '~', 2)";
+          String nested     = " OR EXISTS (SELECT 1 FROM jsonb_each(data_json) kv WHERE jsonb_typeof(kv.value) = 'object' AND ";
+          switch (value) {
+            case "before":
+              whereClause.append(" AND (")
+                  .append(fromRoot).append(" > CURRENT_DATE::text")
+                  .append(nested).append(fromNested).append(" > CURRENT_DATE::text)")
+                  .append(")");
+              break;
+            case "in_range":
+              whereClause.append(" AND (")
+                  .append(fromRoot).append(" <= CURRENT_DATE::text AND ").append(toRoot).append(" >= CURRENT_DATE::text")
+                  .append(nested)
+                  .append(fromNested).append(" <= CURRENT_DATE::text AND ").append(toNested).append(" >= CURRENT_DATE::text)")
+                  .append(")");
+              break;
+            case "after":
+              whereClause.append(" AND (")
+                  .append(toRoot).append(" < CURRENT_DATE::text")
+                  .append(nested).append(toNested).append(" < CURRENT_DATE::text)")
+                  .append(")");
+              break;
+            default: break;
+          }
+        }
+        return;
+      }
+
       // eq_ 접두사 → 정확 일치
       if (key.startsWith("eq_")) {
         String fieldKey = key.substring(3);
@@ -715,6 +775,9 @@ public class PageDataService {
      */
   private void bindSearchParams(Query query, Map<String, String> searchParams) {
     searchParams.forEach((key, value) -> {
+      // drs_ 접두사 → CURRENT_DATE 직접 사용, 파라미터 바인딩 불필요
+      if (key.startsWith("drs_")) return;
+
       // eq_ 접두사 → 정확 일치 바인딩
       if (key.startsWith("eq_")) {
         String fieldKey = key.substring(3);
