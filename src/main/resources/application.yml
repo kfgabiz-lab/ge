@@ -32,3 +32,13 @@ logging:
   level:
     root: WARN
     com.ge.bo: INFO
+
+
+ls:
+  isApiLogin: true
+  lse:
+    inApi:
+      connectPortalEncKey: abc
+    outApi:
+      googleMapKey : abc
+      recapchaKey : abc
