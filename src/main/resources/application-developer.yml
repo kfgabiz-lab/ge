@@ -44,3 +44,13 @@ logging:
     # 트랜잭션 커밋/롤백 로그
     org.springframework.transaction: TRACE
     org.springframework.orm.jpa: DEBUG
+
+
+ls:
+  isApiLogin: true
+  lse:
+    inApi:
+      connectPortalEncKey: abc
+    outApi:
+      googleMapKey : abc
+      recapchaKey : abc
