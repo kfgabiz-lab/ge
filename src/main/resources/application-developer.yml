@@ -51,6 +51,7 @@ ls:
   lse:
     inApi:
       connectPortalEncKey: abc
+      connectPortalIv: abc
     outApi:
       googleMapKey : abc
       recapchaKey : abc
