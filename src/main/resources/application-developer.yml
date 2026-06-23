@@ -54,4 +54,4 @@ ls:
       connectPortalIv: abc
     outApi:
       googleMapKey : abc
-      recapchaKey : abc
+      recapchaKey : "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
