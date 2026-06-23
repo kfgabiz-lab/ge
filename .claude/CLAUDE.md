@@ -89,3 +89,7 @@ profile : local
 - 현재 설정된 목표 전체 (## 해결해야 할 목표 섹션)
 - 수정 중인 파일명과 변경 내용 요약
 - 미완료 작업 목록
+
+
+## 형상관리.
+/docs/ge_guide/source-control-guide_v1.0.md
