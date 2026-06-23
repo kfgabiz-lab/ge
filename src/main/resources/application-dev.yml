@@ -37,8 +37,8 @@ ls:
   isApiLogin: true
   lse:
     inApi:
-      connectPortalEncKey: abc
-      connectPortalIv: abc
+      connectPortalEncKey: LegacyConnectKeyText(!#@)2532!#@
+      connectPortalIv: IV($&*)2516($&*)
     outApi:
       googleMapKey : abc
       recapchaKey : "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
