@@ -69,6 +69,16 @@ public class SlugRelation {
     @Builder.Default
     private String fetchSeparator = ",";
 
+    /** FETCH 조회 유형: TABLE=slave에서 직접 추출 / CATEGORY=상위 계층 거슬러 추출 */
+    @Column(name = "slave_type", nullable = false, length = 20)
+    @Builder.Default
+    private String slaveType = "TABLE";
+
+    /** CATEGORY 유형 FETCH 시 표시할 계층 depth 수 (기본 1 = 직접 상위만, 2 = "대분류 > 중분류") */
+    @Column(name = "category_depth", nullable = false)
+    @Builder.Default
+    private Integer categoryDepth = 1;
+
     /** 설명 */
     @Column(columnDefinition = "TEXT")
     private String description;

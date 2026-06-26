@@ -63,6 +63,8 @@ public class SlugRelationService {
                 .relationDir(StringUtils.hasText(request.relationDir()) ? request.relationDir().trim() : "FILTER")
                 .fetchFields(trimOrNull(request.fetchFields()))
                 .fetchSeparator(StringUtils.hasText(request.fetchSeparator()) ? request.fetchSeparator() : ",")
+                .slaveType(StringUtils.hasText(request.slaveType()) ? request.slaveType().trim() : "TABLE")
+                .categoryDepth(request.categoryDepth() != null ? request.categoryDepth() : 1)
                 .description(trimOrNull(request.description()))
                 .build();
         return SlugRelationResponse.from(slugRelationRepository.save(entity));
@@ -82,6 +84,8 @@ public class SlugRelationService {
         entity.setRelationDir(StringUtils.hasText(request.relationDir()) ? request.relationDir().trim() : "FILTER");
         entity.setFetchFields(trimOrNull(request.fetchFields()));
         entity.setFetchSeparator(StringUtils.hasText(request.fetchSeparator()) ? request.fetchSeparator() : ",");
+        entity.setSlaveType(StringUtils.hasText(request.slaveType()) ? request.slaveType().trim() : "TABLE");
+        entity.setCategoryDepth(request.categoryDepth() != null ? request.categoryDepth() : 1);
         entity.setDescription(trimOrNull(request.description()));
         return SlugRelationResponse.from(slugRelationRepository.save(entity));
     }
