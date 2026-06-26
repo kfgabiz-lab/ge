@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 
 public record SlugRelationRequest(
 
+
         @NotBlank(message = "Master Slug를 입력해주세요.")
         @Size(max = 200)
         String masterSlug,
@@ -36,6 +37,14 @@ public record SlugRelationRequest(
 
         @Size(max = 10)
         String fetchSeparator,
+
+        /** TABLE: slave 직접 추출 / CATEGORY: 상위 계층 거슬러 추출 (기본 TABLE) */
+        @Pattern(regexp = "^(TABLE|CATEGORY)$", message = "slaveType은 TABLE 또는 CATEGORY 이어야 합니다.")
+        String slaveType,
+
+        /** CATEGORY 유형 FETCH 시 표시할 계층 depth 수 (기본 1, 최대 5) */
+        @Min(1) @Max(5)
+        Integer categoryDepth,
 
         String description
 ) {}

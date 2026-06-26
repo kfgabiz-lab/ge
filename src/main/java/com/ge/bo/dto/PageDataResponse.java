@@ -47,6 +47,20 @@ public class PageDataResponse {
                 .build();
   }
 
+  /** dataJson을 FETCH 결과로 보강한 새 인스턴스 반환 */
+  public PageDataResponse withDataJson(Map<String, Object> newDataJson) {
+    return PageDataResponse.builder()
+                .id(this.id)
+                .templateSlug(this.templateSlug)
+                .dataJson(newDataJson)
+                .groupId(this.groupId)
+                .createdBy(this.createdBy)
+                .createdAt(this.createdAt)
+                .updatedBy(this.updatedBy)
+                .updatedAt(this.updatedAt)
+                .build();
+  }
+
   /** createdBy/updatedBy를 이름으로 치환한 새 인스턴스 반환 */
   public PageDataResponse withUserNames(String createdByName, String updatedByName) {
     return PageDataResponse.builder()

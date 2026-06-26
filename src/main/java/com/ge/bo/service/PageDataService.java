@@ -6,9 +6,11 @@ import com.ge.bo.dto.PageDataRequest;
 import com.ge.bo.dto.PageDataResponse;
 import com.ge.bo.entity.AdminUser;
 import com.ge.bo.entity.PageData;
+import com.ge.bo.entity.SlugRelation;
 import com.ge.bo.exception.ErrorCode;
 import com.ge.bo.repository.AdminRepository;
 import com.ge.bo.repository.PageDataRepository;
+import com.ge.bo.repository.SlugRelationRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -18,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -35,6 +38,7 @@ public class PageDataService {
   private final AdminRepository adminRepository;
   private final ObjectMapper objectMapper;
   private final PageFileService pageFileService;
+  private final SlugRelationRepository slugRelationRepository;
 
   @PersistenceContext
     private EntityManager entityManager;
@@ -130,6 +134,9 @@ public class PageDataService {
     List<PageDataResponse> content = rows.stream()
                 .map(row -> mapRowToResponse(row, userNameMap))
                 .toList();
+
+    // FETCH 관계 적용 — slave 데이터를 master 응답에 병합
+    content = applyFetch(slug, content);
 
     int totalPages = (int) Math.ceil((double) totalElements / size);
     return PageDataListResponse.builder()
@@ -747,6 +754,30 @@ public class PageDataService {
         return;
       }
 
+      // _gte 접미사 → 단일 date 컬럼 범위 검색 시작 조건 (fieldKey = key에서 _gte 제거)
+      if (key.endsWith("_gte")) {
+        if (!key.matches("[a-zA-Z0-9_]+")) return;
+        String fieldKey = key.substring(0, key.length() - 4);
+        String paramName = "p_" + key;
+        whereClause.append(" AND (data_json->>'").append(fieldKey).append("' >= :").append(paramName)
+            .append(" OR EXISTS (SELECT 1 FROM jsonb_each(data_json) kv")
+            .append(" WHERE jsonb_typeof(kv.value) = 'object'")
+            .append(" AND kv.value->>'").append(fieldKey).append("' >= :").append(paramName).append("))");
+        return;
+      }
+
+      // _lte 접미사 → 단일 date 컬럼 범위 검색 종료 조건 (fieldKey = key에서 _lte 제거)
+      if (key.endsWith("_lte")) {
+        if (!key.matches("[a-zA-Z0-9_]+")) return;
+        String fieldKey = key.substring(0, key.length() - 4);
+        String paramName = "p_" + key;
+        whereClause.append(" AND (data_json->>'").append(fieldKey).append("' <= :").append(paramName)
+            .append(" OR EXISTS (SELECT 1 FROM jsonb_each(data_json) kv")
+            .append(" WHERE jsonb_typeof(kv.value) = 'object'")
+            .append(" AND kv.value->>'").append(fieldKey).append("' <= :").append(paramName).append("))");
+        return;
+      }
+
       // 단순 키 (기존 방식 유지 — 최상위 + 1단계 중첩 동시 검색)
       if (!key.matches("[a-zA-Z0-9_]+")) return;
       if (value.contains("~")) {
@@ -840,6 +871,13 @@ public class PageDataService {
         return;
       }
 
+      // _gte/_lte 접미사 → 값 그대로 바인딩 (단일 date 컬럼 범위 비교용)
+      if (key.endsWith("_gte") || key.endsWith("_lte")) {
+        if (!key.matches("[a-zA-Z0-9_]+")) return;
+        query.setParameter("p_" + key, value);
+        return;
+      }
+
       // 단순 키 (기존 방식)
       if (!key.matches("[a-zA-Z0-9_]+")) return;
       if (value.contains("~")) {
@@ -864,6 +902,329 @@ public class PageDataService {
       default -> null;
     };
   }
+
+    /** FETCH 관계 적용 — FETCH 방향 slug_relation으로 slave 데이터를 master content에 병합 */
+    @SuppressWarnings("unchecked")
+    private List<PageDataResponse> applyFetch(String slug, List<PageDataResponse> content) {
+        List<SlugRelation> fetchRelations = slugRelationRepository.findByMasterSlugAndRelationDir(slug, "FETCH");
+        if (fetchRelations.isEmpty()) return content;
+
+        return content.stream().map(item -> {
+            Map<String, Object> enriched = new LinkedHashMap<>(item.getDataJson());
+            for (SlugRelation rel : fetchRelations) {
+                boolean isCategory = "CATEGORY".equals(rel.getSlaveType());
+
+                String masterValue = extractField(item.getDataJson(), rel.getMasterKey());
+                if (masterValue == null || masterValue.isBlank()) continue;
+
+                // 반환값: fetch_fields 있으면 문자열, 없으면 Map<String,Object> 전체 객체
+                Object fetchedValue = isCategory
+                    ? resolveCategoryFetch(rel, masterValue)
+                    : resolveTableFetch(rel, masterValue);
+
+                if (fetchedValue != null) {
+                    enriched.put(buildFetchKey(rel.getId()), fetchedValue);
+                }
+            }
+            return enriched.size() > item.getDataJson().size() ? item.withDataJson(enriched) : item;
+        }).toList();
+    }
+
+    /**
+     * TABLE 유형 FETCH
+     * - fetch_fields 있음: 해당 경로 값을 문자열로 추출 후 fetchSeparator로 합침 → String 반환
+     * - fetch_fields 없음: 첫 번째 slave 레코드 dataJson 전체를 Map으로 반환
+     *   → FE에서 accessor "_fetchedRel{id}.form1.title" 등 dot notation으로 자유롭게 접근 가능
+     */
+    @SuppressWarnings("unchecked")
+    private Object resolveTableFetch(SlugRelation rel, String masterValue) {
+        boolean hasFetchFields = StringUtils.hasText(rel.getFetchFields());
+
+        StringBuilder sql = new StringBuilder("SELECT data_json::text FROM page_data WHERE data_slug = :slaveSlug");
+        appendSlaveKeyCondition(sql, rel.getSlaveKey(), "masterValue");
+        Map<String, String> filterParams = new LinkedHashMap<>();
+        if (rel.getSlaveFilter() != null && !rel.getSlaveFilter().isBlank()) {
+            appendSlaveFilter(sql, rel.getSlaveFilter(), filterParams);
+        }
+        // fetch_fields 없으면 첫 번째 레코드만 조회, 있으면 다중 지원
+        sql.append(hasFetchFields ? " LIMIT 100" : " LIMIT 1");
+
+        Query q = entityManager.createNativeQuery(sql.toString());
+        q.setParameter("slaveSlug", rel.getSlaveSlug());
+        q.setParameter("masterValue", masterValue);
+        filterParams.forEach(q::setParameter);
+
+        List<Object> results = q.getResultList();
+        if (results.isEmpty()) return null;
+
+        if (!hasFetchFields) {
+            // fetch_fields 없음 → 첫 번째 slave dataJson 전체 Map 반환
+            try {
+                return objectMapper.readValue(results.get(0).toString(),
+                    new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {});
+            } catch (Exception e) {
+                log.warn("TABLE FETCH 전체 JSON 파싱 실패: {}", e.getMessage());
+                return null;
+            }
+        }
+
+        // fetch_fields 있음 → 해당 경로 값 문자열 추출 + separator 합침
+        List<String> values = new ArrayList<>();
+        for (Object row : results) {
+            try {
+                Map<String, Object> dataJson = objectMapper.readValue(row.toString(), new com.fasterxml.jackson.core.type.TypeReference<>() {});
+                String val = extractField(dataJson, rel.getFetchFields());
+                if (val != null) values.add(val);
+            } catch (Exception e) {
+                log.warn("TABLE FETCH dataJson 파싱 실패: {}", e.getMessage());
+            }
+        }
+        if (values.isEmpty()) return null;
+        String sep = rel.getFetchSeparator() != null ? rel.getFetchSeparator() : ",";
+        return String.join(sep, values);
+    }
+
+    /**
+     * CATEGORY 유형 FETCH: 연결 레코드 전체 조회 → 각각 최상위까지 경로 수집 → targetDepth개 잘라 반환
+     *
+     * 데이터 구조:
+     * - 연결 레코드: product.id(매칭키), product.parentId(카테고리 id) — form1.title 없음
+     * - 카테고리 레코드: form1.title(이름), form1.parentId(상위 id)
+     *
+     * depth=1 → 최상위(대분류) 이름만
+     * depth=2 → "대분류 > 중분류"
+     * 다중 연결 레코드 → fetchSeparator로 합침 (예: "카테A, 카테B")
+     */
+    /**
+     * CATEGORY 유형 FETCH
+     * - fetch_fields 있음: depth에 해당하는 이름(문자열)을 추출 → fetchSeparator로 합침
+     * - fetch_fields 없음: depth에 해당하는 카테고리 레코드 전체 Map 반환
+     *   → FE에서 "_fetchedRel{id}.form1.title" 등 dot notation으로 원하는 필드 직접 접근
+     */
+    @SuppressWarnings("unchecked")
+    private Object resolveCategoryFetch(SlugRelation rel, String masterValue) {
+        int targetDepth = rel.getCategoryDepth() != null ? rel.getCategoryDepth() : 1;
+        boolean hasFetchFields = StringUtils.hasText(rel.getFetchFields());
+        String sep = StringUtils.hasText(rel.getFetchSeparator()) ? rel.getFetchSeparator() : ",";
+
+        // slaveKey 기반 linkParentKeyPath: "product.id" → "product.parentId"
+        int lastDot = rel.getSlaveKey().lastIndexOf('.');
+        String linkParentKeyPath = lastDot >= 0
+            ? rel.getSlaveKey().substring(0, lastDot + 1) + "parentId"
+            : "parentId";
+
+        // 연결 레코드 조회
+        StringBuilder sql1 = new StringBuilder("SELECT data_json::text FROM page_data WHERE data_slug = :slaveSlug");
+        appendSlaveKeyCondition(sql1, rel.getSlaveKey(), "masterValue");
+        Map<String, String> filterParams = new LinkedHashMap<>();
+        if (rel.getSlaveFilter() != null && !rel.getSlaveFilter().isBlank()) {
+            appendSlaveFilter(sql1, rel.getSlaveFilter(), filterParams);
+        }
+
+        Query q1 = entityManager.createNativeQuery(sql1.toString());
+        q1.setParameter("slaveSlug", rel.getSlaveSlug());
+        q1.setParameter("masterValue", masterValue);
+        filterParams.forEach(q1::setParameter);
+
+        List<Object> r1 = q1.getResultList();
+        if (r1.isEmpty()) return null;
+
+        if (!hasFetchFields) {
+            // fetch_fields 없음 → 첫 번째 연결 레코드 기준으로 depth에 해당하는 카테고리 레코드 전체 Map 반환
+            try {
+                Map<String, Object> linkDataJson = objectMapper.readValue(r1.get(0).toString(),
+                    new com.fasterxml.jackson.core.type.TypeReference<>() {});
+                return collectCategoryRecordAtDepth(linkDataJson, rel.getSlaveSlug(), targetDepth, linkParentKeyPath);
+            } catch (Exception e) {
+                log.warn("CATEGORY FETCH 연결 레코드 파싱 실패: {}", e.getMessage());
+                return null;
+            }
+        }
+
+        // fetch_fields 있음 → 기존 방식: depth에 해당하는 이름 문자열 추출 + separator 합침
+        String categoryParentKeyPath = deriveCategoryParentKeyPath(rel.getFetchFields());
+        List<String> results = new ArrayList<>();
+        for (Object row : r1) {
+            Map<String, Object> linkDataJson;
+            try {
+                linkDataJson = objectMapper.readValue(row.toString(), new com.fasterxml.jackson.core.type.TypeReference<>() {});
+            } catch (Exception e) {
+                log.warn("CATEGORY FETCH 연결 레코드 파싱 실패: {}", e.getMessage());
+                continue;
+            }
+            List<String> fullPath = collectFullCategoryPath(linkDataJson, rel, linkParentKeyPath, categoryParentKeyPath);
+            if (fullPath.isEmpty()) continue;
+            if (fullPath.size() >= targetDepth) {
+                results.add(fullPath.get(targetDepth - 1));
+            }
+        }
+        if (results.isEmpty()) return null;
+        return String.join(sep, results);
+    }
+
+    /**
+     * fetch_fields 없는 CATEGORY 타입 전용 — depth에 해당하는 카테고리 레코드 전체 Map 반환
+     * 연결 레코드에서 최상위까지 순회 후 역순 정렬, targetDepth번째 레코드 반환
+     * 카테고리 레코드 내 parentId 경로는 autoDetectParentKeyPath()로 자동 탐지
+     */
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> collectCategoryRecordAtDepth(
+            Map<String, Object> linkDataJson, String slaveSlug,
+            int targetDepth, String linkParentKeyPath) {
+
+        // 연결 레코드 → 최상위까지 순서대로 수집 (소분류→중분류→대분류 순)
+        List<Map<String, Object>> records = new ArrayList<>();
+        Map<String, Object> cursor = linkDataJson;
+        String currentParentKeyPath = linkParentKeyPath;
+
+        for (int guard = 0; guard < 10; guard++) {
+            String parentId = extractField(cursor, currentParentKeyPath);
+            if (parentId == null || parentId.isBlank()) break;
+
+            String sql = "SELECT data_json::text FROM page_data WHERE data_slug = :slaveSlug"
+                + " AND data_json->>'id' = :parentId LIMIT 1";
+            Query q = entityManager.createNativeQuery(sql);
+            q.setParameter("slaveSlug", slaveSlug);
+            q.setParameter("parentId", parentId);
+
+            List<Object> rows = q.getResultList();
+            if (rows.isEmpty()) break;
+
+            try {
+                Map<String, Object> categoryRecord = objectMapper.readValue(rows.get(0).toString(),
+                    new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {});
+                records.add(categoryRecord);
+                cursor = categoryRecord;
+                currentParentKeyPath = autoDetectParentKeyPath(categoryRecord);
+            } catch (Exception e) {
+                log.warn("CATEGORY FETCH 카테고리 레코드 파싱 실패: {}", e.getMessage());
+                break;
+            }
+        }
+
+        if (records.isEmpty()) return null;
+        // 역순: 대분류(index=0), 중분류(index=1), ...
+        Collections.reverse(records);
+        return records.size() >= targetDepth ? records.get(targetDepth - 1) : null;
+    }
+
+    /**
+     * 카테고리 레코드에서 parentId 경로 자동 탐지
+     * 1. 최상위에 "parentId" 있으면 → "parentId"
+     * 2. 섹션(Map 값) 내에 "parentId" 있으면 → "{섹션키}.parentId"
+     */
+    @SuppressWarnings("unchecked")
+    private String autoDetectParentKeyPath(Map<String, Object> dataJson) {
+        if (dataJson.containsKey("parentId")) return "parentId";
+        for (Map.Entry<String, Object> entry : dataJson.entrySet()) {
+            if (entry.getValue() instanceof Map) {
+                Map<String, Object> section = (Map<String, Object>) entry.getValue();
+                if (section.containsKey("parentId")) {
+                    return entry.getKey() + ".parentId";
+                }
+            }
+        }
+        return "parentId";
+    }
+
+    /**
+     * 연결 레코드 → 최상위 카테고리까지 전체 경로 수집 (대분류가 앞, 중분류가 뒤)
+     * parentId가 비어있을 때까지 거슬러 올라감 (무한루프 방지: 최대 10단계)
+     */
+    @SuppressWarnings("unchecked")
+    private List<String> collectFullCategoryPath(
+            Map<String, Object> linkDataJson, SlugRelation rel,
+            String linkParentKeyPath, String categoryParentKeyPath) {
+
+        List<String> path = new ArrayList<>();
+        Map<String, Object> cursor = linkDataJson;
+        String currentParentKeyPath = linkParentKeyPath; // 첫 번째: 연결 레코드 → 카테고리
+
+        for (int guard = 0; guard < 10; guard++) {
+            String parentId = extractField(cursor, currentParentKeyPath);
+            if (parentId == null || parentId.isBlank()) break;
+
+            String sql = "SELECT data_json::text FROM page_data WHERE data_slug = :slaveSlug"
+                + " AND data_json->>'id' = :parentId LIMIT 1";
+            Query q = entityManager.createNativeQuery(sql);
+            q.setParameter("slaveSlug", rel.getSlaveSlug());
+            q.setParameter("parentId", parentId);
+
+            List<Object> rows = q.getResultList();
+            if (rows.isEmpty()) break;
+
+            try {
+                Map<String, Object> parentDataJson = objectMapper.readValue(rows.get(0).toString(), new com.fasterxml.jackson.core.type.TypeReference<>() {});
+                String name = extractField(parentDataJson, rel.getFetchFields());
+                if (name != null) path.add(0, name); // 상위일수록 앞에 추가
+                cursor = parentDataJson;
+                currentParentKeyPath = categoryParentKeyPath; // 두 번째부터: 카테고리 간 이동
+            } catch (Exception e) {
+                log.warn("CATEGORY FETCH 카테고리 경로 수집 실패: {}", e.getMessage());
+                break;
+            }
+        }
+
+        return path;
+    }
+
+    /** fetchFields에서 카테고리 레코드 간 parentId 경로 추출: "form1.title" → "form1.parentId" */
+    private String deriveCategoryParentKeyPath(String fetchFields) {
+        if (fetchFields == null) return "parentId";
+        int dot = fetchFields.lastIndexOf('.');
+        return dot >= 0 ? fetchFields.substring(0, dot + 1) + "parentId" : "parentId";
+    }
+
+    /** slave_key 경로 조건 SQL 추가 (dot notation → data_json->'x'->>'y') */
+    private void appendSlaveKeyCondition(StringBuilder sql, String slaveKey, String paramName) {
+        if (slaveKey.contains(".")) {
+            String[] segs = slaveKey.split("\\.");
+            sql.append(" AND ").append(buildJsonPath(segs)).append(" = :").append(paramName);
+        } else {
+            sql.append(" AND data_json->>'").append(slaveKey).append("' = :").append(paramName);
+        }
+    }
+
+    /** slave_filter 파싱: "depth=3&active=Y" → WHERE 조건 + 파라미터 맵 추가 */
+    private void appendSlaveFilter(StringBuilder sql, String slaveFilter, Map<String, String> params) {
+        for (String cond : slaveFilter.split("&")) {
+            String[] kv = cond.split("=", 2);
+            if (kv.length != 2) continue;
+            String k = kv[0].trim();
+            String v = kv[1].trim();
+            if (!k.matches("[a-zA-Z0-9_.]+")) continue;
+            String paramName = "sf_" + k.replace(".", "_");
+            if (k.contains(".")) {
+                String[] segs = k.split("\\.");
+                if (!isValidSegments(segs)) continue;
+                sql.append(" AND ").append(buildJsonPath(segs)).append(" = :").append(paramName);
+            } else {
+                // 최상위 + 1단계 중첩 모두 탐색
+                sql.append(" AND (data_json->>'").append(k).append("' = :").append(paramName)
+                   .append(" OR EXISTS (SELECT 1 FROM jsonb_each(data_json) kv")
+                   .append(" WHERE jsonb_typeof(kv.value) = 'object' AND kv.value->>'").append(k).append("' = :").append(paramName).append("))");
+            }
+            params.put(paramName, v);
+        }
+    }
+
+    /** dataJson에서 dot notation 경로로 값 추출 ("form1.title" → dataJson.form1.title) */
+    @SuppressWarnings("unchecked")
+    private String extractField(Map<String, Object> dataJson, String fieldPath) {
+        if (dataJson == null || fieldPath == null || fieldPath.isBlank()) return null;
+        String[] segs = fieldPath.split("\\.");
+        Object current = dataJson;
+        for (String seg : segs) {
+            if (!(current instanceof Map)) return null;
+            current = ((Map<String, Object>) current).get(seg);
+        }
+        return current != null ? current.toString() : null;
+    }
+
+    /** relationId → FETCH 결과 키 변환: 2 → "_fetchedRel2" */
+    private String buildFetchKey(Long relationId) {
+        return "_fetchedRel" + relationId;
+    }
 
     /** 검색 결과 없을 때 빈 응답 생성 */
   private PageDataListResponse buildEmptyResponse(int page, int size) {
