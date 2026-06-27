@@ -2,6 +2,7 @@ package com.ge.bo.controller;
 
 import com.ge.bo.annotation.ApiLinkedEntity;
 import com.ge.bo.common.excel.ExcelService;
+import com.ge.bo.dto.FieldPatchRequest;
 import com.ge.bo.dto.PageDataListResponse;
 import com.ge.bo.dto.PageDataRequest;
 import com.ge.bo.dto.PageDataResponse;
@@ -75,6 +76,15 @@ public class PageDataController {
                         @PathVariable Long id,
                         @Valid @RequestBody PageDataRequest request) {
     return ResponseEntity.ok(pageDataService.update(slug, id, request));
+  }
+
+        /** 단일 필드 즉시 수정 — inlineEdit 셀 변경 시 특정 필드만 부분 업데이트 */
+  @PatchMapping("/{id}/field")
+        public ResponseEntity<PageDataResponse> patchField(
+                        @PathVariable String slug,
+                        @PathVariable Long id,
+                        @Valid @RequestBody FieldPatchRequest request) {
+    return ResponseEntity.ok(pageDataService.patchField(slug, id, request.getFieldKey(), request.getValue()));
   }
 
         /** 삭제 — id 지정 */
