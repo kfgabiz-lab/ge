@@ -1,6 +1,7 @@
 package com.ge.bo.filter;
 
-import com.ge.bo.service.ChangeHistoryService;
+import com.ge.bo.security.JwtTokenProvider;
+import com.ge.bo.service.TransactionLogService;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,20 +18,21 @@ import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
 /**
- * 변경 이력 필터 — POST / PUT / PATCH / DELETE 요청을 가로채 이력을 저장
+ * 트랜잭션 로그 필터 — POST / PUT / PATCH / DELETE 요청을 가로채 로그를 저장
  * ContentCachingRequestWrapper: 요청 바디는 1회만 읽을 수 있어 래핑 필요
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ChangeHistoryFilter extends OncePerRequestFilter {
+public class TransactionLogFilter extends OncePerRequestFilter {
 
-  private final ChangeHistoryService changeHistoryService;
+  private final TransactionLogService transactionLogService;
+  private final JwtTokenProvider jwtTokenProvider;
 
-  /** 이력 저장 대상 HTTP 메서드 */
+  /** 로그 저장 대상 HTTP 메서드 */
   private static final Set<String> TARGET_METHODS = Set.of("POST", "PUT", "PATCH", "DELETE");
 
-  /** 이력 저장 제외 URL 접두사 (로그인·인증 관련 민감 요청) */
+  /** 로그 저장 제외 URL 접두사 (로그인·인증 관련 민감 요청) */
   private static final String EXCLUDE_AUTH_PREFIX = "/api/v1/auth/";
 
   @Override
@@ -41,7 +43,7 @@ public class ChangeHistoryFilter extends OncePerRequestFilter {
     String method = request.getMethod().toUpperCase();
     String requestUri = request.getRequestURI();
 
-    // 대상 메서드가 아니거나 제외 URL이면 이력 저장 없이 통과
+    // 대상 메서드가 아니거나 제외 URL이면 로그 저장 없이 통과
     if (!TARGET_METHODS.contains(method) || requestUri.startsWith(EXCLUDE_AUTH_PREFIX)) {
       filterChain.doFilter(request, response);
       return;
@@ -51,6 +53,9 @@ public class ChangeHistoryFilter extends OncePerRequestFilter {
     ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request);
     long startTime = System.currentTimeMillis();
 
+    // JWT 토큰에서 직접 추출 — SecurityContextHolder 순서 문제를 우회
+    String loginUser = extractLoginUserFromToken(request);
+
     try {
       filterChain.doFilter(wrappedRequest, response);
     } finally {
@@ -59,9 +64,9 @@ public class ChangeHistoryFilter extends OncePerRequestFilter {
       String requestUrl = buildFullUrl(request);
       String clientIp = extractClientIp(request);
 
-      changeHistoryService.saveAsync(
+      transactionLogService.saveAsync(
           method, requestUrl, requestBody,
-          response.getStatus(), clientIp, durationMs);
+          response.getStatus(), clientIp, durationMs, loginUser);
     }
   }
 
@@ -81,6 +86,26 @@ public class ChangeHistoryFilter extends OncePerRequestFilter {
     String query = request.getQueryString();
     String fullUrl = (query != null) ? uri + "?" + query : uri;
     return fullUrl.length() > 500 ? fullUrl.substring(0, 500) : fullUrl;
+  }
+
+  /**
+   * Authorization 헤더의 Bearer 토큰에서 이메일 직접 추출
+   * SecurityContextHolder 대신 JWT를 직접 파싱 — 필터 실행 순서와 무관하게 동작
+   */
+  private String extractLoginUserFromToken(HttpServletRequest request) {
+    String bearerToken = request.getHeader("Authorization");
+    if (StringUtils.isBlank(bearerToken) || !bearerToken.startsWith("Bearer ")) {
+      return null;
+    }
+    String token = bearerToken.substring(7);
+    try {
+      if (jwtTokenProvider.validateToken(token)) {
+        return jwtTokenProvider.getEmailFromToken(token);
+      }
+    } catch (Exception e) {
+      // 토큰 파싱 실패 시 null 반환 (로그 저장은 계속)
+    }
+    return null;
   }
 
   /**

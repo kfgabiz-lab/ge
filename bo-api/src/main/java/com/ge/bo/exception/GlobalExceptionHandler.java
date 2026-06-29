@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,6 +29,18 @@ public class GlobalExceptionHandler {
   private final ErrorLogService errorLogService;
 
   /**
+   * request 스레드에서 현재 로그인 사용자 이메일 추출
+   * @Async 별도 스레드에서는 SecurityContext가 없으므로 호출 전에 미리 추출해서 파라미터로 전달해야 함
+   */
+  private String extractLoginUser() {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getPrincipal())) {
+      return null;
+    }
+    return auth.getName();
+  }
+
+  /**
    * JSON 파싱 실패 등 HttpMessageNotReadableException 예외 처리 (400 Bad Request)
    */
   @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
@@ -45,7 +59,7 @@ public class GlobalExceptionHandler {
     body.put("timestamp", LocalDateTime.now().toString());
 
     // 오류로그 비동기 저장 (4xx — 스택트레이스 저장 안 함)
-    errorLogService.saveAsync(request, 400, "MALFORMED_JSON", message, null);
+    errorLogService.saveAsync(request, 400, "MALFORMED_JSON", message, null, extractLoginUser());
 
     return ResponseEntity.badRequest().body(body);
   }
@@ -72,7 +86,7 @@ public class GlobalExceptionHandler {
     body.put("timestamp", LocalDateTime.now().toString());
 
     // 오류로그 비동기 저장 (4xx — 스택트레이스 저장 안 함)
-    errorLogService.saveAsync(request, 400, "VALIDATION_FAILED", message, null);
+    errorLogService.saveAsync(request, 400, "VALIDATION_FAILED", message, null, extractLoginUser());
 
     return ResponseEntity.badRequest().body(body);
   }
@@ -94,7 +108,7 @@ public class GlobalExceptionHandler {
 
     // 오류로그 비동기 저장 (4xx — 스택트레이스 저장 안 함)
     errorLogService.saveAsync(
-        request, ex.getStatus().value(), ex.getErrorCode(), ex.getMessage(), null);
+        request, ex.getStatus().value(), ex.getErrorCode(), ex.getMessage(), null, extractLoginUser());
 
     return ResponseEntity.status(ex.getStatus()).body(body);
   }
@@ -120,7 +134,7 @@ public class GlobalExceptionHandler {
     body.put("timestamp", LocalDateTime.now().toString());
 
     // 오류로그 비동기 저장 (4xx — 스택트레이스 저장 안 함)
-    errorLogService.saveAsync(request, 403, "FORBIDDEN", message, null);
+    errorLogService.saveAsync(request, 403, "FORBIDDEN", message, null, extractLoginUser());
 
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
   }
@@ -143,7 +157,7 @@ public class GlobalExceptionHandler {
     body.put("timestamp", LocalDateTime.now().toString());
 
     // 오류로그 비동기 저장 (4xx — 스택트레이스 저장 안 함)
-    errorLogService.saveAsync(request, 409, "DATA_INTEGRITY", message, null);
+    errorLogService.saveAsync(request, 409, "DATA_INTEGRITY", message, null, extractLoginUser());
 
     return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
   }
@@ -166,7 +180,7 @@ public class GlobalExceptionHandler {
     body.put("timestamp", LocalDateTime.now().toString());
 
     // 오류로그 비동기 저장 (500 — 스택트레이스 포함)
-    errorLogService.saveAsync(request, 500, "INTERNAL_SERVER_ERROR", message, ex);
+    errorLogService.saveAsync(request, 500, "INTERNAL_SERVER_ERROR", message, ex, extractLoginUser());
 
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
   }
