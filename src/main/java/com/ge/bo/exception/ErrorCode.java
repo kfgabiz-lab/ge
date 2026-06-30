@@ -56,6 +56,12 @@ public enum ErrorCode {
     /* API 정보 */
     API_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "API_INFO_NOT_FOUND", "해당 API 정보를 찾을 수 없습니다."),
 
+    /* 오류로그 */
+    ERROR_LOG_NOT_FOUND(HttpStatus.NOT_FOUND, "ERROR_LOG_NOT_FOUND", "해당 오류로그를 찾을 수 없습니다."),
+
+    /* 트랜잭션 로그 */
+    TRANSACTION_LOG_NOT_FOUND(HttpStatus.NOT_FOUND, "TRANSACTION_LOG_NOT_FOUND", "해당 트랜잭션 로그를 찾을 수 없습니다."),
+
     /* Slug 레지스트리 */
     SLUG_REGISTRY_NOT_FOUND(HttpStatus.NOT_FOUND, "SLUG_REGISTRY_NOT_FOUND", "해당 slug를 찾을 수 없습니다."),
     SLUG_REGISTRY_SLUG_DUPLICATE(HttpStatus.CONFLICT, "SLUG_REGISTRY_SLUG_DUPLICATE", "이미 사용 중인 slug입니다."),

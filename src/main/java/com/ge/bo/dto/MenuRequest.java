@@ -25,7 +25,7 @@ public record MenuRequest(
     String descriptionMsgKey,
 
     @Size(max = 200, message = "URL은 200자 이하로 입력해주세요.")
-    @Pattern(regexp = "^$|^/[a-zA-Z0-9\\-_/]*$",
+    @Pattern(regexp = "^$|^/[a-zA-Z0-9\\-_/?=&]*$",
              message = "URL은 /로 시작하는 경로를 입력해주세요.")
     String url,
 

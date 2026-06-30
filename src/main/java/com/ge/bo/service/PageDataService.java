@@ -56,12 +56,13 @@ public class PageDataService {
      */
   @Transactional(readOnly = true)
     public PageDataListResponse search(String slug, Map<String, String> allParams, int page, int size, Long siteId) {
-        // 검색 조건 파라미터 추출 (예약어 제거 + 빈 값 제거)
+        // 검색 조건 파라미터 추출 — rel_ 접두사(FILTER slug_relation)와 일반 파라미터 분리
+    Map<String, String> relFilterParams = new LinkedHashMap<>();
     Map<String, String> searchParams = new LinkedHashMap<>();
     allParams.forEach((key, value) -> {
-      if (!RESERVED_PARAMS.contains(key) && value != null && !value.isBlank()) {
-        searchParams.put(key, value);
-      }
+      if (RESERVED_PARAMS.contains(key) || value == null || value.isBlank()) return;
+      if (key.startsWith("rel_")) relFilterParams.put(key, value);
+      else searchParams.put(key, value);
     });
 
         // WHERE 절 동적 생성
@@ -71,6 +72,16 @@ public class PageDataService {
       whereClause.append(" AND (site_id = :siteId OR site_id IS NULL)");
     }
     appendWhereConditions(whereClause, searchParams);
+
+        // FILTER slug_relation 처리 — rel_{id}=카테고리ID → master id IN (...) 조건 추가
+    if (!relFilterParams.isEmpty()) {
+      Set<Long> filterIds = resolveFilterRelationIds(relFilterParams);
+      if (filterIds != null) {
+        if (filterIds.isEmpty()) return buildEmptyResponse(page, size);
+        String idList = filterIds.stream().map(String::valueOf).collect(java.util.stream.Collectors.joining(","));
+        whereClause.append(" AND id IN (").append(idList).append(")");
+      }
+    }
 
         // 전체 건수 조회
     String countSql = "SELECT COUNT(*) FROM page_data " + whereClause;
@@ -248,6 +259,43 @@ public class PageDataService {
     updateQuery.setParameter("dataJson", dataJsonStr);
     updateQuery.setParameter("updatedBy", currentUser);
     updateQuery.setParameter("templateSlug", request.getTemplateSlug() != null ? request.getTemplateSlug() : slug);
+    updateQuery.setParameter("id", id);
+    updateQuery.setParameter("slug", slug);
+    updateQuery.executeUpdate();
+    return getById(slug, id);
+  }
+
+    /**
+     * 단일 필드 부분 수정 — inlineEdit 셀 변경 시 해당 fieldKey만 업데이트
+     *
+     * @param slug     페이지 식별자
+     * @param id       데이터 PK
+     * @param fieldKey data_json 내 필드 키 (점 표기법 미지원, 최상위 키만)
+     * @param value    변경할 값
+     */
+  @Transactional
+    public PageDataResponse patchField(String slug, Long id, String fieldKey, Object value) {
+        // 기존 data_json 전체 조회
+    PageData existing = pageDataRepository.findByIdAndDataSlug(id, slug)
+                .orElseThrow(ErrorCode.PAGE_DATA_NOT_FOUND::toException);
+        // 기존 data_json에 해당 필드만 덮어쓰기
+    Map<String, Object> dataJson;
+    try {
+      dataJson = new LinkedHashMap<>(objectMapper.readValue(
+          existing.getDataJson(), new com.fasterxml.jackson.core.type.TypeReference<Map<String, Object>>() {}));
+    } catch (Exception e) {
+      dataJson = new LinkedHashMap<>();
+    }
+    dataJson.put(fieldKey, value);
+    dataJson.put("id", id);
+    String dataJsonStr = serializeDataJson(dataJson);
+    String currentUser = getCurrentUserId();
+    Query updateQuery = entityManager.createNativeQuery(
+        "UPDATE page_data"
+        + " SET data_json = CAST(:dataJson AS jsonb), updated_by = :updatedBy, updated_at = NOW()"
+        + " WHERE id = :id AND data_slug = :slug");
+    updateQuery.setParameter("dataJson", dataJsonStr);
+    updateQuery.setParameter("updatedBy", currentUser);
     updateQuery.setParameter("id", id);
     updateQuery.setParameter("slug", slug);
     updateQuery.executeUpdate();
@@ -902,6 +950,136 @@ public class PageDataService {
       default -> null;
     };
   }
+
+    /**
+     * FILTER slug_relation 처리 — rel_{id}=카테고리ID 파라미터로 master id 목록 반환
+     * catValue + 모든 하위 카테고리 ID를 IN 조건으로 사용 (대분류 선택 시에도 하위 포함)
+     * 복수 rel_ 파라미터: AND 교집합 처리
+     * null 반환: 적용할 FILTER 없음, 빈 Set 반환: 결과 없음
+     */
+    @SuppressWarnings("unchecked")
+    private Set<Long> resolveFilterRelationIds(Map<String, String> relFilterParams) {
+        Set<Long> resultIds = null;
+
+        for (Map.Entry<String, String> entry : relFilterParams.entrySet()) {
+            String key = entry.getKey();             // "rel_1"
+            String categoryValue = entry.getValue(); // 선택한 카테고리 ID
+            if (categoryValue == null || categoryValue.isBlank()) continue;
+
+            Long relId;
+            try { relId = Long.parseLong(key.substring(4)); }
+            catch (NumberFormatException e) { continue; }
+
+            // catValue 숫자 검증 (SQL injection 방지)
+            long catId;
+            try { catId = Long.parseLong(categoryValue.trim()); }
+            catch (NumberFormatException e) { continue; }
+
+            SlugRelation rel = slugRelationRepository.findById(relId).orElse(null);
+            if (rel == null || !"FILTER".equals(rel.getRelationDir())) continue;
+
+            // slaveKey에서 parentId 경로 유도: "product.id" → "product.parentId"
+            int lastDot = rel.getSlaveKey().lastIndexOf('.');
+            String parentKeyPath = lastDot >= 0
+                ? rel.getSlaveKey().substring(0, lastDot + 1) + "parentId"
+                : "parentId";
+
+            // catId + 모든 하위 카테고리 ID 수집 (대분류 선택 시 중분류까지 포함)
+            Set<Long> catIds = collectCategoryAndDescendants(rel.getSlaveSlug(), catId, rel.getSlaveKey());
+            String catIdList = catIds.stream()
+                .map(id -> "'" + id + "'")
+                .collect(java.util.stream.Collectors.joining(","));
+
+            // slave에서 parentKeyPath IN (catIds) + slaveFilter 조건인 연결 레코드 조회
+            StringBuilder sql = new StringBuilder(
+                "SELECT data_json::text FROM page_data WHERE data_slug = :slaveSlug");
+            appendSlaveKeyInCondition(sql, parentKeyPath, catIdList);
+            Map<String, String> filterParams = new LinkedHashMap<>();
+            if (StringUtils.hasText(rel.getSlaveFilter())) {
+                appendSlaveFilter(sql, rel.getSlaveFilter(), filterParams);
+            }
+
+            Query q = entityManager.createNativeQuery(sql.toString());
+            q.setParameter("slaveSlug", rel.getSlaveSlug());
+            filterParams.forEach(q::setParameter);
+
+            List<Object> rows = q.getResultList();
+            Set<Long> ids = new HashSet<>();
+            for (Object row : rows) {
+                try {
+                    Map<String, Object> dataJson = objectMapper.readValue(
+                        row.toString(), new com.fasterxml.jackson.core.type.TypeReference<>() {});
+                    // slaveKey(product.id)에서 master id 추출
+                    String masterVal = extractField(dataJson, rel.getSlaveKey());
+                    if (masterVal != null && !masterVal.isBlank()) {
+                        ids.add(Long.parseLong(masterVal.trim()));
+                    }
+                } catch (Exception e) {
+                    log.warn("FILTER RELATION master id 추출 실패: {}", e.getMessage());
+                }
+            }
+
+            // 복수 rel_ 파라미터: AND 교집합
+            if (resultIds == null) resultIds = new HashSet<>(ids);
+            else resultIds.retainAll(ids);
+        }
+
+        return resultIds;
+    }
+
+    /**
+     * catId와 모든 하위 카테고리 ID 재귀 수집
+     * slaveKey(product.id)가 있는 연결 레코드는 카테고리로 간주하지 않음
+     */
+    private Set<Long> collectCategoryAndDescendants(String slaveSlug, long catId, String slaveKey) {
+        String[] keySegs = slaveKey.split("\\.");
+        // 연결 레코드 판별 조건: slaveKey 경로 값이 NULL인 것만 카테고리로 탐색
+        String notLinkRecord = "AND " + buildJsonPath(keySegs) + " IS NULL";
+
+        Set<Long> allIds = new LinkedHashSet<>();
+        allIds.add(catId);
+        Set<Long> frontier = new HashSet<>();
+        frontier.add(catId);
+
+        for (int i = 0; i < 10 && !frontier.isEmpty(); i++) {
+            String frontierList = frontier.stream()
+                .map(id -> "'" + id + "'")
+                .collect(java.util.stream.Collectors.joining(","));
+
+            @SuppressWarnings("unchecked")
+            List<Object> rows = entityManager.createNativeQuery(
+                "SELECT id FROM page_data WHERE data_slug = :slug"
+                + " AND EXISTS ("
+                + "   SELECT 1 FROM jsonb_each(data_json) kv"
+                + "   WHERE jsonb_typeof(kv.value) = 'object'"
+                + "   AND kv.value->>'parentId' IN (" + frontierList + ")"
+                + " ) " + notLinkRecord
+            ).setParameter("slug", slaveSlug).getResultList();
+
+            Set<Long> newIds = new HashSet<>();
+            for (Object row : rows) {
+                try {
+                    Long id = Long.parseLong(row.toString());
+                    if (!allIds.contains(id)) newIds.add(id);
+                } catch (NumberFormatException e) { /* skip */ }
+            }
+            if (newIds.isEmpty()) break;
+            allIds.addAll(newIds);
+            frontier = newIds;
+        }
+
+        return allIds;
+    }
+
+    /** dot notation 키 → JSON 경로 IN 조건 (idList는 숫자 검증된 값만 사용) */
+    private void appendSlaveKeyInCondition(StringBuilder sql, String keyPath, String idList) {
+        if (keyPath.contains(".")) {
+            String[] segs = keyPath.split("\\.");
+            sql.append(" AND ").append(buildJsonPath(segs)).append(" IN (").append(idList).append(")");
+        } else {
+            sql.append(" AND data_json->>'").append(keyPath).append("' IN (").append(idList).append(")");
+        }
+    }
 
     /** FETCH 관계 적용 — FETCH 방향 slug_relation으로 slave 데이터를 master content에 병합 */
     @SuppressWarnings("unchecked")

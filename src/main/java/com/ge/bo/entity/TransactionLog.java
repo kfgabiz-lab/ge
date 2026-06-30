@@ -8,14 +8,14 @@ import lombok.NoArgsConstructor;
 import java.time.OffsetDateTime;
 
 /**
- * 변경 이력 엔티티 — change_history 테이블 매핑
+ * 트랜잭션 로그 엔티티 — transaction_log 테이블 매핑
  * 이력성 테이블이므로 수정 없이 저장만 한다
  */
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "change_history")
-public class ChangeHistory {
+@Table(name = "transaction_log")
+public class TransactionLog {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,7 +57,7 @@ public class ChangeHistory {
   private OffsetDateTime createdAt;
 
   @Builder
-  public ChangeHistory(String actionType, String method, String requestUrl,
+  public TransactionLog(String actionType, String method, String requestUrl,
       String requestBody, Integer httpStatus, String loginUser,
       String clientIp, Long durationMs) {
     this.actionType = actionType;
