@@ -172,8 +172,11 @@ public class PageDataService {
     PageData pageData = pageDataRepository.findByIdAndDataSlug(id, slug)
                 .orElseThrow(ErrorCode.PAGE_DATA_NOT_FOUND::toException);
     PageDataResponse response = PageDataResponse.from(pageData);
-        // createdBy/updatedBy id → name 변환
-    return response.withUserNames(
+    // _fetchedRel{id} 포함 — 검색 API와 동일한 FETCH 관계 적용
+    List<PageDataResponse> enriched = applyFetch(slug, List.of(response));
+    PageDataResponse enrichedResponse = enriched.get(0);
+    // createdBy/updatedBy id → name 변환
+    return enrichedResponse.withUserNames(
         resolveUserName(pageData.getCreatedBy()),
         resolveUserName(pageData.getUpdatedBy())
     );
@@ -689,45 +692,51 @@ public class PageDataService {
           String[] toSegs   = segs.clone(); toSegs[toSegs.length - 1]     = toSegs[toSegs.length - 1]     + "_to";
           fromPart = buildJsonPath(fromSegs);
           toPart   = buildJsonPath(toSegs);
+          // regexp_replace로 숫자만 추출 후 8자리 비교 — YYYY-MM-DD/YYYYMMDD/YYYYMMDDHHMMSS 포맷 모두 대응
+          String fromSub = "substring(regexp_replace(" + fromPart + ", '[^0-9]', '', 'g'), 1, 8)";
+          String toSub   = "substring(regexp_replace(" + toPart   + ", '[^0-9]', '', 'g'), 1, 8)";
+          String today   = "to_char(CURRENT_DATE, 'YYYYMMDD')";
           switch (value) {
             case "before":
-              whereClause.append(" AND ").append(fromPart).append(" > CURRENT_DATE::text");
+              whereClause.append(" AND ").append(fromSub).append(" > ").append(today);
               break;
             case "in_range":
-              whereClause.append(" AND ").append(fromPart).append(" <= CURRENT_DATE::text")
-                         .append(" AND ").append(toPart).append(" >= CURRENT_DATE::text");
+              whereClause.append(" AND ").append(fromSub).append(" <= ").append(today)
+                         .append(" AND ").append(toSub).append(" >= ").append(today);
               break;
             case "after":
-              whereClause.append(" AND ").append(toPart).append(" < CURRENT_DATE::text");
+              whereClause.append(" AND ").append(toSub).append(" < ").append(today);
               break;
             default: break;
           }
         } else {
           // 단순 키: _from/_to 분리 키로 최상위 + 1단계 중첩 동시 탐색
+          // regexp_replace로 숫자만 추출 후 8자리 비교 — YYYY-MM-DD/YYYYMMDD/YYYYMMDDHHMMSS 포맷 모두 대응
           if (!rangeKey.matches("[a-zA-Z0-9_]+")) return;
-          String fromRoot   = "data_json->>'" + rangeKey + "_from'";
-          String toRoot     = "data_json->>'" + rangeKey + "_to'";
-          String fromNested = "kv.value->>'" + rangeKey + "_from'";
-          String toNested   = "kv.value->>'" + rangeKey + "_to'";
+          String fromRoot   = "substring(regexp_replace(data_json->>'" + rangeKey + "_from', '[^0-9]', '', 'g'), 1, 8)";
+          String toRoot     = "substring(regexp_replace(data_json->>'" + rangeKey + "_to', '[^0-9]', '', 'g'), 1, 8)";
+          String fromNested = "substring(regexp_replace(kv.value->>'" + rangeKey + "_from', '[^0-9]', '', 'g'), 1, 8)";
+          String toNested   = "substring(regexp_replace(kv.value->>'" + rangeKey + "_to', '[^0-9]', '', 'g'), 1, 8)";
+          String today      = "to_char(CURRENT_DATE, 'YYYYMMDD')";
           String nested     = " OR EXISTS (SELECT 1 FROM jsonb_each(data_json) kv WHERE jsonb_typeof(kv.value) = 'object' AND ";
           switch (value) {
             case "before":
               whereClause.append(" AND (")
-                  .append(fromRoot).append(" > CURRENT_DATE::text")
-                  .append(nested).append(fromNested).append(" > CURRENT_DATE::text)")
+                  .append(fromRoot).append(" > ").append(today)
+                  .append(nested).append(fromNested).append(" > ").append(today).append(")")
                   .append(")");
               break;
             case "in_range":
               whereClause.append(" AND (")
-                  .append(fromRoot).append(" <= CURRENT_DATE::text AND ").append(toRoot).append(" >= CURRENT_DATE::text")
+                  .append(fromRoot).append(" <= ").append(today).append(" AND ").append(toRoot).append(" >= ").append(today)
                   .append(nested)
-                  .append(fromNested).append(" <= CURRENT_DATE::text AND ").append(toNested).append(" >= CURRENT_DATE::text)")
+                  .append(fromNested).append(" <= ").append(today).append(" AND ").append(toNested).append(" >= ").append(today).append(")")
                   .append(")");
               break;
             case "after":
               whereClause.append(" AND (")
-                  .append(toRoot).append(" < CURRENT_DATE::text")
-                  .append(nested).append(toNested).append(" < CURRENT_DATE::text)")
+                  .append(toRoot).append(" < ").append(today)
+                  .append(nested).append(toNested).append(" < ").append(today).append(")")
                   .append(")");
               break;
             default: break;
@@ -781,6 +790,7 @@ public class PageDataService {
       }
 
       // _from 접미사 → dateRange 시작일 이상 조건 (최상위 + 1단계 중첩 동시 검색)
+      // bindSearchParams에서 검색값에 000000/T00:00:00 suffix를 붙여 저장값 포맷에 맞게 정규화
       if (key.endsWith("_from")) {
         if (!key.matches("[a-zA-Z0-9_]+")) return;
         String paramName = "p_" + key;
@@ -792,6 +802,7 @@ public class PageDataService {
       }
 
       // _to 접미사 → dateRange 종료일 이하 조건 (최상위 + 1단계 중첩 동시 검색)
+      // bindSearchParams에서 검색값에 235959/T23:59:59 suffix를 붙여 종료일 당일 데이터 포함
       if (key.endsWith("_to")) {
         if (!key.matches("[a-zA-Z0-9_]+")) return;
         String paramName = "p_" + key;
@@ -803,6 +814,7 @@ public class PageDataService {
       }
 
       // _gte 접미사 → 단일 date 컬럼 범위 검색 시작 조건 (fieldKey = key에서 _gte 제거)
+      // bindSearchParams에서 검색값에 000000/T00:00:00 suffix를 붙여 저장값 포맷에 맞게 정규화
       if (key.endsWith("_gte")) {
         if (!key.matches("[a-zA-Z0-9_]+")) return;
         String fieldKey = key.substring(0, key.length() - 4);
@@ -815,6 +827,7 @@ public class PageDataService {
       }
 
       // _lte 접미사 → 단일 date 컬럼 범위 검색 종료 조건 (fieldKey = key에서 _lte 제거)
+      // bindSearchParams에서 검색값에 235959/T23:59:59 suffix를 붙여 종료일 당일 데이터 포함
       if (key.endsWith("_lte")) {
         if (!key.matches("[a-zA-Z0-9_]+")) return;
         String fieldKey = key.substring(0, key.length() - 4);
@@ -876,6 +889,32 @@ public class PageDataService {
   }
 
   /**
+   * 날짜 검색값 시작일 정규화 — 저장값 포맷에 맞게 시간 suffix 추가
+   * YYYYMMDD(8자리 숫자)       → YYYYMMDD000000
+   * YYYY-MM-DD(10자리 하이픈)  → YYYY-MM-DDT00:00:00
+   * 이미 시간 포함(길이 > 10)  → 그대로
+   */
+  private String normalizeDateFrom(String value) {
+    if (value == null) return value;
+    if (value.length() == 8 && value.matches("[0-9]+")) return value + "000000";
+    if (value.length() == 10 && value.contains("-"))    return value + "T00:00:00";
+    return value;
+  }
+
+  /**
+   * 날짜 검색값 종료일 정규화 — 저장값 포맷에 맞게 시간 suffix 추가
+   * YYYYMMDD(8자리 숫자)       → YYYYMMDD235959
+   * YYYY-MM-DD(10자리 하이픈)  → YYYY-MM-DDT23:59:59
+   * 이미 시간 포함(길이 > 10)  → 그대로
+   */
+  private String normalizeDateTo(String value) {
+    if (value == null) return value;
+    if (value.length() == 8 && value.matches("[0-9]+")) return value + "235959";
+    if (value.length() == 10 && value.contains("-"))    return value + "T23:59:59";
+    return value;
+  }
+
+  /**
    * 세그먼트 배열 → JSONB 경로 표현식 생성
    * ["tab1","form1","title"] → data_json->'tab1'->'form1'->>'title'
    * ["form1","title"]        → data_json->'form1'->>'title'
@@ -933,17 +972,19 @@ public class PageDataService {
         return;
       }
 
-      // _from/_to 접미사 → 값 그대로 바인딩 (범위 비교용, ILIKE 아님)
-      if (key.endsWith("_from") || key.endsWith("_to")) {
+      // _from/_gte 접미사 → 시작일 suffix 추가 후 바인딩
+      // YYYYMMDD → YYYYMMDD000000 / YYYY-MM-DD → YYYY-MM-DDT00:00:00 / 이미 시간 포함 → 그대로
+      if (key.endsWith("_from") || key.endsWith("_gte")) {
         if (!key.matches("[a-zA-Z0-9_]+")) return;
-        query.setParameter("p_" + key, value);
+        query.setParameter("p_" + key, normalizeDateFrom(value));
         return;
       }
 
-      // _gte/_lte 접미사 → 값 그대로 바인딩 (단일 date 컬럼 범위 비교용)
-      if (key.endsWith("_gte") || key.endsWith("_lte")) {
+      // _to/_lte 접미사 → 종료일 suffix 추가 후 바인딩
+      // YYYYMMDD → YYYYMMDD235959 / YYYY-MM-DD → YYYY-MM-DDT23:59:59 / 이미 시간 포함 → 그대로
+      if (key.endsWith("_to") || key.endsWith("_lte")) {
         if (!key.matches("[a-zA-Z0-9_]+")) return;
-        query.setParameter("p_" + key, value);
+        query.setParameter("p_" + key, normalizeDateTo(value));
         return;
       }
 
@@ -1425,7 +1466,33 @@ public class PageDataService {
             if (!(current instanceof Map)) return null;
             current = ((Map<String, Object>) current).get(seg);
         }
-        return current != null ? current.toString() : null;
+        if (current != null) return current.toString();
+
+        // 정확한 경로로 못 찾았고 세그먼트가 1개(contentKey 없는 bare fieldKey)면
+        // dataJson 전체를 재귀 탐색해 해당 키가 유일하게 존재할 때만 그 값을 사용한다.
+        // 2곳 이상에서 발견되면 어느 값인지 모호하므로 null 반환(안전한 폴백).
+        if (segs.length == 1) {
+            List<Object> matches = new ArrayList<>();
+            collectFieldMatches(dataJson, segs[0], matches);
+            if (matches.size() == 1) {
+                Object val = matches.get(0);
+                return val != null ? val.toString() : null;
+            }
+        }
+        return null;
+    }
+
+    /** dataJson을 재귀 탐색해 fieldKey와 일치하는 모든 값을 matches에 수집 (extractField의 bare fieldKey 폴백용) */
+    @SuppressWarnings("unchecked")
+    private void collectFieldMatches(Map<String, Object> map, String fieldKey, List<Object> matches) {
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            if (entry.getKey().equals(fieldKey)) {
+                matches.add(entry.getValue());
+            }
+            if (entry.getValue() instanceof Map) {
+                collectFieldMatches((Map<String, Object>) entry.getValue(), fieldKey, matches);
+            }
+        }
     }
 
     /** relationId → FETCH 결과 키 변환: 2 → "_fetchedRel2" */
