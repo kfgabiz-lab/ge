@@ -1435,7 +1435,33 @@ public class PageDataService {
             if (!(current instanceof Map)) return null;
             current = ((Map<String, Object>) current).get(seg);
         }
-        return current != null ? current.toString() : null;
+        if (current != null) return current.toString();
+
+        // 정확한 경로로 못 찾았고 세그먼트가 1개(contentKey 없는 bare fieldKey)면
+        // dataJson 전체를 재귀 탐색해 해당 키가 유일하게 존재할 때만 그 값을 사용한다.
+        // 2곳 이상에서 발견되면 어느 값인지 모호하므로 null 반환(안전한 폴백).
+        if (segs.length == 1) {
+            List<Object> matches = new ArrayList<>();
+            collectFieldMatches(dataJson, segs[0], matches);
+            if (matches.size() == 1) {
+                Object val = matches.get(0);
+                return val != null ? val.toString() : null;
+            }
+        }
+        return null;
+    }
+
+    /** dataJson을 재귀 탐색해 fieldKey와 일치하는 모든 값을 matches에 수집 (extractField의 bare fieldKey 폴백용) */
+    @SuppressWarnings("unchecked")
+    private void collectFieldMatches(Map<String, Object> map, String fieldKey, List<Object> matches) {
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            if (entry.getKey().equals(fieldKey)) {
+                matches.add(entry.getValue());
+            }
+            if (entry.getValue() instanceof Map) {
+                collectFieldMatches((Map<String, Object>) entry.getValue(), fieldKey, matches);
+            }
+        }
     }
 
     /** relationId → FETCH 결과 키 변환: 2 → "_fetchedRel2" */
