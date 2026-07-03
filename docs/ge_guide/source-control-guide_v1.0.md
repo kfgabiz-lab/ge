@@ -10,13 +10,14 @@
 ## 1. 리포지토리 구조
 
 Bo 프로젝트는 **단일 monorepo**(`C:\...\workspace\Bo`)에서 관리되며,
-하위 디렉토리별로 별도 GitHub 리포지토리(서브트리)를 운영한다.
+하위 디렉토리별로 참고용 GitHub 리포지토리를 별도로 두고 있다(실제 git subtree 병합은 아님, 1절 리모트 목록 참고).
 
 ```
 workspace/Bo/          ← 루트 monorepo (ge 리모트)
-├── bo/                ← BO 프론트 (ge-bo 서브트리)
-├── bo-api/            ← BE API   (ge-api 서브트리)
-├── fo/                ← FO 프론트 (서브트리 리모트 미지정)
+├── bo/                ← BO 프론트 (ge-bo 참고용 리모트)
+├── bo-api/            ← BE API   (ge-api 참고용 리모트)
+├── fo/                ← FO 프론트 (ge-fo 참고용 리모트)
+├── ls-publish/        ← 외부 참조용 clone (ge 이력과 무관, .gitignore 제외)
 └── docs/              ← 공통 문서
 ```
 
@@ -25,10 +26,17 @@ workspace/Bo/          ← 루트 monorepo (ge 리모트)
 | 리모트명 | GitHub URL | 대상 | 비고 |
 |---------|-----------|------|------|
 | `ge` | https://github.com/kfgabiz-lab/ge | 루트 전체 | 전체 monorepo |
-| `ge-bo` | https://github.com/kfgabiz-lab/ge-bo | `bo/` | BO 프론트 서브트리 |
-| `ge-api` | https://github.com/kfgabiz-lab/ge-api | `bo-api/` | BE API 서브트리 |
+| `ge-bo` | https://github.com/kfgabiz-lab/ge-bo | `bo/` | 참고용 리모트 — 실제 subtree 병합 아님, 필요 시 수동 비교·반영 |
+| `ge-api` | https://github.com/kfgabiz-lab/ge-api | `bo-api/` | 참고용 리모트 — 실제 subtree 병합 아님, 필요 시 수동 비교·반영 |
+| `ge-fo` | https://github.com/kfgabiz-lab/ge-fo | `fo/` | 참고용 리모트 — 실제 subtree 병합 아님, 필요 시 수동 비교·반영 |
 
 > 리모트 확인 명령어: `git remote -v`
+
+### 외부 참조용 클론 (ge git 이력과 무관)
+
+| 디렉토리 | GitHub URL | 비고 |
+|---------|-----------|------|
+| `ls-publish/` | https://github.com/timesky82/ls | ge와 무관한 단순 참고용 clone. `.gitignore`로 제외되어 커밋 대상 아님 |
 
 ---
 
@@ -119,7 +127,19 @@ git subtree push --prefix=bo-api ge-api master
 
 ---
 
-## 5. Push 제외 대상
+## 5. Pull 절차
+
+일반적인 개발 작업에서는 **`ge`(origin) 한 곳만 pull 받으면 충분**하다.
+
+```bash
+git pull ge master
+```
+
+`ge-bo`, `ge-api`, `ge-fo`는 각 서브 디렉토리(`bo/`, `bo-api/`, `fo/`)의 원본 소스를 참고하기 위한 리모트이며, 실제 git subtree 병합이 아니라 필요할 때 수동으로 내용을 비교한 뒤 커밋하는 방식으로 운영된다. 따라서 **평소 pull은 `ge`만으로 충분**하며, `ge-bo`/`ge-api`/`ge-fo`의 최신 변경사항을 반영해야 하는 특별한 경우에만 별도로 fetch 후 수동 반영한다.
+
+---
+
+## 6. Push 제외 대상
 
 아래 파일·디렉토리는 커밋에 포함하지 않는다.
 
@@ -132,7 +152,7 @@ git subtree push --prefix=bo-api ge-api master
 
 ---
 
-## 6. 자주 쓰는 명령어 정리
+## 7. 자주 쓰는 명령어 정리
 
 ```bash
 # 리모트 목록 확인
