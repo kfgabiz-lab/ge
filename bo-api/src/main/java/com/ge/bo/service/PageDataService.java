@@ -794,10 +794,17 @@ public class PageDataService {
       if (key.endsWith("_from")) {
         if (!key.matches("[a-zA-Z0-9_]+")) return;
         String paramName = "p_" + key;
-        whereClause.append(" AND (data_json->>'").append(key).append("' >= :").append(paramName)
-            .append(" OR EXISTS (SELECT 1 FROM jsonb_each(data_json) kv")
-            .append(" WHERE jsonb_typeof(kv.value) = 'object'")
-            .append(" AND kv.value->>'").append(key).append("' >= :").append(paramName).append("))");
+        String baseKey = key.substring(0, key.length() - 5); // "_from" 접미사 제거한 base 필드키
+        String auditCol = toAuditDateColumn(baseKey);
+        if (auditCol != null) {
+          // 감사 컬럼(created_at/updated_at 등)은 실제 row 컬럼이므로 중첩 탐색 불필요, timestamptz로 캐스팅해서 비교
+          whereClause.append(" AND ").append(auditCol).append(" >= CAST(:").append(paramName).append(" AS timestamptz)");
+        } else {
+          whereClause.append(" AND (data_json->>'").append(key).append("' >= :").append(paramName)
+              .append(" OR EXISTS (SELECT 1 FROM jsonb_each(data_json) kv")
+              .append(" WHERE jsonb_typeof(kv.value) = 'object'")
+              .append(" AND kv.value->>'").append(key).append("' >= :").append(paramName).append("))");
+        }
         return;
       }
 
@@ -806,10 +813,17 @@ public class PageDataService {
       if (key.endsWith("_to")) {
         if (!key.matches("[a-zA-Z0-9_]+")) return;
         String paramName = "p_" + key;
-        whereClause.append(" AND (data_json->>'").append(key).append("' <= :").append(paramName)
-            .append(" OR EXISTS (SELECT 1 FROM jsonb_each(data_json) kv")
-            .append(" WHERE jsonb_typeof(kv.value) = 'object'")
-            .append(" AND kv.value->>'").append(key).append("' <= :").append(paramName).append("))");
+        String baseKey = key.substring(0, key.length() - 3); // "_to" 접미사 제거한 base 필드키
+        String auditCol = toAuditDateColumn(baseKey);
+        if (auditCol != null) {
+          // 감사 컬럼(created_at/updated_at 등)은 실제 row 컬럼이므로 중첩 탐색 불필요, timestamptz로 캐스팅해서 비교
+          whereClause.append(" AND ").append(auditCol).append(" <= CAST(:").append(paramName).append(" AS timestamptz)");
+        } else {
+          whereClause.append(" AND (data_json->>'").append(key).append("' <= :").append(paramName)
+              .append(" OR EXISTS (SELECT 1 FROM jsonb_each(data_json) kv")
+              .append(" WHERE jsonb_typeof(kv.value) = 'object'")
+              .append(" AND kv.value->>'").append(key).append("' <= :").append(paramName).append("))");
+        }
         return;
       }
 
@@ -819,10 +833,16 @@ public class PageDataService {
         if (!key.matches("[a-zA-Z0-9_]+")) return;
         String fieldKey = key.substring(0, key.length() - 4);
         String paramName = "p_" + key;
-        whereClause.append(" AND (data_json->>'").append(fieldKey).append("' >= :").append(paramName)
-            .append(" OR EXISTS (SELECT 1 FROM jsonb_each(data_json) kv")
-            .append(" WHERE jsonb_typeof(kv.value) = 'object'")
-            .append(" AND kv.value->>'").append(fieldKey).append("' >= :").append(paramName).append("))");
+        String auditCol = toAuditDateColumn(fieldKey);
+        if (auditCol != null) {
+          // 감사 컬럼(created_at/updated_at 등)은 실제 row 컬럼이므로 중첩 탐색 불필요, timestamptz로 캐스팅해서 비교
+          whereClause.append(" AND ").append(auditCol).append(" >= CAST(:").append(paramName).append(" AS timestamptz)");
+        } else {
+          whereClause.append(" AND (data_json->>'").append(fieldKey).append("' >= :").append(paramName)
+              .append(" OR EXISTS (SELECT 1 FROM jsonb_each(data_json) kv")
+              .append(" WHERE jsonb_typeof(kv.value) = 'object'")
+              .append(" AND kv.value->>'").append(fieldKey).append("' >= :").append(paramName).append("))");
+        }
         return;
       }
 
@@ -832,10 +852,16 @@ public class PageDataService {
         if (!key.matches("[a-zA-Z0-9_]+")) return;
         String fieldKey = key.substring(0, key.length() - 4);
         String paramName = "p_" + key;
-        whereClause.append(" AND (data_json->>'").append(fieldKey).append("' <= :").append(paramName)
-            .append(" OR EXISTS (SELECT 1 FROM jsonb_each(data_json) kv")
-            .append(" WHERE jsonb_typeof(kv.value) = 'object'")
-            .append(" AND kv.value->>'").append(fieldKey).append("' <= :").append(paramName).append("))");
+        String auditCol = toAuditDateColumn(fieldKey);
+        if (auditCol != null) {
+          // 감사 컬럼(created_at/updated_at 등)은 실제 row 컬럼이므로 중첩 탐색 불필요, timestamptz로 캐스팅해서 비교
+          whereClause.append(" AND ").append(auditCol).append(" <= CAST(:").append(paramName).append(" AS timestamptz)");
+        } else {
+          whereClause.append(" AND (data_json->>'").append(fieldKey).append("' <= :").append(paramName)
+              .append(" OR EXISTS (SELECT 1 FROM jsonb_each(data_json) kv")
+              .append(" WHERE jsonb_typeof(kv.value) = 'object'")
+              .append(" AND kv.value->>'").append(fieldKey).append("' <= :").append(paramName).append("))");
+        }
         return;
       }
 
@@ -915,6 +941,19 @@ public class PageDataService {
   }
 
   /**
+   * 감사 컬럼(row 컬럼) 검색값을 timestamptz 캐스팅 가능한 ISO 형식으로 변환
+   * 14자리 숫자(YYYYMMDDHHMMSS)      → YYYY-MM-DDTHH:mm:ss
+   * 이미 ISO 형식(YYYY-MM-DDTHH:MM:SS, 길이 19) → 그대로 사용
+   */
+  private String toIsoTimestamp(String normalized) {
+    if (normalized != null && normalized.length() == 14 && normalized.matches("[0-9]+")) {
+      return normalized.substring(0, 4) + "-" + normalized.substring(4, 6) + "-" + normalized.substring(6, 8)
+          + "T" + normalized.substring(8, 10) + ":" + normalized.substring(10, 12) + ":" + normalized.substring(12, 14);
+    }
+    return normalized;
+  }
+
+  /**
    * 세그먼트 배열 → JSONB 경로 표현식 생성
    * ["tab1","form1","title"] → data_json->'tab1'->'form1'->>'title'
    * ["form1","title"]        → data_json->'form1'->>'title'
@@ -976,7 +1015,11 @@ public class PageDataService {
       // YYYYMMDD → YYYYMMDD000000 / YYYY-MM-DD → YYYY-MM-DDT00:00:00 / 이미 시간 포함 → 그대로
       if (key.endsWith("_from") || key.endsWith("_gte")) {
         if (!key.matches("[a-zA-Z0-9_]+")) return;
-        query.setParameter("p_" + key, normalizeDateFrom(value));
+        String baseKey = key.endsWith("_from") ? key.substring(0, key.length() - 5) : key.substring(0, key.length() - 4);
+        String normalized = normalizeDateFrom(value);
+        // 감사 컬럼(row 컬럼)이면 timestamptz 캐스팅 가능하도록 ISO 형식으로 한 번 더 변환
+        String bindValue = toAuditDateColumn(baseKey) != null ? toIsoTimestamp(normalized) : normalized;
+        query.setParameter("p_" + key, bindValue);
         return;
       }
 
@@ -984,7 +1027,11 @@ public class PageDataService {
       // YYYYMMDD → YYYYMMDD235959 / YYYY-MM-DD → YYYY-MM-DDT23:59:59 / 이미 시간 포함 → 그대로
       if (key.endsWith("_to") || key.endsWith("_lte")) {
         if (!key.matches("[a-zA-Z0-9_]+")) return;
-        query.setParameter("p_" + key, normalizeDateTo(value));
+        String baseKey = key.endsWith("_to") ? key.substring(0, key.length() - 3) : key.substring(0, key.length() - 4);
+        String normalized = normalizeDateTo(value);
+        // 감사 컬럼(row 컬럼)이면 timestamptz 캐스팅 가능하도록 ISO 형식으로 한 번 더 변환
+        String bindValue = toAuditDateColumn(baseKey) != null ? toIsoTimestamp(normalized) : normalized;
+        query.setParameter("p_" + key, bindValue);
         return;
       }
 
@@ -1017,6 +1064,15 @@ public class PageDataService {
       case "updatedAt" -> "updated_at";
       case "createdBy" -> "created_by";
       case "updatedBy" -> "updated_by";
+      default -> null;
+    };
+  }
+
+  /** DateRange 검색 전용 감사 컬럼 매핑 — timestamptz 캐스팅 대상인 createdAt/updatedAt만 허용 (createdBy/updatedBy는 varchar라 제외) */
+  private String toAuditDateColumn(String key) {
+    return switch (key) {
+      case "createdAt" -> "created_at";
+      case "updatedAt" -> "updated_at";
       default -> null;
     };
   }
