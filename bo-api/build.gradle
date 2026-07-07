@@ -59,6 +59,9 @@ dependencies {
 
     // azure blob storage
     implementation 'com.azure:azure-storage-blob:12.30.0'
+
+    // java mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 }
 
 tasks.named('test') {
