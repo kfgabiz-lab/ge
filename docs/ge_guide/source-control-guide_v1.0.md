@@ -149,6 +149,7 @@ git pull origin master
 | `bo/src/app/admin/widgetSub/[slug]/page copy.tsx` | 임시 복사 파일 |
 | `lsea/` | 프로젝트 무관 디렉토리 |
 | `C:tmptest-upload.txt` | 임시 테스트 파일 |
+| `multiselect-builder-tree.md` | 브라우저 접근성 스냅샷 덤프(임시 산출물) |
 
 ---
 
