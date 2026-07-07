@@ -32,6 +32,7 @@ logging:
 
 ls:
   isApiLogin: true
+  isBlob: true
   lse:
     inApi:
       connectPortalEncKey: LegacyConnectKeyText(!#@)2532!#@
