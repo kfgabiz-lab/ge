@@ -13,7 +13,7 @@ Bo 프로젝트는 **단일 monorepo**(`C:\...\workspace\Bo`)에서 관리되며
 하위 디렉토리별로 참고용 GitHub 리포지토리를 별도로 두고 있다(실제 git subtree 병합은 아님, 1절 리모트 목록 참고).
 
 ```
-workspace/Bo/          ← 루트 monorepo (ge 리모트)
+workspace/Bo/          ← 루트 monorepo (origin 리모트)
 ├── bo/                ← BO 프론트 (ge-bo 참고용 리모트)
 ├── bo-api/            ← BE API   (ge-api 참고용 리모트)
 ├── fo/                ← FO 프론트 (ge-fo 참고용 리모트)
@@ -25,7 +25,7 @@ workspace/Bo/          ← 루트 monorepo (ge 리모트)
 
 | 리모트명 | GitHub URL | 대상 | 비고 |
 |---------|-----------|------|------|
-| `ge` | https://github.com/kfgabiz-lab/ge | 루트 전체 | 전체 monorepo |
+| `origin` | https://github.com/kfgabiz-lab/ge | 루트 전체 | 전체 monorepo |
 | `ge-bo` | https://github.com/kfgabiz-lab/ge-bo | `bo/` | 참고용 리모트 — 실제 subtree 병합 아님, 필요 시 수동 비교·반영 |
 | `ge-api` | https://github.com/kfgabiz-lab/ge-api | `bo-api/` | 참고용 리모트 — 실제 subtree 병합 아님, 필요 시 수동 비교·반영 |
 | `ge-fo` | https://github.com/kfgabiz-lab/ge-fo | `fo/` | 참고용 리모트 — 실제 subtree 병합 아님, 필요 시 수동 비교·반영 |
@@ -104,10 +104,10 @@ git commit -m "feat: 설명"
 
 **순서를 지켜 push**한다. 루트 → 서브트리 순.
 
-#### ① 루트 전체 push (ge)
+#### ① 루트 전체 push (origin)
 
 ```bash
-git push ge master
+git push origin master
 ```
 
 #### ② BO 프론트 서브트리 push (ge-bo)
@@ -129,10 +129,10 @@ git subtree push --prefix=bo-api ge-api master
 
 ## 5. Pull 절차
 
-일반적인 개발 작업에서는 **`ge`(origin) 한 곳만 pull 받으면 충분**하다.
+일반적인 개발 작업에서는 **`origin` 한 곳만 pull 받으면 충분**하다.
 
 ```bash
-git pull ge master
+git pull origin master
 ```
 
 `ge-bo`, `ge-api`, `ge-fo`는 각 서브 디렉토리(`bo/`, `bo-api/`, `fo/`)의 원본 소스를 참고하기 위한 리모트이며, 실제 git subtree 병합이 아니라 필요할 때 수동으로 내용을 비교한 뒤 커밋하는 방식으로 운영된다. 따라서 **평소 pull은 `ge`만으로 충분**하며, `ge-bo`/`ge-api`/`ge-fo`의 최신 변경사항을 반영해야 하는 특별한 경우에만 별도로 fetch 후 수동 반영한다.
@@ -163,12 +163,12 @@ git status
 git diff --stat HEAD
 
 # 루트 + 서브트리 전체 push (순서대로 실행)
-git push ge master
+git push origin master
 git subtree push --prefix=bo ge-bo master
 git subtree push --prefix=bo-api ge-api master
 
 # 특정 리모트에서 최신 내용 가져오기
-git fetch ge
+git fetch origin
 git fetch ge-bo
 git fetch ge-api
 ```
