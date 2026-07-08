@@ -13,6 +13,17 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  mail:
+    host: 10.153.2.44
+    port: 25
+    username: test
+    password: test
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 # CORS — 로컬 FE 주소
 cors:
   allowed-origins: "http://localhost:3002,http://localhost:3001"
@@ -39,6 +50,7 @@ logging:
     
 ls:
   isApiLogin: false
+  file-storage: local   # local, blob
   totp:
     isUser: "Ge Admin"
     enabled: false   # true = 2차인증 활성화 / false = 비밀번호만으로 로그인

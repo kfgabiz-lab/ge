@@ -85,8 +85,9 @@ public class PageDataController {
         public ResponseEntity<PageDataResponse> update(
                         @PathVariable String slug,
                         @PathVariable Long id,
-                        @Valid @RequestBody PageDataRequest request) {
-    return ResponseEntity.ok(pageDataService.update(slug, id, request));
+                        @Valid @RequestBody PageDataRequest request,
+                        @RequestHeader(value = "X-Site-Id", required = false) Long siteId) {
+    return ResponseEntity.ok(pageDataService.update(slug, id, request, siteId));
   }
 
         /** 단일 필드 즉시 수정 — inlineEdit 셀 변경 시 특정 필드만 부분 업데이트 */

@@ -50,6 +50,11 @@ public enum ErrorCode {
     PAGE_DATA_PK_DUPLICATE(HttpStatus.CONFLICT, "PAGE_DATA_PK_DUPLICATE", "이미 동일한 키 값의 데이터가 존재합니다."),
     PAGE_DATA_PK_REQUIRED(HttpStatus.BAD_REQUEST, "PAGE_DATA_PK_REQUIRED", "삭제하려면 PK 키가 필요합니다."),
 
+    /* 검증 규칙 */
+    VALIDATION_RULE_NOT_FOUND(HttpStatus.NOT_FOUND, "VALIDATION_RULE_NOT_FOUND", "해당 검증 규칙을 찾을 수 없습니다."),
+    VALIDATION_RULE_UNIQUE_VIOLATION(HttpStatus.CONFLICT, "VALIDATION_RULE_UNIQUE_VIOLATION", "이미 동일한 값의 데이터가 존재합니다."),
+    VALIDATION_RULE_MAX_COUNT_EXCEEDED(HttpStatus.CONFLICT, "VALIDATION_RULE_MAX_COUNT_EXCEEDED", "최대 등록 건수를 초과했습니다."),
+
     /* TSX 생성 이력 */
     TSX_GENERATION_NOT_FOUND(HttpStatus.NOT_FOUND, "TSX_GENERATION_NOT_FOUND", "해당 생성 이력을 찾을 수 없습니다."),
 
