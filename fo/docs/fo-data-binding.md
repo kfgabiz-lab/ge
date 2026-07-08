@@ -389,14 +389,15 @@
 
 | 패널명 | tsx 파일 경로 | 설명 | data slug |
 |---|---|---|---|
-| Banner Swiper | `src/components/main/banner-swiper.tsx` | MainVisual 내부 — 배너 슬라이드 | TODO |
-| Icon Cards | `src/components/main/icon-cards.tsx` | [섹션 8] 아이콘 + 텍스트 카드 | TODO |
+| Main Visual | `src/components/main/main-visual.tsx` | <section className="main_visual"> | hero-data |
+| ㄴ What We Do Swiper | `src/components/main/what-we-do-swiper.tsx` | [섹션 3] What We Do 슬라이더 | hero-data - content |
+| Main Visual | `src/components/main/main-visual.tsx` | <section className="main_notic">  | banner-data (승인됨 — fo/docs/dev/main/main-visual.md 참고) |
+| Banner Swiper | `src/components/main/banner-swiper.tsx` | MainVisual 내부 — 배너 슬라이드 | banner-data - banner-position : hero |
+| Icon Cards | `src/components/main/icon-cards.tsx` | [섹션 8] 아이콘 + 텍스트 카드 |  |
 | Main Cards | `src/components/main/main-cards.tsx` | [섹션 5] 마켓/솔루션 카드 목록 | TODO |
 | Main Info | `src/components/main/main-info.tsx` | [섹션 2] 브랜드 소개 타이틀 + 카운트업 통계 수치(Years/Nations/States) 섹션 | TODO |
-| Main Products | `src/components/main/main-products.tsx` | [섹션 6] New Arrivals/Best Sellers 탭 전환형 주요 제품 슬라이더 목록 (현재 정적 데이터, API 연동 예정) | TODO |
-| Main Visual | `src/components/main/main-visual.tsx` | [섹션 1] 풀스크린 비주얼 — VideoSwiper + BannerSwiper + 공지 | TODO |
+| Main Products | `src/components/main/main-products.tsx` | [섹션 6] New Arrivals/Best Sellers 탭 전환형 주요 제품 슬라이더 목록 (현재 정적 데이터, API 연동 예정) | prdGrp-data |
 | Video Swiper | `src/components/main/video-swiper.tsx` | MainVisual 내부 — 영상/유튜브/이미지 혼합 슬라이드 (자동재생 진행바 + 재생/정지 컨트롤) | TODO |
-| What We Do Swiper | `src/components/main/what-we-do-swiper.tsx` | [섹션 3] What We Do 슬라이더 | TODO |
 
 ### 2-10. modals
 
@@ -449,3 +450,4 @@
 - `설명`은 각 파일을 Read로 직접 읽고 실제 코드(렌더링 구조·데이터·로직)에 근거해 작성함
 - `data slug`는 BO `SlugRegistry`(slug 사전등록, type: `PAGE_DATA`/`PAGE_TEMPLATE`/`ETC`)에서 발급되는 값을 그대로 기입 예정
 - `components/banners/*`(PascalCase)와 `components/common/banners/*`(kebab-case) 다수가 단순 재노출(re-export) 관계로 확인됨; `app/main/components/*`도 `components/main/*`를 재노출하는 배럴 파일로 확인됨 — 실제 사용처는 재노출 대상 원본 쪽이며, 정리 필요 여부는 별도 논의 예정
+ 
