@@ -22,6 +22,7 @@ public class MailService {
             MimeMessage message = mailSender.createMimeMessage();
 
             MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
+            helper.setFrom("elesmtp@ls-electric.com");
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(content, true); // false = plain text
