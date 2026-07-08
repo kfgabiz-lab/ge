@@ -38,6 +38,13 @@ C:\tmp\bo-agent-comms\architect-review-result.json  읽기 (아키텍처 설계 
   "agent": "bo-code-reviewer",
   "timestamp": "<ISO8601>",
   "target": "<검토 대상 파일 경로>",
+  "reuse_check": {
+    "performed": true,
+    "searched_in": ["실제로 탐색한 파일/폴더 전부 나열 — 개수·범위 제한 없음"],
+    "existing_found": ["재사용 가능해서 실제로 가져다 쓴 기존 함수/컴포넌트명"],
+    "new_created": ["이번에 새로 만든 함수/컴포넌트명 (없으면 빈 배열)"],
+    "justification": "new_created가 1개 이상이면 기존 것으로 불가능했던 이유 필수 (공란 금지)"
+  },
   "issues": [
     { "severity": "critical|warning|info", "file": "...", "line": 0, "rule": "...", "desc": "..." }
   ],
@@ -47,9 +54,31 @@ C:\tmp\bo-agent-comms\architect-review-result.json  읽기 (아키텍처 설계 
 }
 ```
 
+> ⚠️ `searched_in`은 예시가 아니라 **실제 탐색 이력 기록**이다. `utils.ts`/`styles.ts`/`builder/fields/`/`renderer/` 4곳만 확인하고 끝내는 것은 금지 — 대상 기능과 관련된 폴더 전체를 Glob/Grep으로 넓게 탐색한 뒤, 실제로 열어본 파일·폴더를 빠짐없이 기록한다.
+>
+> `reuse_check.performed`가 없거나, `new_created`에 항목이 있는데 `justification`이 비어있으면
+> 그 자체로 **critical 이슈**로 `issues` 배열에 반드시 추가한다. (예: `rule: "reuse_check_missing"`)
+> 이 판단은 `bo-builder`가 남긴 `C:\tmp\bo-agent-comms\reuse-check-result.json`을 대조해서 내린다.
+> 해당 파일이 없는데 새 함수/컴포넌트가 추가됐다면 그 자체도 critical이다.
+
 ---
 
 ## Bo 빌더 필수 규칙 (이 규칙 위반이 최우선 지적 대상)
+
+### 공통 함수/컴포넌트 재사용 검토 — 누락 시 critical
+
+```
+❌ 금지 — 기존 utils.ts/renderer/builder/fields/ 등에 동일 기능이 있는데
+         탐색 없이 (또는 4곳만 훑고) 새 함수·새 컴포넌트를 만드는 것
+
+✅ 올바름 — 대상 기능과 관련된 폴더 전체를 Glob/Grep으로 넓게 탐색 →
+          reuse-check-result.json(bo-builder 작성)에 탐색 이력이 남아있고,
+          새로 만든 게 있다면 왜 기존 것으로 불가능했는지 justification이 명시됨
+```
+
+> `reuse-check-result.json`이 없거나 `reuse_check.performed=false`이거나
+> `new_created`에 항목이 있는데 `justification`이 빈 경우 → **critical로 즉시 보고**.
+> (상세 스키마는 아래 `## 완료 시 — 결과 저장` 참고)
 
 ### 스타일 상수 — 직접 작성 절대 금지
 

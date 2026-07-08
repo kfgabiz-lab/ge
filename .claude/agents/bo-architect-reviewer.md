@@ -153,6 +153,9 @@ rowSpan 실제 높이 계산:
 - **모드 UI 분기**: `mode === 'preview'`로 요소를 hide/show하는 경우
 - **타입 로컬 정의**: `types.ts` 대신 컴포넌트 내부에 타입 직접 선언
 - **빌더-렌더러 혼재**: 빌더 로직이 렌더러에 있거나 반대인 경우
+- **재사용 미검토**: 기존 공통 함수/컴포넌트(`_shared/utils.ts`, `renderer/`, `builder/fields/` 등)와
+  동일 기능을 넓게 탐색하지 않고 설계 단계에서부터 새 함수/새 컴포넌트를 전제로 설계한 경우
+  → critical로 지적하고 bo-builder 단계에서 `reuse-check-result.json` 작성을 요구
 
 ---
 
