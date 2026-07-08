@@ -7,10 +7,12 @@ import com.ge.bo.dto.PageDataResponse;
 import com.ge.bo.entity.AdminUser;
 import com.ge.bo.entity.PageData;
 import com.ge.bo.entity.SlugRelation;
+import com.ge.bo.entity.ValidationRule;
 import com.ge.bo.exception.ErrorCode;
 import com.ge.bo.repository.AdminRepository;
 import com.ge.bo.repository.PageDataRepository;
 import com.ge.bo.repository.SlugRelationRepository;
+import com.ge.bo.repository.ValidationRuleRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -39,6 +41,7 @@ public class PageDataService {
   private final ObjectMapper objectMapper;
   private final PageFileService pageFileService;
   private final SlugRelationRepository slugRelationRepository;
+  private final ValidationRuleRepository validationRuleRepository;
 
   @PersistenceContext
     private EntityManager entityManager;
@@ -193,7 +196,11 @@ public class PageDataService {
     public PageDataResponse create(String slug, PageDataRequest request, Long siteId) {
         // PK 중복 체크 — pkKeys가 있을 때만 수행
     if (request.getPkKeys() != null && !request.getPkKeys().isEmpty()) {
-      checkPkDuplicate(slug, request.getPkKeys(), request.getDataJson(), null);
+      checkPkDuplicate(slug, request.getPkKeys(), request.getDataJson(), null, siteId);
+    }
+        // 검증 규칙 체크 — 저장을 트리거한 action-button에서 선택된 규칙만 수행
+    if (request.getValidationRuleIds() != null && !request.getValidationRuleIds().isEmpty()) {
+      checkValidationRules(slug, request.getValidationRuleIds(), request.getDataJson(), null, siteId);
     }
 
     String dataJsonStr = serializeDataJson(request.getDataJson());
@@ -243,10 +250,14 @@ public class PageDataService {
      * @param request 수정 요청 (dataJson Map)
      */
   @Transactional
-    public PageDataResponse update(String slug, Long id, PageDataRequest request) {
+    public PageDataResponse update(String slug, Long id, PageDataRequest request, Long siteId) {
         // 존재 여부 확인 (없으면 404)
     pageDataRepository.findByIdAndDataSlug(id, slug)
                 .orElseThrow(ErrorCode.PAGE_DATA_NOT_FOUND::toException);
+        // 검증 규칙 체크 — 저장을 트리거한 action-button에서 선택된 규칙만 수행 (자기 자신은 제외)
+    if (request.getValidationRuleIds() != null && !request.getValidationRuleIds().isEmpty()) {
+      checkValidationRules(slug, request.getValidationRuleIds(), request.getDataJson(), id, siteId);
+    }
         // 수정 시에도 id 보장 — dataJson에 id 항상 포함
     Map<String, Object> dataJsonWithId = new LinkedHashMap<>(request.getDataJson());
     dataJsonWithId.put("id", id);
@@ -519,7 +530,7 @@ public class PageDataService {
      * @param excludeId 수정 시 자신 제외용 ID (등록 시 null)
      */
   private void checkPkDuplicate(String slug, List<String> pkKeys,
-                                   Map<String, Object> dataJson, Long excludeId) {
+                                   Map<String, Object> dataJson, Long excludeId, Long siteId) {
         // 유효한 키만 필터링 (SQL Injection 방지)
     List<String> validKeys = pkKeys.stream()
                 .filter(k -> k != null && k.matches("[a-zA-Z0-9_]+"))
@@ -534,6 +545,7 @@ public class PageDataService {
     for (String key : validKeys) {
       sql.append(" AND data_json->>'").append(key).append("' = :pk_").append(key);
     }
+    appendSiteSql(sql, siteId);
     if (excludeId != null) {
       sql.append(" AND id != :excludeId");
     }
@@ -544,6 +556,7 @@ public class PageDataService {
       Object val = dataJson.get(key);
       query.setParameter("pk_" + key, val != null ? val.toString() : "");
     }
+    bindSiteParam(query, siteId);
     if (excludeId != null) {
       query.setParameter("excludeId", excludeId);
     }
@@ -552,6 +565,208 @@ public class PageDataService {
     if (count > 0) {
       throw ErrorCode.PAGE_DATA_PK_DUPLICATE.toException();
     }
+  }
+
+    /**
+     * 검증 규칙 체크 — action-button에서 선택된 규칙 id들만 조회해서 순서대로 검증
+     * type=unique: fields(복합키) + condition(선택) 기준 중복 여부
+     * type=maxCount: condition(선택) 기준 건수가 maxCount를 초과하는지 여부
+     *
+     * @param slug      페이지 식별자 (data_slug)
+     * @param ruleIds   검증할 규칙 id 목록 (버튼필드에서 다중선택된 것)
+     * @param dataJson  저장할 데이터 맵
+     * @param excludeId 수정 시 자신 제외용 ID (등록 시 null)
+     */
+  private void checkValidationRules(String slug, List<Long> ruleIds,
+                                       Map<String, Object> dataJson, Long excludeId, Long siteId) {
+    List<ValidationRule> rules = validationRuleRepository.findAllById(ruleIds);
+    for (ValidationRule rule : rules) {
+      if ("unique".equals(rule.getType())) {
+        checkUniqueRule(slug, rule, dataJson, excludeId, siteId);
+      } else if ("maxCount".equals(rule.getType())) {
+        checkMaxCountRule(slug, rule, dataJson, excludeId, siteId);
+      }
+    }
+  }
+
+    /** unique 규칙 — fields(복합키) 값 조합이 같은 data_slug 내에서 유일해야 함 (condition으로 범위 한정 가능)
+     *  fields 각 항목은 "title"(최상위) 또는 "contentKey.fieldKey"(컨텐츠 위젯 내부 필드) 둘 다 지원 */
+  private void checkUniqueRule(String slug, ValidationRule rule,
+                                  Map<String, Object> dataJson, Long excludeId, Long siteId) {
+    List<String> fields = parseCsvList(rule.getFields());
+    if (fields.isEmpty()) {
+      return;
+    }
+
+    StringBuilder sql = new StringBuilder(
+                "SELECT COUNT(*) FROM page_data WHERE data_slug = :slug");
+    for (int i = 0; i < fields.size(); i++) {
+      sql.append(" AND ").append(toJsonPathExpr(fields.get(i))).append(" = :f_").append(i);
+    }
+    appendConditionSql(sql, rule.getCondition());
+    appendSiteSql(sql, siteId);
+    if (excludeId != null) {
+      sql.append(" AND id != :excludeId");
+    }
+
+    Query query = entityManager.createNativeQuery(sql.toString());
+    query.setParameter("slug", slug);
+    for (int i = 0; i < fields.size(); i++) {
+      Object val = extractFieldValue(dataJson, fields.get(i));
+      query.setParameter("f_" + i, val != null ? val.toString() : "");
+    }
+    setConditionParams(query, rule.getCondition());
+    bindSiteParam(query, siteId);
+    if (excludeId != null) {
+      query.setParameter("excludeId", excludeId);
+    }
+
+    long count = ((Number) query.getSingleResult()).longValue();
+    if (count > 0) {
+      throw ErrorCode.VALIDATION_RULE_UNIQUE_VIOLATION.toException();
+    }
+  }
+
+    /** maxCount 규칙 — condition(선택)을 만족하는 데이터가 maxCount를 넘으면 저장 거부
+     *  지금 저장하려는 dataJson이 condition 자체를 만족하지 않으면 이 규칙 범위 밖이므로 건수 제한과 무관 */
+  private void checkMaxCountRule(String slug, ValidationRule rule,
+                                    Map<String, Object> dataJson, Long excludeId, Long siteId) {
+    if (rule.getMaxCount() == null) {
+      return;
+    }
+    if (!matchesCondition(dataJson, rule.getCondition())) {
+      return;
+    }
+
+    StringBuilder sql = new StringBuilder(
+                "SELECT COUNT(*) FROM page_data WHERE data_slug = :slug");
+    appendConditionSql(sql, rule.getCondition());
+    appendSiteSql(sql, siteId);
+    if (excludeId != null) {
+      sql.append(" AND id != :excludeId");
+    }
+
+    Query query = entityManager.createNativeQuery(sql.toString());
+    query.setParameter("slug", slug);
+    setConditionParams(query, rule.getCondition());
+    bindSiteParam(query, siteId);
+    if (excludeId != null) {
+      query.setParameter("excludeId", excludeId);
+    }
+
+        // 기존 건수(자신 제외) + 이번 저장 1건이 maxCount를 넘으면 거부
+    long count = ((Number) query.getSingleResult()).longValue();
+    if (count + 1 > rule.getMaxCount()) {
+      throw ErrorCode.VALIDATION_RULE_MAX_COUNT_EXCEEDED.toException();
+    }
+  }
+
+    /** "title,form1.email" → ["title","form1.email"] — 각 항목은 필드명 또는 contentKey.fieldKey 형식만 허용 */
+  private List<String> parseCsvList(String csv) {
+    if (csv == null || csv.isBlank()) {
+      return List.of();
+    }
+    return Arrays.stream(csv.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty() && isValidFieldPath(s))
+                .toList();
+  }
+
+    /** "status='active',form1.type='001'" → {status=active, form1.type=001} — key는 필드명 또는 contentKey.fieldKey 형식만 허용 */
+  private Map<String, String> parseCondition(String condition) {
+    Map<String, String> result = new LinkedHashMap<>();
+    if (condition == null || condition.isBlank()) {
+      return result;
+    }
+    for (String pair : condition.split(",")) {
+      String[] kv = pair.split("=", 2);
+      if (kv.length != 2) {
+        continue;
+      }
+      String key = kv[0].trim();
+      String value = kv[1].trim().replaceAll("^['\"]|['\"]$", "");
+      if (isValidFieldPath(key)) {
+        result.put(key, value);
+      }
+    }
+    return result;
+  }
+
+  private void appendConditionSql(StringBuilder sql, String condition) {
+    Map<String, String> parsed = parseCondition(condition);
+    int i = 0;
+    for (String key : parsed.keySet()) {
+      sql.append(" AND ").append(toJsonPathExpr(key)).append(" = :cond_").append(i);
+      i++;
+    }
+  }
+
+  private void setConditionParams(Query query, String condition) {
+    Map<String, String> parsed = parseCondition(condition);
+    int i = 0;
+    for (String value : parsed.values()) {
+      query.setParameter("cond_" + i, value);
+      i++;
+    }
+  }
+
+    /** "title" 또는 "contentKey.fieldKey"(최대 1개 dot) 형식만 허용 — 각 세그먼트는 영문자/숫자/언더스코어, SQL Injection 방지 */
+  private boolean isValidFieldPath(String s) {
+    String[] parts = s.split("\\.", -1);
+    if (parts.length > 2) {
+      return false;
+    }
+    return Arrays.stream(parts).allMatch(p -> p.matches("[a-zA-Z0-9_]+"));
+  }
+
+    /** "title" → data_json->>'title' (최상위) / "form1.title" → data_json->'form1'->>'title' (컨텐츠 위젯 내부)
+     *  isValidFieldPath로 검증된 값만 들어오므로 안전하게 그대로 조합 */
+  private String toJsonPathExpr(String fieldPath) {
+    String[] parts = fieldPath.split("\\.", 2);
+    if (parts.length == 1) {
+      return "data_json->>'" + parts[0] + "'";
+    }
+    return "data_json->'" + parts[0] + "'->>'" + parts[1] + "'";
+  }
+
+    /** 검색(PageDataService.search)과 동일한 사이트 스코프 — 현재 사이트 데이터 + 공통(NULL) 데이터만 대상으로 함
+     *  siteId가 없으면(사이트 미선택 등) 스코프를 걸지 않고 전체 대상 */
+  private void appendSiteSql(StringBuilder sql, Long siteId) {
+    if (siteId != null) {
+      sql.append(" AND (site_id = :siteId OR site_id IS NULL)");
+    }
+  }
+
+  private void bindSiteParam(Query query, Long siteId) {
+    if (siteId != null) {
+      query.setParameter("siteId", siteId);
+    }
+  }
+
+    /** 저장하려는 dataJson이 condition(콤마구분 key=value, 암묵적 AND)을 전부 만족하는지 확인 — condition 없으면 항상 true */
+  private boolean matchesCondition(Map<String, Object> dataJson, String condition) {
+    for (Map.Entry<String, String> e : parseCondition(condition).entrySet()) {
+      Object val = extractFieldValue(dataJson, e.getKey());
+      String strVal = val != null ? val.toString() : "";
+      if (!strVal.equals(e.getValue())) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+    /** "title" → dataJson.get("title") / "form1.title" → dataJson.get("form1")에서 title 추출 */
+  @SuppressWarnings("unchecked")
+  private Object extractFieldValue(Map<String, Object> dataJson, String fieldPath) {
+    String[] parts = fieldPath.split("\\.", 2);
+    if (parts.length == 1) {
+      return dataJson.get(parts[0]);
+    }
+    Object nested = dataJson.get(parts[0]);
+    if (nested instanceof Map) {
+      return ((Map<String, Object>) nested).get(parts[1]);
+    }
+    return null;
   }
 
   /** 현재 로그인 사용자 id 반환 — created_by/updated_by 저장용 (비로그인 시 null) */
