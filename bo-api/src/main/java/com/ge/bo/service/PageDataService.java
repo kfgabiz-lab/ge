@@ -25,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 페이지 데이터 비즈니스 로직
@@ -960,6 +962,59 @@ public class PageDataService {
         return;
       }
 
+      // condval_ 접두사 → condexpr_의 동반 파라미터(선택된 옵션 값)일 뿐, 단독으로는 조건을 만들지 않음
+      if (key.startsWith("condval_")) return;
+
+      // condexpr_ 접두사 → 조건식(evalConditionExpr 문법 재사용) 기반 파생값 검색
+      // 형식: condexpr_{fieldKey}="조건식?트루텍스트:펄스텍스트" (select 필드의 data 값 그대로) + condval_{fieldKey}=선택된 옵션 값
+      // 필드명이 코드에 고정되지 않고 조건식 문자열 안의 값을 그대로 파싱해서 사용 — 화면마다 재사용 가능한 범용 로직
+      // (테이블 컬럼 status 표시식과 동일한 문법 — evalColumnDataExpr/evalConditionExpr 참조)
+      if (key.startsWith("condexpr_")) {
+        String fk = key.substring("condexpr_".length());
+        if (!fk.matches("[a-zA-Z0-9_]+")) return;
+        String selectedVal = searchParams.get("condval_" + fk);
+        if (selectedVal == null) return;
+        String[] ternary = splitTernaryExpr(value);
+        if (ternary == null) return;
+        boolean matched;
+        if (selectedVal.equals(ternary[1])) matched = true;
+        else if (selectedVal.equals(ternary[2])) matched = false;
+        else return; // 선택값이 트루/펄스 텍스트 어느 쪽과도 안 맞으면 조건 미적용
+
+        List<CondToken> tokens = parseConditionExpr(ternary[0]);
+        if (tokens.isEmpty()) return;
+
+        String today = "to_char(CURRENT_DATE, 'YYYYMMDD')";
+        List<String> topParts = new ArrayList<>();
+        List<String> nestedParts = new ArrayList<>();
+        int idx = 0;
+        for (CondToken t : tokens) {
+          String pName = "p_cond_" + fk + "_" + idx;
+          String sqlOp = "!=".equals(t.op()) ? "<>" : t.op();
+          if (t.isToday()) {
+            topParts.add("substring(regexp_replace(data_json->>'" + t.key() + "', '[^0-9]', '', 'g'), 1, 8) " + sqlOp + " " + today);
+            nestedParts.add("substring(regexp_replace(kv.value->>'" + t.key() + "', '[^0-9]', '', 'g'), 1, 8) " + sqlOp + " " + today);
+          } else {
+            topParts.add("data_json->>'" + t.key() + "' " + sqlOp + " :" + pName);
+            nestedParts.add("kv.value->>'" + t.key() + "' " + sqlOp + " :" + pName);
+          }
+          idx++;
+        }
+        // 최상위 값이 없는 행(값이 1단계 중첩 object 안에만 있는 경우)은 top 비교가 NULL이 되므로,
+        // OR EXISTS(중첩 판정)으로 실제 값이 있는 위치를 찾아 판정한다.
+        String condExpr = "((" + String.join(" AND ", topParts) + ")"
+            + " OR EXISTS (SELECT 1 FROM jsonb_each(data_json) kv WHERE jsonb_typeof(kv.value) = 'object' AND ("
+            + String.join(" AND ", nestedParts) + ")))";
+        if (matched) {
+          whereClause.append(" AND ").append(condExpr);
+        } else {
+          // 부정은 별도 OR식을 새로 만들지 않고, 검증된 조건식을 NOT COALESCE(..., FALSE)로 그대로 뒤집는다.
+          // (OR 조건을 top/중첩 양쪽에 독립적으로 나열하면 값이 없는 행이 항상 "부정"으로 오판되는 3치 논리 함정이 있다)
+          whereClause.append(" AND NOT COALESCE(").append(condExpr).append(", FALSE)");
+        }
+        return;
+      }
+
       // eq_ 접두사 → 정확 일치
       if (key.startsWith("eq_")) {
         String fieldKey = key.substring(3);
@@ -1183,6 +1238,51 @@ public class PageDataService {
     return path.toString();
   }
 
+  /** 조건식(evalConditionExpr 문법 재사용) 토큰 — key OP value, value가 today()면 날짜 비교(isToday=true, value=null) */
+  private record CondToken(String key, String op, String value, boolean isToday) {}
+
+  private static final Pattern COND_TOKEN_PATTERN =
+      Pattern.compile("^([a-zA-Z0-9_]+)\\s*(!=|>=|<=|=|<|>)\\s*(.+)$");
+
+  /**
+   * "key1=v1,key2<today()" 형태의 조건식을 토큰 목록으로 파싱 (FE의 evalConditionExpr과 동일 문법 재사용)
+   * 콤마로 구분된 각 항을 AND 조건 하나로 취급. 형식에 안 맞는 항은 조용히 무시(SQL Injection 방지 — 정규식 매칭 실패 시 미반영)
+   */
+  private List<CondToken> parseConditionExpr(String expr) {
+    List<CondToken> tokens = new ArrayList<>();
+    if (expr == null || expr.isBlank()) return tokens;
+    for (String part : expr.split(",")) {
+      Matcher m = COND_TOKEN_PATTERN.matcher(part.trim());
+      if (!m.matches()) continue;
+      String val = m.group(3).trim();
+      boolean isToday = "today()".equals(val);
+      tokens.add(new CondToken(m.group(1), m.group(2), isToday ? null : val, isToday));
+    }
+    return tokens;
+  }
+
+  /**
+   * "조건식?트루텍스트:펄스텍스트" 형태를 3분해 (FE의 evalColumnDataExpr 문법 재사용, 예: table status 컬럼 표시식)
+   * 반환: [조건식, 트루텍스트, 펄스텍스트] (따옴표로 감싼 텍스트는 벗겨냄). "?"/":" 없으면 null
+   */
+  private String[] splitTernaryExpr(String dataExpr) {
+    if (dataExpr == null) return null;
+    int q = dataExpr.indexOf('?');
+    if (q < 0) return null;
+    String cond = dataExpr.substring(0, q).trim();
+    String rest = dataExpr.substring(q + 1);
+    int c = rest.indexOf(':');
+    if (c < 0) return null;
+    return new String[]{cond, stripQuotes(rest.substring(0, c).trim()), stripQuotes(rest.substring(c + 1).trim())};
+  }
+
+  private String stripQuotes(String s) {
+    if (s.length() >= 2 && ((s.startsWith("'") && s.endsWith("'")) || (s.startsWith("\"") && s.endsWith("\"")))) {
+      return s.substring(1, s.length() - 1);
+    }
+    return s;
+  }
+
     /**
      * 쿼리에 검색 파라미터 바인딩
      * - eq_ 접두사: 값 그대로 바인딩 (정확 일치)
@@ -1194,6 +1294,28 @@ public class PageDataService {
     searchParams.forEach((key, value) -> {
       // drs_ 접두사 → CURRENT_DATE 직접 사용, 파라미터 바인딩 불필요
       if (key.startsWith("drs_")) return;
+
+      // condval_ 접두사 → condexpr_의 동반 파라미터일 뿐, 단독 바인딩 없음
+      if (key.startsWith("condval_")) return;
+
+      // condexpr_ 접두사 → 조건식(evalConditionExpr 문법)을 다시 파싱해 today() 아닌 값들만 파라미터 바인딩
+      // (appendWhereConditions와 동일한 매칭 판단을 거쳐야 파라미터명이 일치함 — 매칭 안 되면 바인딩도 하지 않음)
+      if (key.startsWith("condexpr_")) {
+        String fk = key.substring("condexpr_".length());
+        if (!fk.matches("[a-zA-Z0-9_]+")) return;
+        String selectedVal = searchParams.get("condval_" + fk);
+        if (selectedVal == null) return;
+        String[] ternary = splitTernaryExpr(value);
+        if (ternary == null) return;
+        if (!selectedVal.equals(ternary[1]) && !selectedVal.equals(ternary[2])) return;
+        List<CondToken> tokens = parseConditionExpr(ternary[0]);
+        int idx = 0;
+        for (CondToken t : tokens) {
+          if (!t.isToday()) query.setParameter("p_cond_" + fk + "_" + idx, t.value());
+          idx++;
+        }
+        return;
+      }
 
       // eq_ 접두사 → 정확 일치 바인딩
       if (key.startsWith("eq_")) {

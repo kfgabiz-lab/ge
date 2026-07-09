@@ -32,6 +32,10 @@ public record SlugEntityFieldRequest(
     /** 공통코드 그룹 코드 (선택) */
     String codeGroupCode,
 
+    /** 기본값 (선택) */
+    @Size(max = 200, message = "기본값은 200자 이하로 입력해주세요.")
+    String defaultValue,
+
     Boolean isNullable,
 
     @Size(max = 500)
