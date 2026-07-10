@@ -55,6 +55,12 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
   section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
     animation: none;
   }
+
+  /* 데이터센터 솔루션 맵/패널 슬라이드 전환 비활성화 */
+  section.markets_solutions .markets_solutions__map,
+  section.markets_solutions .markets_solutions__panel {
+    transition: none;
+  }
 }
 
 @media (min-width: 781px) {
@@ -543,9 +549,21 @@ section.markets_benefits .markets_benefits__item  .capabilities{
     color: #666;
   }
 
+  section.markets_solutions .markets_solutions__map-bg--mo {
+    display: none;
+  }
+
+  section.markets_solutions .markets_solutions__hotspot-pin {
+    display: none;
+  }
+
+  section.markets_solutions .markets_solutions__accordion {
+    display: none;
+  }
+
   /* End-to-End Data Center Solutions — Figma 2483:66367 */
   section.markets_solutions {
-    padding: 120px 0 0;
+    /* padding: 120px 0 0; */
     background: #fff;
   }
 
@@ -563,22 +581,33 @@ section.markets_benefits .markets_benefits__item  .capabilities{
   section.markets_solutions .markets_solutions__stage {
     position: relative;
     width: 100%;
+    background: #e9ecf2;
+    overflow: hidden;
   }
 
   section.markets_solutions .markets_solutions__map {
     position: relative;
     width: 100%;
+    aspect-ratio: 1920 / 780;
     min-height: 510px;
-    background: #e9ebf1;
+    background: #ebebee;
     overflow: hidden;
+    max-width: 1920px;
+    margin: 0 auto;
+    left: 250px;
+    transition: left 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  section.markets_solutions .markets_solutions__stage--open .markets_solutions__map {
+    left: 0;
   }
 
   section.markets_solutions .markets_solutions__map-bg {
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
     object-fit: cover;
-    object-position: bottom center;
+    object-position: center;
   }
 
   section.markets_solutions .markets_solutions__hotspots {
@@ -591,8 +620,7 @@ section.markets_benefits .markets_benefits__item  .capabilities{
     position: absolute;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 5px 20px 5px 5px;
+    padding: 8px 20px;
     border: none;
     border-radius: 100px;
     background: #fff;
@@ -600,48 +628,20 @@ section.markets_benefits .markets_benefits__item  .capabilities{
     pointer-events: auto;
     transform: translate(-50%, -50%);
     transition:
+      background 0.2s ease,
       box-shadow 0.2s ease,
-      transform 0.2s ease;
+      color 0.2s ease;
   }
 
   section.markets_solutions .markets_solutions__hotspot.is-active {
-    box-shadow: 0 4px 20px rgb(0 0 0 / 12%);
+    background: var(--color-accent);
+    box-shadow: 0 4px 5px rgb(0 0 0 / 40%);
     z-index: 2;
   }
 
-  @media (hover: hover) {
-    section.markets_solutions .markets_solutions__hotspot:hover {
-      box-shadow: 0 4px 20px rgb(0 0 0 / 12%);
-      z-index: 2;
-    }
-  }
-
-  section.markets_solutions .markets_solutions__hotspot-badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    font-family: var(--font-display);
-    font-size: 18px;
-    font-weight: 800;
-    line-height: 1;
-    color: #fff;
-    background: #888;
-  }
-
-  section.markets_solutions .markets_solutions__hotspot.is-active
-    .markets_solutions__hotspot-badge {
-    background: #e60040;
-  }
-
-  @media (hover: hover) {
-    section.markets_solutions .markets_solutions__hotspot:hover
-      .markets_solutions__hotspot-badge {
-      background: #e60040;
-    }
+  section.markets_solutions .markets_solutions__hotspot:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
   }
 
   section.markets_solutions .markets_solutions__hotspot-label {
@@ -650,140 +650,114 @@ section.markets_benefits .markets_benefits__item  .capabilities{
     line-height: 26px;
     color: #222;
     white-space: nowrap;
+    transition: color 0.2s ease;
+  }
+
+  section.markets_solutions .markets_solutions__hotspot.is-active .markets_solutions__hotspot-label {
+    color: #fff;
   }
 
   section.markets_solutions .markets_solutions__panel {
     position: absolute;
     top: 60px;
-    right: 0;
+    right: max(20px, calc((100% - 1440px) / 2));
     z-index: 3;
+    width: 400px;
+    max-width: calc(100% - 40px);
+    bottom: 60px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+      visibility 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  section.markets_solutions .markets_solutions__stage--open .markets_solutions__panel {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition:
+      opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1) 0.12s,
+      visibility 0.45s cubic-bezier(0.4, 0, 0.2, 1) 0.12s;
+  }
+
+  section.markets_solutions .markets_solutions__panel-card {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    width: min(473px, calc(100% - 40px));
-    max-height: calc(100% - 120px);
-    padding-right: 4px;
-    overflow-x: hidden;
-    overflow-y: auto;
+    gap: 30px;
+    align-items: flex-start;
+    box-sizing: border-box;
+    width: 100%;
+    max-height: 100%;
+    padding: 0px 30px 30px;
+    background: #fff;
+    box-shadow: 0 20px 15px rgb(0 0 0 / 8%);
     scrollbar-width: thin;
     scrollbar-color: #ddd transparent;
-    left: 50%;
-    transform: translateX(301px);
+    overflow: auto;
   }
 
-  section.markets_solutions .markets_solutions__item {
-    flex-shrink: 0;
-    overflow: hidden;
-    border-radius: 4px;
-    background: rgb(255 255 255 / 60%);
-    scroll-margin-block: 6px;
-    transition: box-shadow 0.25s ease;
-    transition: .3s;
+  section.markets_solutions .markets_solutions__panel-card::-webkit-scrollbar {
+    width: 3px;
   }
 
-  section.markets_solutions .markets_solutions__item.is-active {
-    box-shadow: 0 8px 32px rgb(0 0 0 / 10%);
-    background: #fff;
+  section.markets_solutions .markets_solutions__panel-card::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background: #ddd;
   }
 
-  section.markets_solutions .markets_solutions__item-heading {
-    margin: 0;
-    font-size: inherit;
-    font-weight: inherit;
-    line-height: inherit;
-  }
-
-  section.markets_solutions .markets_solutions__item-head {
+  section.markets_solutions .markets_solutions__panel-intro {
     display: flex;
-    align-items: center;
-    gap: 12px;
+    flex-direction: column;
+    gap: 8px;
     width: 100%;
-    min-height: 84px;
-    padding: 24px 30px;
-    border: none;
-    background: rgb(255 255 255 / 60%);
-    cursor: pointer;
-    text-align: left;
-    transition: background 0.2s ease;
+    max-width: 340px;
+    word-break: break-word;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    padding: 30px 0 0;
   }
 
-  section.markets_solutions .markets_solutions__item-head:hover {
-    background: rgb(245 247 250 / 80%);
-  }
-
-  section.markets_solutions .markets_solutions__item-head:focus-visible {
-    outline: 2px solid #0f1f45;
-    outline-offset: -2px;
-  }
-
-  section.markets_solutions .markets_solutions__item-badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    font-family: var(--font-display);
-    font-size: 18px;
-    font-weight: 800;
-    line-height: 1;
-    color: #fff;
-    background: #888;
-    transition: background 0.2s ease;
-  }
-
-  section.markets_solutions .markets_solutions__item.is-active
-    .markets_solutions__item-badge {
-    background: #e60040;
-  }
-
-  section.markets_solutions .markets_solutions__item-tit {
-    flex: 1;
-    min-width: 0;
+  section.markets_solutions .markets_solutions__panel-tit {
+    margin: 0;
     font-size: 22px;
     font-weight: 600;
     line-height: 32px;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.22px;
     color: #222;
-    transition: color 0.2s ease;
   }
 
-  section.markets_solutions .markets_solutions__item.is-active
-    .markets_solutions__item-tit {
-    color: #e60040;
-  }
-
-  section.markets_solutions .markets_solutions__item-body {
-    padding: 0 30px 30px;
-  }
-
-  section.markets_solutions .markets_solutions__item-body[hidden] {
-    display: none;
-  }
-
-  section.markets_solutions .markets_solutions__item-desc {
-    margin: 0 0 24px;
+  section.markets_solutions .markets_solutions__panel-desc {
+    margin: 0;
     font-size: 16px;
+    font-weight: 400;
     line-height: 24px;
     color: #222;
   }
 
   section.markets_solutions .markets_solutions__products {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 340px;
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  section.markets_solutions .markets_solutions__products li {
-    position: relative;
+  section.markets_solutions .markets_solutions__products-item {
+    margin: 0;
   }
 
   section.markets_solutions .markets_solutions__products-sep {
-    display: block;
+    flex-shrink: 0;
     width: 100%;
     height: 1px;
-    margin: 20px 0;
+    margin: 0;
+    padding: 0;
     background: #e8e8e8;
   }
 
@@ -795,26 +769,37 @@ section.markets_benefits .markets_benefits__item  .capabilities{
     color: inherit;
   }
 
-  section.markets_solutions .markets_solutions__product:focus-visible {
-    outline: 2px solid #e60040;
-    outline-offset: 2px;
-    border-radius: 2px;
-  }
-
-  section.markets_solutions .markets_solutions__product img {
+  section.markets_solutions .markets_solutions__product-img {
+    display: flex;
     flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
     width: 80px;
     height: 80px;
+    overflow: hidden;
+    background: #ddd;
+  }
+
+  section.markets_solutions .markets_solutions__product-img img {
+    display: block;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
+  }
+
+  section.markets_solutions .markets_solutions__product-text {
+    flex: 1;
+    min-width: 0;
+    max-width: 240px;
   }
 
   section.markets_solutions .markets_solutions__product-text strong {
     display: block;
-    margin-bottom: 4px;
     font-size: 18px;
     font-weight: 600;
     line-height: 28px;
     color: #222;
+    word-break: break-word;
   }
 
   section.markets_solutions .markets_solutions__product-text p {
@@ -1984,58 +1969,246 @@ section.markets_benefits .markets_benefits__item  .capabilities{
     padding-bottom: 30px;
   }
 
-  /* Why */
+  /* Data Center — markets_solutions map MO (data-center 전용 컴포넌트 · 가이드 포함) */
   section.markets_solutions {
-    padding: 60px 0 80px;
+    margin: 0;
+    padding: 70px 0 70px;
   }
 
   section.markets_solutions .markets_solutions__head {
-    margin-bottom: 24px;
+    margin-bottom: 30px;
   }
 
   section.markets_solutions .markets_solutions__head .section_tit {
     font-size: 30px;
     line-height: 40px;
+    letter-spacing: -0.02em;
   }
 
   section.markets_solutions .markets_solutions__stage {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 0;
+    background: #fff;
+    overflow: visible;
   }
 
   section.markets_solutions .markets_solutions__map {
-    min-height: 240px;
+    position: relative;
+    left: auto;
+    width: 100vw;
+    max-width: none;
+    margin-left: calc(50% - 50vw);
+    min-height: 280px;
+    height: 280px;
+    aspect-ratio: auto;
+    background: #ebebee;
+    overflow: hidden;
+  }
+
+  section.markets_solutions .markets_solutions__stage--open .markets_solutions__map {
+    left: auto;
+  }
+
+  section.markets_solutions .markets_solutions__map-bg--pc {
+    display: none;
+  }
+
+  section.markets_solutions .markets_solutions__map-bg--mo {
+    display: block;
+    width: 159.53%;
+    max-width: none;
+    height: 108.83%;
+    margin-left: -11.24%;
+    margin-top: -8.68%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  section.markets_solutions .markets_solutions__hotspot {
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    width: 18px;
+    height: 24px;
+    left: calc(var(--mo-x) + 3%) !important;
+    top: calc(var(--mo-y) + 5%) !important;
+    transform: translate(-50%, -100%);
+    position: absolute;
+  }
+
+  section.markets_solutions .markets_solutions__hotspot.is-active {
+    background: transparent;
+    box-shadow: none;
   }
 
   section.markets_solutions .markets_solutions__hotspot-label {
     display: none;
   }
 
-  section.markets_solutions .markets_solutions__panel {
-    position: static;
+  section.markets_solutions .markets_solutions__hotspot-pin {
+    display: block;
+    width: 18px;
+    height: 24px;
+    background: url("/img/markets/solutions/pin_default.svg") center / contain no-repeat;
+  }
+
+  section.markets_solutions .markets_solutions__hotspot.is-active .markets_solutions__hotspot-pin {
+    background-image: url("/img/markets/solutions/pin_active.svg");
+  }
+
+  section.markets_solutions .markets_solutions__panel--desktop {
+    display: none;
+  }
+
+  section.markets_solutions .markets_solutions__accordion {
+    display: block;
     width: 100%;
-    max-height: none;
-    overflow: visible;
+    padding: 30px 20px 0;
+    box-sizing: border-box;
   }
 
-  section.markets_solutions .markets_solutions__item-head {
-    min-height: 64px;
-    padding: 16px 20px;
-  }
-
-  section.markets_solutions .markets_solutions__item-tit {
-    font-size: 18px;
-    line-height: 28px;
-  }
-
-  section.markets_solutions .markets_solutions__item-body {
-    padding: 0 20px 20px;
-  }
-
-  section.markets_solutions .markets_solutions__product {
+  section.markets_solutions .markets_solutions__accordion-list {
+    display: flex;
     flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  section.markets_solutions .markets_solutions__accordion-item {
+    margin: 0;
+  }
+
+  section.markets_solutions .markets_solutions__accordion-trigger {
+    display: block;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #e8e8e8;
+    background: #fff;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 30px;
+    color: #222;
+    text-align: left;
+    cursor: pointer;
+    box-sizing: border-box;
+  }
+
+  section.markets_solutions .markets_solutions__accordion-item.is-open .markets_solutions__accordion-trigger {
+    display: none;
+  }
+
+  section.markets_solutions .markets_solutions__accordion-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     align-items: flex-start;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #0c1625;
+    background: #fff;
+    box-sizing: border-box;
+    box-shadow: none;
+  }
+
+  section.markets_solutions .markets_solutions__accordion-panel .markets_solutions__panel-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    max-width: none;
+    padding: 0;
+    position: static;
+    background: transparent;
+    word-break: break-word;
+  }
+
+  section.markets_solutions .markets_solutions__accordion-panel .markets_solutions__panel-tit {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 30px;
+    letter-spacing: 0;
+    color: #222;
+  }
+
+  section.markets_solutions .markets_solutions__accordion-panel .markets_solutions__panel-desc {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 23px;
+    color: #222;
+  }
+
+  section.markets_solutions .markets_solutions__accordion-panel .markets_solutions__products {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  section.markets_solutions .markets_solutions__accordion-panel .markets_solutions__products-item {
+    margin: 0;
+  }
+
+  section.markets_solutions .markets_solutions__accordion-panel .markets_solutions__products-sep {
+    flex-shrink: 0;
+    width: 100%;
+    height: 1px;
+    margin: 0;
+    padding: 0;
+    background: #e8e8e8;
+  }
+
+  section.markets_solutions .markets_solutions__accordion-panel .markets_solutions__product {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  section.markets_solutions .markets_solutions__accordion-panel .markets_solutions__product-img {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: #F5F7FA;
+    overflow: hidden;
+    padding: 10px;
+  }
+
+  section.markets_solutions .markets_solutions__accordion-panel .markets_solutions__product-img img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  section.markets_solutions .markets_solutions__accordion-panel .markets_solutions__product-text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  section.markets_solutions .markets_solutions__accordion-panel .markets_solutions__product-text strong {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 26px;
+    color: #222;
+  }
+
+  section.markets_solutions .markets_solutions__accordion-panel .markets_solutions__product-text p {
+    display: none;
   }
 
     section.markets_why{
@@ -3278,6 +3451,64 @@ section.markets_products .item:before {
 .markets_references_modal.common_modal--embedded .common_modal__panel {
   max-width: 1200px;
   animation: none;
+}
+
+/* 레퍼런스 전환(이전/다음) 네비게이션 버튼 */
+.markets_references_modal__reference-nav {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.markets_references_modal__reference-nav-btn {
+  position: absolute;
+  top: 50%;
+  width: 50px;
+  height: 50px;
+  border: 1px solid rgb(255 255 255 / 35%);
+  border-radius: 999px;
+  background: transparent;
+  transform: translateY(-50%);
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.markets_references_modal__reference-nav-btn--prev {
+  left: calc(50% - 690px);
+}
+
+.markets_references_modal__reference-nav-btn--next {
+  right: calc(50% - 690px);
+}
+
+.markets_references_modal__reference-nav-icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin: 0 auto;
+  background: url("/ico/ico_arrow_righ_24_white.svg") center / contain no-repeat;
+}
+
+.markets_references_modal__reference-nav-btn--prev
+  .markets_references_modal__reference-nav-icon {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 1440px) {
+  .markets_references_modal__reference-nav-btn--prev {
+    left: 10px;
+  }
+
+  .markets_references_modal__reference-nav-btn--next {
+    right: 10px;
+  }
+}
+
+@media (max-width: 780px) {
+  .markets_references_modal__reference-nav {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

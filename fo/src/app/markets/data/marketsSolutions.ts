@@ -1,6 +1,6 @@
 export type SolutionProduct = {
   id: string;
-  image: string;
+  image?: string;
   title: string;
   description: string;
   href: string;
@@ -9,213 +9,218 @@ export type SolutionProduct = {
 export type SolutionZone = {
   id: string;
   label: string;
-  /** Position on 1920×978 map (Figma) */
+  /** MO 아코디언 / Figma 라벨이 PC와 다를 때 사용 */
+  mobileLabel?: string;
+  /** 1920×978 맵 기준 위치 (Figma PC) */
   mapX: number;
   mapY: number;
+  /** 375×280 맵 기준 위치 (Figma MO) — percent */
+  mobileMapX?: number;
+  mobileMapY?: number;
   description: string;
   products?: SolutionProduct[];
 };
 
+/** Figma 5966:63794 — 모바일 아코디언 순서 */
+export const marketsSolutionMobileOrder = [
+  "A",
+  "B",
+  "C",
+  "D",
+  "J",
+  "F",
+  "G",
+  "H",
+  "I",
+] as const;
+
 const productImg = {
   mcsg: "/img/markets/solutions/product_mcsg.png",
+  scada: "/img/markets/solutions/product_scada.png",
   ulLv: "/img/markets/solutions/product_ul_lv_swgr.png",
+  metalEnclosed: "/img/markets/solutions/product_metal_enclosed_swgr.png",
+  ul1558: "/img/markets/solutions/product_ul1558_swgr.png",
   fallback: "/img/main/product_01.jpg",
 } as const;
+
+const productSamples = [
+  productImg.mcsg,
+  productImg.metalEnclosed,
+  productImg.ul1558,
+  productImg.ulLv,
+  productImg.fallback,
+] as const;
+
+function sampleImageForId(id: string): string {
+  const index = [...id].reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  return productSamples[index % productSamples.length];
+}
+
+function solutionProduct(
+  id: string,
+  title: string,
+  image?: string | null,
+  href = "#",
+): SolutionProduct {
+  return {
+    id,
+    title,
+    description: "",
+    href,
+    ...(image !== null ? { image: image ?? sampleImageForId(id) } : {}),
+  };
+}
 
 export const marketsSolutionZones: SolutionZone[] = [
   {
     id: "A",
     label: "Control room",
-    mapX: 54,
-    mapY: 41,
+    mapX: 46,
+    mapY: 37.8,
+    mobileMapX: 13.3,
+    mobileMapY: 21.4,
     description:
-      "Centralized monitoring and SCADA integration for real-time visibility across power, cooling, and facility systems.",
+      "The operational brain of the facility. Advanced SCADA software monitors and optimizes the entire power infrastructure.",
     products: [
-      {
-        id: "a-bems",
-        image: productImg.fallback,
-        title: "Beyond Cube DCIM",
-        description:
-          "AI-ready platform processing one million data points per second with predictive diagnostics.",
-        href: "",
-      },
+      solutionProduct("a-scada", "SCADA", productImg.scada),
+      // solutionProduct("a-hmi", "HMI Workstation"),
     ],
   },
   {
     id: "B",
     label: "Generator room",
-    mapX: 35,
-    mapY: 73,
+    mapX: 31.7,
+    mapY: 73.2,
+    mobileMapX: 8,
+    mobileMapY: 60.7,
     description:
-      "Synchronized generator transfer and emergency power paths that maintain uptime during utility outages.",
-    products: [
-      {
-        id: "b-gen",
-        image: productImg.fallback,
-        title: "CTTS Generator Transfer",
-        description:
-          "Synchronized transfer system for seamless switching to backup generation.",
-        href: "",
-      },
-    ],
+      "Houses emergency diesel generators to ensure continuous data center operation during unexpected utility power outages.",
+    // products: [
+    //   solutionProduct("b-diesel-gen", "Diesel Generator Set"),
+    //   solutionProduct("b-ats", "Automatic Transfer Switch"),
+    //   solutionProduct("b-paralleling", "Paralleling Switchgear", productImg.mcsg),
+    // ],
   },
   {
     id: "C",
     label: "Electrical room",
-    mapX: 23,
-    mapY: 57,
+    mapX: 19.8,
+    mapY: 58.3,
+    mobileMapX: 22.1,
+    mobileMapY: 50,
     description:
-      "Ensuring 24/7 uninterrupted power supply and seamless emergency switching to protect critical data from grid failures.",
+      "The core power hub. Features our UL-certified switchgear, transformers, breakers, panelboards, and DC components.",
     products: [
-      {
-        id: "mcsg",
-        image: productImg.mcsg,
-        title: "MCSG (Metal Clad Switchgear)",
-        description: "Susol Vacuum Circuit Breaker for ANSI type",
-        href: "",
-      },
-      {
-        id: "ul-lv-swgr",
-        image: productImg.ulLv,
-        title: "UL LV SWGR",
-        description:
-          "Susol UL low voltage arc-resistant switchgear ensures superior power distribution and protection.",
-        href: "",
-      },
+      solutionProduct(
+        "c-mcsg",
+        "Metal Clad Swtichgear",
+        productImg.mcsg,
+        "/products-systems/motor-control/metasol-ms",
+      ),
+      solutionProduct(
+        "c-metal-enclosed",
+        "Metal Enclosed Load Interrupter Switchgear",
+        productImg.metalEnclosed,
+      ),
+      solutionProduct("c-ul1558", "UL1558 Switchgear", productImg.ul1558),
+      solutionProduct("c-ul67", "UL67 Panelboard", null),
+      solutionProduct("c-padmount", "Padmount Transformer", null),
+      solutionProduct("c-cast-resin", "Cast Resin Transformer", null),
+      solutionProduct("c-lis", "Load Interrupter Switch", null),
+      solutionProduct("c-vcb", "Susol UL VCB", null),
+      solutionProduct("c-acb", "Susol UL ACB", null),
+      solutionProduct("c-mccb", "Susol UL MCCB", null),
+      solutionProduct("c-dc", "DC Products", null),
     ],
   },
   {
     id: "D",
     label: "Modular station",
-    mapX: 59,
-    mapY: 67,
+    mapX: 57.1,
+    mapY: 76.6,
+    mobileMapX: 38.4,
+    mobileMapY: 62.9,
     description:
-      "Prefabricated modular power skids that reduce on-site construction time and accelerate deployment schedules.",
+      "A scalable, pre-fabricated power solution. Our integrated E-House delivers fast deployment and space efficiency.",
     products: [
-      {
-        id: "d-powerone",
-        image: productImg.fallback,
-        title: "Beyond PowerONE",
-        description:
-          "Modular power solution streamlining engineering and installation up to 30% faster.",
-        href: "",
-      },
-    ],
-  },
-  {
-    id: "E",
-    label: "Chiller",
-    mapX: 35,
-    mapY: 25,
-    description:
-      "High-efficiency cooling with optimal free cooling strategies to lower PUE and operating costs.",
-    products: [
-      {
-        id: "e-hvac",
-        image: productImg.fallback,
-        title: "HVAC Optimal Free Cooling",
-        description:
-          "Up to 40% reduction in energy consumption for data center cooling systems.",
-        href: "",
-      },
+      solutionProduct("d-ehouse", "E-House", null),
+      // solutionProduct("d-skid", "Modular Power Skid"),
     ],
   },
   {
     id: "F",
     label: "Server room",
-    mapX: 35,
-    mapY: 43,
+    mapX: 32.3,
+    mapY: 44.3,
+    mobileMapX: 68.5,
+    mobileMapY: 32.1,
     description:
-      "Reliable rack-level power distribution and monitoring for high-density AI and cloud workloads.",
+      "The mission-critical white space. Our highly reliable UL67 Panelboards ensure uninterrupted power to server racks.",
     products: [
-      {
-        id: "f-pdu",
-        image: productImg.fallback,
-        title: "Smart PDU & Busway",
-        description:
-          "Intelligent power distribution with real-time load monitoring at the rack.",
-        href: "",
-      },
+      solutionProduct("f-ul67", "UL67 Panelboard", null),
+      // solutionProduct("f-busway", "Busway Distribution"),
     ],
   },
   {
     id: "G",
     label: "Substation",
-    mapX: 16,
-    mapY: 30,
+    mobileLabel: "Outdoor substation",
+    mapX: 14.5,
+    mapY: 21.6,
+    mobileMapX: 80,
+    mobileMapY: 66.4,
     description:
-      "Ultra-high-voltage substation equipment and GIS for stable utility interconnection up to 154 kV.",
-    products: [
-      {
-        id: "g-gis",
-        image: productImg.fallback,
-        title: "Gas Insulated Switchgear (GIS)",
-        description:
-          "Compact GIS solutions for reliable grid connection and selective fault isolation.",
-        href: "",
-      },
-    ],
+      "Steps down high-voltage grid power for the site. Equipped with our robust Power Transformer for grid reliability.",
+    products: [solutionProduct("g-power-transformer", "Power Transformer", null)],
   },
   {
     id: "H",
     label: "UPS & Battery room",
-    mapX: 43,
-    mapY: 64,
+    mapX: 45.3,
+    mapY: 68.9,
+    mobileMapX: 52,
+    mobileMapY: 57.1,
     description:
-      "Integrated UPS, STS, and battery systems delivering mission-critical reliability up to 500 kVA.",
-    products: [
-      {
-        id: "h-ups",
-        image: productImg.fallback,
-        title: "High-Performance UPS",
-        description: "Up to 500 kVA FAT capacity with rapid response capability.",
-        href: "",
-      },
-      {
-        id: "h-sts",
-        image: productImg.fallback,
-        title: "Static Transfer Switch (STS)",
-        description:
-          "Seamless source transfer for zero-interruption power to critical loads.",
-        href: "",
-      },
-    ],
+      "Provides seamless, instantaneous backup power to prevent data loss and bridge the gap until generators activate.",
+    // products: [
+    //   solutionProduct("h-ups", "UPS Module"),
+    //   solutionProduct("h-battery", "Battery Cabinet"),
+    //   solutionProduct("h-static-switch", "Static Transfer Switch"),
+    //   solutionProduct("h-pdu", "PDU", productImg.ulLv),
+    // ],
   },
   {
     id: "I",
     label: "BESS",
-    mapX: 9.5,
-    mapY: 65,
+    mapX: 14.5,
+    mapY: 73.2,
+    mobileMapX: 63.2,
+    mobileMapY: 48.6,
     description:
-      "Battery energy storage for peak shaving, backup extension, and renewable integration at the facility edge.",
-    products: [
-      {
-        id: "i-ess",
-        image: productImg.fallback,
-        title: "ESS PCS & Battery System",
-        description:
-          "Scalable storage integration with PV and grid services for sustainable operations.",
-        href: "",
-      },
-    ],
+      "Stores renewable energy to reduce peak loads and provide backup power, maximizing data center energy flexibility.",
+    // products: [
+    //   solutionProduct("i-battery-rack", "Battery Rack"),
+    //   solutionProduct("i-pcs", "Power Conversion System"),
+    //   solutionProduct("i-ems", "Energy Management System", productImg.ul1558),
+    // ],
   },
   {
     id: "J",
     label: "Mechanical room",
-    mapX: 51,
-    mapY: 57,
+    mobileLabel: "Chiller",
+    mapX: 47.9,
+    mapY: 54.3,
+    mobileMapX: 40.8,
+    mobileMapY: 41.4,
     description:
-      "Mechanical plant coordination for chilled water, airflow, and redundancy across the data hall.",
-    products: [
-      {
-        id: "j-mechanical",
-        image: productImg.fallback,
-        title: "Integrated Mechanical Control",
-        description:
-          "Unified control of pumps, valves, and CRAH units linked to DCIM dashboards.",
-        href: "",
-      },
-    ],
+      "Contains advanced cooling systems and chillers essential for maintaining optimal temperatures for critical servers.",
+    // products: [
+    //   solutionProduct("j-chiller", "Chiller Unit"),
+    //   solutionProduct("j-crah", "CRAH"),
+    //   solutionProduct("j-cooling-tower", "Cooling Tower"),
+    //   solutionProduct("j-pump", "Pump Skid"),
+    //   solutionProduct("j-controls", "HVAC Controls", productImg.ul1558),
+    // ],
   },
 ];
 
