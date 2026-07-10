@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -674,40 +676,28 @@ public class PageDataService {
                 .toList();
   }
 
-    /** "status='active',form1.type='001'" → {status=active, form1.type=001} — key는 필드명 또는 contentKey.fieldKey 형식만 허용 */
-  private Map<String, String> parseCondition(String condition) {
-    Map<String, String> result = new LinkedHashMap<>();
-    if (condition == null || condition.isBlank()) {
-      return result;
-    }
-    for (String pair : condition.split(",")) {
-      String[] kv = pair.split("=", 2);
-      if (kv.length != 2) {
-        continue;
-      }
-      String key = kv[0].trim();
-      String value = kv[1].trim().replaceAll("^['\"]|['\"]$", "");
-      if (isValidFieldPath(key)) {
-        result.put(key, value);
-      }
-    }
-    return result;
-  }
-
+    /** 검증 규칙(unique/maxCount)의 condition을 SQL로 변환 — evalConditionExpr 문법(!=,>=,<=,=,<,>,today()) 재사용
+     *  key는 필드명 또는 contentKey.fieldKey 형식만 허용(parseConditionExpr의 COND_TOKEN_PATTERN이 검증) */
   private void appendConditionSql(StringBuilder sql, String condition) {
-    Map<String, String> parsed = parseCondition(condition);
     int i = 0;
-    for (String key : parsed.keySet()) {
-      sql.append(" AND ").append(toJsonPathExpr(key)).append(" = :cond_").append(i);
+    for (CondToken t : parseConditionExpr(condition)) {
+      String sqlOp = "!=".equals(t.op()) ? "<>" : t.op();
+      if (t.isToday()) {
+        sql.append(" AND substring(regexp_replace(").append(toJsonPathExpr(t.key()))
+                .append(", '[^0-9]', '', 'g'), 1, 8) ").append(sqlOp).append(" to_char(CURRENT_DATE, 'YYYYMMDD')");
+      } else {
+        sql.append(" AND ").append(toJsonPathExpr(t.key())).append(" ").append(sqlOp).append(" :cond_").append(i);
+      }
       i++;
     }
   }
 
   private void setConditionParams(Query query, String condition) {
-    Map<String, String> parsed = parseCondition(condition);
     int i = 0;
-    for (String value : parsed.values()) {
-      query.setParameter("cond_" + i, value);
+    for (CondToken t : parseConditionExpr(condition)) {
+      if (!t.isToday()) {
+        query.setParameter("cond_" + i, t.value());
+      }
       i++;
     }
   }
@@ -745,16 +735,40 @@ public class PageDataService {
     }
   }
 
-    /** 저장하려는 dataJson이 condition(콤마구분 key=value, 암묵적 AND)을 전부 만족하는지 확인 — condition 없으면 항상 true */
+    /** 저장하려는 dataJson이 condition(evalConditionExpr 문법, 암묵적 AND)을 전부 만족하는지 확인 — condition 없으면 항상 true */
   private boolean matchesCondition(Map<String, Object> dataJson, String condition) {
-    for (Map.Entry<String, String> e : parseCondition(condition).entrySet()) {
-      Object val = extractFieldValue(dataJson, e.getKey());
+    String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+    for (CondToken t : parseConditionExpr(condition)) {
+      Object val = extractFieldValue(dataJson, t.key());
       String strVal = val != null ? val.toString() : "";
-      if (!strVal.equals(e.getValue())) {
+      String left;
+      String right;
+      if (t.isToday()) {
+        String digitsOnly = strVal.replaceAll("[^0-9]", "");
+        left = digitsOnly.length() >= 8 ? digitsOnly.substring(0, 8) : digitsOnly;
+        right = today;
+      } else {
+        left = strVal;
+        right = t.value();
+      }
+      if (!compareOp(left, t.op(), right)) {
         return false;
       }
     }
     return true;
+  }
+
+    /** evalConditionExpr 문법의 6개 연산자(=,!=,<,>,<=,>=) 비교 — 문자열(사전식) 비교로 SQL의 text 비교와 동일하게 맞춤 */
+  private boolean compareOp(String left, String op, String right) {
+    return switch (op) {
+      case "=" -> left.equals(right);
+      case "!=" -> !left.equals(right);
+      case "<" -> left.compareTo(right) < 0;
+      case ">" -> left.compareTo(right) > 0;
+      case "<=" -> left.compareTo(right) <= 0;
+      case ">=" -> left.compareTo(right) >= 0;
+      default -> false;
+    };
   }
 
     /** "title" → dataJson.get("title") / "form1.title" → dataJson.get("form1")에서 title 추출 */
@@ -1242,11 +1256,12 @@ public class PageDataService {
   private record CondToken(String key, String op, String value, boolean isToday) {}
 
   private static final Pattern COND_TOKEN_PATTERN =
-      Pattern.compile("^([a-zA-Z0-9_]+)\\s*(!=|>=|<=|=|<|>)\\s*(.+)$");
+      Pattern.compile("^([a-zA-Z0-9_]+(?:\\.[a-zA-Z0-9_]+)?)\\s*(!=|>=|<=|=|<|>)\\s*(.+)$");
 
   /**
    * "key1=v1,key2<today()" 형태의 조건식을 토큰 목록으로 파싱 (FE의 evalConditionExpr과 동일 문법 재사용)
    * 콤마로 구분된 각 항을 AND 조건 하나로 취급. 형식에 안 맞는 항은 조용히 무시(SQL Injection 방지 — 정규식 매칭 실패 시 미반영)
+   * key는 "title" 또는 "contentKey.fieldKey"(최대 1개 dot)까지 허용, value는 'INFORMATION'처럼 따옴표로 감싸도 됨(stripQuotes)
    */
   private List<CondToken> parseConditionExpr(String expr) {
     List<CondToken> tokens = new ArrayList<>();
@@ -1256,7 +1271,7 @@ public class PageDataService {
       if (!m.matches()) continue;
       String val = m.group(3).trim();
       boolean isToday = "today()".equals(val);
-      tokens.add(new CondToken(m.group(1), m.group(2), isToday ? null : val, isToday));
+      tokens.add(new CondToken(m.group(1), m.group(2), isToday ? null : stripQuotes(val), isToday));
     }
     return tokens;
   }

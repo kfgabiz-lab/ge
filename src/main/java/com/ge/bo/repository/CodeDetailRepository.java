@@ -4,6 +4,7 @@ import com.ge.bo.entity.CodeDetail;
 import com.ge.bo.entity.CodeGroup;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CodeDetailRepository extends JpaRepository<CodeDetail, Long> {
@@ -13,4 +14,9 @@ public interface CodeDetailRepository extends JpaRepository<CodeDetail, Long> {
   boolean existsByGroupAndCodeAndIdNot(CodeGroup group, String code, Long id);
 
   Optional<CodeDetail> findFirstByGroup_GroupCodeAndActiveTrue(String groupCode);
+
+  /**
+   * FO 공개 코드 목록 조회용 — groupCode에 속한 활성(is_active=true) 코드를 sortOrder 오름차순으로 반환
+   */
+  List<CodeDetail> findAllByGroup_GroupCodeAndActiveTrueOrderBySortOrderAsc(String groupCode);
 }
