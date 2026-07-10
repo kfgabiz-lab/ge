@@ -87,7 +87,7 @@ export default function MarketsHero({
     );
   }
 
-  // default 변형 — data-center 등 기존 렌더링 (변경 금지)
+  // default 변형 — 현재 마켓 페이지군은 전부 key-visual 사용, 이 분기는 미사용
   return (
     <section className="markets_hero">
       <div className="markets_hero__content">

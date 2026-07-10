@@ -3,14 +3,13 @@
 import GnbMegaItemLink from "@/components/layout/shared/gnb-mega/GnbMegaItemLink";
 import type { GnbMegaSimplePanelStateProps } from "@/components/layout/shared/gnb-mega/types";
 import type { GnbSimpleMegaSection } from "@/data/gnb";
-import { companyMegaMenu } from "@/data/gnb/mega/company";
 
 /** Figma 5683:60839 — #gnb-mega-panel-company */
 export default function GnbCompanyMegaPanel({
+  menu,
   onItemClick,
 }: GnbMegaSimplePanelStateProps) {
-  const sections =
-    companyMegaMenu.layout === "sections" ? companyMegaMenu.sections : [];
+  const sections = menu.layout === "sections" ? menu.sections : [];
 
   return (
     <div className="gnb_mega__inner gnb_mega__inner--sections">

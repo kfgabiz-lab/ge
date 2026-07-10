@@ -5,7 +5,14 @@ import GnbMenu from "@/components/layout/shared/GnbMenu";
 import HeaderBreadcrumb from "@/components/layout/shared/HeaderBreadcrumb";
 import { useHeaderScroll } from "@/components/layout/shared/useHeaderScroll";
 import { MAIN_PATH } from "@/lib/navigation/crossSectionNav";
-export default function SubHeader() {
+import type { FoGnbMenuApiNode } from "@/data/gnb";
+
+type SubHeaderProps = {
+  /** 서버 레이아웃에서 조회한 GNB 트리 데이터 */
+  gnbMenuData?: FoGnbMenuApiNode[];
+};
+
+export default function SubHeader({ gnbMenuData }: SubHeaderProps) {
   const [isMegaOpen, setIsMegaOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -26,6 +33,7 @@ export default function SubHeader() {
     >
       <GnbMenu
         logoHref={MAIN_PATH}
+        gnbMenuData={gnbMenuData}
         isAtTop={isAtTop}
         isHeaderHidden={isGnbHidden}
         isHeaderRevealed={isHeaderRevealed}

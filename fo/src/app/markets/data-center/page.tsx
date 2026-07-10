@@ -27,6 +27,7 @@ export default function MarketsDataCenterPage() {
   return (
     <main className="markets-page markets-page--data-center" id="Page_markets_data_center">
       <MarketsHero
+        variant="key-visual"
         subtitle={dataCenterHero.subtitle}
         title={dataCenterHero.title}
         heroImage={dataCenterHero.heroImage}
@@ -40,7 +41,7 @@ export default function MarketsDataCenterPage() {
       <MarketsBenefits items={dataCenterBenefits} />
       <MarketsSolutions />
       <MarketsWhy items={dataCenterWhyItems} description={dataCenterWhyDescription} />
-      <MarketsProducts items={dataCenterProducts} />
+      <MarketsProducts items={dataCenterProducts} badgesType2Only />
       <CommonBanner01 />
       <HighlightNewsSection
         variant="markets"

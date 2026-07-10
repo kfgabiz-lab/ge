@@ -3,14 +3,13 @@
 import GnbMegaItemLink from "@/components/layout/shared/gnb-mega/GnbMegaItemLink";
 import type { GnbMegaSimplePanelStateProps } from "@/components/layout/shared/gnb-mega/types";
 import type { GnbSimpleMegaSection } from "@/data/gnb";
-import { supportMegaMenu } from "@/data/gnb/mega/support";
 
 /** Figma 3670:14792 — #gnb-mega-panel-support */
 export default function GnbSupportMegaPanel({
+  menu,
   onItemClick,
 }: GnbMegaSimplePanelStateProps) {
-  const sections =
-    supportMegaMenu.layout === "sections" ? supportMegaMenu.sections : [];
+  const sections = menu.layout === "sections" ? menu.sections : [];
 
   return (
     <div className="gnb_mega__inner gnb_mega__inner--sections">

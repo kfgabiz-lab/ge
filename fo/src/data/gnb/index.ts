@@ -6,6 +6,11 @@ export {
 } from "@/data/gnb/panelIds";
 export { gnbNavItems } from "@/data/gnb/navItems";
 export {
+  fetchGnbMenuData,
+  resolveGnbNavItems,
+  type FoGnbMenuApiNode,
+} from "@/data/gnb/fromApi";
+export {
   devicesMegaDefaultCategoryId,
   devicesMegaDefaultDepth3Id,
   devicesMegaMenu,
