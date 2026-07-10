@@ -122,31 +122,14 @@
       "PowerShell(Start-Process \"msedge\" \"http://localhost:3001\")",
       "Edit",
       "Write",
-      "MultiEdit"
-    ]
-  },
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": ".*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "powershell -File \"C:\\Users\\Administrator\\.gemini\\workspace\\Bo\\agent-monitor\\hooks\\pre.ps1\""
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": ".*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "powershell -File \"C:\\Users\\Administrator\\.gemini\\workspace\\Bo\\agent-monitor\\hooks\\post.ps1\""
-          }
-        ]
-      }
+      "MultiEdit",
+      "Skill(run)",
+      "Skill(update-config)",
+      "PowerShell",
+      "Bash(npx tsc *)",
+      "Bash(wc -l /tmp_tsc_out2.txt)",
+      "Bash(cat /tmp_tsc_out2.txt)",
+      "Bash(rm -f /tmp_tsc_out2.txt)"
     ]
   }
 }

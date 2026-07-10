@@ -36,6 +36,18 @@ public class CodeService {
     return CodeGroupResponse.from(findGroupOrThrow(id));
   }
 
+    /* ══════════ FO 공개 코드 목록 조회 ══════════ */
+
+    /**
+     * FO 공개용 — groupCode에 속한 활성 코드 목록을 sortOrder 오름차순 {code, name} 형태로 반환
+     * 기존 detailRepository를 그대로 재사용하는 얇은 읽기 메서드 (관리 메타는 노출하지 않음)
+     */
+  @Transactional(readOnly = true)
+    public List<FoCodeResponse> getFoCodes(String groupCode) {
+    return detailRepository.findAllByGroup_GroupCodeAndActiveTrueOrderBySortOrderAsc(groupCode)
+                .stream().map(FoCodeResponse::from).toList();
+  }
+
     /* ══════════ 그룹 생성 ══════════ */
 
   @Transactional

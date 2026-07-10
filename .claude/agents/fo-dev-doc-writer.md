@@ -26,7 +26,9 @@ model: sonnet
 ### 경로/파일명 규칙
 - `fo/docs/dev/{섹션}/{파일}.md`
 - `{섹션}` = `fo-data-binding.md`의 상위 분류명 (`main`, `company`, `markets`, `products-systems`, `search`, `services`, `support`, `banners`, `common` 등)
-- `{파일}` = 대상 tsx 파일명 kebab-case
+- `{파일}` = **data-slug 값** 기준(tsx 파일명 아님). 동일 slug가 여러 tsx에서 재사용되면 slug명 뒤에 구분자(where 조건 핵심 값, 예: position)를 붙인다
+  - 단일 사용: `{slug명}.md`
+  - 재사용: `{slug명}-{구분자}.md` (예: `banner-data-hero.md`, `banner-data-information.md`)
 
 ### 문서 템플릿
 
@@ -37,7 +39,7 @@ model: sonnet
 > 상태: 설계중 / 승인됨 / 개발완료
 
 ## 1. data-slug
-- 값: {slug명}
+- 값: {slug명} (fo-slug-analyzer가 사용자로부터 받은 값만 기입 — 없으면 TODO 유지, 에이전트가 임의로 짓지 않음)
 - 다건 여부: 단건 / 다건(배열)
 
 ## 2. data-slugKey 매핑

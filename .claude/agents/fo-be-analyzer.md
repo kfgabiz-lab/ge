@@ -17,7 +17,8 @@ model: opus
 
 - **공통 재사용 최우선, 단 억지로 끼워 맞추지 않는다.** bo-api에 비슷해 보이는 게 있어도, 실제로 스펙(where 조건, 응답 형태 등)을 satisfy 못 하면 "재사용 불가"로 판단하고 이유를 명시한다.
 - **확실하지 않으면 질문한다.** 기존 서비스 재사용 여부, 신규 엔티티 필요 여부 등이 애매하면 fo-orchestrator를 통해 사용자에게 확인 요청.
-- **DB 직접 조회가 안 되는 환경일 수 있다.** psql 등 클라이언트가 없으면 추측하지 말고 "확인 필요"로 명시 (실제로 이 프로젝트 로컬 환경엔 DB 클라이언트가 없었던 전례 있음).
+- **DB 직접 조회 가능.** `C:\Program Files\PostgreSQL\18\bin\psql.exe`로 로컬/developer 프로필 DB에 직접 접속해 실데이터를 확인할 수 있다(접속정보는 `bo-api/src/main/resources/application-{profile}.yml` 참고, 현재 활성 프로필은 사용자에게 확인). "확인 필요"로 넘기기 전에 먼저 직접 조회해서 근거를 확보할 것 — psql이 실제로 안 되는 경우에만 "확인 필요"로 명시.
+- **`page_data` 조회 시 `data_slug` 컬럼 기준이다, `template_slug`이 아니다.** `template_slug`은 bo 관리자 등록/수정 폼 템플릿 식별용(예: "banner-detail")이고, fo가 실제로 필터링해야 하는 건 `data_slug`이다. 이 둘을 혼동하면 실데이터가 있는데도 없는 것처럼 보인다.
 
 ---
 
@@ -32,6 +33,8 @@ model: opus
    - `bo-api/.../entity/SlugRegistry.java`, `SlugRegistryService.java` — 대상 slug가 실제 등록되어 있는지 (등록 여부는 DB 확인이 안 되면 "확인 필요"로 남김)
    - `SecurityConfig.java` — `/api/v1/fo/**` 권한(permitAll) 패턴 확인
    - 유사 도메인의 기존 Controller/Service/Entity (완전히 새로운 도메인이면 무엇을 참고할지)
+   - **slugKey 중 `select` 타입 필드가 있으면** `slug_entity_field`에서 `code_group_code`가 설정돼 있는지 확인. 설정돼 있으면 저장값은 코드값(예: "001")이지 화면 라벨(예: "뉴스레터")이 아니므로, FE에서 코드→라벨 변환이 필요하다 — 이미 만들어진 공개 API `GET /api/v1/fo/codes/{groupCode}`(`FoCodeController`)를 재사용할 수 있는지 먼저 확인, 신규 groupCode라도 이 엔드포인트 자체는 그대로 재사용(신규 BE 불필요).
+   - **slugKey 중 업로드 이미지/미디어ID 배열 필드가 있으면** `page_file` 테이블 대상이다. 이미 만들어진 공개 API `GET /api/v1/fo/page-files/{id}`(`FoPageFileController`, `Content-Disposition: inline`으로 이미지 바이트 스트리밍, 로컬/blob 저장소 자동 분기)를 그대로 재사용할 수 있다 — 신규 BE 불필요, FE에서 `<img src="/api/v1/fo/page-files/{id}">`로 바로 쓰면 됨.
 3. **판단**:
    - 기존 활용 가능 → 어떤 서비스 메서드를 그대로 쓰고, fo 전용 컨트롤러만 추가하면 되는지
    - 신규 필요 → 무엇을 재사용하고(예: `PageDataService`의 조회 로직) 무엇을 새로 만들지(예: fo 공개용 컨트롤러, where/orderBy 파라미터 처리)
