@@ -99,9 +99,19 @@ export default function MarketsReferencesModal({
     swiperRef.current?.slideNext();
   }, []);
 
-  const handleSelectReference = useCallback((index: number) => {
-    setReferenceIndex(index);
-  }, []);
+  // 이전 레퍼런스로 순환 이동 (첫 항목이면 마지막으로)
+  const handlePrevReference = useCallback(() => {
+    setReferenceIndex((current) =>
+      current > 0 ? current - 1 : referenceItems.length - 1,
+    );
+  }, [referenceItems.length]);
+
+  // 다음 레퍼런스로 순환 이동 (마지막 항목이면 처음으로)
+  const handleNextReference = useCallback(() => {
+    setReferenceIndex((current) =>
+      current < referenceItems.length - 1 ? current + 1 : 0,
+    );
+  }, [referenceItems.length]);
 
   if (!open || !activeItem) return null;
 
@@ -135,40 +145,11 @@ export default function MarketsReferencesModal({
         aria-modal="true"
         aria-labelledby={titleId}
       >
-        <header
-          className={`common_modal__head markets_references_modal__head${
-            isMultiReference ? " markets_references_modal__head--tabs" : ""
-          }`}
-        >
+        <header className="common_modal__head markets_references_modal__head">
           <div className="common_modal__head-row markets_references_modal__head-row">
-            {isMultiReference ? (
-              <div
-                className="markets_references_modal__tabs"
-                role="tablist"
-                aria-label="References"
-              >
-                {referenceItems.map((reference, index) => (
-                  <button
-                    key={reference.id}
-                    type="button"
-                    role="tab"
-                    id={`${titleId}-tab-${index}`}
-                    aria-selected={referenceIndex === index}
-                    aria-controls={`${titleId}-panel-${index}`}
-                    className={`markets_references_modal__tab${
-                      referenceIndex === index ? " is-active" : ""
-                    }`}
-                    onClick={() => handleSelectReference(index)}
-                  >
-                    Reference {index + 1}
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <h2 id={titleId} className="common_modal__tit">
-                {modalTitle}
-              </h2>
-            )}
+            <h2 id={titleId} className="common_modal__tit">
+              {modalTitle}
+            </h2>
             <button
               type="button"
               className="common_modal__close"
@@ -176,19 +157,10 @@ export default function MarketsReferencesModal({
               onClick={onClose}
             />
           </div>
-          {!isMultiReference ? <hr className="common_modal__line" /> : null}
+          <hr className="common_modal__line" />
         </header>
 
-        <div
-          className={`common_modal__body markets_references_modal__body${
-            isMultiReference ? " markets_references_modal__body--tabs" : ""
-          }`}
-          role={isMultiReference ? "tabpanel" : undefined}
-          id={isMultiReference ? `${titleId}-panel-${referenceIndex}` : undefined}
-          aria-labelledby={
-            isMultiReference ? `${titleId}-tab-${referenceIndex}` : undefined
-          }
-        >
+        <div className="common_modal__body markets_references_modal__body">
           <div className="markets_references_modal__media">
             <div className="markets_references_modal__img">
               {imageCount > 1 ? (
@@ -249,14 +221,6 @@ export default function MarketsReferencesModal({
           </div>
 
           <div className="markets_references_modal__content">
-            {isMultiReference ? (
-              <div className="markets_references_modal__content-head">
-                <h2 id={titleId} className="markets_references_modal__content-tit">
-                  {modalTitle}
-                </h2>
-                <hr className="markets_references_modal__content-line" />
-              </div>
-            ) : null}
             <section className="markets_references_modal__section markets_references_modal__section--overview">
               <h3 className="markets_references_modal__section-tit">
                 Project Overview
@@ -299,6 +263,30 @@ export default function MarketsReferencesModal({
           </div>
         </div>
       </div>
+      {/* 레퍼런스가 2개 이상일 때만 이전/다음 전환 버튼 노출 */}
+      {isMultiReference ? (
+        <div
+          className="markets_references_modal__reference-nav"
+          aria-hidden={embedded}
+        >
+          <button
+            type="button"
+            className="markets_references_modal__reference-nav-btn markets_references_modal__reference-nav-btn--prev"
+            aria-label="Previous reference"
+            onClick={handlePrevReference}
+          >
+            <span className="markets_references_modal__reference-nav-icon" />
+          </button>
+          <button
+            type="button"
+            className="markets_references_modal__reference-nav-btn markets_references_modal__reference-nav-btn--next"
+            aria-label="Next reference"
+            onClick={handleNextReference}
+          >
+            <span className="markets_references_modal__reference-nav-icon" />
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 

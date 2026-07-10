@@ -1,43 +1,114 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useId, useRef, useState } from "react";
-import { marketsSolutionZones } from "../data/marketsSolutions";
+import { Fragment, useEffect, useMemo, useState } from "react";
+import {
+  marketsSolutionMobileOrder,
+  marketsSolutionZones,
+} from "../data/marketsSolutions";
+import type { SolutionProduct, SolutionZone } from "../data/marketsSolutions";
 
-const DEFAULT_ACTIVE_ID = "C";
+// 패널 페이드 아웃 지속 시간(ms)
+const PANEL_FADE_MS = 450;
+
+const MAP_BG_PC = "/img/markets/solutions/bg_datacenter.png";
+const MAP_BG_MO = "/img/markets/solutions/bg_datacenter_mo.png";
+
+function SolutionProductRow({ product }: { product: SolutionProduct }) {
+  return (
+    <Link href={product.href} className="markets_solutions__product">
+      <span className="markets_solutions__product-img">
+        {product.image ? (
+          <img
+            loading="lazy"
+            decoding="async"
+            src={product.image}
+            alt=""
+            width={80}
+            height={80}
+          />
+        ) : null}
+      </span>
+      <div className="markets_solutions__product-text">
+        <strong>{product.title}</strong>
+        {product.description ? <p>{product.description}</p> : null}
+      </div>
+    </Link>
+  );
+}
+
+function ZonePanelBody({
+  zone,
+  title,
+}: {
+  zone: SolutionZone;
+  title?: string;
+}) {
+  const heading = title ?? zone.label;
+  return (
+    <>
+      <div className="markets_solutions__panel-intro">
+        <h3 className="markets_solutions__panel-tit">{heading}</h3>
+        <p className="markets_solutions__panel-desc">{zone.description}</p>
+      </div>
+      {zone.products && zone.products.length > 0 ? (
+        <ul className="markets_solutions__products">
+          {zone.products.map((product, index) => (
+            <Fragment key={product.id}>
+              {index > 0 ? (
+                <li className="markets_solutions__products-sep" aria-hidden="true" />
+              ) : null}
+              <li className="markets_solutions__products-item">
+                <SolutionProductRow product={product} />
+              </li>
+            </Fragment>
+          ))}
+        </ul>
+      ) : null}
+    </>
+  );
+}
 
 export default function MarketsSolutions() {
-  const panelId = useId();
-  const panelRef = useRef<HTMLElement>(null);
-  const itemRefs = useRef<Partial<Record<string, HTMLElement>>>({});
-  const [activeId, setActiveId] = useState(DEFAULT_ACTIVE_ID);
-
-  const handleZoneSelect = (id: string) => {
-    setActiveId(id);
-  };
+  // 현재 열려 있는 존 id (null이면 닫힘)
+  const [activeId, setActiveId] = useState<string | null>(null);
+  // 페이드 아웃 동안 잔상으로 보여줄 존 id
+  const [displayZoneId, setDisplayZoneId] = useState<string | null>(null);
+  const isPanelOpen = activeId !== null;
 
   useEffect(() => {
-    const scrollActiveIntoPanel = () => {
-      const panel = panelRef.current;
-      const item = itemRefs.current[activeId];
-      if (!panel || !item) return;
+    if (activeId) {
+      setDisplayZoneId(activeId);
+      return;
+    }
 
-      const panelRect = panel.getBoundingClientRect();
-      const itemRect = item.getBoundingClientRect();
-      const isFullyVisible =
-        itemRect.top >= panelRect.top && itemRect.bottom <= panelRect.bottom;
-
-      if (!isFullyVisible) {
-        item.scrollIntoView({ block: "nearest", behavior: "smooth" });
-      }
-    };
-
-    const frame = requestAnimationFrame(() => {
-      requestAnimationFrame(scrollActiveIntoPanel);
-    });
-
-    return () => cancelAnimationFrame(frame);
+    const timer = window.setTimeout(() => setDisplayZoneId(null), PANEL_FADE_MS);
+    return () => window.clearTimeout(timer);
   }, [activeId]);
+
+  const zoneById = useMemo(
+    () => new Map(marketsSolutionZones.map((zone) => [zone.id, zone])),
+    [],
+  );
+
+  // 모바일 아코디언 노출 순서에 맞춘 존 목록
+  const mobileZones = useMemo(
+    () =>
+      marketsSolutionMobileOrder
+        .map((id) => zoneById.get(id))
+        .filter((zone): zone is SolutionZone => zone !== undefined),
+    [zoneById],
+  );
+
+  const activeZone = useMemo(() => {
+    if (!displayZoneId) return null;
+    return zoneById.get(displayZoneId) ?? marketsSolutionZones[0];
+  }, [displayZoneId, zoneById]);
+
+  // 동일 존 재클릭 시 닫기, 아니면 해당 존 열기
+  const toggleZone = (zoneId: string) => {
+    setActiveId((current) => (current === zoneId ? null : zoneId));
+  };
 
   return (
     <section className="markets_solutions" id="markets-solutions">
@@ -47,14 +118,29 @@ export default function MarketsSolutions() {
         </h2>
       </div>
 
-      <div className="markets_solutions__stage">
+      <div
+        className={`markets_solutions__stage${
+          isPanelOpen ? " markets_solutions__stage--open" : ""
+        }`}
+      >
         <div className="markets_solutions__map">
-          <img loading="lazy" decoding="async"
-            className="markets_solutions__map-bg"
-            src="/img/markets/solutions/bg_datacenter.png"
+          <img
+            loading="lazy"
+            decoding="async"
+            className="markets_solutions__map-bg markets_solutions__map-bg--pc"
+            src={MAP_BG_PC}
             alt=""
             width={1920}
             height={978}
+          />
+          <img
+            loading="lazy"
+            decoding="async"
+            className="markets_solutions__map-bg markets_solutions__map-bg--mo"
+            src={MAP_BG_MO}
+            alt=""
+            width={375}
+            height={280}
           />
           <div className="markets_solutions__hotspots">
             {marketsSolutionZones.map((zone) => {
@@ -67,14 +153,17 @@ export default function MarketsSolutions() {
                   className={`markets_solutions__hotspot${
                     isActive ? " is-active" : ""
                   }`}
-                  style={{ left: `${zone.mapX}%`, top: `${zone.mapY}%` }}
+                  style={{
+                    left: `${zone.mapX}%`,
+                    top: `${zone.mapY}%`,
+                    ["--mo-x" as string]: `${zone.mobileMapX ?? zone.mapX}%`,
+                    ["--mo-y" as string]: `${zone.mobileMapY ?? zone.mapY}%`,
+                  }}
                   aria-label={zone.label}
                   aria-pressed={isActive}
-                  aria-controls={`${panelId}-${zone.id}`}
-                  onMouseEnter={() => handleZoneSelect(zone.id)}
-                  onFocus={() => handleZoneSelect(zone.id)}
+                  onClick={() => toggleZone(zone.id)}
                 >
-                  <span className="markets_solutions__hotspot-badge">{zone.id}</span>
+                  <span className="markets_solutions__hotspot-pin" aria-hidden="true" />
                   <span className="markets_solutions__hotspot-label">{zone.label}</span>
                 </button>
               );
@@ -83,81 +172,50 @@ export default function MarketsSolutions() {
         </div>
 
         <aside
-          ref={panelRef}
-          className="markets_solutions__panel"
+          className="markets_solutions__panel markets_solutions__panel--desktop"
+          aria-label="Data center zone details"
+          aria-live="polite"
+          aria-hidden={!isPanelOpen}
+        >
+          <div className="markets_solutions__panel-card">
+            {activeZone ? <ZonePanelBody zone={activeZone} /> : null}
+          </div>
+        </aside>
+
+        <div
+          className="markets_solutions__accordion"
           aria-label="Data center zones"
         >
-          {marketsSolutionZones.map((zone) => {
-            const isActive = activeId === zone.id;
-            const bodyId = `${panelId}-${zone.id}`;
+          <ul className="markets_solutions__accordion-list">
+            {mobileZones.map((zone) => {
+              const isOpen = activeId === zone.id;
+              const mobileTitle = zone.mobileLabel ?? zone.label;
 
-            return (
-              <article
-                key={zone.id}
-                ref={(node) => {
-                  if (node) itemRefs.current[zone.id] = node;
-                  else delete itemRefs.current[zone.id];
-                }}
-                className={`markets_solutions__item${
-                  isActive ? " is-active" : ""
-                }`}
-              >
-                <h3 className="markets_solutions__item-heading">
+              return (
+                <li
+                  key={zone.id}
+                  className={`markets_solutions__accordion-item${
+                    isOpen ? " is-open" : ""
+                  }`}
+                >
                   <button
                     type="button"
-                    className="markets_solutions__item-head"
-                    aria-expanded={isActive}
-                    aria-controls={bodyId}
-                    id={`${panelId}-trigger-${zone.id}`}
-                    onClick={() => handleZoneSelect(zone.id)}
+                    className="markets_solutions__accordion-trigger"
+                    aria-expanded={isOpen}
+                    onClick={() => toggleZone(zone.id)}
                   >
-                    <span className="markets_solutions__item-badge">{zone.id}</span>
-                    <span className="markets_solutions__item-tit">{zone.label}</span>
+                    {mobileTitle}
                   </button>
-                </h3>
-
-                <div
-                  id={bodyId}
-                  className="markets_solutions__item-body"
-                  role="region"
-                  aria-labelledby={`${panelId}-trigger-${zone.id}`}
-                  hidden={!isActive}
-                >
-                  <p className="markets_solutions__item-desc">{zone.description}</p>
-                  {zone.products && zone.products.length > 0 ? (
-                    <ul className="markets_solutions__products">
-                      {zone.products.map((product, index) => (
-                        <li key={product.id}>
-                          {index > 0 ? (
-                            <span
-                              className="markets_solutions__products-sep"
-                              aria-hidden="true"
-                            />
-                          ) : null}
-                          <Link
-                            href={product.href}
-                            className="markets_solutions__product"
-                          >
-                            <img loading="lazy" decoding="async"
-                              src={product.image}
-                              alt=""
-                              width={80}
-                              height={80}
-                            />
-                            <div className="markets_solutions__product-text">
-                              <strong>{product.title}</strong>
-                              <p>{product.description}</p>
-                            </div>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
+                  {isOpen ? (
+                    <div className="markets_solutions__accordion-panel">
+                      <ZonePanelBody zone={zone} title={mobileTitle} />
+                    </div>
                   ) : null}
-                </div>
-              </article>
-            );
-          })}
-        </aside>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </div>
     </section>
   );

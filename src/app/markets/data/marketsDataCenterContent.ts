@@ -134,7 +134,7 @@ export const dataCenterStats: MarketStatItem[] = [
     value: "30",
     valueUnit: "%",
     valueSuffix: " Reduce",
-    sublabel: "reliability and compliance",
+    sublabel: "with our modular solution",
     description:
       'Our modular "Beyond PowerONE" solution streamlines engineering and installation, reducing construction lead times by up to 30% while maximizing space efficiency through compact design.',
   },
@@ -142,9 +142,10 @@ export const dataCenterStats: MarketStatItem[] = [
     id: "monitoring",
     label: "Real-time monitoring of",
     value: "1,000,000",
+    valueSuffix: "+",
     sublabel: "tags per second for AI workloads",
     description:
-      "From 800V DC architectures to AI-driven DCIM platforms, our intelligent solutions provide real-time monitoring and predictive maintenance to power the next generation of gigawatt-scale AI workloads.",
+      "From 800V DC architectures to AI-driven Data Center Infrastructure Management platforms, our intelligent solutions provide real-time monitoring and predictive maintenance to power the next generation of gigawatt-scale AI workloads.",
   },
 ];
 
@@ -200,7 +201,7 @@ export const dataCenterWhyItems: WhyItem[] = [
     title: "Fast deployment & response",
     description:
       "Extensive references in the North American market (including Big Tech companies and energy corporations)",
-    icon: "/img/markets/img_why_01.png",
+    icon: "/img/markets/data-center/why/why_01.svg",
   },
   {
     id: "dc-why-2",
@@ -208,7 +209,7 @@ export const dataCenterWhyItems: WhyItem[] = [
     title: "Proven reliability",
     description:
       "Extensive references in the North American market (including Big Tech companies and energy corporations)",
-    icon: "/img/markets/img_why_02.png",
+    icon: "/img/markets/data-center/why/why_02.svg",
   },
   {
     id: "dc-why-3",
@@ -216,7 +217,7 @@ export const dataCenterWhyItems: WhyItem[] = [
     title: "Energy efficiency",
     description:
       "Up to 40% reduction in energy consumption (applicable to HVAC Optimal Free Cooling solutions within data centers)",
-    icon: "/img/markets/img_why_03.png",
+    icon: "/img/markets/data-center/why/why_03.svg",
   },
 ];
 
@@ -244,11 +245,10 @@ export const dataCenterFaqItems: FaqItem[] = [
 export const dataCenterProducts: ProductItem[] = [
   {
     id: "dc-p1",
-    href: "/devices-systems/motor-control/metasol-ms",
+    href: "/products-systems/motor-control/metasol-ms",
     image: "/img/markets/solutions/product_mcsg.png",
     title: "MCSG (Metal Clad Switchgear)",
     category: "Switchgear",
-    badges: 1,
   },
   {
     id: "dc-p2",

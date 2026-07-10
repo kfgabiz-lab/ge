@@ -9,8 +9,9 @@ type MarketsStatsProps = {
 };
 
 function parseNumericStatValue(value: string) {
-  const useComma = value.includes(",");
-  const normalized = value.replace(/,/g, "");
+  const trimmed = value.trim();
+  const useComma = trimmed.includes(",");
+  const normalized = trimmed.replace(/,/g, "").replace(/\+$/, "");
 
   if (!/^\d+(\.\d+)?$/.test(normalized)) {
     return null;
@@ -21,10 +22,24 @@ function parseNumericStatValue(value: string) {
     return null;
   }
 
-  return { target, useComma };
+  // 소수점 이하 자릿수 계산 (예: "12.5" → 1)
+  const decimalPlaces = normalized.includes(".")
+    ? normalized.split(".")[1]?.length ?? 0
+    : 0;
+
+  return { target, useComma, decimalPlaces };
 }
 
-function formatStatNumber(value: number, useComma: boolean) {
+function formatStatNumber(
+  value: number,
+  useComma: boolean,
+  decimalPlaces: number,
+) {
+  // 소수 자릿수가 있으면 자릿수 유지, 없으면 콤마 포맷 여부에 따라 표시
+  if (decimalPlaces > 0) {
+    return value.toFixed(decimalPlaces);
+  }
+
   return useComma ? value.toLocaleString("en-US") : String(value);
 }
 
@@ -36,9 +51,14 @@ type MarketsStatValueProps = {
 
 function MarketsStatValue({ item, isActive, delay }: MarketsStatValueProps) {
   const parsed = parseNumericStatValue(item.value);
-  const count = useCountUp(parsed?.target ?? 0, isActive && parsed !== null, delay);
+  const count = useCountUp(
+    parsed?.target ?? 0,
+    isActive && parsed !== null,
+    delay,
+    parsed?.decimalPlaces ?? 0,
+  );
   const displayValue = parsed
-    ? formatStatNumber(count, parsed.useComma)
+    ? formatStatNumber(count, parsed.useComma, parsed.decimalPlaces)
     : item.value;
 
   return (
