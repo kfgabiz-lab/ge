@@ -2,14 +2,13 @@
 
 import GnbMegaItemLink from "@/components/layout/shared/gnb-mega/GnbMegaItemLink";
 import type { GnbMegaSimplePanelStateProps } from "@/components/layout/shared/gnb-mega/types";
-import { marketsMegaMenu } from "@/data/gnb/mega/markets";
 
 /** Figma 17660:104944 — #gnb-mega-panel-markets */
 export default function GnbMarketsMegaPanel({
+  menu,
   onItemClick,
 }: GnbMegaSimplePanelStateProps) {
-  const items =
-    marketsMegaMenu.layout === "grid" ? marketsMegaMenu.items : [];
+  const items = menu.layout === "grid" ? menu.items : [];
 
   return (
     <div className="gnb_mega__inner gnb_mega__inner--grid">

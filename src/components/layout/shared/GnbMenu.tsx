@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GNB_CLOSE_EVENT } from "@/lib/navigation/gnbCloseEvent";
@@ -22,7 +29,12 @@ import GnbGlobalTrigger, {
   GnbGlobalTriggerSubContent,
 } from "@/components/layout/shared/GnbGlobalTrigger";
 import GnbSearchPanel from "@/components/layout/shared/GnbSearchPanel";
-import { gnbNavItems, isDevicesMegaMenu } from "@/data/gnb";
+import {
+  gnbNavItems,
+  isDevicesMegaMenu,
+  resolveGnbNavItems,
+  type FoGnbMenuApiNode,
+} from "@/data/gnb";
 import { resolveDevicesMegaStateFromPath } from "@/data/gnb/mega/devices";
 
 import "@/assets/css/components/gnb.css";
@@ -35,6 +47,8 @@ export type GnbMenuVariant = "main" | "markets";
 type GnbMenuProps = {
   variant?: GnbMenuVariant;
   logoHref?: string;
+  /** 서버 레이아웃에서 GET /api/v1/fo/menus/gnb 로 조회한 GNB 트리(markets/services/support/company override용) */
+  gnbMenuData?: FoGnbMenuApiNode[];
   /** SubHeader / MainHeader에서 스크롤 상태를 넘기면 내부 scroll 리스너 비활성 */
   isAtTop?: boolean;
   isHeaderHidden?: boolean;
@@ -157,6 +171,7 @@ function getHeaderClassName(
 export default function GnbMenu({
   variant = "markets",
   logoHref = "/main",
+  gnbMenuData,
   isAtTop: isAtTopProp,
   isHeaderHidden: isHeaderHiddenProp,
   isHeaderRevealed: isHeaderRevealedProp,
@@ -168,6 +183,11 @@ export default function GnbMenu({
   onSearchOpenChange,
 }: GnbMenuProps) {
   const pathname = usePathname();
+  // devices는 정적 유지, markets/services/support/company만 API 데이터로 megaMenu override
+  const navItems = useMemo(
+    () => resolveGnbNavItems(gnbMenuData),
+    [gnbMenuData],
+  );
   const isMain = variant === "main";
   const hasBreadcrumb = Boolean(breadcrumb);
   const isScrollControlled =
@@ -203,7 +223,7 @@ export default function GnbMenu({
     ? (isHeaderRevealedProp ?? !isHeaderHidden)
     : !internalHeaderHidden;
 
-  const activeNav = gnbNavItems.find((item) => item.id === activeNavId);
+  const activeNav = navItems.find((item) => item.id === activeNavId);
   const megaMenu = activeNav?.megaMenu;
   const showMegaPanel = Boolean(activeNavId && megaMenu);
   const isOverlayOpen = isMegaActive || isSearchOpen;
@@ -256,7 +276,7 @@ export default function GnbMenu({
 
   const openMega = useCallback(
     (navId: string) => {
-      const nav = gnbNavItems.find((item) => item.id === navId);
+      const nav = navItems.find((item) => item.id === navId);
       if (!nav?.megaMenu) {
         setIsMegaActive(false);
         setActiveNavId(null);
@@ -282,7 +302,7 @@ export default function GnbMenu({
         setIsPanelOpen(true);
       });
     },
-    [onMegaOpenChange, onRevealHeader, onSearchOpenChange, pathname],
+    [navItems, onMegaOpenChange, onRevealHeader, onSearchOpenChange, pathname],
   );
 
   const closeMega = useCallback(() => {
@@ -610,7 +630,7 @@ export default function GnbMenu({
 
   const navList = (
     <ul className={isMain ? "main_header__nav-list" : "gnb_nav_list"}>
-      {gnbNavItems.map((item) => {
+      {navItems.map((item) => {
         const hasMega = Boolean(item.megaMenu);
         const isMegaOpen = activeNavId === item.id;
         const isActive = hasMega && isMegaOpen;
@@ -827,7 +847,7 @@ export default function GnbMenu({
         aria-hidden={!isMobileMenuOpen}
       >
         <ul className="main_header__mobile-list">
-          {gnbNavItems.map((item) => (
+          {navItems.map((item) => (
             <li key={item.id}>
               <Link
                 href={item.href}
@@ -861,7 +881,7 @@ export default function GnbMenu({
         aria-hidden={!isMobileMenuOpen}
       >
         <ul className="gnb_mobile_list">
-          {gnbNavItems.map((item) => (
+          {navItems.map((item) => (
             <li key={item.id} className="depth_1">
               <Link href={item.href} prefetch={false} className="link" onClick={handleGnbLinkClick}>
                 {item.label}
@@ -907,7 +927,7 @@ export default function GnbMenu({
             onLinkClick={handleGnbLinkClick}
           />
         ) : (
-          <PanelComponent onItemClick={handleGnbLinkClick} />
+          <PanelComponent menu={megaMenu} onItemClick={handleGnbLinkClick} />
         )}
       </div>
     );

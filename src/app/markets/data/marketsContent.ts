@@ -97,52 +97,44 @@ export type FaqItem = {
 
 export const industryTabs: IndustryTab[] = [
   {
-    id: "power",
-    label: "Power Generation",
-    title: "Power Generation",
+    id: "hotels",
+    label: "Hotels",
+    title: "Hotels",
     description:
-      "LS ELECTRIC’s Food & Beverage solutions are designed to ensure hygiene, consistency, and efficiency across the entire production process. They provide precise control of mixing, filling, and packaging through advanced PLCs and drives, while maintaining stable operations even in demanding environments. With integrated monitoring and traceability capabilities, the solutions support strict quality control and regulatory compliance. In addition, energy-efficient drives and smart automation help reduce operating costs and improve productivity, enabling manufacturers to achieve reliable, high-quality production at scale.",
-    image: "/img/markets/building.jpg",
+      "LS ELECTRIC delivers reliable and energy-efficient power infrastructure for hotels, ensuring uninterrupted operations and enhanced guest comfort. With integrated solutions including low-voltage systems, smart distribution, and BEMS, hotels can optimize energy usage, reduce operational costs, and maintain a safe and comfortable environment.",
+    image: "/img/markets/explore/img_hotels.jpg",
+  },
+  {
+    id: "retail",
+    label: "Retail Stores",
+    title: "Retail Stores",
+    description:
+      "For retail environments, LS ELECTRIC provides stable power distribution and smart energy management to support seamless store operations. Its solutions enable efficient lighting and HVAC control, reduce energy consumption, and enhance operational efficiency across single stores and multi-site retail chains.",
+    image: "/img/markets/explore/img_retail.jpg",
+  },
+  {
+    id: "logistics",
+    label: "Logistics",
+    title: "Logistics",
+    description:
+      "LS ELECTRIC supports logistics facilities with robust power systems and intelligent monitoring solutions to ensure continuous and efficient operations. Through real-time energy management and reliable power infrastructure, warehouses and distribution centers can improve operational uptime and reduce maintenance risks.",
+    image: "/img/markets/explore/img_logistics.jpg",
   },
   {
     id: "commercial",
     label: "Commercial Buildings",
     title: "Commercial Buildings",
     description:
-      "LS ELECTRIC’s Food & Beverage solutions are designed to ensure hygiene, consistency, and efficiency across the entire production process. They provide precise control of mixing, filling, and packaging through advanced PLCs and drives, while maintaining stable operations even in demanding environments. With integrated monitoring and traceability capabilities, the solutions support strict quality control and regulatory compliance. In addition, energy-efficient drives and smart automation help reduce operating costs and improve productivity, enabling manufacturers to achieve reliable, high-quality production at scale.",
-    image: "/img/markets/building.jpg",
+      "LS ELECTRIC offers integrated building power solutions combining switchgear, smart electrical rooms, and BEMS for optimized building performance. These solutions enhance energy efficiency, ensure power reliability, and enable data-driven building operations for offices, data centers, and large commercial facilities.",
+    image: "/img/markets/explore/img_commercial.jpg",
   },
   {
-    id: "transmission",
-    label: "Transmission and Distribution",
-    title: "Transmission and Distribution",
+    id: "residential",
+    label: "Residential",
+    title: "Residential",
     description:
-      "Comprehensive T&D solutions for grid stability, substation automation, and reliable energy delivery across utility and industrial networks.",
-    image: "/img/markets/building.jpg",
-  },
-  {
-    id: "microgrids",
-    label: "Microgirds",
-    title: "Microgrids",
-    description:
-      "Flexible microgrid architectures integrating renewable sources, storage, and intelligent control for resilient local power systems.",
-    image: "/img/markets/building.jpg",
-  },
-  {
-    id: "bess",
-    label: "BESS",
-    title: "BESS",
-    description:
-      "Battery energy storage systems optimized for peak shaving, backup power, and renewable integration in commercial and utility applications.",
-    image: "/img/markets/building.jpg",
-  },
-  {
-    id: "renewables",
-    label: "Renewables",
-    title: "Renewables",
-    description:
-      "Solar PV, wind integration, and smart inverter solutions supporting the transition to clean energy across building and grid applications.",
-    image: "/img/markets/building.jpg",
+      "For residential environments, LS ELECTRIC provides safe and efficient electrical systems including low-voltage protection devices and smart energy solutions. These solutions enhance electrical safety, improve energy efficiency, and support the development of smart and sustainable living environments.",
+    image: "/img/markets/explore/img_residential.jpg",
   },
 ];
 
