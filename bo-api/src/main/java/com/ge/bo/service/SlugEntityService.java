@@ -50,6 +50,20 @@ public class SlugEntityService {
         return SlugEntityResponse.from(findOrThrow(id));
     }
 
+    /* ══════════ 코드 생성용 원본 조회 (SlugEntityCodeGenerator 전달용) ══════════ */
+
+    /**
+     * Slug Entity 코드 생성기(SlugEntityCodeGenerator)에 전달할 원본 엔티티를 조회한다.
+     * - fields(OneToMany, LAZY)까지 트랜잭션 내에서 로딩되도록 findOrThrow를 재사용한다.
+     * - Response DTO로 변환하지 않고 엔티티 그대로 반환한다. (코드 생성은 raw 값이 필요하기 때문)
+     */
+    @Transactional(readOnly = true)
+    public SlugEntity getEntityForCodegen(Long id) {
+        SlugEntity entity = findOrThrow(id);
+        entity.getFields().size(); // LAZY 컬렉션을 트랜잭션 안에서 강제로 로딩
+        return entity;
+    }
+
     /* ══════════ 등록 ══════════ */
 
     @Transactional

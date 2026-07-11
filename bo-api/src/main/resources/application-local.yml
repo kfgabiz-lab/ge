@@ -36,6 +36,17 @@ file:
 page-template:
   output-dir: "../bo/src/app/admin/generated"
 
+# Slug Entity 코드 생성기 — 생성된 .java 파일을 실제로 기록할 소스 경로
+# (bo-api 실행 워킹디렉토리 기준 상대경로, 즉 bo-api/ 자기 자신의 컴파일 대상 소스 디렉토리를 직접 가리킴)
+# ⚠ local 프로파일에서만 사용 가능한 기능 — SlugEntityCodeGenerator/SlugEntityCodeWriter가 자체적으로 차단
+codegen:
+  entity:
+    entity-dir: "src/main/java/com/ge/bo/entity"
+    dto-dir: "src/main/java/com/ge/bo/dto"
+    repository-dir: "src/main/java/com/ge/bo/repository"
+    service-dir: "src/main/java/com/ge/bo/service"
+    controller-dir: "src/main/java/com/ge/bo/controller"
+
 # 로컬 전용 상세 로그 (운영 환경 노출 금지 — PII 보안)
 logging:
   level:
