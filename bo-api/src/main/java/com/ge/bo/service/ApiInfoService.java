@@ -42,15 +42,16 @@ public class ApiInfoService {
 
     /**
      * 동적 필터 + 페이징 목록 조회
-     * 
+     *
      * @param category 카테고리 코드 필터 (null이면 전체)
      * @param method   HTTP 메서드 필터 (null이면 전체)
+     * @param active   사용여부 필터 (null이면 전체)
      * @param keyword  name/urlPattern LIKE 검색 (null이면 전체)
      * @param pageable 페이지 정보
      */
   @Transactional(readOnly = true)
-    public Page<ApiInfoResponse> getList(String category, String method, String keyword, Pageable pageable) {
-    Specification<ApiInfo> spec = buildSpec(category, method, keyword);
+    public Page<ApiInfoResponse> getList(String category, String method, Boolean active, String keyword, Pageable pageable) {
+    Specification<ApiInfo> spec = buildSpec(category, method, active, keyword);
     return apiInfoRepository.findAll(spec, pageable).map(ApiInfoResponse::from);
   }
 
@@ -253,9 +254,10 @@ public class ApiInfoService {
      * 동적 필터 Specification 구성
      * - category: 정확히 일치
      * - method: 정확히 일치
+     * - active: 정확히 일치
      * - keyword: name 또는 urlPattern LIKE %keyword%
      */
-  private Specification<ApiInfo> buildSpec(String category, String method, String keyword) {
+  private Specification<ApiInfo> buildSpec(String category, String method, Boolean active, String keyword) {
     return (root, query, cb) -> {
       List<Predicate> predicates = new ArrayList<>();
 
@@ -264,6 +266,9 @@ public class ApiInfoService {
       }
       if (method != null && !method.isBlank()) {
         predicates.add(cb.equal(root.get("method"), method.trim().toUpperCase()));
+      }
+      if (active != null) {
+        predicates.add(cb.equal(root.get("active"), active));
       }
       if (keyword != null && !keyword.isBlank()) {
         String like = "%" + keyword.trim() + "%";
