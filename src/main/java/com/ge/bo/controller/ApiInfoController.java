@@ -29,14 +29,15 @@ public class ApiInfoController {
 
   private final ApiInfoService apiInfoService;
 
-    /** 목록 조회 (카테고리/메서드/키워드 필터 + 페이징) */
+    /** 목록 조회 (카테고리/메서드/사용여부/키워드 필터 + 페이징) */
   @GetMapping
     public ResponseEntity<Page<ApiInfoResponse>> getList(
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String method,
+            @RequestParam(required = false) Boolean active,
             @RequestParam(required = false) String keyword,
             @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
-    return ResponseEntity.ok(apiInfoService.getList(category, method, keyword, pageable));
+    return ResponseEntity.ok(apiInfoService.getList(category, method, active, keyword, pageable));
   }
 
     /** 단건 조회 */
