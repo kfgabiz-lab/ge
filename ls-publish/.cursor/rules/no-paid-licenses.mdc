@@ -1,0 +1,31 @@
+---
+description: 유료·상용 라이선스 라이브러리·에셋 사용 금지
+alwaysApply: true
+---
+
+# 유료 라이선스 사용 금지
+
+이 프로젝트에서는 **유료·상용(구독/좌석/기업) 라이선스가 필요한** 패키지, SDK, 폰트, 아이콘, 이미지, 서비스를 **절대 추가·도입하지 않는다.**
+
+## 금지
+
+- 유료 npm 패키지, 상용 UI 키트, Pro/Enterprise 전용 SDK (예: Swiper Pro, MUI X Pro 유료 플랜, 유료 아이콘·폰트 구독)
+- 체험판·trial만 가능한 상용 제품을 프로덕션 코드에 포함
+- 라이선스 비용·구매·계약 없이 상업용으로 명시된 유료 에셋
+
+## 허용 (조건 준수 시)
+
+- **MIT, Apache-2.0, BSD, ISC** 등 오픈소스 라이선스 (npm `license` 필드 확인)
+- **SIL OFL** 등 무료 폰트 (저장소에 LICENSE 유지 권장)
+- 회사가 **이미 보유·승인**한 LS 브랜드 에셋 (별도 법무 확인)
+
+## 의존성 추가 전 체크
+
+1. `package.json` / npm 페이지에서 **license** 확인 — `UNLICENSED`, `Commercial`, `Proprietary` 거부
+2. 문서에 **paid**, **subscription**, **enterprise license required** 있으면 거부
+3. 대안은 **동일 기능의 OSS(MIT 등)** 우선
+
+## 코드 작성 시
+
+- 유료 라이브러리 import, CDN, API 키(유료 SaaS 전용) 제안·추가 금지
+- 사용자가 유료 도구를 요청하면 **무료 OSS 대안**을 제시하고 유료 도입은 하지 않음

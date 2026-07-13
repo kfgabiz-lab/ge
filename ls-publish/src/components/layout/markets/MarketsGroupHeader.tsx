@@ -1,0 +1,48 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+import MainHeader from "@/components/layout/main/MainHeader";
+import SubHeader from "@/components/layout/markets/SubHeader";
+import { useMediaQuery } from "@/components/layout/shared/useMediaQuery";
+
+const MARKETS_MOBILE_MQ = "(max-width: 780px)";
+
+const MAIN_GNB_PATHS = [
+  "/markets/data-center",
+  "/markets/commercial-residential",
+  "/markets/public-infrastructure",
+  "/markets/oil-gas-mining",
+  "/markets/power-grid",
+  "/markets/industrial",
+];
+const BREADCRUMB_NAV_PATHS = [
+  "/markets/data-center",
+  "/markets/commercial-residential",
+  "/markets/public-infrastructure",
+  "/markets/oil-gas-mining",
+  "/markets/power-grid",
+  "/markets/industrial",
+];
+const COMMERCIAL_RESIDENTIAL_PATH = "/markets/commercial-residential";
+
+function matchesPath(pathname: string, path: string) {
+  return pathname === path || pathname.startsWith(`${path}/`);
+}
+
+export default function MarketsGroupHeader() {
+  const pathname = usePathname();
+  const isMobile = useMediaQuery(MARKETS_MOBILE_MQ);
+  const isCommercialResidential = matchesPath(pathname, COMMERCIAL_RESIDENTIAL_PATH);
+  const useMainGnb =
+    MAIN_GNB_PATHS.some((path) => matchesPath(pathname, path)) &&
+    !(isCommercialResidential && isMobile);
+  const showBreadcrumbNav = BREADCRUMB_NAV_PATHS.some((path) =>
+    matchesPath(pathname, path),
+  );
+
+  return useMainGnb ? (
+    <MainHeader showBreadcrumbNav={showBreadcrumbNav} />
+  ) : (
+    <SubHeader />
+  );
+}

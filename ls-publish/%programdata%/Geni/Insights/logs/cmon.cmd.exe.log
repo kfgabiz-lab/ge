@@ -1,0 +1,31 @@
+[9932:1] 2026-05-19 10:28:32.962 [0x3B00(3) InitializeLog] [SET_LOGPATH] %programdata%\Geni\Insights\logs\cmon.cmd.exe.log
+[9932:1] 2026-05-19 10:28:32.962 [0x3B00(0) CxCommonApi::LogModuleInfo] [MODULE LOADING] ModuleName cmon64.dll, Version [2.0.0.1], ModulePath C:\Program Files\Geni\Insights\temp\cmon64.dll ModifiedTime 2026-02-04 16:03:30
+[9932:1] 2026-05-19 10:28:32.966 [0x3B00(183) CxConsoleMonitor::Initialize] [Initialize]
+[9932:1] 2026-05-19 10:28:32.966 [0x3B00(183) CxSensorPipeClient::Initialize] [Initialize]
+[9932:1] 2026-05-19 10:28:32.966 [0x3B00(0) CxThreadPool::Initialize] Queue init : OutputQue 0, nThreadPoolSize : 1
+[9932:1] 2026-05-19 10:28:32.966 [0x3B00(183) CxThreadPool::CreateThreadPool] Create 1 WorkerThread
+[9932:1] 2026-05-19 10:28:32.968 [0x3B00(183) CxConsoleMonitor::InstallHook] [InstallHook]
+[9932:1] 2026-05-19 10:28:32.968 [0x3B00(126) CxConsoleMonitor::xGetProcAddress] [GET_PROC_ADDR] ReadConsoleW from kernelbase.dll
+[9932:1] 2026-05-19 10:28:32.968 [0x3B00(183) CxConsoleMonitor::InstallHook] [INSTALL_HOOK] ReadConsoleW : cmd.exe:9932
+[9932:1] 2026-05-19 10:28:32.968 [0x3B00(183) CxConsoleMonitor::xGetProcAddress] [GET_PROC_ADDR] ReadConsoleInputW from kernelbase.dll
+[9932:1] 2026-05-19 10:28:32.968 [0x3B00(183) CxConsoleMonitor::InstallHook] [INSTALL_HOOK] RealReadConsoleInputW : cmd.exe:9932
+[9932:1] 2026-05-19 10:28:32.972 [0x3B00(183) CxConsoleMonitor::InstallHook] [SUCCESS]
+[9932:1] 2026-05-19 10:28:32.972 [0x3B00(183) CxConsoleMonitor::GetCmonProfileInfo] [REQ_CMON_PROFILE] 
+[9932:1] 2026-05-19 10:28:32.972 [0x3B00(0) CxConsoleMonitor::Initialize] [/Initialize] SUCCESS
+[9932:1] 2026-05-19 10:28:32.972 [0x1BEC(0) CxThreadPool::ThreadEntry] Worker Thread begins
+[9932:1] 2026-05-19 10:28:32.977 [0x1BEC(1) CxSensorPipeClient::SendJson] [SEND][ReqType:4] {
+   "PID" : 9932,
+   "ProcPath" : "C:\\Windows\\system32\\cmd.exe",
+   "ReqType" : "xSensorRequestType_GetCmonProfile"
+}
+
+[9932:1] 2026-05-19 10:28:32.977 [0x1BEC(183) CxSensorPipeClient::SendJson] [RECV] {
+   "MaxConsoleInputLength" : 1000
+}
+
+[9932:1] 2026-05-19 10:28:32.977 [0x1BEC(183) CxConsoleMonitor::PipeResponseCallback] [RES_CALLBACK]
+[9932:1] 2026-05-19 10:28:32.977 [0x1BEC(183) CxConsoleMonitor::PipeResponseCallback] [CMON_PROFILE] MaxConsoleInputLength : 1000
+[9932:1] 2026-05-19 10:28:33.129 [0x3B00(126) CxConsoleMonitor::Uninitialize] [Uninitialize]
+[9932:1] 2026-05-19 10:28:33.131 [0x3B00(183) CxSensorPipeClient::Uninitialize] [Uninitialize]
+[9932:1] 2026-05-19 10:28:33.131 [0x3B00(183) CxSensorPipeClient::Uninitialize] [/Uninitialize]
+[9932:1] 2026-05-19 10:28:33.131 [0x3B00(183) CxConsoleMonitor::Uninitialize] [/Uninitialize] SUCCESS

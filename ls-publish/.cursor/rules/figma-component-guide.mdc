@@ -1,0 +1,25 @@
+---
+description: Figma 디자인 구현 시 docs MD 가이드 참조
+alwaysApply: true
+---
+
+# Figma → 코드
+
+Figma URL·MCP·디자인 스펙으로 UI를 구현·수정할 때 **아래 MD 문서를 먼저** 읽고 따른다.
+
+## 참조 MD (docs/)
+
+| 작업 | 문서 | 라이브 |
+|------|------|--------|
+| 허브 | [DESIGN_GUIDE.md](../../docs/DESIGN_GUIDE.md) | `/guide` |
+| 컴포넌트 | [COMPONENT_GUIDE.md](../../docs/COMPONENT_GUIDE.md) | `/guide/components` |
+| 아이콘 | [ICON_GUIDE.md](../../docs/ICON_GUIDE.md) | `/guide/ico` |
+| 섹션 마크업 | [SECTION_MARKUP_GUIDE.md](../../docs/SECTION_MARKUP_GUIDE.md) | `/guide/sections` |
+| 섹션 클래스 | [SECTION_CLASS_GUIDE.md](../../docs/SECTION_CLASS_GUIDE.md) | `/guide/sections` |
+| GNB | [GNB_GUIDE.md](../../docs/GNB_GUIDE.md) | `/guide/gnb` |
+
+## 원칙
+
+- MD·라이브 가이드에 있는 패턴을 **재사용**. Figma MCP Tailwind를 그대로 붙이지 않는다.
+- 신규 컴포넌트·섹션·아이콘 추가 시 해당 MD와 가이드 페이지·데이터 파일을 **함께 갱신**.
+- 유료 라이선스 금지: `.cursor/rules/no-paid-licenses.mdc`
