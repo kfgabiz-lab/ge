@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * API 정보 관리 REST API
  */
@@ -29,14 +31,22 @@ public class ApiInfoController {
 
   private final ApiInfoService apiInfoService;
 
-    /** 목록 조회 (카테고리/메서드/키워드 필터 + 페이징) */
+    /** 목록 조회 (카테고리/메서드/사용여부/키워드 필터 + 페이징) */
   @GetMapping
     public ResponseEntity<Page<ApiInfoResponse>> getList(
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String method,
+            @RequestParam(required = false) Boolean active,
             @RequestParam(required = false) String keyword,
             @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
-    return ResponseEntity.ok(apiInfoService.getList(category, method, keyword, pageable));
+    return ResponseEntity.ok(apiInfoService.getList(category, method, active, keyword, pageable));
+  }
+
+    /** 활성 API 정보 전체 목록 (프론트 빌더 셀렉트박스용, 인증 사용자 접근 가능) */
+  @GetMapping("/active")
+  @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<ApiInfoResponse>> getActiveList() {
+    return ResponseEntity.ok(apiInfoService.getActiveList());
   }
 
     /** 단건 조회 */
