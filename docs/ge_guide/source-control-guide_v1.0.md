@@ -1,9 +1,9 @@
 # Bo 형상관리(Git) 가이드
 
-> 버전: v1.0
-> 작성일: 2026-06-09
+> 버전: v1.1
+> 작성일: 2026-06-09 (최종 갱신 2026-07-13)
 > 대상: Bo 프로젝트에서 git push·커밋·브랜치를 다루는 모든 개발자 및 에이전트
-> 관련 파일: `.gitignore`, `bo/`, `bo-api/`, `fo/`
+> 관련 파일: `.gitignore`, `bo/`, `bo-api/`, `fo/`, `ls-publish/`
 
 ---
 
@@ -11,13 +11,14 @@
 
 Bo 프로젝트는 **단일 monorepo**(`C:\...\workspace\Bo`)에서 관리되며,
 하위 디렉토리별로 참고용 GitHub 리포지토리를 별도로 두고 있다(실제 git subtree 병합은 아님, 1절 리모트 목록 참고).
+`ls-publish/`는 예외적으로 **정식 git subtree**로 편입되어 있다(아래 리모트 목록 참고).
 
 ```
 workspace/Bo/          ← 루트 monorepo (origin 리모트)
 ├── bo/                ← BO 프론트 (ge-bo 참고용 리모트)
 ├── bo-api/            ← BE API   (ge-api 참고용 리모트)
 ├── fo/                ← FO 프론트 (ge-fo 참고용 리모트)
-├── ls-publish/        ← 외부 참조용 clone (ge 이력과 무관, .gitignore 제외)
+├── ls-publish/        ← FO 이관 전 레거시 원본 사이트 (ls-publish-src 서브트리, pub 브랜치)
 └── docs/              ← 공통 문서
 ```
 
@@ -29,14 +30,10 @@ workspace/Bo/          ← 루트 monorepo (origin 리모트)
 | `ge-bo` | https://github.com/kfgabiz-lab/ge-bo | `bo/` | 참고용 리모트 — 실제 subtree 병합 아님, 필요 시 수동 비교·반영 |
 | `ge-api` | https://github.com/kfgabiz-lab/ge-api | `bo-api/` | 참고용 리모트 — 실제 subtree 병합 아님, 필요 시 수동 비교·반영 |
 | `ge-fo` | https://github.com/kfgabiz-lab/ge-fo | `fo/` | 참고용 리모트 — 실제 subtree 병합 아님, 필요 시 수동 비교·반영 |
+| `ls-publish-src` | https://github.com/timesky82/ls | `ls-publish/` | **ge와 무관한 제3자 저장소**. `pub` 브랜치가 최신 — `master`가 아님에 주의. `git subtree pull/push --prefix=ls-publish ls-publish-src pub` |
 
 > 리모트 확인 명령어: `git remote -v`
-
-### 외부 참조용 클론 (ge git 이력과 무관)
-
-| 디렉토리 | GitHub URL | 비고 |
-|---------|-----------|------|
-| `ls-publish/` | https://github.com/timesky82/ls | ge와 무관한 단순 참고용 clone. `.gitignore`로 제외되어 커밋 대상 아님 |
+> `ls-publish/`는 FO 이관 전 레거시 원본 사이트로, fo/ 작업 시 비교 참고용으로 사용한다. 자체 `node_modules`는 git 추적 대상이 아니므로, 해당 폴더에서 개발서버를 띄우려면 `npm install`을 먼저 실행해야 한다.
 
 ---
 
@@ -122,8 +119,15 @@ git subtree push --prefix=bo ge-bo master
 git subtree push --prefix=bo-api ge-api master
 ```
 
+#### ④ FO 프론트 서브트리 push (ge-fo)
+
+```bash
+git subtree push --prefix=fo ge-fo master
+```
+
 > `git subtree push`는 해당 prefix 디렉토리의 변경만 추출하여 서브트리 리포지토리로 push한다.
 > 서브트리 리포지토리에서 직접 pull 받는 팀원이 있을 경우 반드시 실행한다.
+> `ls-publish/`는 ge와 무관한 제3자 저장소라 이 push 순서에 포함하지 않는다 — 필요 시(레거시 원본 자체를 수정한 경우만) `git subtree push --prefix=ls-publish ls-publish-src pub`로 별도 진행.
 
 ---
 
@@ -167,9 +171,16 @@ git diff --stat HEAD
 git push origin master
 git subtree push --prefix=bo ge-bo master
 git subtree push --prefix=bo-api ge-api master
+git subtree push --prefix=fo ge-fo master
 
 # 특정 리모트에서 최신 내용 가져오기
 git fetch origin
 git fetch ge-bo
 git fetch ge-api
+git fetch ge-fo
+
+# ls-publish(제3자 저장소, pub 브랜치) — 필요할 때만 별도 진행
+git fetch ls-publish-src
+git subtree pull --prefix=ls-publish ls-publish-src pub --squash
+git subtree push --prefix=ls-publish ls-publish-src pub
 ```
