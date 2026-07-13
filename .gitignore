@@ -58,5 +58,3 @@ bo/src/app/admin/test1/
 bo/src/app/admin/test2/
 bo/src/app/admin/test3/
 
-# 외부 참조용 clone (ge git 이력과 무관, 단순 참고용)
-ls-publish/
