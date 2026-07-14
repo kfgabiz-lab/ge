@@ -23,10 +23,18 @@ spring:
           connectiontimeout: 15000
           timeout: 15000
           writetimeout: 15000
+  data:
+    redis:
+      host: redis-lse-kc-dev-nahp-01.redis.cache.windows.net
+      port: 6380
+      password: ${AZURE_REDIS_ACCESS_KEY:}
+      ssl:
+        enabled: true
+      timeout: 5s
 
 # CORS — 개발서버 FE 주소
 cors:
-  allowed-origins: "http://10.153.10.150:3002,http://10.153.10.150:3001,http://10.153.9.150"
+  allowed-origins: "http://10.153.10.150:3002,http://10.153.10.150:3001,http://10.153.9.150,https://nahpdev.ls-electric.com"
 
 # 파일 업로드 루트 경로
 file:
@@ -35,6 +43,16 @@ file:
 # 페이지 템플릿 TSX 파일 출력 경로
 page-template:
   output-dir: "../bo/src/app/admin/generated"
+
+# Slug Entity 코드 생성기 설정 — 이 기능은 local 프로파일에서만 동작하므로 dev(배포) 프로파일에서는 실사용되지 않는다.
+# (앱 부팅 안전성을 위해 값만 명시. @Value 기본값이 있어 이 키가 없어도 부팅에는 문제 없음)
+codegen:
+  entity:
+    entity-dir: "src/main/java/com/ge/bo/entity"
+    dto-dir: "src/main/java/com/ge/bo/dto"
+    repository-dir: "src/main/java/com/ge/bo/repository"
+    service-dir: "src/main/java/com/ge/bo/service"
+    controller-dir: "src/main/java/com/ge/bo/controller"
 
 # 배포 환경 — WARN 수준만 출력
 logging:
@@ -46,6 +64,7 @@ logging:
 ls:
   isApiLogin: true
   file-storage: blob   # local, blob
+  redis-test-enabled: true
   lse:
     inApi:
       connectPortalEncKey: LegacyConnectKeyText(!#@)2532!#@
