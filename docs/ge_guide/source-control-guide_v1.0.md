@@ -1,23 +1,22 @@
 # Bo 형상관리(Git) 가이드
 
-> 버전: v1.1
-> 작성일: 2026-06-09 (최종 갱신 2026-07-13)
+> 버전: v1.3
+> 작성일: 2026-06-09 (최종 갱신 2026-07-14)
 > 대상: Bo 프로젝트에서 git push·커밋·브랜치를 다루는 모든 개발자 및 에이전트
-> 관련 파일: `.gitignore`, `bo/`, `bo-api/`, `fo/`, `ls-publish/`
+> 관련 파일: `.gitignore`, `.gitmodules`, `bo/`, `bo-api/`, `fo/`, `ls-publish/`
 
 ---
 
 ## 1. 리포지토리 구조
 
 Bo 프로젝트는 **단일 monorepo**(`C:\...\workspace\Bo`)에서 관리되며,
-하위 디렉토리별로 참고용 GitHub 리포지토리를 별도로 두고 있다(실제 git subtree 병합은 아님, 1절 리모트 목록 참고).
-`ls-publish/`는 예외적으로 **정식 git subtree**로 편입되어 있다(아래 리모트 목록 참고).
+`bo/`, `bo-api/`, `fo/`는 **git submodule**로, `ls-publish/`는 **정식 git subtree**로 각각 별도 GitHub 리포지토리와 연결되어 있다(아래 리모트 목록 참고).
 
 ```
 workspace/Bo/          ← 루트 monorepo (origin 리모트)
-├── bo/                ← BO 프론트 (ge-bo 참고용 리모트)
-├── bo-api/            ← BE API   (ge-api 참고용 리모트)
-├── fo/                ← FO 프론트 (ge-fo 참고용 리모트)
+├── bo/                ← BO 프론트 (ge-bo submodule)
+├── bo-api/            ← BE API   (ge-api submodule)
+├── fo/                ← FO 프론트 (ge-fo submodule)
 ├── ls-publish/        ← FO 이관 전 레거시 원본 사이트 (ls-publish-src 서브트리, pub 브랜치)
 └── docs/              ← 공통 문서
 ```
@@ -27,13 +26,15 @@ workspace/Bo/          ← 루트 monorepo (origin 리모트)
 | 리모트명 | GitHub URL | 대상 | 비고 |
 |---------|-----------|------|------|
 | `origin` | https://github.com/kfgabiz-lab/ge | 루트 전체 | 전체 monorepo |
-| `ge-bo` | https://github.com/kfgabiz-lab/ge-bo | `bo/` | 참고용 리모트 — 실제 subtree 병합 아님, 필요 시 수동 비교·반영 |
-| `ge-api` | https://github.com/kfgabiz-lab/ge-api | `bo-api/` | 참고용 리모트 — 실제 subtree 병합 아님, 필요 시 수동 비교·반영 |
-| `ge-fo` | https://github.com/kfgabiz-lab/ge-fo | `fo/` | 참고용 리모트 — 실제 subtree 병합 아님, 필요 시 수동 비교·반영 |
+| `ge-bo` | https://github.com/kfgabiz-lab/ge-bo | `bo/` | git submodule (`.gitmodules`에 `branch = master` 지정) |
+| `ge-api` | https://github.com/kfgabiz-lab/ge-api | `bo-api/` | git submodule (`.gitmodules`에 `branch = master` 지정) |
+| `ge-fo` | https://github.com/kfgabiz-lab/ge-fo | `fo/` | git submodule (`.gitmodules`에 `branch = master` 지정) |
 | `ls-publish-src` | https://github.com/timesky82/ls | `ls-publish/` | **ge와 무관한 제3자 저장소**. `pub` 브랜치가 최신 — `master`가 아님에 주의. `git subtree pull/push --prefix=ls-publish ls-publish-src pub` |
 
-> 리모트 확인 명령어: `git remote -v`
+> 리모트 확인 명령어(루트 `ge`에서): `git remote -v`
+> `bo`/`bo-api`/`ge-fo` 3개 submodule은 **GitHub 기본 브랜치가 `main`**이라, `git submodule add` 시 반드시 `-b master`를 명시해야 한다. 지정하지 않으면 `main`(별개의 오래된/자동 브랜치, 실제 코드 없음)으로 클론되어 실제 작업 내용이 빠질 수 있다.
 > `ls-publish/`는 FO 이관 전 레거시 원본 사이트로, fo/ 작업 시 비교 참고용으로 사용한다. 자체 `node_modules`는 git 추적 대상이 아니므로, 해당 폴더에서 개발서버를 띄우려면 `npm install`을 먼저 실행해야 한다.
+> `bo`/`bo-api`/`fo`도 submodule 특성상 **자체 `node_modules`가 git 추적 대상이 아니므로**, 새로 clone하거나 submodule을 새로 추가한 직후에는 각 폴더에서 `npm install`(bo-api는 불필요, Gradle 사용)을 먼저 실행해야 dev 서버가 뜬다.
 
 ---
 
@@ -46,6 +47,7 @@ workspace/Bo/          ← 루트 monorepo (origin 리모트)
 
 - 기능 개발은 `master`에서 진행
 - 운영 반영 시 `master` → `main` 머지
+- `bo`/`bo-api`/`fo` submodule도 동일하게 `master`를 기준으로 작업한다(각 submodule의 GitHub 기본 브랜치는 `main`이지만 실제 작업 브랜치는 `master`).
 
 ---
 
@@ -78,56 +80,38 @@ chore: application-local.yml DB 접속 정보 업데이트
 
 ## 4. Push 절차
 
-### 4-1. 커밋 전 확인 사항
+`bo`/`bo-api`/`fo`는 submodule이므로 **각 폴더 안에서 그 폴더 자신의 git 저장소로 직접 커밋·push**한다(일반적인 단일 저장소 작업과 동일, 별도 변환 과정 없음). 그 다음 루트 `ge`에서 submodule 포인터(어느 커밋을 가리키는지) 변경을 커밋·push한다.
 
-push 전 반드시 아래 항목 확인:
+### 4-1. 커밋 전 확인 사항
 
 ```bash
 git status        # 변경 파일 목록 확인
 git diff --stat   # 변경 요약
 ```
 
-### 4-2. 커밋
+### 4-2. submodule(bo / bo-api / fo) 내부에서 커밋·push
 
 ```bash
-# 1. 루트 커밋 (전체 변경 포함)
+cd bo        # 또는 bo-api, fo
 git add <파일 목록>
 git commit -m "feat: 설명"
+git push origin master
+cd ..
 ```
 
 > `.claude/settings.local.json`, `page copy.tsx` 등 아래 "제외 목록" 파일은 `git add` 시 포함하지 않는다.
 
-### 4-3. Push 순서
+### 4-3. 루트(ge)에 submodule 포인터 반영
 
-**순서를 지켜 push**한다. 루트 → 서브트리 순.
-
-#### ① 루트 전체 push (origin)
+submodule 안에서 push를 마쳤으면, 루트 저장소는 그 submodule이 "어느 커밋을 가리키는지"가 바뀐 것으로 인식한다. 이것도 별도로 커밋·push해야 다른 사람이 `git pull` 시 최신 submodule 커밋을 받을 수 있다.
 
 ```bash
+git add bo bo-api fo      # 변경된 submodule만 지정해도 됨
+git commit -m "chore: bo/bo-api/fo 서브모듈 포인터 업데이트"
 git push origin master
 ```
 
-#### ② BO 프론트 서브트리 push (ge-bo)
-
-```bash
-git subtree push --prefix=bo ge-bo master
-```
-
-#### ③ BE API 서브트리 push (ge-api)
-
-```bash
-git subtree push --prefix=bo-api ge-api master
-```
-
-#### ④ FO 프론트 서브트리 push (ge-fo)
-
-```bash
-git subtree push --prefix=fo ge-fo master
-```
-
-> `git subtree push`는 해당 prefix 디렉토리의 변경만 추출하여 서브트리 리포지토리로 push한다.
-> 서브트리 리포지토리에서 직접 pull 받는 팀원이 있을 경우 반드시 실행한다.
-> `ls-publish/`는 ge와 무관한 제3자 저장소라 이 push 순서에 포함하지 않는다 — 필요 시(레거시 원본 자체를 수정한 경우만) `git subtree push --prefix=ls-publish ls-publish-src pub`로 별도 진행.
+> `ls-publish/`는 submodule이 아니라 subtree이므로 이 절차와 무관하다 — 필요 시(레거시 원본 자체를 수정한 경우만) `git subtree push --prefix=ls-publish ls-publish-src pub`로 별도 진행.
 
 ---
 
@@ -139,7 +123,21 @@ git subtree push --prefix=fo ge-fo master
 git pull origin master
 ```
 
-`ge-bo`, `ge-api`, `ge-fo`는 각 서브 디렉토리(`bo/`, `bo-api/`, `fo/`)의 원본 소스를 참고하기 위한 리모트이며, 실제 git subtree 병합이 아니라 필요할 때 수동으로 내용을 비교한 뒤 커밋하는 방식으로 운영된다. 따라서 **평소 pull은 `ge`만으로 충분**하며, `ge-bo`/`ge-api`/`ge-fo`의 최신 변경사항을 반영해야 하는 특별한 경우에만 별도로 fetch 후 수동 반영한다.
+단, submodule(`bo`/`bo-api`/`fo`)은 루트 pull만으로는 내용이 갱신되지 않는다 — 루트 저장소는 "포인터가 바뀌었다"는 것만 받아오고, 실제로 그 커밋을 받아오려면 아래를 추가로 실행해야 한다.
+
+```bash
+git submodule update --init --recursive
+```
+
+다른 팀/세션이 `ge-bo`/`ge-api`/`ge-fo`에 직접 push한 최신 변경사항을 루트 pull 없이 먼저 확인하고 싶을 때는 각 submodule 폴더 안에서 직접 pull한다.
+
+```bash
+cd bo && git pull origin master && cd ..
+cd bo-api && git pull origin master && cd ..
+cd fo && git pull origin master && cd ..
+```
+
+**충돌 처리 원칙**: `git pull`은 겹치지 않는 변경은 자동으로 병합한다. 충돌(conflict)이 발생한 파일만 git이 별도로 표시하므로, 그 파일에 한해서만 양쪽 변경 내용을 직접 확인한 뒤 수동으로 정리한다. 충돌 파일을 임의로 한쪽 내용으로 덮어써서 해결하지 않는다.
 
 ---
 
@@ -160,26 +158,33 @@ git pull origin master
 ## 7. 자주 쓰는 명령어 정리
 
 ```bash
-# 리모트 목록 확인
+# 리모트 목록 확인(루트)
 git remote -v
 
-# 변경 파일 확인
+# 변경 파일 확인(루트)
 git status
 git diff --stat HEAD
 
-# 루트 + 서브트리 전체 push (순서대로 실행)
+# submodule(bo/bo-api/fo) 각각 내부에서 커밋+push
+cd bo && git add <파일> && git commit -m "..." && git push origin master && cd ..
+cd bo-api && git add <파일> && git commit -m "..." && git push origin master && cd ..
+cd fo && git add <파일> && git commit -m "..." && git push origin master && cd ..
+
+# 루트에 submodule 포인터 반영
+git add bo bo-api fo
+git commit -m "chore: 서브모듈 포인터 업데이트"
 git push origin master
-git subtree push --prefix=bo ge-bo master
-git subtree push --prefix=bo-api ge-api master
-git subtree push --prefix=fo ge-fo master
 
-# 특정 리모트에서 최신 내용 가져오기
-git fetch origin
-git fetch ge-bo
-git fetch ge-api
-git fetch ge-fo
+# 최신 내용 가져오기(루트 + submodule 포인터)
+git pull origin master
+git submodule update --init --recursive
 
-# ls-publish(제3자 저장소, pub 브랜치) — 필요할 때만 별도 진행
+# 특정 submodule만 직접 최신화하고 싶을 때
+cd bo && git pull origin master && cd ..
+cd bo-api && git pull origin master && cd ..
+cd fo && git pull origin master && cd ..
+
+# ls-publish(제3자 저장소, pub 브랜치, subtree 유지) — 필요할 때만 별도 진행
 git fetch ls-publish-src
 git subtree pull --prefix=ls-publish ls-publish-src pub --squash
 git subtree push --prefix=ls-publish ls-publish-src pub
