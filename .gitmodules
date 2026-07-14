@@ -1,0 +1,4 @@
+[submodule "bo-api"]
+	path = bo-api
+	url = https://github.com/kfgabiz-lab/ge-api
+	branch = master
