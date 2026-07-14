@@ -45,6 +45,9 @@ interface UseCategoryCascadeResult {
     depthLoading: boolean[];
     /** true면 해당 depth는 상위 미선택으로 비활성 */
     disabledDepths: boolean[];
+    /** true면 옵션 사전필터 설정 누락(상위 부모 ID 경로 미입력)으로 이 depth의 옵션이 항상 0건이 되는 상태 —
+     *  실제 데이터가 없어서가 아니라 빌더 설정 오류라는 것을 화면에서 구분할 수 있게 별도로 내려준다 */
+    configErrorDepths: boolean[];
     /** depth selectbox 선택 처리 (idx: activeDepths 배열의 0-based 위치) */
     handleSelect: (idx: number, value: string) => void;
 }
@@ -94,7 +97,11 @@ async function fetchDepthItems(params: {
         const dataJson = raw.dataJson ?? {};
         const resolvedValue = resolveAccessor(dataJson, valueField);
         const value = String(resolvedValue != null ? resolvedValue : raw.id ?? '');
-        const text  = String(resolveAccessor(dataJson, textField) ?? '');
+        /* Text 경로가 비어있거나(resolveAccessor(dataJson, '') → undefined) 실제 값이 빈 문자열이면
+           value로 대체 — Value는 || 'id' + raw.id 폴백이 있어 항상 채워지는데 Text만 폴백이 없어서
+           옵션 자체는 로드되는데 라벨만 빈 문자열로 보이는 비대칭 버그를 막는다(최소한 id라도 보이게) */
+        const resolvedText = resolveAccessor(dataJson, textField);
+        const text = resolvedText != null && String(resolvedText) !== '' ? String(resolvedText) : value;
         const parentIdRaw = parentField ? resolveAccessor(dataJson, parentField) : undefined;
         return { value, text, parentId: parentIdRaw != null ? String(parentIdRaw) : undefined };
     });
@@ -125,6 +132,8 @@ export function useCategoryCascade({ mode, field, onChange }: UseCategoryCascade
     const [depthValues, setDepthValues]   = useState<string[]>(Array(depthCount).fill(''));
     const [depthOptions, setDepthOptions] = useState<CategoryItem[][]>(Array(depthCount).fill([]));
     const [depthLoading, setDepthLoading] = useState<boolean[]>(Array(depthCount).fill(false));
+    /* 옵션 사전필터 설정 누락(상위 부모 ID 경로 미입력)으로 이 depth가 항상 0건이 되는 상태 — 화면 안내용 */
+    const [configErrorDepths, setConfigErrorDepths] = useState<boolean[]>(Array(depthCount).fill(false));
 
     /* ══════════════════════════════════════════ */
     /*  옵션 사전필터 — 마운트 시 1회, depth별 허용 value 집합 계산  */
@@ -136,6 +145,10 @@ export function useCategoryCascade({ mode, field, onChange }: UseCategoryCascade
      * - optionFilterDepth === 최심 가시 depth: 필터 통과 레코드 자기 자신의 value로 제한
      * - optionFilterDepth >  최심 가시 depth(1단계 더 깊은 리프 등): optionFilterParentField로
      *   추출한 부모 id를 최심 가시 depth의 허용 집합으로 사용
+     *
+     * ⚠ 설정 누락 방어: optionFilterParentField(리프 필터일 때) 또는 depthParentFields[idx+1](상향 매핑 단계)이
+     * 비어 있으면 허용 집합이 "데이터가 없어서"가 아니라 "설정이 빠져서" 항상 빈 Set이 되어버린다. 이 경우 API를
+     * 호출해봐야 결과가 결정적으로 비므로 호출을 건너뛰고, console.warn + configErrorDepths로 화면에 원인을 알린다.
      */
     const computeOptionPreFilter = useCallback(async () => {
         const dbSlug      = field.dbSlug;
@@ -145,38 +158,66 @@ export function useCategoryCascade({ mode, field, onChange }: UseCategoryCascade
         const depths      = activeDepthsRef.current;
         const deepestIdx  = depths.length - 1;
         const deepestDepthNum = depths[deepestIdx];
+        const configErrorIdx: boolean[] = Array(depths.length).fill(false);
 
-        /* 1. 필터 depth 전량 조회 + optionFilterExpr로 필터링 (fetchDepthItems의 filterExpr 재사용) */
-        const filterMatches = await fetchDepthItems({
-            dbSlug,
-            depth: filterDepth,
-            parentValue: null,
-            valueField: filterDepth === deepestDepthNum ? (depthValueFieldsRef.current[deepestIdx] || 'id') : 'id',
-            textField: '',
-            filterExpr: field.optionFilterExpr,
-            parentField: field.optionFilterParentField,
-            size: 9999,
-        });
-
-        /* 2. 최심 가시 depth의 허용 집합 확보 */
+        /* 1. 필터 depth 전량 조회 + optionFilterExpr로 필터링 (fetchDepthItems의 filterExpr 재사용)
+              — 필터 depth가 최심 가시 depth보다 깊은 리프 필터인데 optionFilterParentField가 비어 있으면
+                모든 item.parentId가 undefined가 되어 최심 가시 depth 허용 집합이 항상 빈 Set이 된다 */
         let allowed = new Set<string>();
-        if (filterDepth === deepestDepthNum) {
-            filterMatches.forEach(it => allowed.add(it.value));
+        if (filterDepth !== deepestDepthNum && !field.optionFilterParentField) {
+            console.warn(
+                `[CategoryField] 옵션 사전필터: 필터 depth(${filterDepth})가 최심 가시 depth(${deepestDepthNum})보다 깊은데 `
+                + `"부모 ID 경로"(optionFilterParentField)가 비어 있어 depth ${deepestDepthNum} 옵션이 전부 0건이 됩니다. `
+                + `빌더의 옵션 사전필터 설정에서 부모 ID 경로를 입력하세요.`
+            );
+            configErrorIdx[deepestIdx] = true;
         } else {
-            filterMatches.forEach(it => { if (it.parentId) allowed.add(it.parentId); });
+            const filterMatches = await fetchDepthItems({
+                dbSlug,
+                depth: filterDepth,
+                parentValue: null,
+                valueField: filterDepth === deepestDepthNum ? (depthValueFieldsRef.current[deepestIdx] || 'id') : 'id',
+                textField: '',
+                filterExpr: field.optionFilterExpr,
+                parentField: field.optionFilterParentField,
+                size: 9999,
+            });
+            /* 2. 최심 가시 depth의 허용 집합 확보 */
+            if (filterDepth === deepestDepthNum) {
+                filterMatches.forEach(it => allowed.add(it.value));
+            } else {
+                filterMatches.forEach(it => { if (it.parentId) allowed.add(it.parentId); });
+            }
         }
         const nextSets: (Set<string> | null)[] = Array(depths.length).fill(null);
         nextSets[deepestIdx] = allowed;
 
-        /* 3. 상위 가시 depth로 순차 상향 매핑 — 각 depth의 depthParentFields로 부모 id를 추출해 좁혀간다 */
+        /* 3. 상위 가시 depth로 순차 상향 매핑 — 각 depth의 depthParentFields로 부모 id를 추출해 좁혀간다.
+              depthParentFields[idx+1]이 비어 있으면 climbItems의 parentId가 전부 undefined가 되어 결과가
+              결정적으로 빈 Set이 되므로, 호출 자체를 건너뛰고 원인을 명확히 알린다.
+              한 번 깨지면(broken) 그 위 depth들도 전부 같은 원인으로 0건이 되므로 설정 오류 표시를 함께 물려준다 */
+        let broken = configErrorIdx[deepestIdx];
         for (let idx = deepestIdx - 1; idx >= 0; idx--) {
+            const parentField = depthParentFieldsRef.current[idx + 1];
+            if (!parentField) {
+                console.warn(
+                    `[CategoryField] 옵션 사전필터: depth ${depths[idx + 1]}의 "상위 부모 ID 경로"가 비어 있어 `
+                    + `depth ${depths[idx]} 옵션이 전부 0건이 됩니다. depthParentFields[${idx + 1}]를 설정하세요.`
+                );
+                configErrorIdx[idx] = true;
+                broken = true;
+                allowed = new Set<string>();
+                nextSets[idx] = allowed;
+                continue;
+            }
+            if (broken) configErrorIdx[idx] = true; // 하위 depth가 이미 깨져 있어 이 depth도 같은 원인으로 0건 — 표시만 물려받고 조회는 그대로 진행
             const climbItems = await fetchDepthItems({
                 dbSlug,
                 depth: depths[idx + 1],
                 parentValue: null,
                 valueField: depthValueFieldsRef.current[idx + 1] || 'id',
                 textField: '',
-                parentField: depthParentFieldsRef.current[idx + 1],
+                parentField,
                 size: 9999,
             });
             const nextAllowed = new Set<string>();
@@ -188,6 +229,7 @@ export function useCategoryCascade({ mode, field, onChange }: UseCategoryCascade
         }
 
         allowedSetsRef.current = nextSets;
+        setConfigErrorDepths(configErrorIdx);
     }, [field.dbSlug, field.optionFilterDepth, field.optionFilterExpr, field.optionFilterParentField]);
 
     /* ══════════════════════════════════════════ */
@@ -197,6 +239,15 @@ export function useCategoryCascade({ mode, field, onChange }: UseCategoryCascade
     const loadDepthOptions = useCallback(async (idx: number, parentValue: string | null) => {
         if (!field.dbSlug) return;
         const depth = activeDepthsRef.current[idx];
+        /* Text 경로 미설정 경고 — 옵션 자체는 정상 로드되지만(캐스케이드 정상) 라벨이 value로 대체 표시되어
+           "안 보이는 것처럼" 오인되기 쉬우므로, 원인을 바로 알 수 있게 콘솔에 남긴다(화면 placeholder까지
+           바꾸지는 않음 — 데이터 자체는 정상이라 configErrorDepths류의 "설정 오류" 표시는 과함) */
+        if (!depthTextFieldsRef.current[idx]) {
+            console.warn(
+                `[CategoryField] depth ${depth}의 "Text" 경로가 비어 있어 옵션 라벨이 값(id 등)으로 대체 표시됩니다. `
+                + `depthTextFields[${idx}]를 설정하세요.`
+            );
+        }
         setDepthLoading(prev => { const next = [...prev]; next[idx] = true; return next; });
         try {
             const items = await fetchDepthItems({
@@ -256,5 +307,5 @@ export function useCategoryCascade({ mode, field, onChange }: UseCategoryCascade
     /* 상위 depth 미선택 시 하위 depth는 비활성 */
     const disabledDepths = Array.from({ length: depthCount }, (_, i) => i > 0 && !depthValues[i - 1]);
 
-    return { depthValues, depthOptions, depthLoading, disabledDepths, handleSelect };
+    return { depthValues, depthOptions, depthLoading, disabledDepths, configErrorDepths, handleSelect };
 }

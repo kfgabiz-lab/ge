@@ -52,7 +52,7 @@ export function CategorySearchField({
     const depthLabelMsgKeys = field.depthLabelMsgKeys ?? [];
 
     /* 로드·선택 로직은 훅이 전담 — 컴포넌트는 반환값으로 그리기만 함 */
-    const { depthValues, depthOptions, depthLoading, disabledDepths, handleSelect } =
+    const { depthValues, depthOptions, depthLoading, disabledDepths, configErrorDepths, handleSelect } =
         useCategoryCascade({ mode, field, onChange });
 
     /* ── preview 모드: 샘플 selectbox (disabled) ── */
@@ -87,14 +87,18 @@ export function CategorySearchField({
                 /* 상위 depth 미선택 시 비활성 */
                 const isFieldDisabled = disabledDepths[i];
 
-                /* placeholder 텍스트: msgKey > 라벨 > 기본값 순 (기본값 "{n}depth"는 설정 누락 시의 식별자성 표기라 번역 대상 아님) */
+                /* placeholder 텍스트: msgKey > 라벨 > 기본값 순 (기본값 "{n}depth"는 설정 누락 시의 식별자성 표기라 번역 대상 아님)
+                   옵션 사전필터 설정 누락(configErrorDepths)이면 다른 상태보다 우선해서 원인을 바로 알 수 있게 안내한다 —
+                   실제 데이터가 없어서 0건인지, 빌더 설정이 빠져서 0건인지 사용자가 구분할 수 있게 하는 최소한의 신호 */
                 const labelText     = depthLabelMsgKeys[i] || depthLabels[i] || `${i + 1}depth`;
                 const prevLabelText = depthLabelMsgKeys[i - 1] || depthLabels[i - 1] || `${i}depth`;
-                const placeholder = loading
-                    ? t('common.loading')
-                    : isFieldDisabled
-                        ? t('common.category.select_after', { label: prevLabelText })
-                        : t('common.category.label_select', { label: labelText });
+                const placeholder = configErrorDepths[i]
+                    ? '설정 오류 — 상위 부모 ID 경로를 확인하세요'
+                    : loading
+                        ? t('common.loading')
+                        : isFieldDisabled
+                            ? t('common.category.select_after', { label: prevLabelText })
+                            : t('common.category.label_select', { label: labelText });
 
                 return (
                     <select

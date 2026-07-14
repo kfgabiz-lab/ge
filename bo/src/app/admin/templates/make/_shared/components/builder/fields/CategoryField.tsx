@@ -79,6 +79,12 @@ export function CategoryField({
     const depthFilters      = values.depthFilters      ?? [];
     const depthParentFields = values.depthParentFields ?? [];
 
+    /* 옵션 사전필터 사용 여부 — computeOptionPreFilter(useCategoryCascade.ts)가 실제로 도는 조건(optionFilterDepth 설정)과 동일하게 맞춘다 */
+    const optionFilterActive = values.optionFilterDepth != null;
+    const deepestIdx = activeDepths.length - 1;
+    /* 옵션 사전필터의 "부모 ID 경로"가 최심 가시 depth에서 필요한지 — 필터 depth가 최심 가시 depth보다 깊을 때만(리프 필터) 필요 */
+    const optionFilterParentRequired = optionFilterActive && values.optionFilterDepth !== activeDepths[deepestIdx];
+
     /** 표시 Depth 버튼 토글 — 결과가 비연속이면 클릭 자체를 무시 */
     const handleToggleDepth = (d: number) => {
         const nextRaw = activeDepths.includes(d)
@@ -181,7 +187,12 @@ export function CategoryField({
                         />
                     </div>
                     <div>
-                        <label className={LABEL_CLS + ' !mb-0.5'}>부모 ID 경로</label>
+                        <label className={LABEL_CLS + ' !mb-0.5'}>
+                            부모 ID 경로{' '}
+                            {optionFilterParentRequired
+                                ? <span className="text-amber-500 font-normal">(필수 — 비우면 최심 depth 옵션이 0건)</span>
+                                : <span className="text-slate-300 font-normal">(선택)</span>}
+                        </label>
                         <input
                             type="text"
                             value={values.optionFilterParentField ?? ''}
@@ -234,7 +245,10 @@ export function CategoryField({
                 <div className="grid grid-cols-[24px_1fr_1fr] gap-1 items-center">
                     <span />
                     <span className={LABEL_CLS + ' !mb-0'}>Value</span>
-                    <span className={LABEL_CLS + ' !mb-0'}>Text</span>
+                    {/* Text는 사실상 항상 채워야 하는 값 — 비우면 옵션 라벨이 빈 문자열로 표시되어 "안 보이는 것"처럼 보임(선택 자체는 정상 동작) */}
+                    <span className={LABEL_CLS + ' !mb-0'}>
+                        <span className="text-amber-500 font-normal">Text (필수 — 비우면 옵션 라벨 미표시)</span>
+                    </span>
                 </div>
 
                 {activeDepths.map((depthNum, i) => (
@@ -278,12 +292,13 @@ export function CategoryField({
                                 className={INPUT_CLS}
                             />
 
-                            {/* Text — selectbox option 표시 텍스트 경로 */}
+                            {/* Text — selectbox option 표시 텍스트 경로. 비우면 useCategoryCascade.ts에서 value로 대체 표시되긴 하지만
+                                라벨 없이 id 값만 노출되어 사실상 사용 불가하므로 항상 채우는 것을 권장 */}
                             <input
                                 type="text"
                                 value={depthTextFields[i] ?? ''}
                                 onChange={e => onChange({ depthTextFields: updateDepthArray(depthTextFields, i, e.target.value) })}
-                                placeholder="key 입력"
+                                placeholder="key 입력 (필수, 예: category.title)"
                                 className={INPUT_CLS}
                             />
                         </div>
@@ -301,17 +316,34 @@ export function CategoryField({
                         </div>
 
                         {/* depth별 상위(부모) ID 경로 — 선택 항목의 dataJson에서 부모 id를 읽는 경로.
-                            옵션 사전필터의 상향 교집합 매핑에도 사용되므로 항상 노출한다 */}
-                        <div className="grid grid-cols-[24px_1fr] gap-1 items-center">
-                            <span />
-                            <input
-                                type="text"
-                                value={depthParentFields[i] ?? ''}
-                                onChange={e => onChange({ depthParentFields: updateDepthArray(depthParentFields, i, e.target.value) })}
-                                placeholder="상위 부모 ID 경로 (선택, 예: category.parentId)"
-                                className={INPUT_CLS}
-                            />
-                        </div>
+                            옵션 사전필터의 상향 교집합 매핑에도 사용되므로 항상 노출한다.
+                            i=0(최상위 가시 depth)은 상향 교집합에 쓰이지 않아 항상 선택, 그 외는 옵션 사전필터 사용 시 사실상 필수 —
+                            비워두면 computeOptionPreFilter(useCategoryCascade.ts)의 상향 교집합이 빈 Set이 되어 이 depth의
+                            상위 depth 옵션이 조용히 0건이 된다(런타임에서도 console.warn으로 별도 경고) */}
+                        {(() => {
+                            const parentFieldRequired = optionFilterActive && i >= 1;
+                            return (
+                                <div className="grid grid-cols-[24px_1fr] gap-1 items-center">
+                                    <span />
+                                    <div>
+                                        {parentFieldRequired && (
+                                            <label className={LABEL_CLS + ' !mb-0.5'}>
+                                                <span className="text-amber-500 font-normal">상위 부모 ID 경로 (옵션 사전필터 사용 시 필수 — 비우면 상위 옵션 0건)</span>
+                                            </label>
+                                        )}
+                                        <input
+                                            type="text"
+                                            value={depthParentFields[i] ?? ''}
+                                            onChange={e => onChange({ depthParentFields: updateDepthArray(depthParentFields, i, e.target.value) })}
+                                            placeholder={parentFieldRequired
+                                                ? '상위 부모 ID 경로 (필수, 예: category.parentId)'
+                                                : '상위 부모 ID 경로 (선택, 예: category.parentId)'}
+                                            className={INPUT_CLS}
+                                        />
+                                    </div>
+                                </div>
+                            );
+                        })()}
                     </div>
                 ))}
 
