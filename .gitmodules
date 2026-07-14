@@ -2,3 +2,7 @@
 	path = fo
 	url = https://github.com/kfgabiz-lab/ge-fo
 	branch = master
+[submodule "bo-api"]
+	path = bo-api
+	url = https://github.com/kfgabiz-lab/ge-api
+	branch = master
