@@ -1,0 +1,4 @@
+[submodule "fo"]
+	path = fo
+	url = https://github.com/kfgabiz-lab/ge-fo
+	branch = master
