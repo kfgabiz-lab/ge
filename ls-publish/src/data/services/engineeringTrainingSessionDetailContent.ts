@@ -25,6 +25,7 @@ export type EngineeringTrainingSessionDetail = {
     date: string;
     eventDateToAttend: string;
     duration: string;
+    trainingType: string;
     classSize: string;
     location: {
       name: string;
@@ -142,10 +143,11 @@ export const engineeringTrainingSessionDetails: Record<
       date: "Jan 10, 2026",
       eventDateToAttend: "01/10/26",
       duration: "12 Hours",
+      trainingType: "In-Person",
       classSize: "1-20",
       location: SHARED_SIDEBAR_LOCATION,
       productsCovered: SHARED_PRODUCTS,
-      registerLabel: "REGISTER",
+      registerLabel: "Scroll to Registration form",
     },
   },
   "breaker-training/mar-12-2026": {
@@ -166,10 +168,11 @@ export const engineeringTrainingSessionDetails: Record<
       date: "Mar 12, 2026",
       eventDateToAttend: "03/12/26",
       duration: "12 Hours",
+      trainingType: "In-Person",
       classSize: "1-20",
       location: SHARED_SIDEBAR_LOCATION,
       productsCovered: SHARED_PRODUCTS,
-      registerLabel: "REGISTER",
+      registerLabel: "Scroll to Registration form",
     },
   },
   "breaker-training/jul-14-2026": {
@@ -190,10 +193,11 @@ export const engineeringTrainingSessionDetails: Record<
       date: "Jul 14, 2026",
       eventDateToAttend: "07/14/26",
       duration: "6 Hours",
+      trainingType: "In-Person",
       classSize: "1-20",
       location: SHARED_SIDEBAR_LOCATION,
       productsCovered: SHARED_PRODUCTS,
-      registerLabel: "REGISTER",
+      registerLabel: "Scroll to Registration form",
     },
   },
   "breaker-training/dec-8-2026": {
@@ -214,10 +218,11 @@ export const engineeringTrainingSessionDetails: Record<
       date: "Dec 8, 2026",
       eventDateToAttend: "12/08/26",
       duration: "12 Hours",
+      trainingType: "In-Person",
       classSize: "1-20",
       location: SHARED_SIDEBAR_LOCATION,
       productsCovered: SHARED_PRODUCTS,
-      registerLabel: "REGISTER",
+      registerLabel: "Scroll to Registration form",
     },
   },
 };
@@ -233,15 +238,17 @@ export const engineeringTrainingSessionCountdownDisplay = {
 } as const;
 
 export const engineeringTrainingSessionAssets = {
-  countdownBg: `${IMG}/session-countdown-bg.jpg`,
+  countdownBg: `${IMG}/session-countdown-bg.svg`,
   recaptcha: `${IMG}/session-recaptcha.png`,
   calendarIcons: {
     google: `${ICO}/ico_google_18.svg`,
-    ical: `${ICO}/ico_calendar_18.svg`,
+    ical: `${ICO}/ico_training_calendar_18.svg`,
   },
+  registerScrollIcon: `${ICO}/ico_scrto_18.svg`,
   metaIcons: {
     date: `${ICO}/ico_training_date_18.svg`,
     duration: `${ICO}/ico_training_duration_18.svg`,
+    trainingType: `${ICO}/ico_training_type_20.svg`,
     classSize: `${ICO}/ico_training_class_size_18.svg`,
     location: `${ICO}/ico_training_location_18.svg`,
     products: `${ICO}/ico_training_products_18.svg`,
@@ -252,13 +259,6 @@ export type EngineeringTrainingSessionMetaIconKey =
   keyof typeof engineeringTrainingSessionAssets.metaIcons;
 
 export const engineeringTrainingSessionShareLinks = [
-  {
-    id: "facebook",
-    href: "https://www.facebook.com/sharer/sharer.php",
-    icon: "/pub/ico/ico_share_facebook_44.svg",
-    label: "Share on Facebook",
-    external: true,
-  },
   {
     id: "x",
     href: "https://twitter.com/intent/tweet",
@@ -281,6 +281,10 @@ export const engineeringTrainingSessionShareLinks = [
     external: false,
   },
 ] as const;
+
+export const engineeringTrainingSessionFormCopy = {
+  submitLabel: "Get the Whitepaper",
+} as const;
 
 export const engineeringTrainingSessionTabs = [
   { id: "training", label: "Engineering Training" },

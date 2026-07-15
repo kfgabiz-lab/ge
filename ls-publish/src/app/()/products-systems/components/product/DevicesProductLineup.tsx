@@ -14,9 +14,10 @@ type DevicesProductLineupProps = {
    * `susol-frame` — Figma 6788:7576
    * `metasol-ms` — Figma 6788:8458
    * `h100-plus` — Figma 6843:65056
+   * `product-template` — MMS-32 / 63 / 100 lineup (template page)
    * (미지정 시 items / frameLineup으로 동적 생성)
    */
-  table?: "susol-frame" | "metasol-ms" | "h100-plus";
+  table?: "susol-frame" | "metasol-ms" | "h100-plus" | "product-template";
   /** @default "type1" — 가이드: type1(MCCB) · type2(VFD frame) */
   variant?: ProductLineupVariant;
   configuratorHref?: string;
@@ -871,6 +872,270 @@ function buildFrameTable(lineup: ProductFrameLineup): LineupTableModel {
   };
 }
 
+const PRODUCT_TEMPLATE_LINEUP_STYLE = `
+/* ProductTemplateLineupTable — MMS-32 / 63 / 100 (hardcoded)
+   devices_product_lineup__grids--product-template
+   devices_product_lineup__table--product-template */
+
+section.devices_product_lineup .devices_product_lineup__grids--product-template {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+}
+
+section.devices_product_lineup .devices_product_lineup__grids--product-template .devices_product_lineup__grid,
+section.devices_product_lineup .devices_product_lineup__grids--product-template .devices_product_lineup__grid--type1 {
+  margin-bottom: 0;
+  width: 100%;
+}
+
+section.devices_product_lineup .devices_product_lineup__table--product-template .devices_product_lineup__frame-media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 136px;
+  height: 136px;
+  margin: 0 auto 12px;
+  overflow: hidden;
+}
+
+section.devices_product_lineup .devices_product_lineup__table--product-template .devices_product_lineup__frame-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+section.devices_product_lineup .devices_product_lineup__table--product-template table {
+  width: 100%;
+  min-width: 1224px;
+  border-collapse: collapse;
+  border-spacing: 0;
+  table-layout: fixed;
+  border-top: 2px solid #0f1f45;
+}
+
+section.devices_product_lineup .devices_product_lineup__table--product-template col:nth-child(1) {
+  width: 280px;
+}
+
+section.devices_product_lineup .devices_product_lineup__table--product-template col:nth-child(n + 2) {
+  width: 314.6667px;
+}
+
+section.devices_product_lineup
+  .devices_product_lineup__grids--product-template
+  .devices_product_lineup__grid--type1
+  .devices_product_lineup__table--product-template
+  th,
+section.devices_product_lineup
+  .devices_product_lineup__grids--product-template
+  .devices_product_lineup__grid--type1
+  .devices_product_lineup__table--product-template
+  table
+  thead
+  th,
+section.devices_product_lineup
+  .devices_product_lineup__grids--product-template
+  .devices_product_lineup__grid--type1
+  .devices_product_lineup__table--product-template
+  table
+  tbody
+  th {
+  background: #f5f7fa;
+}
+
+section.devices_product_lineup .devices_product_lineup__table--product-template th,
+section.devices_product_lineup .devices_product_lineup__table--product-template td {
+  box-sizing: border-box;
+  padding: 16px 20px;
+  font-size: 16px;
+  line-height: 24px;
+  color: #222;
+  text-align: center;
+  vertical-align: middle;
+  border-right: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+section.devices_product_lineup .devices_product_lineup__table--product-template th:last-child,
+section.devices_product_lineup .devices_product_lineup__table--product-template td:last-child {
+  border-right: 0;
+}
+
+section.devices_product_lineup .devices_product_lineup__table--product-template thead th {
+  height: 222px;
+  min-height: 222px;
+  padding: 24px 16px;
+  font-weight: 600;
+  line-height: 26px;
+  background: #f5f7fa;
+}
+
+section.devices_product_lineup .devices_product_lineup__table--product-template thead th:first-child {
+  height: auto;
+  min-height: 0;
+  padding: 20px 16px;
+  font-size: 16px;
+  line-height: 22px;
+  background: #f5f7fa;
+}
+
+section.devices_product_lineup .devices_product_lineup__table--product-template thead th p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 26px;
+  color: #222;
+  white-space: nowrap;
+}
+
+section.devices_product_lineup .devices_product_lineup__table--product-template tbody th {
+  display: table-cell;
+  font-weight: 600;
+  line-height: 22px;
+  background: #f5f7fa;
+}
+
+section.devices_product_lineup .devices_product_lineup__table--product-template tbody td {
+  font-weight: 400;
+  background: #fff;
+}
+
+section.devices_product_lineup .devices_product_lineup__table--product-template tbody tr[data-tall] th,
+section.devices_product_lineup .devices_product_lineup__table--product-template tbody tr[data-tall] td {
+  height: auto;
+  min-height: 96px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+section.devices_product_lineup .devices_product_lineup__table--product-template tbody tr:not([data-tall]) th,
+section.devices_product_lineup .devices_product_lineup__table--product-template tbody tr:not([data-tall]) td {
+  height: 80px;
+  min-height: 80px;
+}
+
+@media (max-width: 780px) {
+  section.devices_product_lineup .devices_product_lineup__table--product-template table {
+    min-width: 900px;
+  }
+
+  section.devices_product_lineup .devices_product_lineup__table--product-template thead th {
+    height: auto;
+    min-height: 180px;
+    padding: 16px 12px;
+  }
+
+  section.devices_product_lineup .devices_product_lineup__table--product-template .devices_product_lineup__frame-media {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 8px;
+  }
+
+  section.devices_product_lineup .devices_product_lineup__table--product-template th,
+  section.devices_product_lineup .devices_product_lineup__table--product-template td {
+    padding: 14px 12px;
+    font-size: 14px;
+    line-height: 22px;
+  }
+}
+`;
+
+/** Product template lineup — MMS-32 / MMS-63 / MMS-100 (hardcoded) */
+function ProductTemplateLineupTable() {
+  const img = (name: string, ext: "webp" | "png" = "webp") =>
+    `/pub/img/devices-systems/lineup/lineup_mms_${name}.${ext}`;
+
+  const productType =
+    "Standard(S), High Breaking(H), Instantaneous(HI)";
+
+  return (
+    <>
+      <style>{PRODUCT_TEMPLATE_LINEUP_STYLE}</style>
+      <div className="devices_product_lineup__grids devices_product_lineup__grids--product-template">
+        <DevicesProductLineupGrid modifier="type1" layout="metasol">
+          <div className="devices_product_lineup__table devices_product_lineup__table--product-template">
+            <table>
+              <colgroup>
+                <col />
+                <col />
+                <col />
+                <col />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th scope="col">Item</th>
+                  <th scope="col">
+                    <MetasolFrameMedia image={img("32")} label="MMS-32" />
+                  </th>
+                  <th scope="col">
+                    <MetasolFrameMedia image={img("63")} label="MMS-63" />
+                  </th>
+                  <th scope="col">
+                    <MetasolFrameMedia image={img("100", "png")} label="MMS-100" />
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Frame Size</th>
+                  <td>32 AF</td>
+                  <td>63 AF</td>
+                  <td>100 AF</td>
+                </tr>
+                <tr data-tall="">
+                  <th scope="row">Product Type</th>
+                  <td>{productType}</td>
+                  <td>{productType}</td>
+                  <td>{productType}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Pole</th>
+                  <td>3 Pole</td>
+                  <td>3 Pole</td>
+                  <td>3 Pole</td>
+                </tr>
+                <tr>
+                  <th scope="row">Rated Operational Current</th>
+                  <td>0.16~40 A</td>
+                  <td>10~65 A</td>
+                  <td>17~100 A</td>
+                </tr>
+                <tr>
+                  <th scope="row">Current Setting Range</th>
+                  <td>0.1~40 A</td>
+                  <td>6~65 A</td>
+                  <td>11~100 A</td>
+                </tr>
+                <tr>
+                  <th scope="row">Rated Operational Voltage</th>
+                  <td>Up to 690 V</td>
+                  <td>Up to 690 V</td>
+                  <td>Up to 690 V</td>
+                </tr>
+                <tr>
+                  <th scope="row">Rated Insulation Voltage</th>
+                  <td>690 V</td>
+                  <td>1000 V</td>
+                  <td>1000 V</td>
+                </tr>
+                <tr>
+                  <th scope="row">Rated Impulse Withstand Voltage</th>
+                  <td>6 kV</td>
+                  <td>8 kV</td>
+                  <td>8 kV</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </DevicesProductLineupGrid>
+      </div>
+    </>
+  );
+}
+
 const H100_PLUS_LINEUP_STYLE = `
 /* H100PlusLineupTable — Figma 6843:65056 (hardcoded)
    devices_product_lineup__grids--h100-plus
@@ -1216,7 +1481,10 @@ export default function DevicesProductLineup({
     ? { target: "_blank", rel: "noopener noreferrer" }
     : {};
   const tables =
-    table === "susol-frame" || table === "metasol-ms" || table === "h100-plus"
+    table === "susol-frame" ||
+    table === "metasol-ms" ||
+    table === "h100-plus" ||
+    table === "product-template"
       ? []
       : resolveLineupTables(variant, items, frameLineup);
 
@@ -1232,6 +1500,8 @@ export default function DevicesProductLineup({
           </div>
         ) : table === "h100-plus" ? (
           <H100PlusLineupTable />
+        ) : table === "product-template" ? (
+          <ProductTemplateLineupTable />
         ) : tables.length > 0 ? (
           <div className="devices_product_lineup__grids">
             {tables.map((model, index) => (

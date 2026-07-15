@@ -42,8 +42,6 @@ export default function EngineeringTrainingCurriculum() {
       id="engineering-training-curriculum"
     >
       <div className="inner">
-        <h2 className="section_tit">{curriculum.title}</h2>
-
         <div className="support_service_training_curriculum__filters">
           <FormControl className="guide_field guide_field--h50 guide_field--w200">
             <GuideSelect
@@ -53,6 +51,7 @@ export default function EngineeringTrainingCurriculum() {
               }
               IconComponent={GuideSelectIcon}
               inputProps={{ "aria-label": category.label }}
+              useRenderValueForNativeOptions
               renderValue={(value) =>
                 renderFilterSelectValue(
                   category.label,
@@ -76,6 +75,7 @@ export default function EngineeringTrainingCurriculum() {
               }
               IconComponent={GuideSelectIcon}
               inputProps={{ "aria-label": lvCategory.label }}
+              useRenderValueForNativeOptions
               renderValue={(value) =>
                 renderFilterSelectValue(
                   lvCategory.label,
@@ -99,6 +99,7 @@ export default function EngineeringTrainingCurriculum() {
               }
               IconComponent={GuideSelectIcon}
               inputProps={{ "aria-label": subCategory.label }}
+              useRenderValueForNativeOptions
               renderValue={(value) =>
                 renderFilterSelectValue(
                   subCategory.label,

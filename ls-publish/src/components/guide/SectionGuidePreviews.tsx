@@ -67,9 +67,15 @@ import CommonBanner01 from "@/components/banners/CommonBanner01";
 import CommonBanner02 from "@/components/banners/CommonBanner02";
 import CommonBanner03Link from "@/components/banners/CommonBanner03Link";
 import CommonBanner04 from "@/components/banners/CommonBanner04";
+import NotFoundHelpfulLinks from "@/components/common/not-found/NotFoundHelpfulLinks";
+import NotFoundSearch from "@/components/common/not-found/NotFoundSearch";
+import NotFoundTitle from "@/components/common/not-found/NotFoundTitle";
+import CookiePreferencesModal from "@/components/modals/CookiePreferencesModal";
+import CookieSettingsModal from "@/components/modals/CookieSettingsModal";
 import HighlightNewsSection from "@/components/content/HighlightNewsSection";
 import CommonFaq from "@/components/faq/CommonFaq";
 import SectionGuideBlock from "@/components/guide/SectionGuideBlock";
+import "@/assets/css/common-404.css";
 import { mainHighlightNewsItems } from "@/data/highlightNews";
 import IconCards from "@/app/main/components/IconCards";
 import MainCards from "@/app/main/components/MainCards";
@@ -152,6 +158,10 @@ import ConnectPortalTitle from "@/app/()/support/connect-portal/components/Conne
 import ConnectPortalVideo from "@/app/()/support/connect-portal/components/ConnectPortalVideo";
 import DownloadCenterSearch from "@/app/()/support/download-center/components/DownloadCenterSearch";
 import EngineeringTrainingCurriculum from "@/app/()/services/engineering-training/components/EngineeringTrainingCurriculum";
+import SalesTrainingCurriculum from "@/app/()/services/sales-training/components/SalesTrainingCurriculum";
+import SalesTrainingTitle from "@/app/()/services/sales-training/components/SalesTrainingTitle";
+import ServiceTrainingCurriculum from "@/app/()/services/service-training/components/ServiceTrainingCurriculum";
+import ServiceTrainingTitle from "@/app/()/services/service-training/components/ServiceTrainingTitle";
 import ServiceCenterBanner from "@/app/()/services/service-center/components/ServiceCenterBanner";
 import ServiceCenterCards from "@/app/()/services/service-center/components/ServiceCenterCards";
 import ServiceCenterFlow from "@/app/()/services/service-center/components/ServiceCenterFlow";
@@ -170,7 +180,6 @@ import {
 import EngineeringTrainingDetailHero from "@/app/()/services/engineering-training/components/EngineeringTrainingDetailHero";
 import EngineeringTrainingDetailSchedule from "@/app/()/services/engineering-training/components/EngineeringTrainingDetailSchedule";
 import EngineeringTrainingSessionDetail from "@/app/()/services/engineering-training/components/EngineeringTrainingSessionDetail";
-import EngineeringTrainingIntro from "@/app/()/services/engineering-training/components/EngineeringTrainingIntro";
 import EngineeringTrainingTitle from "@/app/()/services/engineering-training/components/EngineeringTrainingTitle";
 import RequestForTraining from "@/app/()/services/request-for-training/components/RequestForTraining";
 import RequestForTrainingStep1Form from "@/app/()/services/request-for-training/components/RequestForTrainingStep1Form";
@@ -474,6 +483,21 @@ export function CommonSectionPreviews() {
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("common_banner_04")}>
         <CommonBanner04 />
+      </SectionGuideBlock>
+      <SectionGuideBlock entry={block("common_404_title")}>
+        <NotFoundTitle />
+      </SectionGuideBlock>
+      <SectionGuideBlock entry={block("common_404_search")}>
+        <NotFoundSearch />
+      </SectionGuideBlock>
+      <SectionGuideBlock entry={block("common_404_links")}>
+        <NotFoundHelpfulLinks />
+      </SectionGuideBlock>
+      <SectionGuideBlock entry={block("cookie_settings_modal")}>
+        <CookieSettingsModal open embedded />
+      </SectionGuideBlock>
+      <SectionGuideBlock entry={block("cookie_preferences_modal")}>
+        <CookiePreferencesModal open embedded />
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("common_faq")}>
         <CommonFaq items={faqItems.slice(0, 3)} defaultOpenIndex={0} />
@@ -1008,11 +1032,34 @@ export function ServicesEngineeringTrainingSectionPreviews() {
       <SectionGuideBlock entry={block("support_service_training_title")}>
         <EngineeringTrainingTitle />
       </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_service_training_intro")}>
-        <EngineeringTrainingIntro />
-      </SectionGuideBlock>
       <SectionGuideBlock entry={block("support_service_training_curriculum")}>
         <EngineeringTrainingCurriculum />
+      </SectionGuideBlock>
+    </>
+  );
+}
+
+export function ServicesServiceTrainingSectionPreviews() {
+  return (
+    <>
+      <SectionGuideBlock entry={block("support_service_training_title_service")}>
+        <ServiceTrainingTitle />
+      </SectionGuideBlock>
+      <SectionGuideBlock entry={block("support_service_training_curriculum_service")}>
+        <ServiceTrainingCurriculum />
+      </SectionGuideBlock>
+    </>
+  );
+}
+
+export function ServicesSalesTrainingSectionPreviews() {
+  return (
+    <>
+      <SectionGuideBlock entry={block("support_service_training_title_sales")}>
+        <SalesTrainingTitle />
+      </SectionGuideBlock>
+      <SectionGuideBlock entry={block("support_service_training_curriculum_sales")}>
+        <SalesTrainingCurriculum />
       </SectionGuideBlock>
     </>
   );

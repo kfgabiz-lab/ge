@@ -30,12 +30,7 @@ export default function EngineeringTrainingDetailHero({
               {detail.title}
             </h1>
             <p className="support_service_training_detail_hero__desc">
-              {detail.descriptionLines.map((line, index) => (
-                <span key={`${detail.courseId}-desc-${index}`}>
-                  {index > 0 ? <br /> : null}
-                  {line}
-                </span>
-              ))}
+              {detail.description}
             </p>
           </div>
         </div>

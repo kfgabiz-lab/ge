@@ -24,7 +24,7 @@ export default function MainHeader({ showBreadcrumbNav = false }: MainHeaderProp
       hideGnbOnScroll: !isMobileMenuOpen && !isMegaOpen,
     });
 
-  const isGnbHidden = scrollGnbHidden && !isSearchOpen;
+  const isGnbHidden = scrollGnbHidden && !isSearchOpen && !isMegaOpen;
   const resolvedIsAtTop =
     frozenWrapAtTop !== null ? frozenWrapAtTop : isAtTop;
 

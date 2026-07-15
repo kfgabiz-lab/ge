@@ -14,13 +14,14 @@ import DevicesProductOtherProducts from "../../components/product/DevicesProduct
 import DevicesProductVideo from "../../components/product/DevicesProductVideo";
 import { motorControlHighlights } from "../../data/motorControlContent";
 import {
+  productDetailNavItems,
   productTemplateDetail,
   productTemplateFaqItems,
 } from "../../data/productDetailContent";
 import "@/assets/css/devices-systems.css";
 import "@/assets/css/devices-product-detail.css";
 
-/** Product detail template — copy of `/motor-control/h100_plus` */
+/** Product detail template — copy of `/motor-control/h100_plus` (+ Other Products) */
 export default function ProductTemplatePage() {
   return (
     <main
@@ -28,7 +29,7 @@ export default function ProductTemplatePage() {
       id="Page_devices_product_template"
     >
       <DevicesProductHero product={productTemplateDetail} />
-      <DevicesProductNavScope>
+      <DevicesProductNavScope navItems={productDetailNavItems}>
         <DevicesProductFeaturesSection
           title="Key Features"
           items={productTemplateDetail.keyFeatures}
@@ -41,7 +42,7 @@ export default function ProductTemplatePage() {
           backgroundSrc={productTemplateDetail.configuratorBannerBg}
         />
         <DevicesProductLineup
-          table="h100-plus"
+          table="product-template"
           configuratorHref={productTemplateDetail.configuratorHref}
           configuratorExternal={productTemplateDetail.configuratorExternal}
         />

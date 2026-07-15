@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 
 /** Split by highlight and wrap each match with markClassName (mid-title · mid-body). */
 export function renderInlineTextHighlight(
@@ -13,18 +13,16 @@ export function renderInlineTextHighlight(
   }
 
   return parts.map((part, index) => (
-    <span key={`${part}-${index}`}>
-      {part ? (
-        textClassName ? (
-          <span className={textClassName}>{part}</span>
-        ) : (
-          part
-        )
-      ) : null}
+    <Fragment key={`${part}-${index}`}>
+      {part
+        ? textClassName
+          ? <span className={textClassName}>{part}</span>
+          : part
+        : null}
       {index < parts.length - 1 ? (
         <span className={markClassName}>{highlight}</span>
       ) : null}
-    </span>
+    </Fragment>
   ));
 }
 

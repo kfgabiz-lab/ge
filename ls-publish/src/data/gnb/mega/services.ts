@@ -40,7 +40,7 @@ export const servicesMegaMenu: GnbSimpleMegaMenu = {
           id: "sales-training",
           title: "Sales Training",
           description: "Training for Product configuration and order placement",
-          disabled: true,
+          href: "/services/sales-training",
         },
         {
           id: "engineering-training",
@@ -52,7 +52,7 @@ export const servicesMegaMenu: GnbSimpleMegaMenu = {
           id: "service-training",
           title: "Service Training",
           description: "Training for field serivces",
-          disabled: true,
+          href: "/services/service-training",
         },
         {
           id: "request-for-training",

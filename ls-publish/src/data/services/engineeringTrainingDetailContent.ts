@@ -19,7 +19,7 @@ export type EngineeringTrainingDetail = {
   breadcrumbCurrent: string;
   category: string;
   title: string;
-  descriptionLines: string[];
+  description: string;
   heroImage: string;
   schedule: {
     trainingTypeFilter: EngineeringTrainingScheduleFilter;
@@ -44,10 +44,8 @@ export const engineeringTrainingDetails: Record<string, EngineeringTrainingDetai
     breadcrumbCurrent: "Engineering Training curriculum",
     category: "POWER",
     title: SESSION_TITLE,
-    descriptionLines: [
-      "Engineering training materials that combine the principles, specifications, and setup methods of LS circuit breakers from low pressure (MCB/MCCB/ACB) to medium pressure (VCB) into theory",
-      "and practice",
-    ],
+    description:
+      "Engineering training materials that combine the principles, specifications, and setup methods of LS circuit breakers from low pressure (MCB/MCCB/ACB) to medium pressure (VCB) into theory and practice",
     heroImage: `${IMG}/course-01.jpg`,
     schedule: {
       trainingTypeFilter: {
