@@ -1,7 +1,7 @@
 ---
 name: fo-page-analyzer
 description: FO 페이지 머지 STEP 0-0(페이지 분석) 전담. 사용자가 지정한 메뉴명과 ls-publish URL(예: http://localhost:3003/pub/main)을 받아, ls-publish 소스(page.tsx/components/data)를 먼저 Read로 직접 분석하고, 분석에 애매함/문제가 없으면 Playwright로 실제 URL을 방문해 렌더링 결과와 소스 분석 내용을 교차검증한다. 섹션/컴포넌트 구조 분석 결과를 fo-page-migrator에게 전달한다. fo-orchestrator가 STEP A(페이지 머지) 작업의 첫 단계로 호출.
-tools: Read, Glob, Grep, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_take_screenshot, mcp__plugin_playwright_playwright__browser_snapshot
+tools: Read, Glob, Grep, Bash, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_take_screenshot, mcp__plugin_playwright_playwright__browser_snapshot
 model: opus
 ---
 
@@ -33,6 +33,7 @@ model: opus
 2. 해당 경로의 `page.tsx`, `components/`, `data/`를 Read로 전체 확인
 3. 섹션 단위로 구조 정리: 섹션명, 담당 컴포넌트 파일, 사용 데이터(`data/*.ts`), 하위 컴포넌트 트리
 4. import 경로에서 이 메뉴가 참조하는 공통 요소(`@/components/common`, `@/lib`, `@/hooks` 등) 식별
+5. (선택) 대상 소스와 `fo/src` 기존 코드 간 유사도를 눈으로만 판단하기 애매하면 `cd fo && npx jscpd <대상경로> fo/src --min-lines 5 --min-tokens 30` 실행해 수치 근거로 확인. 최종 공통화 실행은 `fo-common-refactor` 담당이며, 여기서는 참고용 정황 파악까지만
 
 ### STEP 2 — 렌더링 교차검증 (소스 분석에 문제 없을 때만)
 소스만으로 충분히 파악되고 애매한 지점이 없으면, 실제 URL을 방문해 교차검증한다.
