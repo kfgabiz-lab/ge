@@ -99,6 +99,19 @@ C:\tmp\bo-agent-comms\architect-review-result.json  읽기 (아키텍처 이슈)
 
 ---
 
+## ⚠️ entity 연동 대상 API 실패 처리 원칙 (필수)
+
+> 실사고 사례: 대상 API가 entity에 연결돼 있는데 구조적 400(`MALFORMED_JSON`)이 났음에도 "우리 위젯 자체는 정상 동작했다"는 이유로 non-blocking Info로 처리해 실사용자단 버그를 놓쳤다.
+
+검증 중인 화면이 호출하는 대상 API가 entity 연결(`api_info.connectedEntity` 또는 `pageIsEntity`)이면, 그 API의 응답 실패를 "우리 화면 문제 아님"으로 넘기지 않는다.
+
+- 400/500 등 오류 발생 시 원인을 반드시 구분한다:
+  - **구조적 원인**(필드명 불일치, nested/flat 불일치, camelCase 미변환, `Unrecognized field`, `MALFORMED_JSON`) → **Critical**, non-blocking 처리 절대 금지
+  - **업무적 원인**(필수값 미입력 등 정상 validation 동작) → Info/Warning으로 하향 가능
+- "대상 API가 실패해도 우리 위젯 자체는 정상 동작했다"는 이유로 구조적 400을 자동으로 non-blocking Info 처리하지 않는다.
+
+---
+
 ## 검증 3단계
 
 ---
@@ -246,6 +259,7 @@ SCREEN 3. 운영 메뉴 페이지 (live 모드)
 - [ ] 에러 메시지가 해당 필드 근처에 표시됨
 - [ ] 에러 상태에서 필드 스타일 변경 (빨간 테두리 등)
 - [ ] 수정 후 에러 상태 해제 확인
+- [ ] entity 연결 저장(§⚠️ entity 연동 대상 API 실패 처리 원칙)에서 구조적 400(필드명 불일치 등)을 Info로 넘기지 않았는가
 
 #### UI 상태 체크 (Warning)
 - [ ] 저장 중 버튼 disabled + 로딩 표시

@@ -1,3 +1,7 @@
+[submodule "fo"]
+	path = fo
+	url = https://github.com/kfgabiz-lab/ge-fo
+	branch = master
 [submodule "bo-api"]
 	path = bo-api
 	url = https://github.com/kfgabiz-lab/ge-api
@@ -5,8 +9,4 @@
 [submodule "bo"]
 	path = bo
 	url = https://github.com/kfgabiz-lab/ge-bo
-	branch = master
-[submodule "fo"]
-	path = fo
-	url = https://github.com/kfgabiz-lab/ge-fo
 	branch = master

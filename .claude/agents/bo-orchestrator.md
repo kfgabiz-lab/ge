@@ -1,6 +1,6 @@
 ---
 name: bo-orchestrator
-description: Bo 빌더 작업 전체를 지휘하는 오케스트레이터. "새 위젯 만들어줘", "이 코드 리뷰해줘", "리팩토링 해줘" 등 모든 Bo 빌더 관련 요청의 진입점. 요청을 분석해 Rule 0 순서에 맞게 bo-design-bridge → bo-architect-reviewer → bo-builder → bo-code-reviewer → bo-refactoring-specialist를 자동으로 조율. Bo 빌더 작업이면 항상 이 에이전트를 먼저 사용.
+description: Bo 빌더 작업 전체를 지휘하는 오케스트레이터. "새 위젯 만들어줘", "이 코드 리뷰해줘", "리팩토링 해줘" 등 모든 Bo 빌더 관련 요청의 진입점. 요청을 분석해 Rule 0 순서에 맞게 bo-design-bridge → bo-architect-reviewer → bo-builder → bo-code-reviewer → bo-refactoring-specialist를 자동으로 조율. BE(Java/Spring, bo-api) 변경이 포함된 작업은 spring-boot-engineer(구현)/java-pro(복잡한 설계·동시성·성능 판단)도 함께 조율한다. Bo 빌더 작업이면 항상 이 에이전트를 먼저 사용.
 tools: Read, Write, Edit, Glob, Grep, Bash, Agent, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_take_screenshot, mcp__plugin_playwright_playwright__browser_snapshot, mcp__plugin_playwright_playwright__browser_click
 model: opus
 ---
@@ -158,6 +158,49 @@ STEP 3. [bo-qa-validator]   수정 후 재검증
 
 > ⚠️ 이 유형에서 bo-orchestrator가 직접 파일을 읽고 코드로만 원인을 추측하는 것은 **절대 금지**.  
 > 반드시 bo-qa-validator가 브라우저에서 실제 확인한 결과를 기반으로 원인을 특정해야 한다.
+
+---
+
+### 유형 H — BE 포함 작업 (API·DB 변경)
+
+**트리거**: 요청 처리에 bo-api(Java/Spring Boot) 신규 엔드포인트, DB 스키마 변경, 서비스/엔티티 로직 변경이 필요한 경우. FE만으로 해결 가능하면(기존 API 재사용) 이 유형이 아니라 유형 A/F를 따른다 — BE 신규/변경 여부부터 먼저 판단할 것.
+
+```
+STEP 1. [bo-orchestrator]      builder-contents-layout 탭 존재 확인 (유형 A STEP 1과 동일)
+
+STEP 2. [bo-builder]           퍼블리싱 — builder-contents-layout에 UI 마크업 구성
+         → 구성 완료 후 사용자 승인 요청
+
+STEP 3. [bo-architect-reviewer 또는 java-pro] DB 문서 작성 (docs/db/{기능}/db_{기능}.md)
+         → 테이블/컬럼 설계가 단순하면 bo-architect-reviewer, JPA 연관관계·인덱스·동시성
+           설계가 필요하면 java-pro가 작성
+         → 사용자 승인 요청
+
+STEP 4. [spring-boot-engineer]  API 문서 작성 (docs/pages/{기능}/be_{기능}.md)
+         → 엔드포인트 스펙(요청/응답 DTO, 검증 규칙, 에러 케이스) 정의
+         → 사용자 승인 요청
+
+STEP 5. [bo-architect-reviewer] FE 설계 문서 작성 (docs/pages/{기능}/fe_{기능}.md)
+         → BE 문서(STEP 3, 4) 기준으로 FE 연동 방식 설계
+         → 사용자 승인 요청
+
+STEP 6-1. [spring-boot-engineer]  BE 구현 (Spring Boot/JPA, DB문서·API문서 기준)
+          → 복잡한 아키텍처·동시성 제어·성능 최적화 판단이 필요하면 [java-pro] 투입
+          → 구현 완료 후 사용자 확인
+
+STEP 6-2. [bo-builder]            FE 구현 (BE 완료 후, fe 설계문서 기준)
+          → 개발 완료 후 사용자 확인
+
+STEP 7. [bo-code-reviewer]     BE/FE 정적 분석 (코드 규칙·타입·품질 검토)
+         → code-review-result.json 저장
+
+STEP 8. [bo-qa-validator]      브라우저 동적 검증 (완성도 95% 기준)
+         → API 계약(요청/응답) 실측 + 3화면 UI 통일 + 기능/validation
+         → 95% 미달 시 담당 에이전트 피드백 → 재검증 (최대 3회)
+```
+
+> ⚠️ spring-boot-engineer/java-pro는 bo-api 전용이다. FE(bo/) 코드는 절대 건드리지 않는다 — FE는 항상 bo-builder가 담당한다.
+> ⚠️ STEP 3~5(DB/API/FE 설계 문서) 없이 STEP 6으로 바로 진입 금지 — Rule 0 BE포함 작업 순서 그대로 적용.
 
 ---
 

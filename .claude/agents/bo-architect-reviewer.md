@@ -130,6 +130,17 @@ rowSpan 실제 높이 계산:
 - [ ] 퍼블리싱 샘플 데이터가 `types.ts` 타입과 일치하는가
 - [ ] 설계 문서(`docs/pages/{기능}/fe_{기능}.md`)가 존재하는가
 
+### 6. Entity 연동 저장 구조 검토 (isEntity 판단)
+
+> 실사고 사례: connType='api' 대상이 entity에 연결돼 있는데 "이 connType은 entity와 무관하다"고 임의 판단해 camelCase 변환을 빠뜨려 `MALFORMED_JSON` 400 발생 (`docs/ge_guide/builder/06.builder_entity_to_api_guide.md` §8 참고).
+
+- [ ] 저장/조회 대상이 Slug Entity(Data Entity) 연결인지 확인했는가 — `api_info.connectedEntity` 또는 `pageIsEntity`/`isEntity` 여부로 판단한다. **connType이 무엇이든(content/datasave/api 등) entity에 연결돼 있으면 예외 없이 아래 규칙을 적용한다**
+- [ ] "이 connType은 entity 연동 대상이 아니다"라고 근거 없이 단정하지 않았는가 — connType='api'처럼 범용으로 보이는 연결 타입도 실제 API가 entity에 연결돼 있으면 동일하게 적용 대상이다
+- [ ] entity 연결 저장이 아래 두 단계를 모두 거치는지 확인했는가:
+  1. `buildDataJson(..., isEntity: true)` — 중첩 없이 flat 구조로 조립 (entity 요청 바디는 중첩 객체를 지원하지 않는다)
+  2. `buildEntityRequestBody`(`entityApi.ts`) — `toEntityFieldName`으로 camelCase 변환 (`SlugEntityCodeGenerator.toCamelCase(field.getKey())`와 동일 규칙)
+  → 1단계만 하고 2단계(camelCase 변환)를 빠뜨리면 필드명이 어긋나 `Unrecognized field`/`MALFORMED_JSON` 400이 난다. 두 단계는 항상 함께 검토한다.
+
 ---
 
 ## 위젯 타입별 아키텍처 패턴
@@ -156,6 +167,8 @@ rowSpan 실제 높이 계산:
 - **재사용 미검토**: 기존 공통 함수/컴포넌트(`_shared/utils.ts`, `renderer/`, `builder/fields/` 등)와
   동일 기능을 넓게 탐색하지 않고 설계 단계에서부터 새 함수/새 컴포넌트를 전제로 설계한 경우
   → critical로 지적하고 bo-builder 단계에서 `reuse-check-result.json` 작성을 요구
+- **entity 연동 판단 누락**: 저장/조회 대상이 entity 연결인지 확인하지 않고 설계를 승인하거나,
+  "이 connType은 entity와 무관하다"고 근거 없이 단정한 경우 → critical로 지적 (6절 참고)
 
 ---
 
