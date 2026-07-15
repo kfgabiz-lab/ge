@@ -51,15 +51,8 @@ const SWITCHGEAR_DESC =
 export const engineeringTrainingPage = {
   title: "Engineering Training",
   description:
-    "Hands-on Engineering Training to Build Core Competencies in Power and Automation System Design and Operation",
-  intro: {
-    heroImage: `${IMG}/hero.jpg`,
-    headline: "LS ELECTRIC Americas Engineering Training Program",
-    description:
-      "LS ELECTRIC's Americas Engineering Team offers a structured training program covering everything from the fundamental principles to practical applications of key components in electrical power systems.",
-  },
+    "Deepen Your Expertise with LS ELECTRIC — Practical Engineering Training Across Power Systems, Protection, and Distribution Solutions",
   curriculum: {
-    title: "Training curriculum",
     filters: {
       category: {
         label: "Category",

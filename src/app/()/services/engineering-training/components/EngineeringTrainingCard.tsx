@@ -9,18 +9,14 @@ export default function EngineeringTrainingCard({
   const detailHref = `/services/engineering-training/${course.id}`;
 
   return (
-    <article className="support_service_training_card">
+    <Link href={detailHref} className="support_service_training_card">
       <div className="support_service_training_card__media">
-        <Link href={detailHref} tabIndex={-1} aria-hidden>
-          <img loading="lazy" decoding="async" src={course.image} alt="" />
-        </Link>
+        <img loading="lazy" decoding="async" src={course.image} alt="" />
       </div>
       <div className="support_service_training_card__body">
         <p className="support_service_training_card__category">{course.category}</p>
         <div className="support_service_training_card__text">
-          <h3 className="support_service_training_card__tit">
-            <Link href={detailHref}>{course.title}</Link>
-          </h3>
+          <h3 className="support_service_training_card__tit">{course.title}</h3>
           {course.descriptionLines ? (
             <p className="support_service_training_card__desc">
               {course.descriptionLines.map((line, index) => (
@@ -35,6 +31,6 @@ export default function EngineeringTrainingCard({
           )}
         </div>
       </div>
-    </article>
+    </Link>
   );
 }

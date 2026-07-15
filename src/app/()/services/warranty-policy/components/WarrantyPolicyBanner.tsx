@@ -9,7 +9,22 @@ export default function WarrantyPolicyBanner() {
       <div className="inner">
         <div className="support_service_warranty_banner__panel">
           <div className="support_service_warranty_banner__bg" aria-hidden>
-            <img loading="lazy" decoding="async" src={banner.backgroundImage} alt="" />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className="support_service_warranty_banner__bg-image support_service_warranty_banner__bg-image--pc"
+              loading="lazy"
+              decoding="async"
+              src={banner.backgroundImage}
+              alt=""
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className="support_service_warranty_banner__bg-image support_service_warranty_banner__bg-image--mo"
+              loading="lazy"
+              decoding="async"
+              src={banner.backgroundImageMobile ?? banner.backgroundImage}
+              alt=""
+            />
           </div>
           <div className="support_service_warranty_banner__content">
             <h2 className="support_service_warranty_banner__tit">{banner.title}</h2>

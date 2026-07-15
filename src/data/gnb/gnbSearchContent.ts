@@ -6,12 +6,21 @@ export type GnbSearchTag = {
   href: string;
 };
 
-/** Figma 4288:54315 — GNB search overlay */
-export const gnbSearchContent = {
-  searchPlaceholder: downloadCenterPage.searchPlaceholder,
-  popularSearchLabel: downloadCenterPage.popularSearchLabel,
-  popularTags: downloadCenterPage.popularTags.map((label) => ({
+function toTags(labels: readonly string[]): GnbSearchTag[] {
+  return labels.map((label) => ({
     label,
     href: buildSearchAllHref(label),
-  })) satisfies GnbSearchTag[],
+  }));
+}
+
+/** Figma 7334:131967 (PC) · 7334:131884 (MO) — GNB search overlay */
+export const gnbSearchContent = {
+  searchPlaceholder: downloadCenterPage.searchPlaceholder,
+  searchPlaceholderMobile: downloadCenterPage.searchPlaceholderMobile,
+  popularSearchLabel: "Popular Search :",
+  popularTags: toTags(downloadCenterPage.popularTags),
+  popularTagsMobile: {
+    row1: toTags(downloadCenterPage.popularTagsMobile.row1),
+    row2: toTags(downloadCenterPage.popularTagsMobile.row2),
+  },
 } as const;

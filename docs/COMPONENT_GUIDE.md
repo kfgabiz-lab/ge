@@ -173,8 +173,10 @@ MUI `TextField` / `FormControl` + `GuideSelect` + 클래스 `.guide_field`
 | 헬퍼 | 역할 |
 |------|------|
 | `GuideSelect` | MUI Select 래퍼 (`src/components/form/GuideSelect.tsx`) |
-| `GuideSelectIcon` | chevron (`ico_up_16` / `ico_down_16` via CSS) |
+| `GuideSelectIcon` | chevron (`ico_up_16` via CSS background) |
 | `guideFieldLabelSlot` | `InputLabel` shrink 기본값 |
+
+**모바일 (`max-width: 780px`)** — `GuideSelect` 기본 `useNativeOnMobile: true` → MUI `Select native`. 아이콘 클래스가 `.MuiSelect-icon`이 아니라 `.MuiNativeSelect-icon`이므로, 페이지 CSS에서 화살표 배경을 별도 지정해야 한다 (예: `training.css` curriculum · `devices-systems.css` explore). `appearance: none`으로 OS 기본 화살표를 숨긴다.
 
 실사용 페이지: `devices_product_downloads`, `support_download_*`, `support_where_to_buy_*`, `support_service_training_curriculum`, `company-press-list` (`CompanyPressListToolbar` · `#dropdown`), `company-events-past`, `company-blog-list`, `search_all_hero` 등.
 
@@ -229,7 +231,7 @@ All 탭 결과 카드 호버: Product/Media/Pages 제목에 `color: var(--color-
 | 탭 | `TabButton` | 페이지 CSS |
 | 화살표 버튼 | `BtnArrow` | — |
 | Flat 버튼 | `BtnFlat` | `btn_flat` |
-| 모달 | `ContactUsViewResponseModal`, `ContactUsViewResponseDetailModal`, `PrivacyPolicyModal`, `ContactUsTermsModal`, `MarketsReferencesModal` | `common_modal` · Markets는 **body portal** |
+| 모달 | `CookieSettingsModal`, `CookiePreferencesModal`, `ContactUsViewResponseModal`, `ContactUsViewResponseDetailModal`, `PrivacyPolicyModal`, `ContactUsTermsModal`, `MarketsReferencesModal` | `common_modal` · Cookie Settings 배너는 전용 셸 · Markets는 **body portal** |
 | 비디오 | `DevicesProductVideoPlayer`, `VideoSwiper` | YouTube embed (`youtubeEmbed.ts`, `useYoutubeInViewPlayback`) · MP4는 `<video>` sources |
 | 푸터 | `MainFooter`, `SiteFooter`, `CommonFooter` | `MainFooter.css` 등 |
 | 레이아웃 | `ScrollToTopButton`, `ScrollToTopOnNavigate` | `scroll_to_top` |
@@ -243,6 +245,15 @@ All 탭 결과 카드 호버: Product/Media/Pages 제목에 `color: var(--color-
 | Services — Service Center | `ServiceCenterOffering.tsx` 등 | `services.css` — Swiper offering · flow diagram · [SECTION_CLASS_GUIDE](./SECTION_CLASS_GUIDE.md) |
 | Services — Warranty Policy | `WarrantyFeatureCards.tsx` 등 | `services.css` — cards · table · banner CTA |
 | Services — Engineering Training | `EngineeringTrainingCurriculum.tsx` | `guide_field--h50` · `--w200` · `--fill-muted` · `--search` · `training.css` |
+
+### Cookie consent modals
+
+| 컴포넌트 | 역할 | 셸·연동 |
+|----------|------|---------|
+| `CookieSettingsModal` | P-FO-COMMON-020000P · 동의 배너 | 전용 `cookie_settings_modal` 셸 · Settings / Reject All / Accept All |
+| `CookiePreferencesModal` | P-FO-COMMON-040000M · 분류별 상세 설정 | `common_modal` 셸 · Settings에서 전환 · Necessary 필수 · 선택값 localStorage 저장 |
+
+단독 확인 경로는 `/main/cookie-setting`, `/main/cookie-setting/preferences`이며 두 경로 모두 모달만 렌더합니다. 모바일 상세 설정은 Figma `7334:130901` 기준으로 내부 스크롤하고 하단 버튼을 표시하지 않습니다. 상세 클래스·치수는 [SECTION_CLASS_GUIDE.md](./SECTION_CLASS_GUIDE.md)를 참고합니다.
 
 ### Main Info 카운트업
 

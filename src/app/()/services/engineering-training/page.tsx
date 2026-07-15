@@ -1,5 +1,4 @@
 import EngineeringTrainingCurriculum from "./components/EngineeringTrainingCurriculum";
-import EngineeringTrainingIntro from "./components/EngineeringTrainingIntro";
 import EngineeringTrainingTitle from "./components/EngineeringTrainingTitle";
 import "@/assets/css/company.css";
 import "@/assets/css/training.css";
@@ -11,7 +10,6 @@ export default function EngineeringTrainingPage() {
       id="P-FO-SERV-030000P"
     >
       <EngineeringTrainingTitle />
-      <EngineeringTrainingIntro />
       <EngineeringTrainingCurriculum />
     </main>
   );

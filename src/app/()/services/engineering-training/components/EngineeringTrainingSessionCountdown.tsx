@@ -5,9 +5,6 @@ export default function EngineeringTrainingSessionCountdown() {
 
   return (
     <div className="support_service_training_session_detail__countdown" aria-hidden>
-      <p className="support_service_training_session_detail__countdown-label">
-        Time Remaining
-      </p>
       <div
         className="support_service_training_session_detail__countdown-grid"
         role="presentation"

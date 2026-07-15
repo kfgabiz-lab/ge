@@ -10,7 +10,7 @@
 | **GNB 사용 맥락** | `src/data/gnbGuide.ts` → [GNB_GUIDE.md](./GNB_GUIDE.md) |
 | **허브** | [DESIGN_GUIDE.md](./DESIGN_GUIDE.md) |
 
-**동기화**: `public/ico` 파일 수 = `icoItems.length` (현재 **94**개) · `pageIconItems.length` (**17**개)
+**동기화**: `public/ico` 파일 수 = `icoItems.length` (현재 **95**개) · `pageIconItems.length` (**17**개)
 
 `basePath`는 `/pub`입니다. 앱·CSS·MD 모두 `/pub/ico/...`, `/pub/img/...`로 참조합니다.
 
@@ -60,10 +60,10 @@
 | ID | 라벨 | 개수 |
 |----|------|------|
 | `arrow` | Arrow / Chevron | 21 |
-| `ui` | UI | 38 |
+| `ui` | UI | 39 |
 | `form` | Form | 10 |
 | `breadcrumb` | Breadcrumb | 2 |
-| `search` | Search / Global | 7 |
+| `search` | Search / Global | 9 |
 | `location` | Location / Contact | 9 |
 | `media` | Media | 1 |
 | `sns` | SNS | 6 |
@@ -121,8 +121,9 @@
 | `ico_refresh_14.svg` | 14 | 필터 초기화 |
 | `ico_refresh_22.svg` | 22 | 새로고침 (예비) |
 | `ico_scrto_18.svg` | 18 | Hero 스크롤 유도 |
-| `ico_swipe_70.svg` | 70 | Lineup 모바일 스와이프 힌트 (`DevicesProductLineupGrid`) |
-| `ico_calendar_18.svg` | 18 | Engineering Training — Add to Calendar (iCal / Outlook) |
+| `ico_swipe_70.svg` | 70 | 모바일 가로 스크롤 스와이프 힌트 — Lineup (`DevicesProductLineupGrid`) · Warranty Coverage (`WarrantyTableScroll`) |
+| `ico_calendar_18.svg` | 18 | DatePicker · 일반 캘린더 |
+| `ico_training_calendar_18.svg` | 16 | Engineering Training — Add to Calendar (iCal / Outlook · Figma 6880:147102) |
 | `ico_google_18.svg` | 18 | Engineering Training — Add to Calendar (Google) |
 | `ico_training_class_size_18.svg` | 18 | Engineering Training 세션 — CLASS SIZE |
 | `ico_training_date_18.svg` | 18 | Engineering Training 세션 — DATE (라벨 30% opacity) |
@@ -150,11 +151,22 @@ MUI 연동: `GuideCheckboxIcon`, `guideCheckboxIcons*` — [COMPONENT_GUIDE.md](
 |------|------|------|
 | `ico_search_24.svg` | 24 | 검색 (스크롤·폼·툴바·`/search` Hero) |
 | `ico_search_24_white.svg` | 24 | 검색 (최상단 헤더) |
+| `ico_gnb_search_ai_32.svg` | 32×36 | GNB 검색 패널 AI 마크 (`#gnb-search-panel`) |
 | `ico_global_24.svg` | 24 | 글로벌 리전 트리거 (스크롤 헤더) · 라벨 **America** |
 | `ico_global_24_white.svg` | 24 | 글로벌 리전 트리거 (최상단) · 라벨 **America** |
 | `ico_clear_12.svg` | 12 | 검색어·필터 초기화 (`/search` Hero·active chips 포함) |
+| `ico_gnb_search_clear_24.svg` | 24 | 모바일 GNB 검색어 초기화 (Figma `7334:131929`) |
 | `ico_right_14.svg` | 14 | 검색 product path chevron (`search_all__product-path-icon`) |
 | `ico_close_24.svg` | 24 | GNB 검색 패널 닫기 |
+
+### Common — 404 (`/404`)
+
+| 파일 | 크기 | 용도 |
+|------|------|------|
+| `ico_404_home_80.svg` | 80 | Helpful Links — Return to Homepage |
+| `ico_404_download_80.svg` | 80 | Helpful Links — Visit Download Center |
+| `ico_404_contact_80.svg` | 80 | Helpful Links — Contact Us |
+| `ico_404_request_80.svg` | 80 | Helpful Links — Request for Service |
 
 GNB 배치·상태: [GNB_GUIDE.md](./GNB_GUIDE.md) · `gnbGuide.ts`
 

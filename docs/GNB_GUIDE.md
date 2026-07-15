@@ -124,6 +124,15 @@ CSS modifier: `getMegaPanelClassName.ts` — 예) `gnb_mega--devices`, `gnb_mega
 | `gnb_mobile_explore` | Explore All Products CTA (Devices depth2 하단) |
 | `gnb_mobile_global-select` | 리전 native select (America) |
 
+### 모바일 검색 패널·dim
+
+Figma [7334:131856](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9D%B8?node-id=7334-131856) · 검색 패널 `7334:131884`.
+
+- `#gnb-search-panel.gnb_search.is-open`: 헤더 60px 아래 흰색 검색 패널 · `z-index: 9999`
+- `.gnb_search_dim`: 검색 패널과 동일한 body portal의 viewport 전체 `rgb(0 0 0 / 50%)` dim · `z-index: 9998`
+- `.main_header.is-search-open` / `.gnb_menu_wrap.is-search-open`: 흰색 헤더를 dim 위에 유지 · `z-index: 10000`
+- dim 클릭 또는 Escape: 검색 닫기
+
 Figma depth1 참고: 6880:135688
 
 ---
@@ -145,7 +154,9 @@ GNB·메가·모바일 **사용 맥락**: `src/data/gnbGuide.ts` → `gnbGuideIc
 | 파일 | 용도 |
 |------|------|
 | `ico_search_24` / `_white` | 검색 버튼 |
-| `ico_close_24` | 검색·메가 패널 닫기 |
+| `ico_gnb_search_ai_32` | GNB 검색 패널 필드 AI 마크 (Figma 7334:131967 PC · 7334:131884 MO) |
+| `ico_gnb_search_clear_24` | 모바일 GNB 검색 필드 clear 버튼 (Figma 7334:131929) |
+| `ico_close_24` | 검색 닫기 |
 | `ico_global_24` / `_white` | 글로벌 리전 트리거 + America 라벨 |
 | `ico_link` | 외부 링크 (`gnb_mega__item-external`, `btn-text-30`) |
 | `ico_arrow_right_14` | Explore All · mobile back (180°) |

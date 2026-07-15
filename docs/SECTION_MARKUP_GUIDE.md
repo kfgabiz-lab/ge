@@ -49,10 +49,10 @@
 | `main_` | `/main` | `main.css` |
 | `markets_` | `/markets/...` | `markets.css` |
 | `devices_` | `/products-systems/...` | `devices-systems.css`, `devices-product-detail.css` |
-| `common_` | 공통 배너·FAQ | `globals.css`, `main.css` |
+| `common_` | 공통 배너·FAQ·404 | `globals.css`, `main.css`, `common-404.css` |
 | `highlight_` | 공통 뉴스 섹션 | `globals.css` |
 | `support_` | `/support/...` | `support.css` |
-| `services_` | `/services/...` | `services.css`, `training.css` |
+| `support_service_` | `/services/...` (Service Center · Warranty · Training) | `services.css`, `training.css` |
 | `search_` | `/search` | `search.css` |
 | `company-` | `/company/...` (레거시 kebab) | `company.css` |
 
@@ -143,7 +143,7 @@ Hero 부제는 `__sub` — desktop 24px / weight **300** / line-height 34px (`ma
 |------|-----|-------------|
 | 페이지 `<section>` | `markets_hero`, `devices_product_downloads` | `sectionGuide.ts` + 이 문서 |
 | 레이아웃·임베드 | `main_footer`, `devices_products--embedded` | `note` 또는 [SECTION_CLASS_GUIDE.md](./SECTION_CLASS_GUIDE.md) 공유 패턴 |
-| 모달·오버레이 | `common_modal`, `markets_references_modal`, `support_contact_view_response_modal`, `support_contact_view_response_detail_modal`, `privacy_policy_modal` | Markets references 모달은 **body portal** (`createPortal`) |
+| 모달·오버레이 | `common_modal`, `cookie_settings_modal`, `cookie_preferences_modal`, `markets_references_modal`, `support_contact_view_response_modal`, `support_contact_view_response_detail_modal`, `privacy_policy_modal` | Markets references 모달은 **body portal** (`createPortal`) |
 
 ### Key-visual hero sticky (Markets)
 
@@ -362,8 +362,8 @@ Hero 부제는 `__sub` — desktop 24px / weight **300** / line-height 34px (`ma
 | `company.css` | `company-*`, `company-article-detail` |
 | `company-feed.css` | `company-press-*`, `company-articles-*`, `company-events-*` |
 | `support.css` | `support_*` |
-| `services.css` | Service Center · Warranty Policy 등 `/services/...` |
-| `training.css` | `support_service_training_*` — Engineering Training 전용 |
+| `services.css` | `support_service_*` — Service Center · Warranty Policy |
+| `training.css` | `support_service_training_*` — Engineering Training · Request for Training |
 | `search.css` | `search_*` — `/search` (탭·AI·필터 패널) |
 | `components/MainFooter.css` | `main_footer`, `main_footer_02` |
 

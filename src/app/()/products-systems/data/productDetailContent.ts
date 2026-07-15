@@ -351,43 +351,7 @@ export const metasolMsDetail: ProductDetail = {
   configuratorBannerBg: "/pub/img/devices/product/banner_configurator_bg.png",
   expertBannerHref: "/support/contact-us",
   expertContactEmail: "automation_support.us@lselectricamerica.com",
-  otherProducts: [
-    {
-      id: "op-sp100",
-      href: "#",
-      image: "/pub/img/devices-systems/products/other/product_other_sp100.png",
-      title: "SP100",
-      subtitle: "H100 add-on optimizer",
-    },
-    {
-      id: "op-g100",
-      href: "#",
-      image: "/pub/img/devices-systems/products/other/product_other_g100.png",
-      title: "G100",
-      subtitle: "General Drive",
-    },
-    {
-      id: "op-m100",
-      href: "#",
-      image: "/pub/img/devices-systems/products/other/product_other_m100.png",
-      title: "M100",
-      subtitle: "Micro Drive",
-    },
-    {
-      id: "op-s100",
-      href: "#",
-      image: "/pub/img/devices-systems/products/other/product_other_s100.png",
-      title: "S100",
-      subtitle: "Standard Drive",
-    },
-    {
-      id: "op-is7",
-      href: "#",
-      image: "/pub/img/devices-systems/products/other/product_other_is7.png",
-      title: "iS7",
-      subtitle: "Premium Drive",
-    },
-  ],
+  otherProducts: [],
 };
 
 export const metasolMsFaqItems = [
@@ -436,6 +400,21 @@ export const h100PlusDetail: ProductDetail = {
   configuratorBannerBg: "/pub/img/devices/product/banner_configurator_bg.png",
   expertBannerHref: "/support/contact-us",
   expertContactEmail: "automation_support.us@lselectricamerica.com",
+  otherProducts: [],
+};
+
+export const h100PlusFaqItems = metasolMsFaqItems;
+
+/** Product detail page template — copied from H100 Plus (`/motor-control/h100_plus`) */
+export const productTemplateDetail: ProductDetail = {
+  ...h100PlusDetail,
+  slug: "template",
+  series: "Product Template",
+  category: "Product Category",
+  parentLabel: "Product Category",
+  parentHref: "/products-systems/motor-control",
+  description:
+    "Product detail page template based on the H100 Plus layout. Replace hero copy, specs, key features, lineup, downloads, video, and other products for each new product page.",
   otherProducts: [
     {
       id: "op-sp100",
@@ -473,20 +452,6 @@ export const h100PlusDetail: ProductDetail = {
       subtitle: "Premium Drive",
     },
   ],
-};
-
-export const h100PlusFaqItems = metasolMsFaqItems;
-
-/** Product detail page template — copied from H100 Plus (`/motor-control/h100_plus`) */
-export const productTemplateDetail: ProductDetail = {
-  ...h100PlusDetail,
-  slug: "template",
-  series: "Product Template",
-  category: "Product Category",
-  parentLabel: "Product Category",
-  parentHref: "/products-systems/motor-control",
-  description:
-    "Product detail page template based on the H100 Plus layout. Replace hero copy, specs, key features, lineup, downloads, video, and other products for each new product page.",
 };
 
 export const productTemplateFaqItems = h100PlusFaqItems;
@@ -632,6 +597,26 @@ export const productDetailNavItems = [
   { id: "product-downloads", label: "Downloads" },
   { id: "product-video", label: "Video" },
   { id: "product-other", label: "Other Products" },
+  { id: "product-markets", label: "Markets" },
+  { id: "product-help", label: "Help" },
+] as const;
+
+/** Figma 6788:8339 — Metasol MS (no Other Products) */
+export const metasolMsNavItems = [
+  { id: "product-key-feature", label: "Key Feature" },
+  { id: "product-lineup", label: "Lineup" },
+  { id: "product-downloads", label: "Downloads" },
+  { id: "product-video", label: "Video" },
+  { id: "product-markets", label: "Markets" },
+  { id: "product-help", label: "Help" },
+] as const;
+
+/** Figma 6843:64936 — H100 Plus (no Other Products) */
+export const h100PlusNavItems = [
+  { id: "product-key-feature", label: "Key Feature" },
+  { id: "product-lineup", label: "Lineup" },
+  { id: "product-downloads", label: "Downloads" },
+  { id: "product-video", label: "Video" },
   { id: "product-markets", label: "Markets" },
   { id: "product-help", label: "Help" },
 ] as const;

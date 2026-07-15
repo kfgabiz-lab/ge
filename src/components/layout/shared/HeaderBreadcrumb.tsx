@@ -2,13 +2,23 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLayoutEffect, useState } from "react";
 import { getBreadcrumbConfig } from "@/data/breadcrumbConfig";
+import { notFoundPage } from "@/data/common/notFoundContent";
 import { CONNECT_PORTAL_EXTERNAL_URL } from "@/data/support/connectPortalContent";
 import { isMainPath } from "@/lib/navigation/crossSectionNav";
 
 export default function HeaderBreadcrumb() {
   const pathname = usePathname();
-  const { crumbs, current, homeOnly } = getBreadcrumbConfig(pathname);
+  const { crumbs, current: configCurrent, homeOnly } = getBreadcrumbConfig(pathname);
+  const [notFoundActive, setNotFoundActive] = useState(false);
+
+  useLayoutEffect(() => {
+    setNotFoundActive(Boolean(document.getElementById("P-FO-COMMON-010000P")));
+  }, [pathname]);
+
+  const current =
+    configCurrent || (notFoundActive ? notFoundPage.breadcrumbCurrent : "");
   const showNav = Boolean(current) || homeOnly;
   const showPath = Boolean(current);
   const showBar = showNav || isMainPath(pathname);

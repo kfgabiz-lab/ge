@@ -16,6 +16,11 @@ import { useMediaQuery } from "@/components/layout/shared/useMediaQuery";
 export type GuideSelectProps = SelectProps & {
   /** 모바일(780px 이하)에서 OS 네이티브 select 사용. 기본 true */
   useNativeOnMobile?: boolean;
+  /**
+   * 모바일 native `<option>` 라벨에 renderValue(value) 사용.
+   * PC 메뉴는 MenuItem 텍스트 유지, 닫힌 표시만 Label: Value인 필터에 사용.
+   */
+  useRenderValueForNativeOptions?: boolean;
 };
 
 const MOBILE_MQ = "(max-width: 780px)";
@@ -34,7 +39,11 @@ function menuItemLabel(node: ReactNode): string {
   return "";
 }
 
-function convertMenuItemsToOptions(children: ReactNode) {
+function convertMenuItemsToOptions(
+  children: ReactNode,
+  renderValue?: SelectProps["renderValue"],
+  useRenderValueForNativeOptions?: boolean,
+) {
   return Children.toArray(children).flatMap((child) => {
     if (!isValidElement(child)) return [];
 
@@ -47,10 +56,14 @@ function convertMenuItemsToOptions(children: ReactNode) {
     if (!("value" in element.props)) return [];
 
     const value = element.props.value ?? "";
+    const label =
+      useRenderValueForNativeOptions && renderValue
+        ? menuItemLabel(renderValue(value as never))
+        : menuItemLabel(element.props.children);
 
     return [
       <option key={String(value)} value={String(value)} disabled={element.props.disabled}>
-        {menuItemLabel(element.props.children)}
+        {label}
       </option>,
     ];
   });
@@ -117,6 +130,7 @@ export default function GuideSelect({
   onClose,
   children,
   useNativeOnMobile = true,
+  useRenderValueForNativeOptions = false,
   displayEmpty,
   renderValue,
   value,
@@ -194,7 +208,11 @@ export default function GuideSelect({
     return (
       <Select native displayEmpty={displayEmpty} {...rest} {...valueProps}>
         {displayEmpty ? <option value="">{placeholderText}</option> : null}
-        {convertMenuItemsToOptions(children)}
+        {convertMenuItemsToOptions(
+          children,
+          renderValue,
+          useRenderValueForNativeOptions,
+        )}
       </Select>
     );
   }
