@@ -189,3 +189,5 @@ git fetch ls-publish-src
 git subtree pull --prefix=ls-publish ls-publish-src pub --squash
 git subtree push --prefix=ls-publish ls-publish-src pub
 ```
+
+> ⚠️ `git subtree pull`은 `--prefix` 경로만이 아니라 **루트 저장소 전체 working tree가 clean해야** 실행된다(다른 경로에 무관한 로컬 변경이 있어도 `fatal: working tree has modifications`로 실패). 무관한 로컬 변경사항이 있으면 `git stash -u`로 대피 후 pull하고, 완료 후 `git stash pop`으로 복원한다.

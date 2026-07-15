@@ -194,7 +194,7 @@ export const searchAllMedia: SearchMediaItem[] = [
     title: "The Significance of Arc Resistance in Material Selection DC Device",
     highlight: "DC Device",
     description:
-      "Electrical faults and equipment failures can halt operations, cause costly downtime, and pose a threat to worker safety DC Device.\nIn fact, around 80% of electrical injuries involve thermal burns from arc flash events.",
+      "Electrical faults and equipment failures can halt operations, cause costly downtime, and pose a threat to worker safety DC Device. In fact, around 80% of electrical injuries involve thermal burns from arc flash events.",
   },
   {
     id: "sm-2",

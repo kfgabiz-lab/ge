@@ -30,9 +30,6 @@
   flex-shrink: 0;
   /* border-bottom: 1px solid rgb(34 34 34 / 10%); */
   background: #fff;
-  transition:
-    background-color var(--sub-header-scroll-duration) var(--sub-header-scroll-ease),
-    color var(--sub-header-scroll-duration) var(--sub-header-scroll-ease);
 }
 
 .sub_header-wrap:not(.is-at-top) .gnb_menu_wrap.sub_header.is-gnb-hidden .sub_breadcrumb {
@@ -344,8 +341,7 @@ header.main_header.is-invert.is-gnb-hidden .sub_breadcrumb .icon_external{
   @media (prefers-reduced-motion: reduce) {
     .sub_header-wrap:not(.is-at-top)::after,
     .sub_header__gnb-row,
-    .gnb_menu_wrap.sub_header.is-gnb-hidden .sub_header__gnb-row,
-    .sub_breadcrumb {
+    .gnb_menu_wrap.sub_header.is-gnb-hidden .sub_header__gnb-row {
       transition: none !important;
     }
   }
@@ -403,7 +399,7 @@ header.main_header.is-invert.is-gnb-hidden .sub_breadcrumb .icon_external{
     flex-shrink: 0;
     height: 60px;
     overflow: hidden;
-    transition: height 0.2s ease, opacity 0.2s ease;
+    transition: none;
   }
 
   .gnb_menu_wrap.sub_header.is-gnb-hidden .sub_header__gnb-row {
@@ -414,7 +410,7 @@ header.main_header.is-invert.is-gnb-hidden .sub_breadcrumb .icon_external{
 
   .gnb_menu_wrap.sub_header .gnb_menu_inner {
     height: 60px;
-    border-bottom: 1px solid rgb(34 34 34 / 10%);
+    /* border-bottom: 1px solid rgb(34 34 34 / 10%); */
   }
 
   .gnb_menu_wrap.sub_header.is-top {
@@ -512,11 +508,6 @@ color: #fff;
   display: block;
   height: 80px;
   content: "";
-  transition: height var(--sub-header-scroll-duration) var(--sub-header-scroll-ease);
-}
-
-.main_header-wrap:not(.is-at-top).is-gnb-hidden::after {
-  transition-duration: var(--sub-header-scroll-duration-hide);
 }
 
 @media (min-width: 1201px) {
@@ -535,7 +526,6 @@ color: #fff;
   /* mega open — fixed 오버레이, 스페이서는 헤더 높이만 유지 (검색과 동일) */
   .main_header-wrap:not(.is-at-top):has(.main_header.is-mega-open)::after {
     height: 80px;
-    transition: none;
   }
 
   @media (min-width: 1201px) {
@@ -548,10 +538,9 @@ color: #fff;
     }
   }
 
-  /* search open — fixed 오버레이, 스페이서 유지·전환 억제 */
+  /* search open — fixed 오버레이, 스페이서 유지 */
   .main_header-wrap.is-search-open:not(.is-at-top)::after {
     height: 128px;
-    transition: none;
   }
 
   .main_header-wrap.is-search-open:not(.is-at-top):not(:has(.sub_breadcrumb))::after {
@@ -566,9 +555,6 @@ color: #fff;
   flex-direction: column;
   width: 100vw;
   height: auto;
-  transition:
-    background-color 0.3s ease,
-    border-color 0.3s ease;
 }
 
 .main_header-wrap.is-at-top .main_header,
@@ -579,11 +565,6 @@ color: #fff;
   z-index: 1000;
 }
 
-.main_header .sub_breadcrumb {
-  transition:
-    background-color var(--sub-header-scroll-duration) var(--sub-header-scroll-ease),
-    color var(--sub-header-scroll-duration) var(--sub-header-scroll-ease);
-}
 .main_header-wrap.is-gnb-hidden 
 .main_header .sub_breadcrumb {
     background: #0f1f45;
@@ -630,48 +611,20 @@ color: #fff;
   flex-shrink: 0;
   height: 80px;
   overflow: visible;
-  transition:
-    height var(--sub-header-scroll-duration) var(--sub-header-scroll-ease),
-    opacity var(--sub-header-scroll-duration) var(--sub-header-scroll-ease);
-}
-
-.main_header.is-gnb-hidden .main_header__gnb-row {
-  height: 0;
-  opacity: 0;
-  pointer-events: none;
-  transition:
-    height var(--sub-header-scroll-duration-hide) var(--sub-header-scroll-ease),
-    opacity calc(var(--sub-header-scroll-duration-hide) * 0.85)
-      var(--sub-header-scroll-ease);
-}
-
-.main_header__gnb-row,
-.main_header.is-mega-open .main_header__gnb-row,
-.main_header.is-search-open .main_header__gnb-row {
-  height: 80px;
-  opacity: 1;
-  pointer-events: auto;
   border-bottom: 1px solid #2222221a;
 }
-.main_header-wrap.is-at-top .main_header__gnb-row{
-   height: 80px;
-  opacity: 1;
-  pointer-events: auto;
-  border-color:transparent;
-}
-.main_header.is-mega-open .main_header__gnb-row,
-.main_header.is-search-open .main_header__gnb-row {
-  transition: none;
+
+.main_header.is-gnb-hidden:not(.is-mega-open):not(.is-search-open) .main_header__gnb-row {
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+  border-bottom: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .main_header-wrap:not(.is-at-top)::after,
-  .main_header__gnb-row,
-  .main_header.is-gnb-hidden .main_header__gnb-row,
-  .main_header .sub_breadcrumb {
-    transition: none !important;
-  }
-}
+/* .main_header-wrap.is-at-top .main_header__gnb-row {
+  border-color: transparent;
+} */
 
 .main_header__inner {
   position: relative;
@@ -790,20 +743,25 @@ html.is-mega-open-scroll-lock body {
   background: var(--color-primary, #0f1f45);
 }
 
+/* Figma 7334:131899 — search open 시 햄버거(icon_menu)도 네이비로 (흰 배경 대비) */
+.main_header.is-mega-open.is-top .icon_menu span,
+.main_header.is-search-open .icon_menu span,
+.main_header.is-search-open.is-top .icon_menu span,
+.main_header.is-search-open.is-invert .icon_menu span {
+  background: var(--color-primary, #0f1f45);
+}
+
 .main_header.is-mega-open.is-gnb-hidden .main_header__gnb-row,
 .main_header.is-search-open.is-gnb-hidden .main_header__gnb-row {
   height: 80px;
-  opacity: 1;
+  overflow: visible;
+  visibility: visible;
   pointer-events: auto;
 }
 
 .main_header-wrap:not(.is-at-top):has(.main_header.is-mega-open).is-gnb-hidden
   .sub_breadcrumb {
   background: #fff;
-}
-
-.main_header-wrap.is-search-open:not(.is-at-top)::after {
-  transition: none;
 }
 
 /* logo — CSS swap (no JS src toggle) */
@@ -821,7 +779,6 @@ html.is-mega-open-scroll-lock body {
   display: block;
   width: auto;
   height: 30px;
-  transition: filter 0.3s ease;
 }
 
 .main_header__logo-img--dark {
@@ -851,7 +808,6 @@ html.is-mega-open-scroll-lock body {
   border: none;
   background-color: transparent;
   cursor: pointer;
-  transition: color 0.3s ease, filter 0.3s ease;
 }
 
 .main_header__btn-search {
@@ -1151,9 +1107,8 @@ html.is-mega-open-scroll-lock body {
 
 .gnb_menu_wrap .logo img {
   display: block;
-  height: 24px;
+  /* height: 24px; */
   width: auto;
-  transition: filter 0.3s ease;
 }
 
 .gnb_menu_wrap.is-invert {
@@ -1255,6 +1210,7 @@ html.is-mega-open-scroll-lock body {
 
 .gnb_menu_wrap.is-mega-open.is-top .icon_menu span,
 .gnb_menu_wrap.is-mega-open.is-invert .icon_menu span,
+.gnb_menu_wrap.is-search-open .icon_menu span,
 .gnb_menu_wrap.is-search-open.is-top .icon_menu span,
 .gnb_menu_wrap.is-search-open.is-invert .icon_menu span {
   background: #0f1f45;
@@ -1303,7 +1259,6 @@ html.is-mega-open-scroll-lock body {
 .gnb_mega.is-open {
   opacity: 1;
   pointer-events: auto;
-  transition: opacity var(--gnb-mega-duration) ease;
 }
 
 /* 메가 메뉴 fixed 오버레이 — breadcrumb(48px) 레이아웃 유지, 패널만 GNB(80px) 바로 아래에 겹침 */
@@ -1479,6 +1434,16 @@ html.is-mega-open-scroll-lock body {
   margin: 0 auto;
   box-sizing: border-box;
   background: #fff;
+}
+
+#gnb-mega-panel-services .gnb_mega__inner--sections,
+#gnb-mega-panel-support .gnb_mega__inner--sections,
+#gnb-mega-panel-careers .gnb_mega__inner--sections,
+#gnb-mega-panel-company .gnb_mega__inner--sections {
+  height: calc(100vh - 144px);
+  max-height: 700px;
+  min-height: 0;
+  overflow: hidden;
 }
 
 #gnb-mega-panel-markets .gnb_mega__head,
@@ -1752,10 +1717,12 @@ html.is-mega-open-scroll-lock body {
 #gnb-mega-panel-support .gnb_mega__columns,
 #gnb-mega-panel-careers .gnb_mega__columns,
 #gnb-mega-panel-company .gnb_mega__columns {
-  flex: 0 0 auto;
+  flex: 1 1 auto;
   align-self: stretch;
   height: auto;
   min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
 #gnb-mega-panel-services .gnb_mega__col,
@@ -1766,8 +1733,14 @@ html.is-mega-open-scroll-lock body {
   flex-direction: column;
   gap: 10px;
   min-width: 0;
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
   margin: 0;
   padding: 34px 0 0;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #ddd transparent;
 }
 .gnb_mega__col +  .gnb_mega__col{
   border-left: 1px solid #ebebeb;
@@ -1804,6 +1777,7 @@ html.is-mega-open-scroll-lock body {
 #gnb-mega-panel-services .gnb_mega__columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: minmax(0, 1fr);
   gap: 0;
 }
 
@@ -1834,6 +1808,7 @@ html.is-mega-open-scroll-lock body {
 #gnb-mega-panel-support .gnb_mega__columns {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: minmax(0, 1fr);
   gap: 0;
 }
 
@@ -1856,6 +1831,7 @@ html.is-mega-open-scroll-lock body {
 #gnb-mega-panel-careers .gnb_mega__columns {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
   gap: 0;
 }
 
@@ -1883,6 +1859,7 @@ html.is-mega-open-scroll-lock body {
 #gnb-mega-panel-company .gnb_mega__columns {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: minmax(0, 1fr);
   gap: 0;
 }
 
@@ -1939,22 +1916,27 @@ html.is-mega-open-scroll-lock body {
   width: 100%;
   max-width: 1520px;
   height: calc(100vh - 144px);
-  max-height: calc(100vh - 144px);
+  max-height: 700px;
   margin: 0 auto;
   box-sizing: border-box;
 }
 
-/* depth 2 — 362px, active #0F1F45 */
+/* depth 2 — 362px, active #0F1F45 · 컬럼 독립 스크롤 */
 .gnb_mega__col--depth2 {
   flex-shrink: 0;
   width: 310px;
+  min-height: 0;
+  height: 100%;
+  overflow: auto;
   box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: #ddd transparent;
 }
 
 .gnb_mega__depth2-body {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  min-height: 100%;
   padding: 0px 0 40px;
   box-sizing: border-box;
 }
@@ -1965,7 +1947,7 @@ html.is-mega-open-scroll-lock body {
   margin: 0;
   padding: 0;
   list-style: none;
-  overflow-y: auto;
+  overflow: visible;
 }
 
 .gnb_mega__depth2-btn {
@@ -2037,30 +2019,24 @@ html.is-mega-open-scroll-lock body {
   color: #fff;
 }
 
-/* depth 3 — 314px, border #E8E8E8 */
+/* depth 3 — 314px, border #E8E8E8 · 컬럼 독립 스크롤 */
 .gnb_mega__col--depth3 {
   flex-shrink: 0;
   width: 314px;
+  min-height: 0;
+  height: 100%;
   border-left: 1px solid #e8e8e8;
   border-right: 1px solid #e8e8e8;
   box-sizing: border-box;
-}
-
-.gnb_mega__depth3-scroll {
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: auto;
   scrollbar-width: thin;
   scrollbar-color: #ddd transparent;
 }
 
-.gnb_mega__depth3-scroll::-webkit-scrollbar {
-  width: 3px;
-}
-
-.gnb_mega__depth3-scroll::-webkit-scrollbar-thumb {
-  border-radius: 2px;
-  background: #ddd;
+.gnb_mega__depth3-scroll {
+  height: auto;
+  min-height: 100%;
+  overflow: visible;
 }
 
 .gnb_mega__depth3-list {
@@ -2110,15 +2086,29 @@ html.is-mega-open-scroll-lock body {
   /* font-weight: 500; */
 }
 
-/* depth 4 — 764px content, gap 30px */
+/* depth 4 — 764px content, gap 30px · 컬럼 독립 스크롤 */
 .gnb_mega__col--depth4 {
   display: flex;
   flex: 1;
   flex-direction: column;
   gap: 8px;
   min-width: 0;
+  min-height: 0;
+  height: 100%;
   padding: 30px 0 40px 0;
   box-sizing: border-box;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #ddd transparent;
+}
+
+.gnb_mega__col--depth4::-webkit-scrollbar {
+  width: 3px;
+}
+
+.gnb_mega__col--depth4::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background: #ddd;
 }
 
 .gnb_mega__depth4-intro {
@@ -2127,46 +2117,6 @@ html.is-mega-open-scroll-lock body {
   gap: 4px;
   margin-bottom: 30px;
   padding: 0 38px 0 40px;
-}
-
-.gnb_mega__close {
-  display: none;
-  position: absolute;
-  top: 34px;
-  left: 50%;
-  transform: translateX(690px);
-  z-index: 2;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-}
-
-.gnb_mega__close img {
-  display: block;
-  width: 20px;
-  height: 20px;
-}
-
-@media (min-width: 1201px) {
-  #gnb-mega-panel-devices.is-mounted .gnb_mega__close {
-    display: inline-flex;
-  }
-
-  .main_header-wrap.is-at-top
-    .main_header.is-mega-open
-    #gnb-mega-panel-devices.is-mounted
-    .gnb_mega__close,
-  .sub_header-wrap.is-at-top
-    .gnb_menu_wrap.sub_header.is-mega-open
-    #gnb-mega-panel-devices.is-mounted
-    .gnb_mega__close {
-    right: calc((100% - min(100%, 1440px)) / 2 + 38px);
-  }
 }
 
 .gnb_mega__depth4-head {
@@ -2310,13 +2260,12 @@ html.is-mega-open-scroll-lock body {
 .gnb_mega_dim {
   position: fixed;
   inset: 0;
-  z-index: 999;
+  z-index: 998;
   border: none;
-  background: rgb(0 0 0 / 60%);
+  background: rgb(0 0 0 / 50%);
   cursor: pointer;
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--gnb-dim-duration) ease;
 }
 
 .gnb_mega_dim.is-open {
@@ -2355,7 +2304,6 @@ html.is-mega-open-scroll-lock body {
   width: 24px;
   height: 24px;
   background: url("/pub/ico/ico_search_24.svg") no-repeat center / contain;
-  transition: filter 0.3s ease;
 }
 
 .gnb_menu_wrap .btn_search.is-close {
@@ -2375,13 +2323,23 @@ html.is-mega-open-scroll-lock body {
   border-bottom: 1px solid rgb(34 34 34 / 10%);
 }
 
-/* GNB search — body portal, fixed 오버레이 — Figma 4288:54315 (#gnb-search-panel) */
+/* GNB search — body portal, fixed 오버레이 — Figma 7334:131967 (#gnb-search-panel PC) */
+.gnb_search_dim {
+  position: fixed;
+  inset: 0;
+  z-index: 998;
+  padding: 0;
+  border: none;
+  background: rgb(0 0 0 / 50%);
+  cursor: pointer;
+}
+
 #gnb-search-panel.gnb_search {
   position: fixed;
   top: 80px;
   right: 0;
   left: 0;
-  z-index: 1001;
+  z-index: 9999;
   width: 100%;
   height: 316px;
   margin: 0;
@@ -2389,14 +2347,12 @@ html.is-mega-open-scroll-lock body {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: none;
 }
 
 #gnb-search-panel.gnb_search.is-open {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
-  transition: opacity var(--gnb-mega-duration, 0.35s) ease;
 }
 
 #gnb-search-panel .gnb_search__inner {
@@ -2404,7 +2360,7 @@ html.is-mega-open-scroll-lock body {
   width: 100%;
   max-width: 1440px;
   margin: 0 auto;
-  padding: 75px  0;
+  padding: 80px 0 0;
 }
 
 .gnb_search__form {
@@ -2419,14 +2375,20 @@ html.is-mega-open-scroll-lock body {
   height: 80px;
   min-height: 80px;
   max-height: 80px;
-  padding: 0 25px 0 30px;
-  gap: 12px;
+  padding: 0 30px;
+  gap: 14px;
   border-radius: 4px;
   background: #f5f5f5;
 }
 
 .gnb_search__field .MuiOutlinedInput-root fieldset {
-  border: none;
+  border: 1px solid #9535ff;
+}
+
+.gnb_search__field .MuiOutlinedInput-root:hover fieldset,
+.gnb_search__field .MuiOutlinedInput-root.Mui-focused fieldset {
+  border: 1px solid #9535ff;
+  border-width: 1px;
 }
 
 .gnb_search__field .MuiOutlinedInput-input {
@@ -2442,34 +2404,81 @@ html.is-mega-open-scroll-lock body {
   font-size: 24px;
   line-height: 34px;
   letter-spacing: -0.01em;
-  color: rgb(34 34 34 / 25%);
+  color: #888;
   opacity: 1;
+}
+
+.gnb_search__mark {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+  max-height: none;
+}
+
+.gnb_search__mark.MuiInputAdornment-root {
+  margin: 0;
+}
+
+.gnb_search__mark-icon {
+  display: block;
+  width: 32px;
+  height: 36px;
 }
 
 .gnb_search__adorn {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 24px;
   height: 100%;
   margin: 0;
 }
 
+/* Figma 7334:132034 — Btn / 30px / FilterClear */
 .gnb_search__clear {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
   padding: 0;
-  border: none;
-  background: transparent;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  background: #fff;
   cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.gnb_search__clear:hover {
+  background: #f5f7fa;
+  border-color: #ccc;
 }
 
 .gnb_search__clear-icon {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
+  width: 12px;
+  height: 12px;
+}
+
+.gnb_search__clear-icon-pc {
+  display: block;
+  width: 12px;
+  height: 12px;
+}
+
+.gnb_search__clear-icon-mo {
+  display: none;
+  width: 24px;
+  height: 24px;
 }
 
 .gnb_search__field .guide_field__search-icon-button {
@@ -2484,11 +2493,21 @@ html.is-mega-open-scroll-lock body {
   cursor: pointer;
 }
 
+.gnb_search__search-icon--mo {
+  display: none;
+}
+
+.gnb_search__search-icon--pc {
+  display: block;
+  width: 26px;
+  height: 26px;
+}
+
 .gnb_search__popular {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px 14px;
+  gap: 14px;
   margin-top: 24px;
 }
 
@@ -2499,13 +2518,24 @@ html.is-mega-open-scroll-lock body {
   color: #888;
 }
 
+.gnb_search__popular-label--mo {
+  display: none;
+}
+
 .gnb_search__tags {
-  display: flex;
   flex-wrap: wrap;
   gap: 5px;
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.gnb_search__tags--pc {
+  display: flex;
+}
+
+.gnb_search__tags--mo {
+  display: none;
 }
 
 .gnb_search__tag {
@@ -2534,6 +2564,200 @@ html.is-mega-open-scroll-lock body {
   color: #fff;
 }
 
+/* GNB search mobile — Figma 7334:131884 · 7334:131899 (filled) */
+@media (max-width: 780px) {
+  /* Figma 7334:131856 — header/search는 밝게 유지하고 페이지 영역만 50% dim */
+  .main_header.is-search-open,
+  .gnb_menu_wrap.is-search-open {
+    z-index: 10000;
+  }
+
+  .gnb_search_dim {
+    z-index: 1;
+  }
+
+  #gnb-search-panel.gnb_search {
+    top: 60px;
+    z-index: 9999;
+    height: auto;
+  }
+
+  #gnb-search-panel .gnb_search__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: none;
+    padding: 40px 20px;
+  }
+
+  .gnb_search__field .MuiOutlinedInput-root {
+    height: 60px;
+    min-height: 60px;
+    max-height: 60px;
+    padding: 0 20px;
+    gap: 8px;
+    border-radius: 4px;
+    background: #f5f5f5;
+  }
+
+  .gnb_search__field .MuiOutlinedInput-root fieldset {
+    border: 1px solid #9535ff;
+  }
+
+  .gnb_search__field .MuiOutlinedInput-root:hover fieldset,
+  .gnb_search__field .MuiOutlinedInput-root.Mui-focused fieldset {
+    border: 1px solid #9535ff;
+    border-width: 1px;
+  }
+
+  .gnb_search__field .MuiOutlinedInput-input {
+    height: 60px;
+    padding: 0;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0;
+    color: #222;
+  }
+
+  .gnb_search__field .MuiOutlinedInput-input::placeholder {
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0;
+    color: #888;
+    opacity: 1;
+  }
+
+  .gnb_search__mark {
+    width: 24px;
+    height: 28px;
+  }
+
+  .gnb_search__mark-icon {
+    width: 24px;
+    height: 28px;
+  }
+
+  /* Figma 7334:131929 — clear 24px · gap 14px to search */
+  .gnb_search__adorn {
+    gap: 14px;
+  }
+
+  .gnb_search__clear {
+    min-width: 24px;
+    width: 24px;
+    height: 24px;
+    border: 0;
+    background: transparent;
+    transition: none;
+  }
+
+  .gnb_search__clear:hover {
+    border-color: transparent;
+    background: transparent;
+  }
+
+  .gnb_search__clear-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .gnb_search__clear-icon-pc {
+    display: none;
+  }
+
+  .gnb_search__clear-icon-mo {
+    display: block;
+  }
+
+  .gnb_search__field .guide_field__search-icon-button {
+    width: 20px;
+    height: 20px;
+  }
+
+  .gnb_search__search-icon--pc {
+    display: none;
+  }
+
+  .gnb_search__search-icon--mo {
+    display: block;
+    width: 20px;
+    height: 20px;
+  }
+
+  .gnb_search__popular {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 0;
+  }
+
+  .gnb_search__popular-label--pc,
+  .gnb_search__tags--pc {
+    display: none;
+  }
+
+  .gnb_search__popular-label--mo {
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 19px;
+    color: #888;
+  }
+
+  .gnb_search__tags--mo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 8px;
+    width: 100%;
+  }
+
+  .gnb_search__tag {
+    min-height: 31px;
+    padding: 6px 16px;
+    font-size: 13px;
+    line-height: 19px;
+  }
+
+  /* 모바일 GNB 60px — Figma 7334:131941 */
+  .main_header__gnb-row {
+    height: 60px;
+  }
+
+  .main_header__inner {
+    height: 60px;
+    min-height: 60px;
+  }
+
+  .main_header.is-search-open.is-gnb-hidden .main_header__gnb-row,
+  .main_header.is-mega-open.is-gnb-hidden .main_header__gnb-row {
+    height: 60px;
+  }
+
+  .main_header-wrap:not(.is-at-top)::after {
+    height: 60px;
+  }
+
+  .main_header.is-top .icon_menu span {
+    background: #fff;
+  }
+
+  .main_header.is-search-open .icon_menu span,
+  .main_header.is-search-open.is-top .icon_menu span,
+  .main_header.is-mega-open.is-top .icon_menu span {
+    background: #0f1f45;
+  }
+
+  .main_header.is-search-open .main_header__btn-search,
+  .main_header.is-search-open.is-top .main_header__btn-search {
+    background-image: url("/pub/ico/ico_search_24.svg");
+  }
+
+  .main_header.is-search-open .main_header__btn-search.is-close,
+  .main_header.is-search-open.is-top .main_header__btn-search.is-close {
+    background-image: url("/pub/ico/ico_close_24.svg");
+  }
+}
+
 .gnb_menu_wrap .btn_global {
   display: inline-flex;
   align-items: center;
@@ -2544,7 +2768,6 @@ html.is-mega-open-scroll-lock body {
   border: none;
   background: transparent;
   cursor: pointer;
-  transition: filter 0.3s ease;
 }
 
 .gnb_menu_wrap .btn_global .icon_global {
@@ -2748,6 +2971,13 @@ html.is-mega-open-scroll-lock body {
 
   .main_header.is-invert .icon_menu span {
     background: var(--color-primary, #0f1f45);
+  }
+
+  /* search/mega open — 햄버거 네이비 (Figma 7334:131899) */
+  .main_header.is-search-open .icon_menu span,
+  .main_header.is-search-open.is-top .icon_menu span,
+  .main_header.is-mega-open.is-top .icon_menu span {
+    background: #0f1f45;
   }
 
   :is(.gnb_menu_wrap, .main_header) .gnb_mobile_global-slot {

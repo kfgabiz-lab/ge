@@ -58,6 +58,10 @@ const configs: Record<string, BreadcrumbConfig> = {
     current: "",
     homeOnly: true,
   },
+  "/404": {
+    crumbs: [],
+    current: "404 Not found",
+  },
   "/products-systems/lv-automation": {
     crumbs: [
       { label: "Products & Systems", href: "/products-systems/motor-control" },
@@ -316,6 +320,20 @@ const configs: Record<string, BreadcrumbConfig> = {
       { label: "Training" },
     ],
     current: "Engineering Training",
+  },
+  "/services/service-training": {
+    crumbs: [
+      { label: "Services" },
+      { label: "Training" },
+    ],
+    current: "Service Training",
+  },
+  "/services/sales-training": {
+    crumbs: [
+      { label: "Services" },
+      { label: "Training" },
+    ],
+    current: "Sales Training",
   },
   "/services/request-for-training": {
     crumbs: [

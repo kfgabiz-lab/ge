@@ -19,7 +19,10 @@ export default function SearchMediaList({
 }: SearchMediaListProps) {
   return (
     <ul className={listClassName}>
-      {items.map((item, index) => (
+      <li className={searchAllListClasses.divider} aria-hidden>
+        <span className={searchAllListClasses.line} />
+      </li>
+      {items.map((item) => (
         <Fragment key={item.id}>
           <li className={searchAllListClasses.item}>
             <SearchMediaListItem
@@ -28,11 +31,9 @@ export default function SearchMediaList({
               variant={variant}
             />
           </li>
-          {index < items.length - 1 ? (
-            <li className={searchAllListClasses.divider} aria-hidden>
-              <span className={searchAllListClasses.line} />
-            </li>
-          ) : null}
+          <li className={searchAllListClasses.divider} aria-hidden>
+            <span className={searchAllListClasses.line} />
+          </li>
         </Fragment>
       ))}
     </ul>

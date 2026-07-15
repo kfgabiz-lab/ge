@@ -16,7 +16,10 @@ import {
 } from "@/components/form/GuideFieldIcons";
 import GuideSelect from "@/components/form/GuideSelect";
 import type { EngineeringTrainingSessionDetail } from "@/data/services/engineeringTrainingSessionDetailContent";
-import { engineeringTrainingSessionAssets } from "@/data/services/engineeringTrainingSessionDetailContent";
+import {
+  engineeringTrainingSessionAssets,
+  engineeringTrainingSessionFormCopy,
+} from "@/data/services/engineeringTrainingSessionDetailContent";
 
 function SessionFieldLabel({
   children,
@@ -54,10 +57,11 @@ export default function EngineeringTrainingSessionDetailForm({
   return (
     <form
       className="support_service_training_session_detail__form"
-      id="session-registration"
       onSubmit={(event) => event.preventDefault()}
     >
-      <div className="support_service_training_session_detail__form-grid">
+      <div className="support_service_training_session_detail__form-body">
+        <div className="support_service_training_session_detail__form-main">
+          <div className="support_service_training_session_detail__form-grid">
         <div className="support_service_training_session_detail__form-row support_service_training_session_detail__form-row--2">
           <div className="support_service_training_session_detail__field">
             <SessionFieldLabel htmlFor={`${formId}-student-name`} required>
@@ -65,7 +69,7 @@ export default function EngineeringTrainingSessionDetailForm({
             </SessionFieldLabel>
             <TextField
               id={`${formId}-student-name`}
-              className="guide_field support_service_training_session_detail__input"
+              className="guide_field guide_field--h50 support_service_training_session_detail__input"
               placeholder="Student Name"
             />
           </div>
@@ -75,7 +79,7 @@ export default function EngineeringTrainingSessionDetailForm({
             </SessionFieldLabel>
             <TextField
               id={`${formId}-email`}
-              className="guide_field support_service_training_session_detail__input"
+              className="guide_field guide_field--h50 support_service_training_session_detail__input"
               placeholder="E-mail Address"
               type="email"
             />
@@ -89,7 +93,7 @@ export default function EngineeringTrainingSessionDetailForm({
             </SessionFieldLabel>
             <TextField
               id={`${formId}-job-title`}
-              className="guide_field support_service_training_session_detail__input"
+              className="guide_field guide_field--h50 support_service_training_session_detail__input"
               placeholder="Job Title"
             />
           </div>
@@ -99,7 +103,7 @@ export default function EngineeringTrainingSessionDetailForm({
             </SessionFieldLabel>
             <TextField
               id={`${formId}-phone`}
-              className="guide_field support_service_training_session_detail__input"
+              className="guide_field guide_field--h50 support_service_training_session_detail__input"
               placeholder="Phone"
               type="tel"
             />
@@ -113,7 +117,7 @@ export default function EngineeringTrainingSessionDetailForm({
             </SessionFieldLabel>
             <TextField
               id={`${formId}-company`}
-              className="guide_field support_service_training_session_detail__input"
+              className="guide_field guide_field--h50 support_service_training_session_detail__input"
               placeholder="Company"
             />
           </div>
@@ -126,7 +130,7 @@ export default function EngineeringTrainingSessionDetailForm({
             </SessionFieldLabel>
             <TextField
               id={`${formId}-street`}
-              className="guide_field guide_field--search support_service_training_session_detail__input"
+              className="guide_field guide_field--h50 guide_field--search support_service_training_session_detail__input"
               placeholder="Keyword Search"
               slotProps={{
                 input: {
@@ -153,13 +157,11 @@ export default function EngineeringTrainingSessionDetailForm({
             />
           </div>
           <div className="support_service_training_session_detail__field">
-            <SessionFieldLabel htmlFor={`${formId}-address-2`}>
-              Address 2
-            </SessionFieldLabel>
             <TextField
               id={`${formId}-address-2`}
-              className="guide_field support_service_training_session_detail__input"
+              className="guide_field guide_field--h50 support_service_training_session_detail__input"
               placeholder="Address 2"
+              aria-label="Address 2"
             />
           </div>
         </div>
@@ -171,7 +173,7 @@ export default function EngineeringTrainingSessionDetailForm({
             </SessionFieldLabel>
             <TextField
               id={`${formId}-apartment`}
-              className="guide_field support_service_training_session_detail__input"
+              className="guide_field guide_field--h50 support_service_training_session_detail__input"
               placeholder="Apartment, suite, etc"
             />
           </div>
@@ -179,7 +181,7 @@ export default function EngineeringTrainingSessionDetailForm({
             <SessionFieldLabel htmlFor={`${formId}-city`}>City</SessionFieldLabel>
             <TextField
               id={`${formId}-city`}
-              className="guide_field support_service_training_session_detail__input"
+              className="guide_field guide_field--h50 support_service_training_session_detail__input"
               placeholder="City"
             />
           </div>
@@ -192,7 +194,7 @@ export default function EngineeringTrainingSessionDetailForm({
             </SessionFieldLabel>
             <TextField
               id={`${formId}-state`}
-              className="guide_field support_service_training_session_detail__input"
+              className="guide_field guide_field--h50 support_service_training_session_detail__input"
               placeholder="State/Province"
             />
           </div>
@@ -202,7 +204,7 @@ export default function EngineeringTrainingSessionDetailForm({
             </SessionFieldLabel>
             <TextField
               id={`${formId}-zip`}
-              className="guide_field support_service_training_session_detail__input"
+              className="guide_field guide_field--h50 support_service_training_session_detail__input"
               placeholder="ZIP / Postal Code"
             />
           </div>
@@ -210,7 +212,7 @@ export default function EngineeringTrainingSessionDetailForm({
 
         <div className="support_service_training_session_detail__form-row support_service_training_session_detail__form-row--2">
           <div className="support_service_training_session_detail__field">
-            <SessionFieldLabel htmlFor={`${formId}-position`}>Position</SessionFieldLabel>
+            <SessionFieldLabel htmlFor={`${formId}-position`}>Type of Business</SessionFieldLabel>
             <FormControl className="guide_field guide_field--h50">
               <GuideSelect
                 defaultValue={session.positionOptions[0]}
@@ -236,46 +238,58 @@ export default function EngineeringTrainingSessionDetailForm({
             </SessionFieldLabel>
             <TextField
               id={`${formId}-event-date`}
-              className="guide_field support_service_training_session_detail__input support_service_training_session_detail__input--readonly"
+              className="guide_field guide_field--h50 support_service_training_session_detail__input support_service_training_session_detail__input--readonly"
               value={eventDateDisplay}
               slotProps={{ input: { readOnly: true } }}
             />
           </div>
         </div>
 
-        <hr className="support_service_training_session_detail__form-divider" />
+        </div>
 
-        <div className="support_service_training_session_detail__consent">
-          <label className="support_service_training_session_detail__consent-label">
-            <Checkbox
-              className="guide_checkbox"
-              disableRipple
-              icon={<GuideCheckboxIcon {...guideCheckboxIconsContactConsent} />}
-              checkedIcon={
-                <GuideCheckboxIcon checked {...guideCheckboxIconsContactConsent} />
-              }
-            />
-            <span>Consent to Collection and Use of Personal Information</span>
-          </label>
-          <Link
-            href="/support/contact-us/terms"
-            className="support_service_training_session_detail__terms-link"
-          >
-            View Full Terms
-          </Link>
+          <div className="support_service_training_session_detail__form-consent">
+            <hr className="support_service_training_session_detail__form-divider" />
+
+            <div className="support_service_training_session_detail__consent">
+              <label className="support_service_training_session_detail__consent-label">
+                <Checkbox
+                  className="guide_checkbox"
+                  disableRipple
+                  icon={<GuideCheckboxIcon {...guideCheckboxIconsContactConsent} />}
+                  checkedIcon={
+                    <GuideCheckboxIcon checked {...guideCheckboxIconsContactConsent} />
+                  }
+                />
+                <span>Consent to Collection and Use of Personal Information</span>
+              </label>
+              <Link
+                href="/support/contact-us/terms"
+                className="support_service_training_session_detail__terms-link"
+              >
+                View Full Terms
+              </Link>
+            </div>
+          </div>
         </div>
 
         <img
           className="support_service_training_session_detail__recaptcha"
           src={engineeringTrainingSessionAssets.recaptcha}
           alt=""
-          width={270}
-          height={68}
+          width={335}
+          height={80}
           loading="lazy"
           decoding="async"
           aria-hidden
         />
       </div>
+
+      <button
+        type="submit"
+        className="btn-base btn-lv01 btn-lv01--solid support_service_training_session_detail__submit"
+      >
+        {engineeringTrainingSessionFormCopy.submitLabel}
+      </button>
     </form>
   );
 }

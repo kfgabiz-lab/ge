@@ -8,8 +8,9 @@ import {
   engineeringTrainingSessionTabs,
   type EngineeringTrainingSessionTabId,
 } from "@/data/services/engineeringTrainingSessionDetailContent";
-import EngineeringTrainingSessionCountdown from "./EngineeringTrainingSessionCountdown";
 import EngineeringTrainingSessionDetailForm from "./EngineeringTrainingSessionDetailForm";
+import SessionDetailAside from "./SessionDetailAside";
+import SessionDetailTableScroll from "./SessionDetailTableScroll";
 import { getLenisInstance } from "@/lib/lenisScroll";
 
 const SESSION_TAB_SCROLL_OFFSET = 150;
@@ -59,38 +60,12 @@ function scrollToSection(id: string) {
   requestAnimationFrame(step);
 }
 
-function SessionMetaLabel({
-  icon,
-  iconMuted = false,
-  children,
-}: {
-  icon: string;
-  iconMuted?: boolean;
-  children: string;
-}) {
-  return (
-    <p className="support_service_training_session_detail__meta-label">
-      <span
-        className={`support_service_training_session_detail__meta-icon${
-          iconMuted ? " support_service_training_session_detail__meta-icon--muted" : ""
-        }`}
-        aria-hidden
-      >
-        <img src={icon} alt="" width={18} height={18} loading="lazy" decoding="async" />
-      </span>
-      {children}
-    </p>
-  );
-}
-
 export default function EngineeringTrainingSessionDetail({
   session,
 }: {
   session: EngineeringTrainingSessionDetail;
 }) {
   const [activeTab, setActiveTab] = useState<EngineeringTrainingSessionTabId>("training");
-  const { sidebar } = session;
-  const { metaIcons } = engineeringTrainingSessionAssets;
 
   const handleRegister = useCallback(() => {
     setActiveTab("registration");
@@ -98,8 +73,6 @@ export default function EngineeringTrainingSessionDetail({
   }, []);
 
   useEffect(() => {
-    const sectionIds = engineeringTrainingSessionTabs.map((tab) => `session-${tab.id}`);
-
     const onScroll = () => {
       const offset = window.scrollY + SESSION_TAB_SCROLL_OFFSET;
       let current: EngineeringTrainingSessionTabId = "training";
@@ -126,38 +99,51 @@ export default function EngineeringTrainingSessionDetail({
       id="engineering-training-session-detail"
     >
       <div className="inner">
-        <header className="support_service_training_session_detail__head">
-          <div className="support_service_training_session_detail__title-wrap">
-            <p className="support_service_training_session_detail__category">
-              {session.category}
-            </p>
-            <div className="support_service_training_session_detail__title-row">
+                <header className="support_service_training_session_detail__head">
+          <div className="support_service_training_session_detail__title-row">
+            <div className="support_service_training_session_detail__title-wrap">
+              <p className="support_service_training_session_detail__category">
+                {session.category}
+              </p>
               <h1 className="support_service_training_session_detail__title">
                 {session.title}
               </h1>
-              <ul
-                className="support_service_training_session_detail__share"
-                aria-label="Share"
-              >
-                {engineeringTrainingSessionShareLinks.map((link) => (
-                  <li key={link.id}>
-                    <a
-                      href={link.href}
-                      className="support_service_training_session_detail__share-link"
-                      aria-label={link.label}
-                      {...(link.external
-                        ? { target: "_blank", rel: "noopener noreferrer" }
-                        : {})}
-                    >
-                      <img src={link.icon} alt="" width={20} height={20} loading="lazy" decoding="async" />
-                    </a>
-                  </li>
-                ))}
-              </ul>
             </div>
+            <ul
+              className="support_service_training_session_detail__share"
+              aria-label="Share"
+            >
+              {engineeringTrainingSessionShareLinks.map((link) => (
+                <li key={link.id}>
+                  <a
+                    href={link.href}
+                    className="support_service_training_session_detail__share-link"
+                    aria-label={link.label}
+                    {...(link.external
+                      ? { target: "_blank", rel: "noopener noreferrer" }
+                      : {})}
+                  >
+                    <img
+                      src={link.icon}
+                      alt=""
+                      width={20}
+                      height={20}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
           <hr className="support_service_training_session_detail__divider" />
         </header>
+
+        <SessionDetailAside
+          session={session}
+          variant="mo"
+          onRegister={handleRegister}
+        />
 
         <div className="support_service_training_session_detail__layout">
           <div className="support_service_training_session_detail__main">
@@ -182,7 +168,10 @@ export default function EngineeringTrainingSessionDetail({
                   >
                     {tab.label}
                     {isActive ? (
-                      <span className="support_service_training_session_detail__tab-dot" aria-hidden />
+                      <span
+                        className="support_service_training_session_detail__tab-dot"
+                        aria-hidden
+                      />
                     ) : null}
                   </button>
                 );
@@ -215,7 +204,7 @@ export default function EngineeringTrainingSessionDetail({
               className="support_service_training_session_detail__block support_service_training_session_detail__block--agenda"
             >
               <h2 className="support_service_training_session_detail__block-tit">Agenda</h2>
-              <div className="support_service_training_session_detail__table-wrap">
+              <SessionDetailTableScroll>
                 <table className="support_service_training_session_detail__table">
                   <thead>
                     <tr>
@@ -245,7 +234,7 @@ export default function EngineeringTrainingSessionDetail({
                     ))}
                   </tbody>
                 </table>
-              </div>
+              </SessionDetailTableScroll>
             </div>
 
             <div
@@ -270,8 +259,8 @@ export default function EngineeringTrainingSessionDetail({
                   <img
                     src={engineeringTrainingSessionAssets.calendarIcons.google}
                     alt=""
-                    width={18}
-                    height={18}
+                    width={16}
+                    height={16}
                     loading="lazy"
                     decoding="async"
                     aria-hidden
@@ -286,8 +275,8 @@ export default function EngineeringTrainingSessionDetail({
                   <img
                     src={engineeringTrainingSessionAssets.calendarIcons.ical}
                     alt=""
-                    width={18}
-                    height={18}
+                    width={16}
+                    height={16}
                     loading="lazy"
                     decoding="async"
                     aria-hidden
@@ -297,67 +286,11 @@ export default function EngineeringTrainingSessionDetail({
             </div>
           </div>
 
-          <aside className="support_service_training_session_detail__aside">
-            <EngineeringTrainingSessionCountdown />
-
-            <div className="support_service_training_session_detail__meta">
-              <div className="support_service_training_session_detail__meta-item">
-                <SessionMetaLabel icon={metaIcons.date} iconMuted>
-                  DATE
-                </SessionMetaLabel>
-                <p className="support_service_training_session_detail__meta-value">
-                  {sidebar.date}
-                </p>
-              </div>
-
-              <div className="support_service_training_session_detail__meta-item">
-                <SessionMetaLabel icon={metaIcons.duration} iconMuted>
-                  DURATION
-                </SessionMetaLabel>
-                <p className="support_service_training_session_detail__meta-value">
-                  {sidebar.duration}
-                </p>
-              </div>
-
-              <div className="support_service_training_session_detail__meta-item">
-                <SessionMetaLabel icon={metaIcons.classSize}>CLASS SIZE</SessionMetaLabel>
-                <p className="support_service_training_session_detail__meta-value">
-                  {sidebar.classSize}
-                </p>
-              </div>
-
-              <div className="support_service_training_session_detail__meta-item">
-                <SessionMetaLabel icon={metaIcons.location}>
-                  LOCATION INFORMATION
-                </SessionMetaLabel>
-                <p className="support_service_training_session_detail__meta-value">
-                  {sidebar.location.name}
-                </p>
-                <ul className="support_service_training_session_detail__meta-bullets">
-                  <li>{sidebar.location.address}</li>
-                  <li>{sidebar.location.phone}</li>
-                  <li>{sidebar.location.email}</li>
-                </ul>
-              </div>
-
-              <div className="support_service_training_session_detail__meta-item">
-                <SessionMetaLabel icon={metaIcons.products} iconMuted>
-                  PRODUCTS COVERED
-                </SessionMetaLabel>
-                <p className="support_service_training_session_detail__meta-text">
-                  {sidebar.productsCovered}
-                </p>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              className="btn-base btn-lv01 btn-lv01--solid support_service_training_session_detail__register"
-              onClick={handleRegister}
-            >
-              {sidebar.registerLabel}
-            </button>
-          </aside>
+          <SessionDetailAside
+            session={session}
+            variant="pc"
+            onRegister={handleRegister}
+          />
         </div>
       </div>
     </section>

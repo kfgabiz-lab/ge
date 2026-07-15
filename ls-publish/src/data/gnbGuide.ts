@@ -20,13 +20,21 @@ export const gnbGuideIcons: GnbGuideIcon[] = [
     usedIn: "gnb.css (.gnb_util-btn--search), ComponentGuide Search",
   },
   {
+    id: "ico_gnb_search_ai_32",
+    fileName: "ico_gnb_search_ai_32.svg",
+    path: "/pub/ico/ico_gnb_search_ai_32.svg",
+    size: 32,
+    usage: "GNB 검색 패널 AI 마크 (필드리드)",
+    usedIn: "GnbSearchPanel (.gnb_search__mark)",
+  },
+  {
     id: "ico_close_24",
     fileName: "ico_close_24.svg",
     path: "/pub/ico/ico_close_24.svg",
     size: 24,
-    usage: "GNB search·메가 메뉴 닫기",
+    usage: "GNB search 닫기",
     usedIn:
-      "gnb.css (.main_header__btn-search.is-close, .btn_search.is-close, .gnb_mega__close)",
+      "gnb.css (.main_header__btn-search.is-close, .btn_search.is-close)",
   },
   {
     id: "ico_search_24_white",
@@ -232,8 +240,8 @@ export const gnbGuideClassRefs = [
   {
     block: "Devices 4depth",
     classes:
-      "gnb_mega__col--depth2, --depth3, --depth4, gnb_mega__depth4-head, gnb_mega__depth4-arrow, gnb_mega__close",
-    file: "GnbMegaPanel.tsx, GnbMegaCloseButton.tsx, gnb.css",
+      "gnb_mega__col--depth2, --depth3, --depth4, gnb_mega__depth4-head, gnb_mega__depth4-arrow",
+    file: "GnbMegaPanel.tsx, gnb.css",
   },
   {
     block: "Simple grid",
@@ -262,5 +270,11 @@ export const gnbGuideClassRefs = [
     classes:
       "gnb_mobile_shell, gnb_mobile_menu, gnb_mobile_list, gnb_mobile_depth2, gnb_mobile_depth4, gnb_mobile_back, gnb_mobile_explore",
     file: "GnbMobileMenuPanel.tsx, mobileNavItems.ts, gnb.css",
+  },
+  {
+    block: "Search overlay",
+    classes:
+      "gnb_search.is-open, gnb_search_dim, main_header.is-search-open",
+    file: "GnbSearchPanel.tsx, GnbMenu.tsx, gnb.css · Figma 7334:131856",
   },
 ] as const;

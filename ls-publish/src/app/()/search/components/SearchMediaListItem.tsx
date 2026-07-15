@@ -24,22 +24,19 @@ export default function SearchMediaListItem({
     item.title,
     highlight,
     "search_all__media-mark",
-    "search_all__media-tit-text",
   );
 
   const descriptionNode = item.description ? (
     <div className="search_all__media-desc">
-      {item.description.split("\n").map((line, lineIndex) => (
-        <p key={`${item.id}-desc-${lineIndex}`} className="search_all__media-desc-p">
-          {showDescHighlight && highlight
-            ? renderInlineTextHighlight(
-                line,
-                highlight,
-                "search_all__media-desc-mark",
-              )
-            : line}
-        </p>
-      ))}
+      <p className="search_all__media-desc-p">
+        {showDescHighlight && highlight
+          ? renderInlineTextHighlight(
+              item.description,
+              highlight,
+              "search_all__media-desc-mark",
+            )
+          : item.description}
+      </p>
     </div>
   ) : null;
 

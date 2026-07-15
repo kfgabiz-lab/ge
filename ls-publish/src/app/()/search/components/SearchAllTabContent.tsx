@@ -91,10 +91,10 @@ export default function SearchAllTabContent({
               <div className="search_all__ai-head">
                 <img
                   className="search_all__ai-badge"
-                  src="/pub/img/search/search_all_ai_badge.svg"
+                  src="/pub/img/search/search_all_ai_badge.png"
                   alt=""
-                  width={50}
-                  height={50}
+                  width={58}
+                  height={58}
                   decoding="async"
                   aria-hidden
                 />

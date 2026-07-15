@@ -61,12 +61,13 @@ Figma·페이지 구현 시 **해당 MD + 라이브 가이드(`src/components/gu
 | 작업 | 섹션 | 컴포넌트 | 아이콘 |
 |------|------|----------|--------|
 | `/search` | [SECTION_CLASS](./SECTION_CLASS_GUIDE.md) Search | [COMPONENT](./COMPONENT_GUIDE.md) `#search-80` | [ICON](./ICON_GUIDE.md) Search |
+| Cookie consent 모달 | [SECTION_CLASS](./SECTION_CLASS_GUIDE.md) Common | `CookieSettingsModal` · `CookiePreferencesModal` | `ico_cl.svg` · Check 22px |
 | Support 검색 툴바 | `support_*_search` | `guide_field--search` `#search-280` | `ico_search_24` · `ico_clear_12` |
 | Contact Us modals | [SECTION_CLASS](./SECTION_CLASS_GUIDE.md) Contact Us | `common_modal` | `ico_cl.svg` |
 | GNB | [GNB_GUIDE](./GNB_GUIDE.md) | `gnb.css` | [ICON](./ICON_GUIDE.md) §3 |
 | Software products | [SECTION_CLASS](./SECTION_CLASS_GUIDE.md) Product Detail | `DevicesSoftwareHero` 등 | `ico_filter_14` · `ico_swipe_70` |
 | Company About | [SECTION_CLASS](./SECTION_CLASS_GUIDE.md) Company | `CompanyAboutIntroSection` 등 | `pageIconGuide.ts` |
-| Services | [SECTION_CLASS](./SECTION_CLASS_GUIDE.md) Services | `btn-lv02` · Swiper | `icon_link-14` |
+| Services | [SECTION_CLASS](./SECTION_CLASS_GUIDE.md) Services | `guide_field` · `PageNumbering` · Swiper · `btn-lv01`/`btn-lv02` | `icon_link-14` · `ico_swipe_70` (Warranty) · `ico_up_16` (Curriculum native select) |
 
 ---
 

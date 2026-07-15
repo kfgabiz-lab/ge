@@ -1,4 +1,5 @@
 import WarrantyFeatureCards from "./WarrantyFeatureCards";
+import WarrantyTableScroll from "./WarrantyTableScroll";
 import { warrantyPolicyPage } from "@/data/services/warrantyPolicyContent";
 
 function BulletList({ items }: { items: string[] }) {
@@ -37,7 +38,7 @@ export default function WarrantyPolicyCoverage() {
             />
           </div>
 
-          <div className="support_service_warranty_table-wrap">
+          <WarrantyTableScroll withSwipe>
             <table className="support_service_warranty_table support_service_warranty_table--3col">
               <thead>
                 <tr>
@@ -73,7 +74,7 @@ export default function WarrantyPolicyCoverage() {
                 ))}
               </tbody>
             </table>
-          </div>
+          </WarrantyTableScroll>
 
           <div className="support_service_warranty_notes">
             <h3 className="support_service_warranty_notes__tit">

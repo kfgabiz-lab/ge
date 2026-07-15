@@ -10,12 +10,12 @@ import DevicesProductHero from "../../components/product/DevicesProductHero";
 import DevicesProductFeaturesSection from "@/components/content/DevicesProductFeaturesSection";
 import DevicesProductLineup from "../../components/product/DevicesProductLineup";
 import DevicesProductNavScope from "../../components/product/DevicesProductNavScope";
-import DevicesProductOtherProducts from "../../components/product/DevicesProductOtherProducts";
 import DevicesProductVideo from "../../components/product/DevicesProductVideo";
 import { motorControlHighlights } from "../../data/motorControlContent";
 import {
   metasolMsDetail,
   metasolMsFaqItems,
+  metasolMsNavItems,
 } from "../../data/productDetailContent";
 import "@/assets/css/devices-systems.css";
 import "@/assets/css/devices-product-detail.css";
@@ -24,7 +24,7 @@ export default function MetasolMsProductPage() {
   return (
     <main className="devices-page devices-page--product" id="Page_devices_metasol_ms">
       <DevicesProductHero product={metasolMsDetail} />
-      <DevicesProductNavScope>
+      <DevicesProductNavScope navItems={metasolMsNavItems}>
         <DevicesProductFeaturesSection
           title="Key Features"
           items={metasolMsDetail.keyFeatures}
@@ -44,7 +44,6 @@ export default function MetasolMsProductPage() {
         <DevicesProductDownloads items={metasolMsDetail.downloads} />
         <CommonBanner03 />
         <DevicesProductVideo youtubeVideoId={metasolMsDetail.youtubeVideoId} />
-        <DevicesProductOtherProducts items={metasolMsDetail.otherProducts} />
         <div id="product-markets">
           <DevicesMarkets />
         </div>
