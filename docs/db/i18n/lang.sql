@@ -1153,3 +1153,29 @@ ON CONFLICT ("key") DO NOTHING;
 -- code_group, code_detail 테이블에 msgKey 컬럼 추가
 ALTER TABLE code_group  ADD COLUMN IF NOT EXISTS group_name_msg_key VARCHAR(255);
 ALTER TABLE code_detail ADD COLUMN IF NOT EXISTS name_msg_key       VARCHAR(255);
+
+-- ────────────── Form/SubList date·dateRange 필드간 대소비교 검증 신규 키 ──────────────
+INSERT INTO message_resource ("key", ko, en, is_active, resource_type, created_by, created_at, updated_by, updated_at)
+VALUES
+
+('common.validation.date_compare_lt',
+ '''{label}'' 값은 ''{compareLabel}'' 값보다 이전이어야 합니다.',
+ '''{label}'' must be earlier than ''{compareLabel}''.',
+ true, 'SENTENCE', 'system', NOW(), 'system', NOW()),
+
+('common.validation.date_compare_lte',
+ '''{label}'' 값은 ''{compareLabel}'' 값보다 이전이거나 같아야 합니다.',
+ '''{label}'' must be earlier than or equal to ''{compareLabel}''.',
+ true, 'SENTENCE', 'system', NOW(), 'system', NOW()),
+
+('common.validation.date_compare_gt',
+ '''{label}'' 값은 ''{compareLabel}'' 값보다 이후여야 합니다.',
+ '''{label}'' must be later than ''{compareLabel}''.',
+ true, 'SENTENCE', 'system', NOW(), 'system', NOW()),
+
+('common.validation.date_compare_gte',
+ '''{label}'' 값은 ''{compareLabel}'' 값보다 이후이거나 같아야 합니다.',
+ '''{label}'' must be later than or equal to ''{compareLabel}''.',
+ true, 'SENTENCE', 'system', NOW(), 'system', NOW())
+
+ON CONFLICT ("key") DO NOTHING;
