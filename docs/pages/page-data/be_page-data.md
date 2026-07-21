@@ -113,6 +113,7 @@ GET /api/v1/page-data/cat-main?eq_depth=2&eq_parentId=1
 | size | int | 20 | 페이지 크기 |
 | 그 외 | String | - | data_json 필드 검색 조건 (fieldKey=value 형태) — ILIKE 부분 일치 |
 | eq_{fieldKey} | String | - | data_json 필드 **정확 일치** 조건 — `eq_` 접두사 제거 후 `=` 비교 |
+| ne_{fieldKey} | String | - | data_json 필드 **부정 일치**(제외) 조건 — 최상위 전용, NULL-safe |
 
 > **`eq_` 접두사 규칙**: 파라미터 키가 `eq_`로 시작하면 접두사를 제거한 필드명으로 정확 일치(`=`) 검색한다.
 > 카테고리 depth/parentId 같이 정수 ID를 정확히 일치시켜야 하는 경우에 사용한다.
@@ -121,6 +122,9 @@ GET /api/v1/page-data/cat-main?eq_depth=2&eq_parentId=1
 > - `?eq_parentId=1` → `data_json->>'parentId' = '1'`
 > - `?eq_depth=2` → `data_json->>'depth' = '2'`
 > - `?name=홍` → `data_json->>'name' ILIKE '%홍%'` (기존 방식 유지)
+>
+> **`ne_` 접두사 규칙**: 부정 일치(제외) 검색. 최상위 필드 전용(중첩 탐색 안 함), NULL-safe(`IS DISTINCT FROM`).
+> - `?ne_id=1863` → `data_json->>'id' IS DISTINCT FROM '1863'`
 
 **Response 200:**
 ```json
