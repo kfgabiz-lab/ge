@@ -61,6 +61,13 @@ dev/운영 환경에서는 배포 파이프라인 또는 서버의 `.env.product
 const banners = await fetchApi<BannerDto[]>("/api/v1/fo/main/banners");
 ```
 
+### 4-1. 서버 컴포넌트 vs 클라이언트 컴포넌트 — 캐시 함정 주의
+
+⚠️ **서버 컴포넌트(`async function`)에서 `await fetchApi(...)`를 직접 호출해 데이터를 렌더링하면, 배포 환경에 CDN/엣지 캐시가 있는 경우 그 결과가 정적 HTML에 그대로 구워져서 캐시(`Cache-Control: s-maxage=...`)에 고정될 수 있다.** 이후 bo에서 데이터를 추가·수정해도 캐시가 풀리기 전까지 화면에 반영되지 않고, **재배포로도 해결되지 않는다**(캐시는 origin 재배포와 무관하게 유지됨).
+
+- `fo/src/app/services/warranty-policy/components/WarrantyPolicyCoverage.tsx` 사례 참고 — 위와 같은 증상 발생, `"use client"` + `useEffect`/`useState`(`alive` 가드 패턴, company/blog·company/careers와 동일)로 전환해 해결.
+- **slug 데이터 바인딩은 기본값으로 클라이언트 사이드 fetch(`"use client"` + `useEffect`)를 사용할 것.** 서버 컴포넌트에서 직접 fetch하는 방식은 캐시 무효화 전략(`cache: 'no-store'`, `revalidate` 설정, on-demand revalidation 등)이 확실히 준비된 경우에만 예외적으로 사용한다.
+
 ## 5. 개발 프로세스 (fo 전용 간소화 STEP)
 
 fo는 빌더 시스템이 없고, DB/BE는 이미 존재하는 bo-api를 그대로 사용하므로 bo 빌더의 STEP 1~6(퍼블리싱→DB→API→FE 설계) 전체를 따르지 않고 아래로 축소한다.
