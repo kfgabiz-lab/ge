@@ -1,0 +1,345 @@
+- generic [active] [ref=f16e1]:
+  - region "Notifications alt+T"
+  - generic [ref=f16e14]:
+    - complementary [ref=f16e15]:
+      - img "LS ELECTRIC" [ref=f16e17] [cursor=pointer]
+      - navigation [ref=f16e18]:
+        - button "대시보드" [ref=f16e20]
+        - button "제품 관리" [ref=f16e25]
+        - button "페이지 관리" [ref=f16e30]
+        - button "시스템" [ref=f16e35]
+        - button "테스트 요청" [ref=f16e40]
+        - button "관리자 관리" [ref=f16e45]
+        - button "시스템" [ref=f16e50]
+      - generic [ref=f16e55] [cursor=pointer]:
+        - generic [ref=f16e56]: 이병
+        - generic [ref=f16e57]:
+          - paragraph [ref=f16e58]: 이병권
+          - paragraph [ref=f16e59]: comlbg
+    - generic [ref=f16e62]:
+      - banner [ref=f16e63]:
+        - navigation [ref=f16e64]:
+          - generic [ref=f16e68]: 시스템
+          - generic [ref=f16e72]: 빌더
+          - generic [ref=f16e76]: 위젯
+        - generic [ref=f16e80]:
+          - combobox [ref=f16e85] [cursor=pointer]:
+            - option "북미홈페이지" [selected]
+            - option "테스트홈페이지"
+          - button "한국어" [ref=f16e87]
+          - button "로그아웃" [ref=f16e95]
+      - main [ref=f16e99]:
+        - generic [ref=f16e100]:
+          - generic [ref=f16e102]:
+            - heading "페이지 메이커 — Widget" [level=1] [ref=f16e103]
+            - paragraph [ref=f16e107]:
+              - text: 위젯 셀을 배치하여 페이지 레이아웃을 구성합니다.
+              - generic [ref=f16e1738]: Training 제품 관리
+          - generic [ref=f16e108]:
+            - generic [ref=f16e109]:
+              - button "규칙생성" [ref=f16e111]
+              - button [ref=f16e117]
+              - generic [ref=f16e123]:
+                - button "상세페이지" [ref=f16e124]
+                - button "LayerPopup" [ref=f16e128]
+              - generic [ref=f16e133]:
+                - generic [ref=f16e134]:
+                  - generic [ref=f16e135]: 페이지 제목
+                  - generic [ref=f16e136]:
+                    - generic [ref=f16e137] [cursor=pointer]:
+                      - checkbox "단일페이지" [ref=f16e138]
+                      - generic [ref=f16e139]: 단일페이지
+                    - generic [ref=f16e140] [cursor=pointer]:
+                      - checkbox "이탈체크" [ref=f16e141]
+                      - generic [ref=f16e142]: 이탈체크
+                    - button "다국어 모드" [ref=f16e143]
+                - button "선택" [ref=f16e148]
+              - generic [ref=f16e154]:
+                - generic [ref=f16e155]:
+                  - generic [ref=f16e156]: 타입
+                  - combobox [ref=f16e158] [cursor=pointer]:
+                    - option "없음"
+                    - option "메인 연결 Slug" [selected]
+                    - option "Slug Entity"
+                    - option "Data Entity"
+                - generic [ref=f16e1744]:
+                  - generic [ref=f16e1745]: 메인 연결 Slug
+                  - generic [ref=f16e1746]:
+                    - textbox "— 없음 —" [ref=f16e1747]: 제품 데이터 (product-data)
+                    - button "✕" [ref=f16e1748]
+              - generic [ref=f16e159]:
+                - generic [ref=f16e1750]:
+                  - generic [ref=f16e1751] [cursor=pointer]:
+                    - button [ref=f16e1752]
+                    - generic [ref=f16e1760]: "1"
+                    - generic [ref=f16e1761]:
+                      - text: 위젯 1
+                      - generic [ref=f16e1762]: col 12 × row 11
+                    - generic [ref=f16e1763]: 2개
+                    - button [ref=f16e1764]
+                  - generic [ref=f16e1930]:
+                    - generic [ref=f16e1931]:
+                      - generic [ref=f16e1932]: 크기
+                      - generic [ref=f16e1933]:
+                        - generic [ref=f16e1934]: Col
+                        - spinbutton [ref=f16e1935]: "12"
+                        - generic [ref=f16e1936]: / 12
+                      - generic [ref=f16e1937]:
+                        - generic [ref=f16e1938]: Row
+                        - spinbutton [ref=f16e1939]: "11"
+                      - button "직접 입력 모드로 전환" [ref=f16e1940]
+                    - generic [ref=f16e1945]:
+                      - generic [ref=f16e1946] [cursor=pointer]:
+                        - button [ref=f16e1947]
+                        - generic [ref=f16e1959]: Search — trainingProductSearch
+                        - generic [ref=f16e1960]: 12×3
+                        - button [ref=f16e1961]
+                      - generic [ref=f16e2199]:
+                        - generic [ref=f16e2200]:
+                          - generic [ref=f16e2201]: 크기
+                          - generic [ref=f16e2202]:
+                            - generic [ref=f16e2203]: Col
+                            - spinbutton [ref=f16e2204]: "12"
+                            - generic [ref=f16e2205]: / 12
+                          - generic [ref=f16e2206]:
+                            - generic [ref=f16e2207]: Row
+                            - spinbutton [ref=f16e2208]: "3"
+                        - generic [ref=f16e2210]:
+                          - generic [ref=f16e2211]:
+                            - generic [ref=f16e2212]: 검색 스타일
+                            - generic [ref=f16e2213]:
+                              - button "현재버전" [ref=f16e2214]
+                              - button "심플버전" [ref=f16e2215]
+                          - generic [ref=f16e2216]:
+                            - generic [ref=f16e2217]: Key *
+                            - 'textbox "예: userSearch (페이지 내 고유)" [ref=f16e2218]': trainingProductSearch
+                          - generic [ref=f16e2219]:
+                            - paragraph [ref=f16e2220]: 검색 필드 구성
+                            - button "빌드" [ref=f16e2221]
+                          - generic [ref=f16e2222]:
+                            - generic [ref=f16e2224]:
+                              - generic [ref=f16e2225] [cursor=pointer]:
+                                - generic [ref=f16e2226]:
+                                  - button [ref=f16e2227]
+                                  - generic [ref=f16e2237]: Row 1
+                                  - generic [ref=f16e2238]:
+                                    - button "1" [ref=f16e2239]
+                                    - button "2" [ref=f16e2240]
+                                    - button "3" [ref=f16e2241]
+                                    - button "4" [ref=f16e2242]
+                                    - button "5" [ref=f16e2243]
+                                - generic [ref=f16e2244]:
+                                  - button [disabled] [ref=f16e2245]
+                                  - button [ref=f16e2248]
+                                  - button [ref=f16e2251]
+                              - generic [ref=f16e2255]:
+                                - generic [ref=f16e2258]:
+                                  - button [ref=f16e2259]
+                                  - generic [ref=f16e2267]: select
+                                  - generic [ref=f16e2268]: 카테고리
+                                  - generic [ref=f16e2269]:
+                                    - button [disabled] [ref=f16e2270]
+                                    - button [ref=f16e2273]
+                                    - button [ref=f16e2276]
+                                    - button [ref=f16e2280]
+                                - generic [ref=f16e2286]:
+                                  - button [ref=f16e2287]
+                                  - generic [ref=f16e2295]: category
+                                  - generic [ref=f16e2296]: 제품 카테고리
+                                  - generic [ref=f16e2297]: ×2
+                                  - generic [ref=f16e2298]:
+                                    - button [ref=f16e2299]
+                                    - button [disabled] [ref=f16e2302]
+                                    - button [ref=f16e2305]
+                                    - button [ref=f16e2309]
+                                - button "필드 추가" [ref=f16e2313]
+                            - generic [ref=f16e2316]:
+                              - generic [ref=f16e2317] [cursor=pointer]:
+                                - generic [ref=f16e2318]:
+                                  - button [ref=f16e2319]
+                                  - generic [ref=f16e2329]: Row 2
+                                  - generic [ref=f16e2330]:
+                                    - button "1" [ref=f16e2331]
+                                    - button "2" [ref=f16e2332]
+                                    - button "3" [ref=f16e2333]
+                                    - button "4" [ref=f16e2334]
+                                    - button "5" [ref=f16e2335]
+                                - generic [ref=f16e2336]:
+                                  - button [ref=f16e2337]
+                                  - button [disabled] [ref=f16e2340]
+                                  - button [ref=f16e2343]
+                              - generic [ref=f16e2347]:
+                                - generic [ref=f16e2350]:
+                                  - button [ref=f16e2351]
+                                  - generic [ref=f16e2359]: select
+                                  - generic [ref=f16e2360]: 공개설정
+                                  - generic [ref=f16e2361]:
+                                    - button [disabled] [ref=f16e2362]
+                                    - button [ref=f16e2365]
+                                    - button [ref=f16e2368]
+                                    - button [ref=f16e2372]
+                                - generic [ref=f16e2378]:
+                                  - button [ref=f16e2379]
+                                  - generic [ref=f16e2387]: input
+                                  - generic [ref=f16e2388]: 제품명
+                                  - generic [ref=f16e2389]: ×3
+                                  - generic [ref=f16e2390]:
+                                    - button [ref=f16e2391]
+                                    - button [disabled] [ref=f16e2394]
+                                    - button [ref=f16e2397]
+                                    - button [ref=f16e2401]
+                                - button "필드 추가" [ref=f16e2405]
+                            - status [ref=f16e2407]
+                            - button "행 추가" [ref=f16e2408]
+                    - generic [ref=f16e1967] [cursor=pointer]:
+                      - button [ref=f16e1968]
+                      - generic [ref=f16e1979]: Table — trainingProductTable
+                      - generic [ref=f16e1980]: 12×8
+                      - button [ref=f16e1981]
+                    - status [ref=f16e1985]
+                    - button "컨텐츠 추가" [ref=f16e1987]
+                - status [ref=f16e164]
+            - generic [ref=f16e167]:
+              - generic [ref=f16e168]:
+                - generic [ref=f16e169]:
+                  - generic [ref=f16e170]: 미리보기
+                  - generic [ref=f16e171]: 1개 위젯
+                  - generic [ref=f16e172]: 상세페이지
+                - button "수정" [ref=f16e1768]
+              - generic [ref=f16e1773] [cursor=pointer]:
+                - generic [ref=f16e1776]:
+                  - generic [ref=f16e1777]:
+                    - generic [ref=f16e1778]:
+                      - generic [ref=f16e1779]:
+                        - generic [ref=f16e1780]: 카테고리
+                        - paragraph [ref=f16e1781]
+                        - combobox [disabled] [ref=f16e1783]:
+                          - option "카테고리" [selected]
+                          - option "Power"
+                          - option "Automation"
+                      - generic [ref=f16e1784]:
+                        - generic [ref=f16e1785]: 제품 카테고리
+                        - paragraph [ref=f16e1786]
+                        - generic [ref=f16e1787]:
+                          - combobox [disabled] [ref=f16e1788]:
+                            - option "category.label.lv1" [selected]
+                            - option "샘플 항목 1"
+                            - option "샘플 항목 2"
+                            - option "샘플 항목 3"
+                          - combobox [disabled] [ref=f16e1789]:
+                            - option "category.label.lv2" [selected]
+                            - option "샘플 항목 1"
+                            - option "샘플 항목 2"
+                            - option "샘플 항목 3"
+                    - generic [ref=f16e1790]:
+                      - generic [ref=f16e1791]:
+                        - generic [ref=f16e1792]: 공개설정
+                        - paragraph [ref=f16e1793]
+                        - combobox [disabled] [ref=f16e1795]:
+                          - option "공개설정" [selected]
+                          - option "공개"
+                          - option "비공개"
+                      - generic [ref=f16e1796]:
+                        - generic [ref=f16e1797]: 제품명
+                        - paragraph [ref=f16e1798]
+                        - textbox "제품명을 입력해주세요." [disabled] [ref=f16e1799]
+                  - generic [ref=f16e1800]:
+                    - button "초기화" [ref=f16e1801]
+                    - button "검색" [ref=f16e1805]
+                - generic [ref=f16e1810]:
+                  - generic [ref=f16e1811]:
+                    - paragraph [ref=f16e1812]: 총 00건
+                    - paragraph [ref=f16e1813]: 1-10 표시 중
+                  - table [ref=f16e1815]:
+                    - rowgroup [ref=f16e1816]:
+                      - row [ref=f16e1817]:
+                        - columnheader [ref=f16e1818]:
+                          - button "카테고리" [ref=f16e1819]
+                        - columnheader [ref=f16e1823]:
+                          - button "Level 1 카테고리" [ref=f16e1824]
+                        - columnheader [ref=f16e1828]:
+                          - button "Level 2 카테고리" [ref=f16e1829]
+                        - columnheader [ref=f16e1833]:
+                          - button "제품명" [ref=f16e1834]
+                        - columnheader [ref=f16e1838]:
+                          - button "공개설정" [ref=f16e1839]
+                    - rowgroup [ref=f16e1843]:
+                      - row [ref=f16e1844]:
+                        - cell "샘플 텍스트" [ref=f16e1845]
+                        - cell "샘플 텍스트" [ref=f16e1846]
+                        - cell "샘플 텍스트" [ref=f16e1847]
+                        - cell "샘플 텍스트" [ref=f16e1848]
+                        - cell [ref=f16e1849]:
+                          - button [ref=f16e1850]
+                      - row [ref=f16e1852]:
+                        - cell "샘플 텍스트" [ref=f16e1853]
+                        - cell "샘플 텍스트" [ref=f16e1854]
+                        - cell "샘플 텍스트" [ref=f16e1855]
+                        - cell "샘플 텍스트" [ref=f16e1856]
+                        - cell [ref=f16e1857]:
+                          - button [ref=f16e1858]
+                      - row [ref=f16e1860]:
+                        - cell "샘플 텍스트" [ref=f16e1861]
+                        - cell "샘플 텍스트" [ref=f16e1862]
+                        - cell "샘플 텍스트" [ref=f16e1863]
+                        - cell "샘플 텍스트" [ref=f16e1864]
+                        - cell [ref=f16e1865]:
+                          - button [ref=f16e1866]
+                      - row [ref=f16e1868]:
+                        - cell "샘플 텍스트" [ref=f16e1869]
+                        - cell "샘플 텍스트" [ref=f16e1870]
+                        - cell "샘플 텍스트" [ref=f16e1871]
+                        - cell "샘플 텍스트" [ref=f16e1872]
+                        - cell [ref=f16e1873]:
+                          - button [ref=f16e1874]
+                      - row [ref=f16e1876]:
+                        - cell "샘플 텍스트" [ref=f16e1877]
+                        - cell "샘플 텍스트" [ref=f16e1878]
+                        - cell "샘플 텍스트" [ref=f16e1879]
+                        - cell "샘플 텍스트" [ref=f16e1880]
+                        - cell [ref=f16e1881]:
+                          - button [ref=f16e1882]
+                      - row [ref=f16e1884]:
+                        - cell "샘플 텍스트" [ref=f16e1885]
+                        - cell "샘플 텍스트" [ref=f16e1886]
+                        - cell "샘플 텍스트" [ref=f16e1887]
+                        - cell "샘플 텍스트" [ref=f16e1888]
+                        - cell [ref=f16e1889]:
+                          - button [ref=f16e1890]
+                      - row [ref=f16e1892]:
+                        - cell "샘플 텍스트" [ref=f16e1893]
+                        - cell "샘플 텍스트" [ref=f16e1894]
+                        - cell "샘플 텍스트" [ref=f16e1895]
+                        - cell "샘플 텍스트" [ref=f16e1896]
+                        - cell [ref=f16e1897]:
+                          - button [ref=f16e1898]
+                      - row [ref=f16e1900]:
+                        - cell "샘플 텍스트" [ref=f16e1901]
+                        - cell "샘플 텍스트" [ref=f16e1902]
+                        - cell "샘플 텍스트" [ref=f16e1903]
+                        - cell "샘플 텍스트" [ref=f16e1904]
+                        - cell [ref=f16e1905]:
+                          - button [ref=f16e1906]
+                      - row [ref=f16e1908]:
+                        - cell "샘플 텍스트" [ref=f16e1909]
+                        - cell "샘플 텍스트" [ref=f16e1910]
+                        - cell "샘플 텍스트" [ref=f16e1911]
+                        - cell "샘플 텍스트" [ref=f16e1912]
+                        - cell [ref=f16e1913]:
+                          - button [ref=f16e1914]
+                      - row [ref=f16e1916]:
+                        - cell "샘플 텍스트" [ref=f16e1917]
+                        - cell "샘플 텍스트" [ref=f16e1918]
+                        - cell "샘플 텍스트" [ref=f16e1919]
+                        - cell "샘플 텍스트" [ref=f16e1920]
+                        - cell [ref=f16e1921]:
+                          - button [ref=f16e1922]
+                  - generic [ref=f16e1924]:
+                    - button "이전" [disabled] [ref=f16e1925]
+                    - button "1" [disabled] [ref=f16e1926]
+                    - button "2" [disabled] [ref=f16e1927]
+                    - button "3" [disabled] [ref=f16e1928]
+                    - button "다음" [disabled] [ref=f16e1929]
+  - button "Open Tanstack query devtools" [ref=f16e234] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=f16e9] [cursor=pointer]
+  - alert [ref=f16e13]
