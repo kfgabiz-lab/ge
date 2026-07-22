@@ -19,6 +19,10 @@ erDiagram
         BIGINT id PK "AUTO_INCREMENT"
         VARCHAR(255) template_slug "NOT NULL - page_template.slug 논리 참조"
         JSONB data_json "NOT NULL - 폼 필드 키:값 쌍"
+        BIGINT site_id "NULL - 소속 사이트(NULL=공통)"
+        VARCHAR(255) data_slug "NULL - 데이터 식별 slug (조회·수정·삭제 기준)"
+        VARCHAR(36) group_id "NULL - 다중 slug 저장 그룹 식별자(UUID)"
+        BIGINT count "NOT NULL DEFAULT 0 - 상세 조회수(FO 상세 API 호출마다 +1)"
         VARCHAR(100) created_by "NULL - 등록자"
         TIMESTAMP created_at "NOT NULL - 등록일시"
         VARCHAR(100) updated_by "NULL - 수정자"
@@ -42,10 +46,16 @@ erDiagram
 | `id` | BIGINT | NO | AUTO_INCREMENT | PK |
 | `template_slug` | VARCHAR(255) | NO | - | 어떤 페이지의 데이터인지 식별 (ex: `user-list`) |
 | `data_json` | JSONB | NO | - | 폼 필드 데이터 전체 (`{ "name": "홍길동", "status": "active" }`) |
+| `site_id` | BIGINT | YES | NULL | 소속 사이트 (NULL = 공통, 값 있으면 해당 사이트 전용) |
+| `data_slug` | VARCHAR(255) | YES | NULL | 데이터 식별 slug — 조회·수정·삭제 기준 (기존 `template_slug` 역할 계승) |
+| `group_id` | VARCHAR(36) | YES | NULL | 다중 slug 저장 그룹 식별자(UUID) — 단일 slug 저장 시 NULL |
+| `count` | BIGINT | NO | 0 | 상세 조회수 — FO 상세 API(`GET .../{id}`)와 무관하게, 별도 증가 API(`POST .../{id}/view-count`) 호출 시마다 +1. 중복방지 없음(무조건 +1) |
 | `created_by` | VARCHAR(100) | YES | NULL | 등록자 (로그인한 관리자 이메일) |
 | `created_at` | TIMESTAMP | NO | CURRENT_TIMESTAMP | 등록일시 |
 | `updated_by` | VARCHAR(100) | YES | NULL | 수정자 (로그인한 관리자 이메일) |
 | `updated_at` | TIMESTAMP | NO | CURRENT_TIMESTAMP | 수정일시 |
+
+> `count`는 `insertable=false, updatable=false`로 엔티티에 매핑되어 일반 저장(create/update) 플로우에서는 절대 값이 바뀌지 않는다 — 오직 조회수 증가 API의 원자적 `UPDATE ... SET "count" = "count" + 1`로만 변경된다(`count`는 PostgreSQL 예약어라 네이티브 쿼리에서 큰따옴표 인용 필요).
 
 **인덱스:**
 
@@ -100,11 +110,18 @@ CREATE TABLE page_data (
     id          BIGSERIAL PRIMARY KEY,
     template_slug VARCHAR(255) NOT NULL,
     data_json   JSONB NOT NULL DEFAULT '{}',
+    site_id     BIGINT,
+    data_slug   VARCHAR(255),
+    group_id    VARCHAR(36),
+    "count"     BIGINT NOT NULL DEFAULT 0,
     created_by  VARCHAR(100),
     created_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_by  VARCHAR(100),
     updated_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- 기존 테이블에 count 컬럼만 추가할 때(신규 컬럼 반영)
+ALTER TABLE page_data ADD COLUMN "count" BIGINT NOT NULL DEFAULT 0;
 
 -- 인덱스
 CREATE INDEX idx_page_data_slug
@@ -114,4 +131,4 @@ CREATE INDEX idx_page_data_slug_created
     ON page_data (template_slug, created_at DESC);
 ```
 
-> `ddl-auto: update` 설정으로 JPA Entity 작성 시 자동 생성됩니다. DDL은 참고용입니다.
+> 로컬 개발(`application-developer.yml`, `ddl-auto: update`)은 Entity 필드 추가만으로 컬럼이 자동 생성된다. 단 배포 환경(`application-dev.yml`, `ddl-auto: validate`)은 스키마 자동 변경이 차단되므로, 위 `ALTER TABLE` DDL을 **배포 전 수동으로 먼저 실행**해야 한다(프로젝트에 Flyway/Liquibase 등 마이그레이션 도구 없음 — 수동 DDL이 유일한 방법).
