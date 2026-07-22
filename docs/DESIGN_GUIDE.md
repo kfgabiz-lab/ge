@@ -60,7 +60,7 @@ Figma·페이지 구현 시 **해당 MD + 라이브 가이드(`src/components/gu
 
 | 작업 | 섹션 | 컴포넌트 | 아이콘 |
 |------|------|----------|--------|
-| `/search` | [SECTION_CLASS](./SECTION_CLASS_GUIDE.md) Search | [COMPONENT](./COMPONENT_GUIDE.md) `#search-80` | [ICON](./ICON_GUIDE.md) Search |
+| `/search` | [SECTION_CLASS](./SECTION_CLASS_GUIDE.md) Search · tablet 2열 규칙 | [COMPONENT](./COMPONENT_GUIDE.md) `#search-80` · 검색 패널 | [ICON](./ICON_GUIDE.md) Search · MO clear |
 | Cookie consent 모달 | [SECTION_CLASS](./SECTION_CLASS_GUIDE.md) Common | `CookieSettingsModal` · `CookiePreferencesModal` | `ico_cl.svg` · Check 22px |
 | Support 검색 툴바 | `support_*_search` | `guide_field--search` `#search-280` | `ico_search_24` · `ico_clear_12` |
 | Contact Us modals | [SECTION_CLASS](./SECTION_CLASS_GUIDE.md) Contact Us | `common_modal` | `ico_cl.svg` |
@@ -100,7 +100,7 @@ Figma·페이지 구현 시 **해당 MD + 라이브 가이드(`src/components/gu
 
 | 파일 | 용도 |
 |------|------|
-| `globals.css` | 토큰·버튼·`.guide_field`·FAQ·`common_banner_*`·`common_modal` |
+| `globals.css` | 토큰·전역 custom scrollbar·버튼·`.guide_field`·FAQ·`common_banner_*`·`common_modal` |
 | `components/guide.css` | 가이드 UI (`/guide` 전용) |
 | `components/gnb.css` | GNB·메가 메뉴·모바일 패널 |
 | `components/MainFooter.css` | `main_footer` |

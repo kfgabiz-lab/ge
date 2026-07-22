@@ -40,7 +40,7 @@ type VideoSource = {
 type SlideContent = {
   subtit: string;
   titLines: string[];
-  link: {
+  link?: {
     href: string;
     label: string;
   };
@@ -71,31 +71,29 @@ type MainSlide = SlideContent &
 
 const mainSlides: MainSlide[] = [
   {
-    id: "slide-2",
-    type: "image",
-    src: "/pub/img/main_sample.png",
-    alt: "Clean Energy Solutions",
-    subtit: "Sustainable Power Infrastructure",
-    titLines: ["Clean Energy", "for a Greener Future"],
-    link: { href: "", label: "Explore" },
-  },
-  {
     id: "slide-video-1",
     type: "video",
-    sources: [{ src: "/pub/img/video1.mp4", type: "video/mp4" }],
-    alt: "Powering the World, Lightening the Future",
-    subtit: "with Reliable Energy & Automation Solutions",
-    titLines: ["Powering the World, Lightening the Future"],
+    sources: [{ src: "/pub/img/main_001.webm", type: "video/webm" }],
+    alt: "Powering Industries Across North America",
+    subtit: "With a Strong North American Presence",
+    titLines: ["Powering Industries", "Across North America"],
     link: { href: "", label: "Explore" },
   },
   {
-    id: "slide-3",
-    type: "image",
-    src: "/pub/img/main_sample_03.jpg",
-    alt: "Smart Factory & Automation",
-    subtit: "Digital Transformation",
-    titLines: ["Smart Factory", "& Automation"],
-    link: { href: "", label: "Explore" },
+    id: "slide-video-2",
+    type: "video",
+    sources: [{ src: "/pub/img/main_002.webm", type: "video/webm" }],
+    alt: "Built for Performance, Ready to Deliver",
+    subtit: "With Integrated Manufacturing & Supply Capabilities",
+    titLines: ["Built for Performance,", "Ready to Deliver"],
+  },
+  {
+    id: "slide-video-3",
+    type: "video",
+    sources: [{ src: "/pub/img/main_003.webm", type: "video/webm" }],
+    alt: "Engineering Reliability, Delivering Confidence",
+    subtit: "With Trusted Engineering & Service Expertise",
+    titLines: ["Engineering Reliability,", "Delivering Confidence"],
   },
 ];
 
@@ -833,7 +831,6 @@ export default function VideoSwiper() {
                   alt={slide.alt ?? slide.titLines.join(" ")}
                   fill
                   sizes="100vw"
-                  priority={index === 0}
                 />
               )}
               <div className="sl_dim" aria-hidden="true" />
@@ -847,12 +844,22 @@ export default function VideoSwiper() {
                     </span>
                   ))}
                 </h2>
-                <a
-                  href={slide.link.href}
-                  className="btn-base btn-lv01 btn-lv01--line-solid"
-                >
-                  {slide.link.label}
-                </a>
+                {slide.link ? (
+                  <a
+                    href={slide.link.href}
+                    className="btn-base btn-lv01 btn-lv01--line-solid"
+                  >
+                    {slide.link.label}
+                  </a>
+                ) : (
+                  <span
+                    className="btn-base btn-lv01 btn-lv01--line-solid"
+                    aria-hidden="true"
+                    style={{ visibility: "hidden", pointerEvents: "none" }}
+                  >
+                    Explore
+                  </span>
+                )}
               </div>
             </div>
           </SwiperSlide>

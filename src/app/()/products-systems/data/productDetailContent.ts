@@ -592,7 +592,7 @@ export function getProductDetail(slug: string): ProductDetail | undefined {
 }
 
 export const productDetailNavItems = [
-  { id: "product-key-feature", label: "Key Feature" },
+  { id: "product-key-feature", label: "Key Features" },
   { id: "product-lineup", label: "Lineup" },
   { id: "product-downloads", label: "Downloads" },
   { id: "product-video", label: "Video" },
@@ -603,7 +603,7 @@ export const productDetailNavItems = [
 
 /** Figma 6788:8339 — Metasol MS (no Other Products) */
 export const metasolMsNavItems = [
-  { id: "product-key-feature", label: "Key Feature" },
+  { id: "product-key-feature", label: "Key Features" },
   { id: "product-lineup", label: "Lineup" },
   { id: "product-downloads", label: "Downloads" },
   { id: "product-video", label: "Video" },
@@ -613,7 +613,7 @@ export const metasolMsNavItems = [
 
 /** Figma 6843:64936 — H100 Plus (no Other Products) */
 export const h100PlusNavItems = [
-  { id: "product-key-feature", label: "Key Feature" },
+  { id: "product-key-feature", label: "Key Features" },
   { id: "product-lineup", label: "Lineup" },
   { id: "product-downloads", label: "Downloads" },
   { id: "product-video", label: "Video" },
@@ -623,7 +623,7 @@ export const h100PlusNavItems = [
 
 /** Figma 6788:7460 — Susol UL ACB (no Video / Other Products) */
 export const susolUlSmartMccbNavItems = [
-  { id: "product-key-feature", label: "Key Feature" },
+  { id: "product-key-feature", label: "Key Features" },
   { id: "product-lineup", label: "Lineup" },
   { id: "product-downloads", label: "Downloads" },
   { id: "product-markets", label: "Markets" },

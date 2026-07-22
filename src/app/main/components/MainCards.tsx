@@ -33,7 +33,7 @@ const cardImagesById: Record<string, Pick<CardItem, "image" | "imageAlt">> = {
     imageAlt: "Industrial",
   },
   "commercial-residential": {
-    image: "/pub/img/main/card_06.png",
+    image: "/pub/img/main/card_06.webp",
     imageAlt: "Commercial & Residential",
   },
 };

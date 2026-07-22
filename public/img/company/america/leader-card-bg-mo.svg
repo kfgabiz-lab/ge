@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="335" height="426" viewBox="0 0 335 426" preserveAspectRatio="none" fill="none">
+  <rect width="335" height="426" fill="url(#leaderPortraitBgMo)"/>
+  <defs>
+    <radialGradient id="leaderPortraitBgMo" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(16.75 0 0 21.3 0 42.6)">
+      <stop stop-color="#4D73A6"/>
+      <stop offset="0.25" stop-color="#39598C"/>
+      <stop offset="0.5" stop-color="#264073"/>
+      <stop offset="0.75" stop-color="#1A2A50"/>
+      <stop offset="1" stop-color="#0D142E"/>
+    </radialGradient>
+  </defs>
+</svg>

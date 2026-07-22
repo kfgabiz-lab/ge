@@ -670,8 +670,9 @@ export const icoItems: IcoItem[] = [
     name: "checkbox",
     size: 22,
     color: "#DDD",
-    usage: "체크박스 미선택 (PNG)",
-    usedIn: "GuideFieldIcons (guideCheckboxIconsPng)",
+    usage: "체크박스 미선택 (PNG · Figma 2030:31397)",
+    usedIn:
+      "GuideFieldIcons (guideCheckboxIconsContactConsent), CookiePreferencesModal, Contact Us, Training forms",
   },
   {
     id: "ico_checkbox_on_22",
@@ -681,8 +682,9 @@ export const icoItems: IcoItem[] = [
     name: "checkbox_checked",
     size: 22,
     color: "primary",
-    usage: "체크박스 선택 (PNG)",
-    usedIn: "GuideFieldIcons (guideCheckboxIconsPng)",
+    usage: "체크박스 선택 (PNG · Figma 2030:31398)",
+    usedIn:
+      "GuideFieldIcons (guideCheckboxIconsContactConsent), CookiePreferencesModal, Contact Us, Training forms",
   },
   {
     id: "ico_password_off_22",
@@ -753,7 +755,19 @@ export const icoItems: IcoItem[] = [
     color: "#888",
     usage: "검색어·필터 초기화",
     usedIn:
-      "TechHubSearch, DownloadCenterSearch, DownloadCenterActiveFilters, WhereToBuySearch, SearchAllHero, SearchTabActiveFilters",
+      "TechHubSearch, DownloadCenterSearch, DownloadCenterActiveFilters, WhereToBuySearch, SearchAllHero, SearchTabActiveFilters · Documents MO active-filter는 CSS brightness(25%)로 #222 적용",
+  },
+  {
+    id: "ico_clear_12_black",
+    fileName: "ico_clear_12_black.svg",
+    path: "/pub/ico/ico_clear_12_black.svg",
+    category: "search",
+    name: "clear",
+    size: 12,
+    color: "#222",
+    usage: "Search Hero·404·PC GNB 검색어 초기화",
+    usedIn:
+      "SearchAllHero (Figma 6571:102541), NotFoundSearch (7334:130802), GnbSearchPanel (.gnb_search__clear-icon-pc)",
   },
   {
     id: "ico_gnb_search_clear_24",

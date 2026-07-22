@@ -171,7 +171,10 @@ Hero 부제는 `__sub` — desktop 24px / weight **300** / line-height 34px (`ma
 - 루트: `markets_solutions_panel` · `layout` prop → `--grouped` | `--stacked`
 - **grouped** — commercial-residential · public-infrastructure · 2 solution groups + diagrams
 - **stacked** — oil-gas-mining · solution list + diagram (Figma 5633:85749)
-- **diagram-only** — industrial (`groups: []`)
+- **diagram-only** — industrial (`groups: []`) · mobile categories cards (Figma 7465:147605)
+- **mobile grouped** — panel `#f5f7fa` · `padding: 30px 24px` · panel 내 group 간격 `40px` · block/diagram `24px` · multi-block `24px` · title 24/34 · body 15/23 · key 14/20 · diagram 287/154 · power diagram white inset `10px` (Figma 7603:181474)
+- **mobile stacked** — panel 투명 · block 카드 `display: flex; flex-direction: column` · 카드 간 `14px` · 카드 `padding: 30px 24px` · title/body `6px` · body/capabilities `12px` · 두 번째 카드 diagram `287×400` crop (Figma 6858:171384)
+- **mobile industrial** — panel `#f5f7fa` `30px 24px` · diagram PC/MO 분리 (`diagram.png` / `diagram_mo.png` 287×166) + navy header category cards · gap `14px` (Figma 7465:147605)
 - 데이터: `marketsCommercialSolutionsPanel.ts` · `marketsPublicInfrastructureSolutionsPanel.ts` · `marketsOilGasMiningSolutionsPanel.ts` · `marketsIndustrialSolutionsPanel.ts`
 - 가이드 미리보기: grouped(commercial-residential · public-infrastructure) + stacked (`SectionGuidePreviews.tsx`)
 
@@ -198,18 +201,27 @@ Hero 부제는 `__sub` — desktop 24px / weight **300** / line-height 34px (`ma
 
 - `markets_sustainability` — 2열 카드 그리드 (`SustainabilityCard[]`)
 - `markets_smart_grid` — Use Case / Operation 블록 + `markets_smart_grid__diagram` 이미지 (`diagram.png` · Figma 4689:72050)
+- `markets_smart_grid` mobile — body `#f5f7fa` · `30px` 상하 · content `24px` · inner `gap: 40px` · block `gap: 24px` · cards `gap: 10px` · card `#fff` `padding: 24px` · tit 24/34 · card tit 18/26 · desc 15/23 · diagram `287/160` crop (Figma 7465:145850)
 - 라이브: `/markets/power-grid` · 가이드 미리보기: `marketsPowerGridContent.ts` 데이터
 
 ### `markets_benefits` · `markets_why`
 
 - **benefits** — `public/img/markets/benefits/benefit_01~10.jpg` · `marketsBenefitImages` (`marketsContent.ts`) · 페이지별 이미지 순서는 각 `markets*Content.ts`
-- **why** — `.icon_area img` · 공통 `img_why_*.svg` · data-center `data-center/why/why_*.svg`
+- **why** — `.icon_area img` · 공통 `img_why_*.svg` · data-center `data-center/why/why_*.svg` (Figma 7465:155034) · power-grid `power-grid/why/why_*.svg` (Figma 7465:153537) · industrial `industrial/why/why_*.svg` · oil-gas-mining `oil-gas-mining/why/why_*.svg` (Figma 7465:154000)
 - **why mobile** — `section.markets_why` 공용 (`markets.css` `max-width: 780px`) · `bg_section_main_info_mo.png` · `.inner` `70px 20px` · 제목 30px/40px
 
 ### `common_faq` (공용)
 
 - 루트: `common_faq` · `CommonFaq.tsx` · `globals.css`
 - **mobile** (`max-width: 780px`): Figma 5966:63556 · Markets · Service Center 등 전 페이지 공용 · 상세: [SECTION_CLASS_GUIDE.md](./SECTION_CLASS_GUIDE.md) Common — `common_faq`
+- **애니메이션**: `faq_answer_wrap` grid 0fr→1fr · answer opacity/`translateY` · 아이콘 rotate · reduced-motion 대응
+
+### `highlight_news` (공용)
+
+- 루트: `highlight_news` · `--main` / `--markets` · `HighlightNewsSection.tsx` · `globals.css`
+- **이미지**: `public/img/devices-systems/highlights/highlight_01~03.jpg` · Figma 7577:84697 · Main·Markets·Products 공통
+- **`--markets .tit`**: 2줄 말줄임
+- 상세: [SECTION_CLASS_GUIDE.md](./SECTION_CLASS_GUIDE.md) Common — `highlight_news`
 
 ### Search (`/search`) — `search.css`
 
@@ -220,6 +232,8 @@ Hero 부제는 `__sub` — desktop 24px / weight **300** / line-height 34px (`ma
   - 루트에 `devices_product_downloads` 병기 → `DevicesProductDownloadsFilter*` 재사용 (`devices-product-detail.css`)
   - Products/Documents: `SearchTabActiveFilters` active chips
   - Documents: `SearchDocumentsCard` (All 탭 2열 `search_all__document` · 탭 full-width `search_documents__card`)
+- **tablet 600~780px** — All Product/Media · Products 탭 · Media 탭 2열 (`40px 20px`), list divider 숨김
+- **mobile 599px 이하** — 위 카드/리스트 1열
 - **페이지 조합** — `SearchAllPage` = `SearchAllHero` + `SearchAllTabContent`
 - 라이브: `/search` · Figma 4701:83900 (All) · 84687 · 85037 · 84177 · 84292
 
@@ -306,7 +320,7 @@ Hero 부제는 `__sub` — desktop 24px / weight **300** / line-height 34px (`ma
 - **variant** — `blog` · `press` · `events` · `media` (`CompanyArticleDetail.tsx`)
 - **media** (`--media`) — `/company/articles/detail` · `heroVideo` · `section-title` / `subsection-title` / `pullquote` / `content-img` (Figma 5565:134495)
 - **blog** — tags row · `/company/blog/detail`
-- **press** — optional `afterHero` YouTube · `/company/press/detail`
+- **press** — hero · highlight bullets · body (Figma 7575:82740) · `/company/press/detail`
 - **events** (`--events`) — `/company/events/detail` · `eventsMeta`: Venue · Dates (우측 정렬) · hero image
 
 #### `company-article-detail__pager` (blog · press · events · media 공통)

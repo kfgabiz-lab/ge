@@ -63,7 +63,7 @@
 | `ui` | UI | 39 |
 | `form` | Form | 10 |
 | `breadcrumb` | Breadcrumb | 2 |
-| `search` | Search / Global | 9 |
+| `search` | Search / Global | 10 |
 | `location` | Location / Contact | 9 |
 | `media` | Media | 1 |
 | `sns` | SNS | 6 |
@@ -139,7 +139,7 @@
 |------|-----------------|--------------|
 | Checkbox SVG (기본) | `ico_check.svg` | `ico_checked.svg` |
 | Downloads 필터 | `ico_check_block.svg` | `ico_checked_black.svg` |
-| Checkbox PNG | `ico_checkbox_off_22.png` | `ico_checkbox_on_22.png` |
+| Checkbox PNG | `ico_checkbox_off_22.png` | `ico_checkbox_on_22.png` (Cookie Preferences · Contact Us · Training) |
 | Radio PNG | `ico_radio_off_22.png` | `ico_radio_on_22.png` |
 | Password PNG | `ico_password_off_22.png` | `ico_password_on_22.png` |
 
@@ -154,7 +154,8 @@ MUI 연동: `GuideCheckboxIcon`, `guideCheckboxIcons*` — [COMPONENT_GUIDE.md](
 | `ico_gnb_search_ai_32.svg` | 32×36 | GNB 검색 패널 AI 마크 (`#gnb-search-panel`) |
 | `ico_global_24.svg` | 24 | 글로벌 리전 트리거 (스크롤 헤더) · 라벨 **America** |
 | `ico_global_24_white.svg` | 24 | 글로벌 리전 트리거 (최상단) · 라벨 **America** |
-| `ico_clear_12.svg` | 12 | 검색어·필터 초기화 (`/search` Hero·active chips 포함) |
+| `ico_clear_12.svg` | 12 | 검색어·필터 초기화 (`/search` Hero·active chips 포함) · Documents MO active-filter는 `brightness(25%)`로 `#222` 적용 |
+| `ico_clear_12_black.svg` | 12 | Search Hero·404·PC GNB 검색어 초기화 `#222` (Figma `6571:102541` · `7334:130802`) |
 | `ico_gnb_search_clear_24.svg` | 24 | 모바일 GNB 검색어 초기화 (Figma `7334:131929`) |
 | `ico_right_14.svg` | 14 | 검색 product path chevron (`search_all__product-path-icon`) |
 | `ico_close_24.svg` | 24 | GNB 검색 패널 닫기 |
@@ -167,6 +168,7 @@ MUI 연동: `GuideCheckboxIcon`, `guideCheckboxIcons*` — [COMPONENT_GUIDE.md](
 | `ico_404_download_80.svg` | 80 | Helpful Links — Visit Download Center |
 | `ico_404_contact_80.svg` | 80 | Helpful Links — Contact Us |
 | `ico_404_request_80.svg` | 80 | Helpful Links — Request for Service |
+| `ico_clear_12_black.svg` | 12 | Search clear (Figma `7334:130802`) |
 
 GNB 배치·상태: [GNB_GUIDE.md](./GNB_GUIDE.md) · `gnbGuide.ts`
 
@@ -175,7 +177,8 @@ GNB 배치·상태: [GNB_GUIDE.md](./GNB_GUIDE.md) · `gnbGuide.ts`
 | 파일 / 유틸 | 용도 |
 |-------------|------|
 | `ico_search_24.svg` | Hero 검색 버튼 (`SearchAllHero`) |
-| `ico_clear_12.svg` | Hero clear · `SearchTabActiveFilters` chip/remove |
+| `ico_clear_12_black.svg` | Hero clear `#222` (Figma `6571:102541`) |
+| `ico_clear_12.svg` | `SearchTabActiveFilters` chip/remove · Documents MO chip/clear `#222` CSS filter |
 | `ico_right_14.svg` | `search_all__product-path-icon` (CSS background) |
 | `icon_arrow-14` | `btn-text-30` Explore (`search_all__explore`) |
 | `ico_copy_14.svg` · `ico_download.svg` | Documents 카드 액션 (`search_all` · `search_documents`) |

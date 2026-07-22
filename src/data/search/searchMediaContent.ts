@@ -29,7 +29,7 @@ const mediaPool: SearchMediaItem[] = [
     id: "sm-2",
     href: "/company/tech-hub/detail",
     image: "/pub/img/company/press/detail_video_poster.png",
-    category: "LS ELECTRIC Tech Hub",
+    category: "Tech Hub",
     title: "[ACB] Response Manual for Electrical Closing Failure DC Device",
     highlight: "DC Device",
     variant: "video",

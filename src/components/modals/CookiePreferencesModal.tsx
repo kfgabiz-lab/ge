@@ -13,7 +13,7 @@ import {
 } from "@/data/common/cookieSettingsContent";
 import {
   GuideCheckboxIcon,
-  guideCheckboxIconsDefault,
+  guideCheckboxIconsContactConsent,
 } from "@/components/form/GuideFieldIcons";
 import { useModalFocusTrap } from "@/lib/useModalFocusTrap";
 
@@ -144,16 +144,12 @@ export default function CookiePreferencesModal({
                     checked={preferences[category.id]}
                     disabled={category.required}
                     icon={
-                      <GuideCheckboxIcon
-                        uncheckedSrc={guideCheckboxIconsDefault.uncheckedSrc}
-                        checkedSrc={guideCheckboxIconsDefault.checkedSrc}
-                      />
+                      <GuideCheckboxIcon {...guideCheckboxIconsContactConsent} />
                     }
                     checkedIcon={
                       <GuideCheckboxIcon
                         checked
-                        uncheckedSrc={guideCheckboxIconsDefault.uncheckedSrc}
-                        checkedSrc={guideCheckboxIconsDefault.checkedSrc}
+                        {...guideCheckboxIconsContactConsent}
                       />
                     }
                     onChange={(_, checked) =>

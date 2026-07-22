@@ -6,9 +6,9 @@ export const requestForTrainingAssets = {
 } as const;
 
 export const requestForTrainingPage = {
-  title: "Request for Training",
+  title: "Training Request",
   description:
-    "We open up a brighter future through efficient and convenient energy solutions",
+    "The skills you build today ensure tomorrow's success. Request your training today.",
 } as const;
 
 export type RequestForTrainingStepNumber = 1 | 2 | 3 | 4;

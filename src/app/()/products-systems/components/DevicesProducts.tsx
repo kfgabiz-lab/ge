@@ -51,16 +51,11 @@ export default function DevicesProducts({
                     loading={embedded ? "eager" : "lazy"}
                     decoding="async"
                     src={item.image}
-                    alt={item.title}
+                    alt={item.title.replace(/\n/g, " ")}
                   />
                 </div>
                 <h3 className="tit">
-                  {item.title.split("\n").map((line, index) => (
-                    <span key={`${item.id}-line-${index}`}>
-                      {index > 0 ? <br /> : null}
-                      {line}
-                    </span>
-                  ))}
+                  <span>{item.title.replace(/\n/g, " ")}</span>
                 </h3>
               </Link>
             );

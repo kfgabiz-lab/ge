@@ -9,22 +9,17 @@ export const pressDetailMeta = {
   dates: "Feb 02, 2026~ Feb 04, 2026",
 };
 
+/** Figma 7575:82740 — article hero */
 export const pressDetailHero = {
-  src: "/pub/img/company/events/detail_hero.png",
-  alt: "ELECS KOREA 2026 exhibition booth",
+  src: "/pub/img/company/press/detail_hero.png",
+  alt: "LS ELECTRIC team at Utah MCM Engineering II expansion site",
 };
 
-/** Figma 3525:39831 — devices_product_video__player 패턴 */
-export const pressDetailYoutube = {
-  videoId: "WtQN9rcdI-0",
-  title: "LS ELECTRIC MCCB Line Introduction (ENG)",
-  poster: "/pub/img/company/press/detail_video_poster.png",
-};
-
+/** Figma 7575:82740 — article highlight bullets */
 export const pressDetailBullets = [
-  "LS ELECTRIC participated in ELECS KOREA 2026, held at COEX in Seoul from February 4\u20136, 2026, under the theme \u201cSeeing the Future of the Global Power Industry on Korea\u2019s Energy Highway.",
-  "The company showcased its HVDC full lineup \u2014 including converter transformers, STATCOM, and valves \u2014 as key solutions for building the national power grid. LS ELECTRIC also unveiled next-generation products tailored for AI data centers, highlighting its cutting-edge power infrastructure solutions.",
-  "The event marked the 30th anniversary of the exhibition, which was rebranded as ELECS KOREA and declared its ambition to grow into a global-scale trade show",
+  "Utah Inland Port Authority decides on tax relief for the MCM Engineering II expansion project",
+  "To invest $168 million by 2030 to build three new production buildings",
+  "Accelerating localization strategy by establishing new business bases in Dallas and Atlanta, U.S.",
 ];
 
 export const pressDetailParagraphs = [

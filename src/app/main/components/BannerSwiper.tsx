@@ -100,7 +100,6 @@ export default function BannerSwiper() {
                     className="sl_img"
                     fill
                     sizes="120px"
-                    priority={index === 0}
                   />
                 </div>
                 <div className="txt_area">

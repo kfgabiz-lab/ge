@@ -16,12 +16,12 @@ import {
   eventsDetailPager,
 } from "@/app/()/company/data/eventsDetailContent";
 import {
+  pressDetailBullets,
   pressDetailDate,
   pressDetailHero,
   pressDetailPager,
   pressDetailParagraphs,
   pressDetailTitle,
-  pressDetailYoutube,
 } from "@/app/()/company/data/pressDetailContent";
 import {
   mediaArticleDetailBullets,
@@ -32,7 +32,6 @@ import {
   mediaArticleDetailTags,
   mediaArticleDetailTailParagraphs,
 } from "@/app/()/company/data/mediaArticleDetailContent";
-import DevicesProductVideoPlayer from "@/components/video/DevicesProductVideoPlayer";
 import { pressFeatured } from "@/app/()/company/data/pressListContent";
 import CompanyPressEmpty from "@/app/()/company/components/CompanyPressEmpty";
 import CompanyBlogEmpty from "@/app/()/company/components/CompanyBlogEmpty";
@@ -793,18 +792,17 @@ export function CompanyArticleDetailSectionPreviews() {
           title={pressDetailTitle}
           date={pressDetailDate}
           heroImage={pressDetailHero}
-          afterHero={
-            <DevicesProductVideoPlayer
-              youtubeVideoId={pressDetailYoutube.videoId}
-              title={pressDetailYoutube.title}
-            />
-          }
           pagerAriaLabel="Press post navigation"
           prev={pressDetailPager.prev}
           next={pressDetailPager.next}
           listHref="/company/press"
         >
           <div className={articleDetailClass("body")}>
+            <ul className={articleDetailClass("list")}>
+              {pressDetailBullets.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
             {pressDetailParagraphs.slice(0, 2).map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
