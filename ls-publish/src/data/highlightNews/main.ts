@@ -5,9 +5,7 @@ export const mainHighlightNewsItems: HighlightNewsItem[] = [
   {
     id: "main-news-1",
     href: "",
-    image: "/pub/img/main/news_01.jpg",
-    imageAlt:
-      "LS ELECTRIC Takes Aim at Next-Generation Data Center DC Power Market",
+    image: "/pub/img/devices-systems/highlights/highlight_01.jpg",
     tag: "Press",
     title:
       "LS ELECTRIC Takes Aim at Next-Generation Data Center ‘DC Power’ Market",
@@ -16,7 +14,7 @@ export const mainHighlightNewsItems: HighlightNewsItem[] = [
   {
     id: "main-news-2",
     href: "",
-    image: "/pub/img/main/news_01.jpg",
+    image: "/pub/img/devices-systems/highlights/highlight_02.jpg",
     imageAlt:
       "LS ELECTRIC Continues Winning Orders for U.S. Data Center Power Infrastructure",
     tag: "Blog",
@@ -27,7 +25,7 @@ export const mainHighlightNewsItems: HighlightNewsItem[] = [
   {
     id: "main-news-3",
     href: "",
-    image: "/pub/img/main/news_01.jpg",
+    image: "/pub/img/devices-systems/highlights/highlight_03.jpg",
     imageAlt:
       "LS ELECTRIC Surpasses 60 Billion KRW in Japanese ESS Market Orders",
     tag: "Press",

@@ -28,7 +28,7 @@
   --btn-lv01-h: 52px;
   --btn-lv01-min-w: 220px;
   --btn-lv01-px: 24px;
-  --btn-lv02-h: 46px;
+  --btn-lv02-h: 42px;
   --btn-lv02-min-w: 150px;
   --btn-lv02-px: 24px;
   --btn-lv03-h: 42px;
@@ -46,27 +46,16 @@ html {
   overflow-y: scroll;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+}
+
+* {
   scrollbar-width: thin;
   scrollbar-color: #888 #e8e8e8;
 }
 
-html *::-webkit-scrollbar {
-  width: 3px;
-  height: 3px;
-}
-
-html *::-webkit-scrollbar-track {
-  background: #e8e8e8;
-  border-radius: 2px;
-}
-
-html *::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 2px;
-}
-
 *::-webkit-scrollbar {
   width: 3px;
+  height: 3px;
 }
 
 *::-webkit-scrollbar-track {
@@ -78,6 +67,11 @@ html *::-webkit-scrollbar-thumb {
   background: #888;
   border-radius: 2px;
 }
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
 html,
 body {
   max-width: 100%;
@@ -613,7 +607,7 @@ section .icon_arrow-18 {
   section.common_banner_01 .img_area::after {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgb(0 0 0 / 55%) 0%, rgb(0 0 0 / 25%) 55%, rgb(0 0 0 / 10%) 100%);
+    /* background: linear-gradient(90deg, rgb(0 0 0 / 55%) 0%, rgb(0 0 0 / 25%) 55%, rgb(0 0 0 / 10%) 100%); */
     content: "";
   }
 
@@ -655,7 +649,7 @@ section .icon_arrow-18 {
   section.common_banner_01 .btn_area {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 14px;
     margin-top: 40px;
     width: 100%;
     justify-content: center;
@@ -1701,6 +1695,7 @@ section.common_faq .faq_question {
   background: none;
   border: none;
   cursor: pointer;
+  transition: padding 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 section.common_faq .faq_question .txt {
@@ -1724,9 +1719,9 @@ section.common_faq .faq_icon {
   border: 1px solid #ddd;
   border-radius: 50%;
   transition:
-    transform 0.35s ease,
-    background-color 0.35s ease,
-    border-color 0.35s ease;
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 }
 section.common_faq .faq_item.is-open .faq_icon {
   transform: rotate(-180deg);
@@ -1744,7 +1739,7 @@ section.common_faq .faq_item:hover .faq_icon {
 section.common_faq .faq_answer_wrap {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.35s ease;
+  transition: grid-template-rows 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 section.common_faq .faq_item.is-open .faq_answer_wrap {
@@ -1753,15 +1748,23 @@ section.common_faq .faq_item.is-open .faq_answer_wrap {
 
 section.common_faq .faq_answer_inner {
   overflow: hidden;
+  min-height: 0;
 }
 
 section.common_faq .faq_answer {
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
 section.common_faq .faq_item.is-open .faq_answer {
   opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.35s ease 0.08s,
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.05s;
 }
 
 @media (min-width: 781px) {
@@ -2835,6 +2838,8 @@ section.company-blog-list .guide_field .MuiOutlinedInput-root:has(.MuiSelect-ico
 .cookie_preferences_modal__item-desc {
   margin: 6px 0 0 34px;
   color: #666;
+  font-size: 16px;
+  line-height: 24px;
 }
 
 .cookie_preferences_modal__actions {
@@ -2889,17 +2894,18 @@ section.company-blog-list .guide_field .MuiOutlinedInput-root:has(.MuiSelect-ico
   }
 
   .cookie_preferences_modal .common_modal__body {
-    padding: 14px 40px 0;
+    padding: 26px 40px 0;
     font-size: 16px;
     line-height: 24px;
   }
 
   .cookie_preferences_modal__list {
-    margin: 26px 20px 0;
+    margin: 40px 20px 0;
   }
 
   .cookie_preferences_modal .common_modal__foot {
-    padding-top: 30px;
+    padding-top: 50px;
+    padding-bottom: 50px;
   }
 }
 
@@ -2938,11 +2944,13 @@ section.company-blog-list .guide_field .MuiOutlinedInput-root:has(.MuiSelect-ico
   }
 
   .cookie_preferences_modal .common_modal__body {
-    padding: 20px 24px 24px;
+    margin-right: 8px;
+    padding: 24px 16px 24px 24px;
     font-size: 15px;
     line-height: 23px;
+    overscroll-behavior: contain;
     scrollbar-width: thin;
-    scrollbar-color: #888 transparent;
+    scrollbar-color: #888 #e8e8e8;
   }
 
   .cookie_preferences_modal .common_modal__body::-webkit-scrollbar {
@@ -2950,7 +2958,8 @@ section.company-blog-list .guide_field .MuiOutlinedInput-root:has(.MuiSelect-ico
   }
 
   .cookie_preferences_modal .common_modal__body::-webkit-scrollbar-track {
-    background: transparent;
+    border-radius: 3px;
+    background: #e8e8e8;
   }
 
   .cookie_preferences_modal .common_modal__body::-webkit-scrollbar-thumb {
@@ -2959,7 +2968,7 @@ section.company-blog-list .guide_field .MuiOutlinedInput-root:has(.MuiSelect-ico
   }
 
   .cookie_preferences_modal__list {
-    margin-top: 20px;
+    margin-top: 30px;
   }
 
   .cookie_preferences_modal__item + .cookie_preferences_modal__item {
@@ -2982,7 +2991,22 @@ section.company-blog-list .guide_field .MuiOutlinedInput-root:has(.MuiSelect-ico
   }
 
   .cookie_preferences_modal__actions {
-    display: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px 24px 24px;
+    border-top: 1px solid #e8e8e8;
+    background: #fff;
+  }
+
+  .cookie_preferences_modal__btn {
+    flex: none;
+    width: 100%;
+    min-width: 0;
+    height: 42px;
+    padding: 0 16px;
+    font-size: 14px;
+    line-height: 20px;
   }
 }
 
@@ -3185,6 +3209,11 @@ section.highlight_news--markets .section_tit {
     font-weight: 500;
     line-height: 32px;
     color: #222;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
   }
 
   section.highlight_news .date {
@@ -3319,6 +3348,11 @@ section.highlight_news--markets .section_tit {
     letter-spacing: -0.01em;
     color: #222;
     word-break: break-word;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
   }
 
   section.highlight_news--markets .date {
@@ -3330,19 +3364,26 @@ section.highlight_news--markets .section_tit {
   }
 }
 
-/* Highlights — markets variant tablet 2-col */
+/* Highlights — main / markets tablet 2-col */
 @media (min-width: 640px) and (max-width: 1200px) {
+  section.highlight_news--main .highlight_news__list,
   section.highlight_news--markets .highlight_news__list {
+    display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  section.common_faq .faq_question,
   section.common_faq .faq_answer_wrap,
   section.common_faq .faq_answer,
   section.common_faq .faq_icon {
     transition: none;
+  }
+
+  section.common_faq .faq_answer {
+    transform: none;
   }
 
   .common_modal__dim,

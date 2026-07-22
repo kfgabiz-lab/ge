@@ -51,12 +51,53 @@ section.markets_references .txt {
   }
 }
 
+@keyframes markets-solutions-hotspot-ripple {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.6);
+  }
+
+  25% {
+    box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.3);
+  }
+
+  70%,
+  100% {
+    box-shadow: 0 0 0 12px rgba(255, 255, 255, 0);
+  }
+}
+
+section.markets_solutions .markets_solutions__hotspot::before,
+section.markets_solutions .markets_solutions__hotspot::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-sizing: border-box;
+  pointer-events: none;
+  content: "";
+  animation: markets-solutions-hotspot-ripple 2s ease-out infinite;
+ 
+}
+
+section.markets_solutions .markets_solutions__hotspot::after {
+  animation-delay: 1s;
+}
+
+section.markets_solutions .markets_solutions__hotspot:hover::before,
+section.markets_solutions .markets_solutions__hotspot:hover::after,
+section.markets_solutions .markets_solutions__hotspot.is-active::before,
+section.markets_solutions .markets_solutions__hotspot.is-active::after {
+  animation: none;
+  box-shadow: none;
+}
+
 section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
   animation: markets-hero-scroll-down-bounce 2.4s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
   will-change: transform, opacity;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  section.markets_solutions .markets_solutions__hotspot::before,
+  section.markets_solutions .markets_solutions__hotspot::after,
   section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
     animation: none;
   }
@@ -181,11 +222,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
   }
 
   section.markets_hero.markets_hero--key-visual .hero_img::after {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgb(3 5 17 / 50%) 17.79%, rgb(21 35 119 / 0%) 100%);
-    pointer-events: none;
-    content: "";
+    display: none;
   }
 
   section.markets_hero.markets_hero--key-visual .markets_hero__content {
@@ -466,9 +503,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
     align-self: flex-end;
     display: flex;
     flex-direction: column;
-    white-space: pre-line;
     margin-bottom: 150px;
-    
   }
 
   section.markets_intro .markets_intro__txt p + p {
@@ -476,7 +511,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
   }
 
   section.markets_intro .markets_intro__txt strong {
-    color: #e60040;
+    /* color: #e60040; */
     font-weight: 400;
   }
 
@@ -810,16 +845,17 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
   section.markets_solutions_panel--grouped .markets_solutions_panel__block {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0;
   }
 
   section.markets_solutions_panel--stacked .markets_solutions_panel__block {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 0;
   }
 
   section.markets_solutions_panel .markets_solutions_panel__block-title {
+    margin: 0;
     color: #222;
     font-size: 34px;
     font-weight: 600;
@@ -832,6 +868,16 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
     flex-direction: column;
   }
 
+  section.markets_solutions_panel .markets_solutions_panel__block-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  section.markets_solutions_panel--stacked .markets_solutions_panel__block-copy {
+    gap: 20px;
+  }
+
   section.markets_solutions_panel .markets_solutions_panel__block-body:has(.markets_solutions_panel__block-key) {
     gap: 14px;
   }
@@ -841,12 +887,14 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
   }
 
   section.markets_solutions_panel .markets_solutions_panel__block-text {
+    margin: 0;
     color: #222;
     font-size: 16px;
     line-height: 24px;
   }
 
   section.markets_solutions_panel .markets_solutions_panel__block-key {
+    margin: 0;
     color: #0f1f45;
     font-size: 15px;
     line-height: 23px;
@@ -899,6 +947,8 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
 
   section.markets_solutions_panel--grouped .markets_solutions_panel__diagram {
     margin: 0;
+    padding: 60px;
+    background: #fff;
   }
 
   section.markets_solutions_panel--stacked .markets_solutions_panel__diagram {
@@ -915,6 +965,96 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
     display: block;
     width: 100%;
     height: auto;
+  }
+
+  section.markets_solutions_panel .markets_solutions_panel__diagram-img--mo {
+    display: none;
+  }
+
+  section.markets_solutions_panel .markets_solutions_panel__categories {
+    display: none;
+  }
+
+  /* Industrial — chart image + HTML category cards (Figma 7603:189143) */
+  .markets-page--industrial
+    section.markets_solutions_panel--categories
+    .markets_solutions_panel__diagram {
+    margin: 0;
+  }
+
+  .markets-page--industrial
+    section.markets_solutions_panel--categories
+    .markets_solutions_panel__categories {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+    width: 100%;
+    margin-top: 40px;
+  }
+
+  .markets-page--industrial
+    section.markets_solutions_panel--categories
+    .markets_solutions_panel__category {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    width: 100%;
+  }
+
+  .markets-page--industrial
+    section.markets_solutions_panel--categories
+    .markets_solutions_panel__category-tit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 10px;
+    border-radius: 4px;
+    background: #0f1f45;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+    text-align: center;
+  }
+
+  .markets-page--industrial
+    section.markets_solutions_panel--categories
+    .markets_solutions_panel__category-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 4px 0 0;
+    padding: 24px;
+    list-style: none;
+    min-height: 180px;
+    box-sizing: border-box;
+    background: #fff;
+    border: 1px solid rgba(15, 31, 69, 0.3);
+    border-radius: 4px;
+  }
+
+  .markets-page--industrial
+    section.markets_solutions_panel--categories
+    .markets_solutions_panel__category-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    color: #222;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .markets-page--industrial
+    section.markets_solutions_panel--categories
+    .markets_solutions_panel__category-item::before {
+    content: "";
+    flex: 0 0 auto;
+    width: 4px;
+    height: 4px;
+    margin-top: 10px;
+    background: #888;
   }
 
   section.markets_references {
@@ -1263,6 +1403,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
       color 0.2s ease;
   }
 
+  section.markets_solutions .markets_solutions__hotspot:hover,
   section.markets_solutions .markets_solutions__hotspot.is-active {
     background: var(--color-accent);
     box-shadow: 0 4px 5px rgb(0 0 0 / 40%);
@@ -1283,6 +1424,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
     transition: color 0.2s ease;
   }
 
+  section.markets_solutions .markets_solutions__hotspot:hover .markets_solutions__hotspot-label,
   section.markets_solutions .markets_solutions__hotspot.is-active .markets_solutions__hotspot-label {
     color: #fff;
   }
@@ -1407,7 +1549,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
     width: 80px;
     height: 80px;
     overflow: hidden;
-    background: #ddd;
+    /* background: #ddd; */
   }
 
   section.markets_solutions .markets_solutions__product-img img {
@@ -1527,6 +1669,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
   }
 
   section.markets_why .markets_why__item .icon_area img {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -1544,6 +1687,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
     font-size: 16px;
     line-height: 24px;
     opacity: 0.8;
+    max-width: 394px;
   }
 
   section.markets_products {
@@ -1754,11 +1898,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
   }
 
   section.markets_hero.markets_hero--key-visual .hero_img::after {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgb(3 5 17 / 50%) 17.79%, rgb(21 35 119 / 0%) 100%);
-    pointer-events: none;
-    content: "";
+    display: none;
   }
 
   section.markets_hero.markets_hero--key-visual .markets_hero__content {
@@ -1898,7 +2038,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
     line-height: 24px;
   }
   section.markets_intro .markets_intro__txt strong {
-    color: #e60040;
+    /* color: #e60040; */
     font-weight: 400;
   }
   /* Explore */
@@ -2215,85 +2355,519 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
     line-height: 23px;
   }
 
-  /* Smart Grid (power-grid) */
+  /* Smart Grid (power-grid) — Figma 7465:145850 */
   .markets-page--power-grid > section.markets_smart_grid {
     margin: 0;
-    padding: 0 0 80px;
+    padding: 0 0 40px;
   }
 
   section.markets_smart_grid .markets_smart_grid__head {
-    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 30px;
+  }
+
+  section.markets_smart_grid .markets_smart_grid__head .section_tit {
+    width: 100%;
+    overflow-wrap: break-word;
+    font-feature-settings: "liga" 0;
+  }
+
+  section.markets_smart_grid .markets_smart_grid__head .section_desc {
+    width: 100%;
+    margin-top: 0;
+    overflow-wrap: break-word;
+  }
+
+  section.markets_smart_grid .markets_smart_grid__head .section_desc br,
+  section.markets_smart_grid .markets_smart_grid__block:first-of-type
+    .markets_smart_grid__block_tit
+    br {
+    display: none;
   }
 
   section.markets_smart_grid .markets_smart_grid__body {
-    padding: 40px 0 0;
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 40px);
+    margin: 0 auto;
+    padding: 30px 0;
+    background: #f5f7fa;
+    box-sizing: border-box;
+  }
+
+  section.markets_smart_grid .markets_smart_grid__body > .inner {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    width: 100%;
+    padding: 0 24px;
+    box-sizing: border-box;
   }
 
   section.markets_smart_grid .markets_smart_grid__block {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    width: 100%;
+    margin-bottom: 0;
   }
 
   section.markets_smart_grid .markets_smart_grid__block_tit {
-    font-size: 22px;
-    line-height: 30px;
+    width: 100%;
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 34px;
+    letter-spacing: -0.01em;
+    color: #222;
+    overflow-wrap: break-word;
+  }
+
+  section.markets_smart_grid .markets_smart_grid__cards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
   }
 
   section.markets_smart_grid .markets_smart_grid__card {
-    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding: 24px;
+    background: #fff;
+    box-sizing: border-box;
+    flex: 0 0 auto;
   }
 
   section.markets_smart_grid .markets_smart_grid__card--text-only {
     align-items: flex-start;
   }
 
+  section.markets_smart_grid .markets_smart_grid__card_body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+  }
+
   section.markets_smart_grid .markets_smart_grid__card_tit {
+    margin: 0;
     font-size: 18px;
+    font-weight: 600;
     line-height: 26px;
+    letter-spacing: -0.01em;
+    color: #222;
+    overflow-wrap: break-word;
   }
 
   section.markets_smart_grid .markets_smart_grid__card_desc {
+    width: 100%;
+    margin: 0;
     font-size: 15px;
+    font-weight: 400;
     line-height: 23px;
+    color: #222;
+    overflow-wrap: break-word;
   }
 
   section.markets_smart_grid .markets_smart_grid__diagram {
-    margin-top: 40px;
-    padding-top: 24px;
+    position: relative;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 287 / 160;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  section.markets_smart_grid .markets_smart_grid__diagram-img {
+    position: absolute;
+    top: 8.11%;
+    left: -4.82%;
+    width: 109.64%;
+    max-width: none;
+    height: 83.45%;
+    object-fit: fill;
   }
 
   section.markets_solutions_panel {
-    padding: 60px 0;
+    padding: 70px 0;
   }
 
   section.markets_solutions_panel .markets_solutions_panel__head {
-    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 30px;
+  }
+
+  section.markets_solutions_panel .markets_solutions_panel__head .section_tit {
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-feature-settings: "liga" 0;
+  }
+
+  section.markets_solutions_panel .markets_solutions_panel__head .section_desc {
+    margin: 0;
+    color: #666;
+    font-size: 16px;
+    line-height: 24px;
+    word-break: break-word;
   }
 
   section.markets_solutions_panel .markets_solutions_panel__panel {
-    padding: 32px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 30px 24px;
   }
 
+  /* Grouped panel — Figma 7603:181474 */
   section.markets_solutions_panel--grouped .markets_solutions_panel__panel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
     gap: 40px;
+    width: 100%;
+    padding: 30px 24px;
+    background: #f5f7fa;
+    box-sizing: border-box;
   }
 
   section.markets_solutions_panel--stacked .markets_solutions_panel__panel {
-    gap: 32px;
+    gap: 14px;
+    padding: 0;
+    background: transparent;
+  }
+
+  section.markets_solutions_panel--grouped .markets_solutions_panel__group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    width: 100%;
+  }
+
+  section.markets_solutions_panel--grouped .markets_solutions_panel__block {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+  }
+
+  section.markets_solutions_panel--grouped .markets_solutions_panel__blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+  }
+
+  section.markets_solutions_panel--stacked .markets_solutions_panel__group,
+  section.markets_solutions_panel--stacked .markets_solutions_panel__blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  section.markets_solutions_panel--stacked .markets_solutions_panel__block {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 30px 24px;
+    background: #f5f7fa;
+  }
+
+  section.markets_solutions_panel .markets_solutions_panel__block-body {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  section.markets_solutions_panel .markets_solutions_panel__block-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    word-break: break-word;
+  }
+
+  section.markets_solutions_panel .markets_solutions_panel__block-body:has(.markets_solutions_panel__block-key) {
+    gap: 10px;
+  }
+
+  section.markets_solutions_panel--stacked
+    .markets_solutions_panel__block-body:has(.markets_solutions_panel__capabilities) {
+    gap: 12px;
   }
 
   section.markets_solutions_panel .markets_solutions_panel__block-title {
+    margin: 0;
+    color: #222;
     font-size: 24px;
+    font-weight: 600;
     line-height: 34px;
+    letter-spacing: -0.01em;
+  }
+
+  section.markets_solutions_panel .markets_solutions_panel__block-text {
+    margin: 0;
+    color: #222;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 23px;
+  }
+
+  section.markets_solutions_panel .markets_solutions_panel__block-key {
+    margin: 0;
+    color: #0f1f45;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    word-break: break-word;
+  }
+
+  section.markets_solutions_panel .markets_solutions_panel__block-key-label {
+    font-weight: 400;
   }
 
   section.markets_solutions_panel .markets_solutions_panel__capabilities {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
     max-width: none;
+  }
+
+  section.markets_solutions_panel--stacked .markets_solutions_panel__capabilities-label {
+    color: #0f1f45;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 24px;
+  }
+
+  section.markets_solutions_panel--stacked .markets_solutions_panel__capabilities-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Figma 7603:182707 — bullet 4px · gap 8px · 15/23 */
+  section.markets_solutions_panel--stacked .markets_solutions_panel__capabilities-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding-left: 0;
+    color: #222;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 23px;
+    word-break: break-word;
+  }
+
+  section.markets_solutions_panel--stacked .markets_solutions_panel__capabilities-item::before {
+    content: "";
+    position: static;
+    flex: 0 0 auto;
+    width: 4px;
+    height: 4px;
+    margin-top: 10px;
+    background: #666;
+  }
+
+  section.markets_solutions_panel--grouped .markets_solutions_panel__diagram {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+  }
+
+  section.markets_solutions_panel .markets_solutions_panel__diagram-img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  section.markets_solutions_panel .markets_solutions_panel__diagram-img--pc {
+    display: none;
+  }
+
+  section.markets_solutions_panel--grouped .markets_solutions_panel__diagram-img--mo {
+    display: block;
+    width: 100%;
+    aspect-ratio: 287 / 154;
+    height: auto;
+    object-fit: cover;
+  }
+
+  /* Power diagram — white 287×154 frame · 10px inset (Figma 7603:181474) */
+  .markets-page--public-infrastructure
+    section#markets-public-infrastructure-solutions
+    .markets_solutions_panel__group:first-child
+    .markets_solutions_panel__diagram {
+    box-sizing: border-box;
+    aspect-ratio: 287 / 154;
+    padding: 10px;
+    background: #fff;
+    overflow: hidden;
+  }
+
+  .markets-page--public-infrastructure
+    section#markets-public-infrastructure-solutions
+    .markets_solutions_panel__group:first-child
+    .markets_solutions_panel__diagram-img--mo {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    object-fit: contain;
+  }
+
+  /* Automation diagram — full-bleed 287×154 */
+  .markets-page--public-infrastructure
+    section#markets-public-infrastructure-solutions
+    .markets_solutions_panel__group:last-child
+    .markets_solutions_panel__diagram-img--mo {
+    object-fit: fill;
   }
 
   section.markets_solutions_panel--stacked .markets_solutions_panel__diagram {
     margin-top: 24px;
+  }
+
+  .markets-page--oil-gas-mining section.markets_solutions_panel--stacked .markets_solutions_panel__diagram {
+    width: 100%;
+    height: 400px;
+    margin: 30px 0 0;
+    overflow: hidden;
+  }
+
+  .markets-page--oil-gas-mining
+    section.markets_solutions_panel--stacked
+    .markets_solutions_panel__diagram-img--mo {
+    position: relative;
+    left: -73.33%;
+    width: 229.39%;
+    max-width: none;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Industrial solutions mobile — Figma 7465:147605 */
+  .markets-page--industrial section.markets_solutions_panel--categories .markets_solutions_panel__panel {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 30px 24px;
+    background: #f5f7fa;
+  }
+
+  .markets-page--industrial
+    section.markets_solutions_panel--categories
+    .markets_solutions_panel__diagram {
+    width: 100%;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    aspect-ratio: 287 / 166;
+  }
+
+  .markets-page--industrial
+    section.markets_solutions_panel--categories
+    .markets_solutions_panel__diagram-img--mo {
+    position: static;
+    left: auto;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: top center;
+  }
+
+  .markets-page--industrial
+    section.markets_solutions_panel--categories
+    .markets_solutions_panel__categories {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+  }
+
+  .markets-page--industrial
+    section.markets_solutions_panel--categories
+    .markets_solutions_panel__category {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 6px;
+  }
+
+  .markets-page--industrial
+    section.markets_solutions_panel--categories
+    .markets_solutions_panel__category-tit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 10px;
+    border-radius: 4px;
+    background: #0f1f45;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    text-align: center;
+  }
+
+  .markets-page--industrial
+    section.markets_solutions_panel--categories
+    .markets_solutions_panel__category-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding: 20px;
+    list-style: none;
+    background: #fff;
+    border-radius: 4px;
+  }
+
+  .markets-page--industrial
+    section.markets_solutions_panel--categories
+    .markets_solutions_panel__category-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    color: #222;
+    font-size: 15px;
+    line-height: 23px;
+  }
+
+  .markets-page--industrial
+    section.markets_solutions_panel--categories
+    .markets_solutions_panel__category-item::before {
+    content: "";
+    flex: 0 0 auto;
+    width: 3px;
+    height: 3px;
+    margin-top: 10px;
+    background: #888;
   }
 
   /* Why */
@@ -2396,6 +2970,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
   }
 
   section.markets_why .markets_why__item .icon_area img {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -2517,8 +3092,9 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
     background-image: url("/pub/img/devices-systems/products/badge_if_award_sm.png");
   }
 
-  /* Key-visual Markets MO hero — Figma 5966:63555 (commercial-residential 별도) */
+  /* Key-visual Markets MO hero — Figma 7603:186125 (commercial = data-center 동일) */
   .markets-page--data-center > .markets_hero__sticky-wrap,
+  .markets-page--commercial-residential > .markets_hero__sticky-wrap,
   .markets-page--industrial > .markets_hero__sticky-wrap,
   .markets-page--public-infrastructure > .markets_hero__sticky-wrap,
   .markets-page--oil-gas-mining > .markets_hero__sticky-wrap,
@@ -2533,6 +3109,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
   }
 
   .markets-page--data-center > .markets_hero__sticky-wrap > section.markets_hero--key-visual,
+  .markets-page--commercial-residential > .markets_hero__sticky-wrap > section.markets_hero--key-visual,
   .markets-page--industrial > .markets_hero__sticky-wrap > section.markets_hero--key-visual,
   .markets-page--public-infrastructure > .markets_hero__sticky-wrap > section.markets_hero--key-visual,
   .markets-page--oil-gas-mining > .markets_hero__sticky-wrap > section.markets_hero--key-visual,
@@ -2543,6 +3120,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
   }
 
   .markets-page--data-center section.markets_hero.markets_hero--key-visual,
+  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual,
   .markets-page--industrial section.markets_hero.markets_hero--key-visual,
   .markets-page--public-infrastructure section.markets_hero.markets_hero--key-visual,
   .markets-page--oil-gas-mining section.markets_hero.markets_hero--key-visual,
@@ -2559,6 +3137,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
   }
 
   .markets-page--data-center section.markets_hero.markets_hero--key-visual .hero_img,
+  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .hero_img,
   .markets-page--industrial section.markets_hero.markets_hero--key-visual .hero_img,
   .markets-page--public-infrastructure section.markets_hero.markets_hero--key-visual .hero_img,
   .markets-page--oil-gas-mining section.markets_hero.markets_hero--key-visual .hero_img,
@@ -2572,6 +3151,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
   }
 
   .markets-page--data-center section.markets_hero.markets_hero--key-visual .markets_hero__content,
+  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .markets_hero__content,
   .markets-page--industrial section.markets_hero.markets_hero--key-visual .markets_hero__content,
   .markets-page--public-infrastructure section.markets_hero.markets_hero--key-visual .markets_hero__content,
   .markets-page--oil-gas-mining section.markets_hero.markets_hero--key-visual .markets_hero__content,
@@ -2588,6 +3168,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
   }
 
   .markets-page--data-center section.markets_hero.markets_hero--key-visual .markets_hero__tit,
+  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .markets_hero__tit,
   .markets-page--industrial section.markets_hero.markets_hero--key-visual .markets_hero__tit,
   .markets-page--public-infrastructure section.markets_hero.markets_hero--key-visual .markets_hero__tit,
   .markets-page--oil-gas-mining section.markets_hero.markets_hero--key-visual .markets_hero__tit,
@@ -2602,6 +3183,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
   }
 
   .markets-page--data-center section.markets_hero.markets_hero--key-visual .markets_hero__sub,
+  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .markets_hero__sub,
   .markets-page--industrial section.markets_hero.markets_hero--key-visual .markets_hero__sub,
   .markets-page--public-infrastructure section.markets_hero.markets_hero--key-visual .markets_hero__sub,
   .markets-page--oil-gas-mining section.markets_hero.markets_hero--key-visual .markets_hero__sub,
@@ -2615,6 +3197,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
   }
 
   .markets-page--data-center section.markets_hero.markets_hero--key-visual .markets_hero__btns,
+  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .markets_hero__btns,
   .markets-page--industrial section.markets_hero.markets_hero--key-visual .markets_hero__btns,
   .markets-page--public-infrastructure section.markets_hero.markets_hero--key-visual .markets_hero__btns,
   .markets-page--oil-gas-mining section.markets_hero.markets_hero--key-visual .markets_hero__btns,
@@ -2627,6 +3210,8 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
 
   .markets-page--data-center section.markets_hero.markets_hero--key-visual .btn-lv01--solid,
   .markets-page--data-center section.markets_hero.markets_hero--key-visual .btn-lv01--line,
+  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .btn-lv01--solid,
+  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .btn-lv01--line,
   .markets-page--industrial section.markets_hero.markets_hero--key-visual .btn-lv01--solid,
   .markets-page--industrial section.markets_hero.markets_hero--key-visual .btn-lv01--line,
   .markets-page--public-infrastructure section.markets_hero.markets_hero--key-visual .btn-lv01--solid,
@@ -2644,6 +3229,8 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
 
   .markets-page--data-center section.markets_hero.markets_hero--key-visual .icon_download,
   .markets-page--data-center section.markets_hero.markets_hero--key-visual .icon_link,
+  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .icon_download,
+  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .icon_link,
   .markets-page--industrial section.markets_hero.markets_hero--key-visual .icon_download,
   .markets-page--industrial section.markets_hero.markets_hero--key-visual .icon_link,
   .markets-page--public-infrastructure section.markets_hero.markets_hero--key-visual .icon_download,
@@ -2656,6 +3243,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
   }
 
   .markets-page--data-center section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down,
+  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down,
   .markets-page--industrial section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down,
   .markets-page--public-infrastructure section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down,
   .markets-page--oil-gas-mining section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down,
@@ -2722,7 +3310,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
 
   section.markets_solutions .markets_solutions__hotspot {
     padding: 0;
-    border-radius: 0;
+    border-radius: 50%;
     background: transparent;
     box-shadow: none;
     width: 18px;
@@ -2733,6 +3321,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
     position: absolute;
   }
 
+  section.markets_solutions .markets_solutions__hotspot:hover,
   section.markets_solutions .markets_solutions__hotspot.is-active {
     background: transparent;
     box-shadow: none;
@@ -2749,6 +3338,7 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
     background: url("/pub/img/markets/solutions/pin_default.svg") center / contain no-repeat;
   }
 
+  section.markets_solutions .markets_solutions__hotspot:hover .markets_solutions__hotspot-pin,
   section.markets_solutions .markets_solutions__hotspot.is-active .markets_solutions__hotspot-pin {
     background-image: url("/pub/img/markets/solutions/pin_active.svg");
   }
@@ -2906,125 +3496,9 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
     display: none;
   }
 
-  /* Commercial & Residential — Figma 2366:40233 MO */
-  .markets-page--commercial-residential > .markets_hero__sticky-wrap {
-    position: relative;
-    top: auto;
-    z-index: auto;
-    height: auto;
-    min-height: 0;
-    transform: none;
-    backface-visibility: visible;
-  }
-
-  .markets-page--commercial-residential
-    > .markets_hero__sticky-wrap
-    > section.markets_hero--key-visual {
-    height: auto;
-    min-height: 0;
-    max-height: none;
-  }
-
-  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 60px;
-    min-height: 0;
-    overflow: visible;
-    background: #fff;
-  }
-
-  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .hero_img {
-    position: relative;
-    inset: auto;
-    order: 2;
-    flex-shrink: 0;
-    width: 100%;
-    height: 310px;
-    background-position: center;
-    background-size: cover;
-  }
-
-  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .hero_img::after {
-    display: none;
-  }
-
-  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .markets_hero__content {
-    position: relative;
-    order: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
-    width: 100%;
-    margin: 0;
-    padding: 60px 20px 0;
-    color: #222;
-    text-align: center;
-  }
-
-  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .markets_hero__sub {
-    order: 1;
-    margin: 0;
-    font-size: 16px;
-    font-weight: 300;
-    line-height: 24px;
-    color: #666;
-  }
-
-  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .markets_hero__tit {
-    order: 2;
-    margin: 0;
-    font-family: jaka, "Plus Jakarta Sans", Arial, Helvetica, sans-serif;
-    font-size: 40px;
-    font-weight: 800;
-    line-height: 50px;
-    letter-spacing: -0.8px;
-    color: #222;
-  }
-
-  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .markets_hero__btns {
-    order: 3;
-    margin: 0;
-  }
-
-  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .btn-lv01--solid {
-    color: #fff;
-    background: #0f1f45;
-    border: 1px solid #0f1f45;
-  }
-
-  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .btn-lv01--line {
-    color: #0f1f45;
-    border-color: rgb(15 31 69 / 30%);
-  }
-
-  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .icon_download,
-  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .icon_link {
-    filter: none;
-  }
-
-  .markets-page--commercial-residential section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down {
-    display: none;
-  }
-
-  .markets-page--commercial-residential section.markets_stats,
-  .markets-page--commercial-residential section.markets_solutions_panel {
-    display: none;
-  }
-
+  /* Commercial & Residential MO — Figma 7603:186125 (hero = data-center key-visual) */
   .markets-page--commercial-residential section.markets_references .location {
     display: none;
-  }
-
-  .markets-page--commercial-residential section.markets_intro {
-    padding: 60px 0 80px;
-  }
-
-  .markets-page--commercial-residential section.markets_explore {
-    padding-top: 0;
-    padding-bottom: 80px;
   }
 
   .markets-page--commercial-residential section.markets_products .img_area {
@@ -3599,7 +4073,6 @@ section.markets_hero.markets_hero--key-visual .markets_hero__scroll-down img {
   }
 }
 
-/* References modal — multi-reference tabs (Figma 5970:71483) */
 .markets_references_modal__head-row {
   align-items: flex-start;
   gap: 16px;

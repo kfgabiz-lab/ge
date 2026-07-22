@@ -87,6 +87,7 @@ Figma [LSEA 디자인](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_
 | `--inner-max` | `1440px` |
 | `--font-display` | `jaka` |
 | `--font-body` | `Pretendard Variable` |
+| 전역 scrollbar | 3px · track `#e8e8e8` · thumb `#888` · hover `#666` (Firefox `thin`) |
 
 버튼·필드 스타일은 `section` 스코프 아래 정의됩니다 (`section .btn-lv01` 등). 페이지 섹션 마크업은 [SECTION_MARKUP_GUIDE.md](./SECTION_MARKUP_GUIDE.md)를 따릅니다.
 
@@ -149,7 +150,7 @@ MUI `Checkbox` + `GuideCheckboxIcon` (`src/components/form/GuideFieldIcons.tsx`)
 |--------|-----------|---------|--------|
 | `guideCheckboxIconsDefault` | `ico_check.svg` | `ico_checked.svg` | 가이드·일반 폼 |
 | `guideCheckboxIconsDownloads` | `ico_check_block.svg` | `ico_checked_black.svg` | Downloads 필터 |
-| `guideCheckboxIconsContactConsent` | `ico_checkbox_off_22.png` | `ico_checkbox_on_22.png` | Contact Us 동의 |
+| `guideCheckboxIconsContactConsent` | `ico_checkbox_off_22.png` | `ico_checkbox_on_22.png` | Cookie Preferences · Contact Us · Training 폼 (Figma Check 2030:31397/31398) |
 | Footer 관심분야 | CSS 흰 테두리 | `ico_checked_footer_22.svg` | `MainFooter.css` |
 
 라디오·비밀번호 PNG는 [ICON_GUIDE.md](./ICON_GUIDE.md) Form 섹션 참고.
@@ -189,7 +190,7 @@ MUI `TextField` / `FormControl` + `GuideSelect` + 클래스 `.guide_field`
 | Toolbar | 50px · 280px | `globals.css` | Download Center, Tech Hub, Where to Buy (`#search-280`) |
 | Hero | 80px · 100% | `search.css` · `section.search_all_hero` | `/search` · `SearchAllHero.tsx` (`#search-80`) |
 
-Hero 변형은 `search_all_hero__field`·`search_all_hero__clear`·인기 태그와 함께 씁니다. 글로벌 `guide_field--search` 규칙과 충돌하지 않도록 `section.search_all_hero` 스코프를 유지합니다.
+Hero 변형은 `search_all_hero__field`·`search_all_hero__clear`·인기 태그와 함께 씁니다. Clear는 30px 원형 버튼 + `ico_clear_12_black`(Figma `6571:102541`)을 사용합니다. 글로벌 `guide_field--search` 규칙과 충돌하지 않도록 `section.search_all_hero` 스코프를 유지합니다.
 
 All 탭 결과 카드 호버: Product/Media/Pages 제목에 `color: var(--color-primary)` + `text-decoration: underline`. Media 썸네일 zoom은 사용하지 않습니다. 섹션·아이콘 매핑은 [SECTION_CLASS_GUIDE.md](./SECTION_CLASS_GUIDE.md) Search · [ICON_GUIDE.md](./ICON_GUIDE.md) Search 표를 참고합니다.
 
@@ -237,9 +238,9 @@ All 탭 결과 카드 호버: Product/Media/Pages 제목에 `color: var(--color-
 | 레이아웃 | `ScrollToTopButton`, `ScrollToTopOnNavigate` | `scroll_to_top` |
 | 브레드크럼 | `HeaderBreadcrumb` | `globals.css` breadcrumb |
 | 뱃지 | `ProductAwardBadge` | `product-award-badge.css` |
-| 검색 | `SearchAllPage`, `SearchAllTabContent`, `SearchAllHero` | `search.css` — Hero `#search-80` · All 탭 섹션 |
-| 검색 | `SearchProductsPanel`, `SearchDocumentsPanel`, `SearchMediaPanel`, `SearchPagesPanel` | 탭별 패널 · 필터·페이지네이션 |
-| 검색 | `SearchTabActiveFilters`, `SearchDocumentsCard` | active chips · 문서 카드 |
+| 검색 | `SearchAllPage`, `SearchAllTabContent`, `SearchAllHero` | `search.css` — Hero `#search-80` · All 탭 섹션 · tablet 600~780px Product/Media 2열 |
+| 검색 | `SearchProductsPanel`, `SearchDocumentsPanel`, `SearchMediaPanel`, `SearchPagesPanel` | 탭별 패널 · 필터·페이지네이션 · tablet Products/Media 2열 |
+| 검색 | `SearchTabActiveFilters`, `SearchDocumentsCard` | active chips · 문서 카드 · Documents MO clear `brightness(25%)` → `#222` |
 | 검색 | `SearchPageList`, `SearchPageListItem` | Pages 리스트 (Figma 4701:83912) · `search_page__*` |
 | 검색 필터 | `DevicesProductDownloadsFilter*` | `devices-product-detail.css` — Search 탭·Download Center 공유 |
 | Services — Service Center | `ServiceCenterOffering.tsx` 등 | `services.css` — Swiper offering · flow diagram · [SECTION_CLASS_GUIDE](./SECTION_CLASS_GUIDE.md) |
@@ -253,7 +254,7 @@ All 탭 결과 카드 호버: Product/Media/Pages 제목에 `color: var(--color-
 | `CookieSettingsModal` | P-FO-COMMON-020000P · 동의 배너 | 전용 `cookie_settings_modal` 셸 · Settings / Reject All / Accept All |
 | `CookiePreferencesModal` | P-FO-COMMON-040000M · 분류별 상세 설정 | `common_modal` 셸 · Settings에서 전환 · Necessary 필수 · 선택값 localStorage 저장 |
 
-단독 확인 경로는 `/main/cookie-setting`, `/main/cookie-setting/preferences`이며 두 경로 모두 모달만 렌더합니다. 모바일 상세 설정은 Figma `7334:130901` 기준으로 내부 스크롤하고 하단 버튼을 표시하지 않습니다. 상세 클래스·치수는 [SECTION_CLASS_GUIDE.md](./SECTION_CLASS_GUIDE.md)를 참고합니다.
+단독 확인 경로는 `/main/cookie-setting`, `/main/cookie-setting/preferences`이며 두 경로 모두 모달만 렌더합니다. 모바일 상세 설정은 Figma `7334:130983` 기준으로 335px 패널·24px 본문 여백·30px intro/list 간격·3px custom scrollbar·PNG Check 22px을 사용합니다. 하단 Reject/Save/Accept는 고정 footer 안에 42px 높이로 세로 배치합니다. 상세 클래스·치수는 [SECTION_CLASS_GUIDE.md](./SECTION_CLASS_GUIDE.md)를 참고합니다.
 
 ### Main Info 카운트업
 

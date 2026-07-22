@@ -131,6 +131,8 @@ Figma [7334:131856](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB
 - `#gnb-search-panel.gnb_search.is-open`: 헤더 60px 아래 흰색 검색 패널 · `z-index: 9999`
 - `.gnb_search_dim`: 검색 패널과 동일한 body portal의 viewport 전체 `rgb(0 0 0 / 50%)` dim · `z-index: 9998`
 - `.main_header.is-search-open` / `.gnb_menu_wrap.is-search-open`: 흰색 헤더를 dim 위에 유지 · `z-index: 10000`
+- 검색어 clear: PC `.gnb_search__clear-icon-pc`는 `ico_clear_12_black`, MO `.gnb_search__clear-icon-mo`는 `ico_gnb_search_clear_24` 사용
+- MO clear(Figma `7334:131929`): 24×24 · 자체 원형 테두리 에셋 · hover/transition 없음
 - dim 클릭 또는 Escape: 검색 닫기
 
 Figma depth1 참고: 6880:135688

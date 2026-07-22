@@ -153,7 +153,7 @@ export default function GnbSearchPanel({
                       >
                         <span className="gnb_search__clear-icon" aria-hidden>
                           <img
-                            src="/pub/ico/ico_clear_12.svg"
+                            src="/pub/ico/ico_clear_12_black.svg"
                             alt=""
                             width={12}
                             height={12}

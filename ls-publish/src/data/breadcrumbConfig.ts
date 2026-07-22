@@ -19,27 +19,27 @@ export type BreadcrumbConfig = {
 
 const configs: Record<string, BreadcrumbConfig> = {
   "/markets/commercial-residential": {
-    crumbs: [{ label: "Markets", href: "/markets/commercial-residential" }],
+    crumbs: [{ label: "Markets" }],
     current: "Commercial & Residential",
   },
   "/markets/data-center": {
-    crumbs: [{ label: "Markets", href: "/markets/commercial-residential" }],
+    crumbs: [{ label: "Markets" }],
     current: "Data Center",
   },
   "/markets/public-infrastructure": {
-    crumbs: [{ label: "Markets", href: "/markets/commercial-residential" }],
+    crumbs: [{ label: "Markets" }],
     current: "Public Infrastructure",
   },
   "/markets/oil-gas-mining": {
-    crumbs: [{ label: "Markets", href: "/markets/commercial-residential" }],
+    crumbs: [{ label: "Markets" }],
     current: "Oil & Gas, Mining Industries",
   },
   "/markets/power-grid": {
-    crumbs: [{ label: "Markets", href: "/markets/commercial-residential" }],
+    crumbs: [{ label: "Markets" }],
     current: "Power Grid",
   },
   "/markets/industrial": {
-    crumbs: [{ label: "Markets", href: "/markets/commercial-residential" }],
+    crumbs: [{ label: "Markets" }],
     current: "Industrial",
   },
   "/products-systems/motor-control": {
@@ -193,69 +193,69 @@ const configs: Record<string, BreadcrumbConfig> = {
     current: "Careers at LS ELECTRIC America",
   },
   "/company/blog": {
-    crumbs: [{ label: "Company", href: "/company/blog" }],
+    crumbs: [{ label: "Company" }],
     current: "Blog",
   },
   "/company/blog/detail": {
-    crumbs: [{ label: "Company", href: "/company/blog" }],
+    crumbs: [{ label: "Company" }],
     current: "Blog",
   },
   "/company/blog/no-data": {
-    crumbs: [{ label: "Company", href: "/company/blog" }],
+    crumbs: [{ label: "Company" }],
     current: "Blog",
   },
   "/company/articles": {
     crumbs: [
-      { label: "Company", href: "/company/blog" },
+      { label: "Company" },
       { label: "Media" },
     ],
     current: "Articles",
   },
   "/company/articles/detail": {
     crumbs: [
-      { label: "Company", href: "/company/blog" },
+      { label: "Company" },
       { label: "Media" },
     ],
     current: "Articles",
   },
   "/company/articles/no-data": {
     crumbs: [
-      { label: "Company", href: "/company/blog" },
+      { label: "Company" },
       { label: "Media" },
     ],
     current: "Articles",
   },
   "/company/press": {
     crumbs: [
-      { label: "Company", href: "/company/blog" },
+      { label: "Company" },
       { label: "Media" },
     ],
     current: "Press",
   },
   "/company/press/detail": {
     crumbs: [
-      { label: "Company", href: "/company/blog" },
+      { label: "Company" },
       { label: "Media" },
     ],
     current: "Press",
   },
   "/company/press/no-data": {
     crumbs: [
-      { label: "Company", href: "/company/blog" },
+      { label: "Company" },
       { label: "Media" },
     ],
     current: "Press",
   },
   "/company/events": {
     crumbs: [
-      { label: "Company", href: "/company/blog" },
+      { label: "Company" },
       { label: "Media" },
     ],
     current: "Events",
   },
   "/company/events/detail": {
     crumbs: [
-      { label: "Company", href: "/company/blog" },
+      { label: "Company" },
       { label: "Media" },
     ],
     current: "Events",
@@ -274,18 +274,18 @@ const configs: Record<string, BreadcrumbConfig> = {
   },
   "/support/tech-hub": {
     crumbs: [{ label: "Support" }],
-    current: "LS ELECTRIC Tech Hub",
+    current: "Tech Hub",
   },
   "/support/tech-hub/view": {
     crumbs: [
       { label: "Support" },
-      { label: "LS ELECTRIC Tech Hub", href: "/support/tech-hub" },
+      { label: "Tech Hub", href: "/support/tech-hub" },
     ],
     current: "Video",
   },
   "/support/tech-hub/no-data": {
     crumbs: [{ label: "Support" }],
-    current: "LS ELECTRIC Tech Hub",
+    current: "Tech Hub",
   },
   "/support/where-to-buy": {
     crumbs: [{ label: "Support" }],
@@ -340,35 +340,35 @@ const configs: Record<string, BreadcrumbConfig> = {
       { label: "Services" },
       { label: "Training" },
     ],
-    current: "Request for Training",
+    current: "Training Request",
   },
   "/services/request-for-training/step-2": {
     crumbs: [
       { label: "Services" },
       { label: "Training" },
     ],
-    current: "Request for Training",
+    current: "Training Request",
   },
   "/services/request-for-training/step-3": {
     crumbs: [
       { label: "Services" },
       { label: "Training" },
     ],
-    current: "Request for Training",
+    current: "Training Request",
   },
   "/services/request-for-training/step-4": {
     crumbs: [
       { label: "Services" },
       { label: "Training" },
     ],
-    current: "Request for Training",
+    current: "Training Request",
   },
   "/services/request-for-training/step-4-type_01": {
     crumbs: [
       { label: "Services" },
       { label: "Training" },
     ],
-    current: "Request for Training",
+    current: "Training Request",
   },
 };
 

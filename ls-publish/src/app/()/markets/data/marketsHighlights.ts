@@ -5,7 +5,7 @@ export const marketsHighlightNewsItems: HighlightNewsItem[] = [
   {
     id: "markets-highlight-1",
     href: "",
-    image: "/pub/img/main/news_01.jpg",
+    image: "/pub/img/devices-systems/highlights/highlight_01.jpg",
     tag: "Press",
     title: "markets-LS ELECTRIC Expands Commercial Building Solutions in North America",
     date: "Apr 20, 2026",
@@ -13,7 +13,7 @@ export const marketsHighlightNewsItems: HighlightNewsItem[] = [
   {
     id: "markets-highlight-2",
     href: "",
-    image: "/pub/img/main/news_01.jpg",
+    image: "/pub/img/devices-systems/highlights/highlight_02.jpg",
     tag: "Blog",
     title: "Smart BEMS Integration for Sustainable Office Buildings",
     date: "Apr 14, 2026",
@@ -21,7 +21,7 @@ export const marketsHighlightNewsItems: HighlightNewsItem[] = [
   {
     id: "markets-highlight-3",
     href: "",
-    image: "/pub/img/main/news_01.jpg",
+    image: "/pub/img/devices-systems/highlights/highlight_03.jpg",
     tag: "Press",
     title: "New Low-Voltage Protection Line for Commercial Facilities",
     date: "Apr 08, 2026",

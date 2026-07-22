@@ -8,8 +8,7 @@ import type { Swiper as SwiperType } from "swiper";
 import SwiperBarControls from "@/components/swiper/SwiperBarControls";
 import { useMediaQuery } from "@/components/layout/shared/useMediaQuery";
 import TabButton from "@/components/ui/TabButton";
-import ProductAwardBadge from "@/components/product/ProductAwardBadge";
-import { getProductBadgeType } from "@/lib/productBadge";
+import { motorControlProducts } from "@/app/()/products-systems/data/motorControlContent";
 import "swiper/css";
 
 type TabId = "new-arrivals" | "best-sellers";
@@ -20,11 +19,6 @@ type ProductItem = {
   image: string;
   imageAlt: string;
   title: string;
-  description: string;
-  /** type1 (lg) — `badges` 미사용 시 호환 */
-  badge?: boolean;
-  /** 1: type1 (lg) · 2: type2 (sm) */
-  badges?: 1 | 2;
 };
 
 const tabs: { id: TabId; label: string }[] = [
@@ -32,141 +26,22 @@ const tabs: { id: TabId; label: string }[] = [
   { id: "best-sellers", label: "Best Sellers" },
 ];
 
-const newArrivalsProducts: ProductItem[] = [
-  {
-    id: "na-1",
-    href: "",
-    image: "/pub/img/main/product_01.jpg",
-    imageAlt: "Metasol MS",
-    title: "Metasol MS",
-    description: "Metasol Contactor & Overload Relay",
-  },
-  {
-    id: "na-2",
-    href: "",
-    image: "/pub/img/main/product_01.jpg",
-    imageAlt: "XGB Series PLC",
-    title: "XGB Series PLC",
-    description: "Compact PLC for industrial automation",
-    badges: 2,
-  },
-  {
-    id: "na-3",
-    href: "",
-    image: "/pub/img/main/product_01.jpg",
-    imageAlt: "G100 Inverter",
-    title: "G100 Inverter",
-    description: "High-performance AC drive solutions",
-    badges: 2,
-  },
-  {
-    id: "na-4",
-    href: "",
-    image: "/pub/img/main/product_01.jpg",
-    imageAlt: "XMC Servo",
-    title: "XMC Servo",
-    description: "Precision motion control system",
-  },
-  {
-    id: "na-5",
-    href: "",
-    image: "/pub/img/main/product_01.jpg",
-    imageAlt: "Susol UL MCCB",
-    title: "Susol UL MCCB",
-    description: "Molded case circuit breaker",
-  },
-  {
-    id: "na-6",
-    href: "",
-    image: "/pub/img/main/product_01.jpg",
-    imageAlt: "iHMI Touch Panel",
-    title: "iHMI Touch Panel",
-    description: "Industrial human-machine interface",
-  },
-  {
-    id: "na-7",
-    href: "",
-    image: "/pub/img/main/product_01.jpg",
-    imageAlt: "BESS PCS",
-    title: "BESS PCS",
-    description: "Battery energy storage power converter",
-  },
-  {
-    id: "na-8",
-    href: "",
-    image: "/pub/img/main/product_01.jpg",
-    imageAlt: "Smart Relay",
-    title: "Smart Relay",
-    description: "Programmable control relay",
-  },
-];
+/** devices_hero--with-products .devices_products__grid — New Arrivals: 1~8 · Best Sellers: 9~16 */
+function mapDevicesGridSlice(start: number, end: number, idPrefix: string): ProductItem[] {
+  return motorControlProducts.slice(start, end).map((item, index) => {
+    const title = item.title.replace(/\n/g, " ");
+    return {
+      id: `${idPrefix}-${index + 1}`,
+      href: item.href,
+      image: item.image,
+      imageAlt: title,
+      title,
+    };
+  });
+}
 
-const bestSellersProducts: ProductItem[] = [
-  {
-    id: "bs-1",
-    href: "",
-    image: "/pub/img/main/product_01.jpg",
-    imageAlt: "Metasol MS",
-    title: "Metasol MS",
-    description: "Metasol Contactor & Overload Relay",
-  },
-  {
-    id: "bs-2",
-    href: "",
-    image: "/pub/img/main/product_01.jpg",
-    imageAlt: "Susol ACB",
-    title: "Susol ACB",
-    description: "Air circuit breaker for power distribution",
-  },
-  {
-    id: "bs-3",
-    href: "",
-    image: "/pub/img/main/product_01.jpg",
-    imageAlt: "XGT PLC",
-    title: "XGT PLC",
-    description: "High-speed programmable logic controller",
-  },
-  {
-    id: "bs-4",
-    href: "",
-    image: "/pub/img/main/product_01.jpg",
-    imageAlt: "iG5A Drive",
-    title: "iG5A Drive",
-    description: "General-purpose inverter drive",
-  },
-  {
-    id: "bs-5",
-    href: "",
-    image: "/pub/img/main/product_01.jpg",
-    imageAlt: "MCC Panel",
-    title: "MCC Panel",
-    description: "Motor control center solutions",
-  },
-  {
-    id: "bs-6",
-    href: "",
-    image: "/pub/img/main/product_01.jpg",
-    imageAlt: "DC Fast Charger",
-    title: "DC Fast Charger",
-    description: "EV charging infrastructure system",
-  },
-  {
-    id: "bs-7",
-    href: "",
-    image: "/pub/img/main/product_01.jpg",
-    imageAlt: "Smart Meter",
-    title: "Smart Meter",
-    description: "Advanced energy metering device",
-  },
-  {
-    id: "bs-8",
-    href: "",
-    image: "/pub/img/main/product_01.jpg",
-    imageAlt: "Low Voltage Switchgear",
-    title: "Low Voltage Switchgear",
-    description: "Reliable power distribution equipment",
-  },
-];
+const newArrivalsProducts = mapDevicesGridSlice(0, 8, "na");
+const bestSellersProducts = mapDevicesGridSlice(8, 16, "bs");
 
 const productsByTab: Record<TabId, ProductItem[]> = {
   "new-arrivals": newArrivalsProducts,
@@ -349,27 +224,18 @@ function ProductsSwiperPer4({ products }: ProductsSwiperPer4Props) {
           onBreakpoint={handleSlideChange}
           onResize={handleSlideChange}
         >
-          {products.map((product) => {
-            const badgeType = getProductBadgeType(product);
-
-            return (
-              <SwiperSlide key={product.id}>
-                <Link
-                  href={product.href}
-                  className={badgeType ? "sl type2" : "sl"}
-                >
-                  <div className="img_area">
-                    {badgeType ? <ProductAwardBadge /> : null}
-                    <img loading="lazy" decoding="async" src={product.image} alt={product.imageAlt} />
-                  </div>
-                  <div className="txt_area">
-                    <h3 className="tit_product">{product.title}</h3>
-                    <p className="txt">{product.description}</p>
-                  </div>
-                </Link>
-              </SwiperSlide>
-            );
-          })}
+          {products.map((product) => (
+            <SwiperSlide key={product.id}>
+              <Link href={product.href} className="sl">
+                <div className="img_area">
+                  <img loading="lazy" decoding="async" src={product.image} alt={product.imageAlt} />
+                </div>
+                <div className="txt_area">
+                  <h3 className="tit_product">{product.title}</h3>
+                </div>
+              </Link>
+            </SwiperSlide>
+          ))}
         </Swiper>
 
         <SwiperBarControls

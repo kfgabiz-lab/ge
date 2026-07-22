@@ -28,6 +28,22 @@ export const gnbGuideIcons: GnbGuideIcon[] = [
     usedIn: "GnbSearchPanel (.gnb_search__mark)",
   },
   {
+    id: "ico_clear_12_black",
+    fileName: "ico_clear_12_black.svg",
+    path: "/pub/ico/ico_clear_12_black.svg",
+    size: 12,
+    usage: "PC GNB 검색어 초기화",
+    usedIn: "GnbSearchPanel (.gnb_search__clear-icon-pc)",
+  },
+  {
+    id: "ico_gnb_search_clear_24",
+    fileName: "ico_gnb_search_clear_24.svg",
+    path: "/pub/ico/ico_gnb_search_clear_24.svg",
+    size: 24,
+    usage: "모바일 GNB 검색어 초기화 (Figma 7334:131929)",
+    usedIn: "GnbSearchPanel (.gnb_search__clear-icon-mo)",
+  },
+  {
     id: "ico_close_24",
     fileName: "ico_close_24.svg",
     path: "/pub/ico/ico_close_24.svg",
@@ -274,7 +290,7 @@ export const gnbGuideClassRefs = [
   {
     block: "Search overlay",
     classes:
-      "gnb_search.is-open, gnb_search_dim, main_header.is-search-open",
+      "gnb_search.is-open, gnb_search_dim, main_header.is-search-open, gnb_search__clear-icon-pc, gnb_search__clear-icon-mo",
     file: "GnbSearchPanel.tsx, GnbMenu.tsx, gnb.css · Figma 7334:131856",
   },
 ] as const;

@@ -1195,6 +1195,7 @@
       text-decoration-color 0.2s ease;
   }
 
+  section.search_all .search_all__media-item:hover .search_all__media-tit,
   section.search_all .search_all__media-item:hover .search_all__media-tit-text,
   section.search_all .search_all__media-item:hover .search_all__media-mark {
     color: var(--color-primary);
@@ -5467,4 +5468,13 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 40px 20px;
   }
+}
+
+section.search_pages .search_page__desc {
+  display: -webkit-box;
+  overflow: hidden;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }

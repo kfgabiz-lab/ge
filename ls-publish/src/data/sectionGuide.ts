@@ -33,7 +33,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "Main Visual",
         component: "MainVisual.tsx",
         cssFile: "main.css",
-        note: "하단 main_notic 포함 · MO Figma 6571:92270 (dark navy · 123px · 15/23 Medium) · 내부 div: video-swiper-section (image·/pub/img/video1.mp4·image), banner_swiper",
+        note: "하단 main_notic 포함 · MO Figma 6571:92270 (dark navy · 123px · 15/23 Medium) · 내부 div: video-swiper-section (main_001~003.webm), banner_swiper",
       },
       {
         id: "main_info",
@@ -57,7 +57,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "Industries We Serve",
         component: "MainCards.tsx",
         cssFile: "main.css",
-        note: "GNB marketsMegaMenu grid 연동",
+        note: "GNB marketsMegaMenu grid 연동 · tablet 600~780px 2열 (gap 14px)",
       },
       {
         id: "main_products",
@@ -65,6 +65,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "Discover Our Products",
         component: "MainProducts.tsx",
         cssFile: "main.css",
+        note: "devices_products__grid · New Arrivals 1~8 · Best Sellers 9~16 · .txt·product_award_badge 없음",
       },
       {
         id: "icon_cards",
@@ -156,7 +157,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "MarketsSmartGrid.tsx",
         cssFile: "markets.css",
         anchorId: "markets-smart-grid",
-        note: "power-grid 전용 · Use Case / Operation 블록 + diagram.png (Figma 4689:72050)",
+        note: "power-grid 전용 · Use Case / Operation 블록 + diagram · desktop Figma 4689:72050 · mobile body Figma 7465:145850",
       },
       {
         id: "markets_solutions",
@@ -174,7 +175,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "MarketsSolutionsPanel.tsx",
         cssFile: "markets.css",
         modifiers: ["--grouped", "--stacked"],
-        note: "commercial-residential · public-infrastructure layout=grouped · oil-gas-mining layout=stacked · industrial diagram-only (groups: [])",
+        note: "commercial-residential · public-infrastructure layout=grouped · oil-gas-mining layout=stacked · industrial diagram-only + mobile categories · PC/MO diagram 분리 (Figma 7465:147605) · mobile Figma: grouped 7603:181474 · stacked 6858:171384",
       },
       {
         id: "markets_why",
@@ -182,7 +183,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "Why LS ELECTRIC",
         component: "MarketsWhy.tsx",
         cssFile: "markets.css",
-        note: "공통 · .icon_area img · img_why_*.svg / data-center why/*.svg · mobile: section.markets_why 공용 (bg_section_main_info_mo.png · 30px tit · 70px 20px inner)",
+        note: "공통 · .icon_area img · img_why_*.svg / data-center why/*.svg (Figma 7465:155034) / power-grid why/*.svg (Figma 7465:153537) / industrial why/*.svg / oil-gas-mining why/*.svg (Figma 7465:154000) · mobile: section.markets_why 공용 (bg_section_main_info_mo.png · 30px tit · 70px 20px inner)",
       },
       {
         id: "markets_products",
@@ -208,7 +209,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         cssFile: "globals.css",
         modifiers: ["--markets"],
         anchorId: "markets-highlights",
-        note: "variant=markets",
+        note: "variant=markets · 이미지 highlight_01~03.jpg (Figma 7577:84697) · .tit 2줄 말줄임",
       },
       {
         id: "markets_faq",
@@ -439,7 +440,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "Hero / Featured",
         component: "blog/page.tsx",
         cssFile: "company.css",
-        note: "하위 featured: company-blog-featured__*",
+        note: "하위 featured: company-blog-featured__* · title 2줄 · desc 3줄 말줄임",
       },
       {
         id: "company_blog_list",
@@ -447,7 +448,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "List + Toolbar",
         component: "CompanyBlogPage.tsx",
         cssFile: "company.css",
-        note: "guide_field 툴바 · company-blog-list__items",
+        note: "guide_field 툴바 · company-blog-list__items · title 1줄 · desc 3줄 말줄임 · tablet 600~780px 2열",
       },
       {
         id: "company_blog_empty",
@@ -481,15 +482,15 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "Featured",
         component: "CompanyPressFeatured.tsx",
         cssFile: "company.css",
-        note: "btn-text-30 Explore · mobile Figma 6137:135301",
+        note: "btn-text-30 Explore · title 2줄 말줄임 · mobile Figma 6137:135301",
       },
       {
         id: "company_press_list",
         rootClass: "company-press-list",
         label: "List + Toolbar",
         component: "CompanyPressListSection.tsx",
-        cssFile: "company.css",
-        note: "guide_field 툴바 · company-press-list__grid · mobile Figma 6137:135301",
+        cssFile: "company-feed.css",
+        note: "guide_field 툴바 · company-press-list__grid · title 2줄 말줄임 · tablet 600~780px 2열 · mobile Figma 6137:135301",
       },
       {
         id: "company_press_empty",
@@ -523,15 +524,15 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "Featured",
         component: "CompanyArticlesFeatured.tsx",
         cssFile: "company.css",
-        note: "btn-text-30 Explore · mobile Figma 6137:135565 · 335×210 image · 24px title",
+        note: "btn-text-30 Explore · title 2줄 말줄임 · mobile Figma 6137:135565 · 335×210 image · 24px title",
       },
       {
         id: "company_articles_list",
         rootClass: "company-articles-list",
         label: "List + Toolbar",
         component: "CompanyArticlesListSection.tsx",
-        cssFile: "company.css",
-        note: "guide_field 툴바 · company-articles-list__grid · mobile Figma 6137:135565 · 335×250 card",
+        cssFile: "company-feed.css",
+        note: "guide_field 툴바 · company-articles-list__grid · .company-page--articles title 3줄 말줄임 · tablet 600~780px 2열 · mobile Figma 6137:135565 · 335×250 card",
       },
       {
         id: "company_articles_empty",
@@ -565,7 +566,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "Featured Carousel",
         component: "CompanyEventsFeatured.tsx",
         cssFile: "company.css",
-        note: "mobile Figma 6137:135105 · 335×210 image · bar controls",
+        note: "mobile Figma 6137:135105 · 335×210 image · bar controls · title 1줄 말줄임",
       },
       {
         id: "company_events_calendar",
@@ -581,7 +582,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "Past Events",
         component: "CompanyEventsPastSection.tsx",
         cssFile: "company.css",
-        note: "mobile Figma 6137:135105 · 335×251 card · pagination 2.5px gap",
+        note: "tablet 600~780px 2열 · mobile Figma 6137:135105 · 335×251 card · title 1줄 말줄임 · grid minmax(0,1fr) · pagination 2.5px gap",
       },
     ],
   },
@@ -614,7 +615,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "Shaping What's Next",
         component: "CompanyAmericaPage.tsx",
         cssFile: "company.css",
-        note: "다크 배경 · company-america-shaping__block · ico_map_16_white",
+        note: "다크 배경 · bastrop/utah 자동재생 webm · company-america-shaping__block · ico_map_16_white",
       },
       {
         id: "company_america_business",
@@ -622,7 +623,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "Core Business Areas",
         component: "CompanyAmericaPage.tsx",
         cssFile: "company.css",
-        note: "CompanyAboutSectionHead · company-america-business__row--reverse",
+        note: "CompanyAboutSectionHead · company-america-business__row--reverse · tablet 600~780px 2열 (gap 40px 20px)",
       },
       {
         id: "company_america_careers_banner",
@@ -645,7 +646,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "Meet Our Leaders",
         component: "CompanyAmericaPage.tsx",
         cssFile: "company.css",
-        note: "CompanyAboutSectionHead · 리더 카드 그리드",
+        note: "피처드 CEO(PC 2열·MO 세로) + 리더 8명 · tablet 600~780px 2열 · MO Figma 7577:151726",
       },
       {
         id: "company_america_mission",
@@ -686,7 +687,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "Intro (Hero + 2-col text)",
         component: "CompanyAboutIntroSection.tsx",
         cssFile: "company.css",
-        note: "공통 · Figma 4717:56038 · 히어로 · 2열 텍스트 레이아웃",
+        note: "공통 · Figma 4717:56038 · 히어로 PC/MO 분리 · 2열 텍스트 레이아웃",
       },
       {
         id: "company_ls_electric_highlights",
@@ -702,7 +703,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "Our Business",
         component: "CompanyLsElectricPage.tsx",
         cssFile: "company.css",
-        note: "Figma 4717:55930 · CompanyAboutSectionHead · 4 cards",
+        note: "Figma 4717:55930 · CompanyAboutSectionHead · 4 cards · tablet 600~780px 2열 (gap 14px)",
       },
       {
         id: "company_ls_electric_global",
@@ -718,7 +719,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "PT&T",
         component: "CompanyLsElectricPage.tsx",
         cssFile: "company.css",
-        note: "Figma 4717:54159 · CompanyAboutSectionHead · 3 cards",
+        note: "Figma 4717:54159 · CompanyAboutSectionHead · 3 cards · tablet 600~780px 2열 (gap 14px)",
       },
       {
         id: "company_ls_electric_rnd",
@@ -775,7 +776,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "Affiliate List",
         component: "CompanyAffiliateAmericaPage.tsx",
         cssFile: "company.css",
-        note: "Figma 5565:134319 · logo 360×216 · logoWidth/logoHeight · Founded/Website/Key Business/Address",
+        note: "Figma 5565:134319 · tablet 600~780px 2열 · logo 360×216 · logoWidth/logoHeight · Founded/Website/Key Business/Address",
       },
     ],
   },
@@ -875,7 +876,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "CompanyArticleDetail.tsx",
         cssFile: "company.css",
         modifiers: ["--blog", "--press", "--events", "--media"],
-        note: "variant · events meta Venue+Dates · pager Figma 5870:55854 (ico_arrow_pager_14) · media Figma 5565:134289 · tags 5565:134296",
+        note: "variant · press Figma 7575:82740 (hero·bullets·body) · events meta Venue+Dates · pager Figma 5870:55854 (ico_arrow_pager_14) · media Figma 5565:134289 · tags 5565:134296",
       },
     ],
   },
@@ -934,7 +935,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "NotFoundSearch.tsx",
         cssFile: "common-404.css",
         anchorId: "common-404-search",
-        note: "guide_field--search 80px · Popular Keywords · `/search` 연동",
+        note: "guide_field--search 80px · Popular Keywords · `/search` 연동 · clear ico_clear_12_black (Figma 7334:130802)",
       },
       {
         id: "common_404_links",
@@ -943,7 +944,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "NotFoundHelpfulLinks.tsx",
         cssFile: "common-404.css",
         anchorId: "common-404-links",
-        note: "4카드 · Homepage / Download / Contact / Request for Service",
+        note: "4카드 · Homepage / Download / Contact / Request for Service · 아이콘 loading=lazy · tablet 600~780px 2열 · 하단 Light Blue BG #f5f7fa (PC 7334:130744 · MO 7334:131077)",
       },
       {
         id: "cookie_settings_modal",
@@ -952,7 +953,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "CookieSettingsModal.tsx",
         cssFile: "globals.css",
         element: "div",
-        note: "Figma 7334:130893 · 우하단 배너 · dim 50% · 라이브: /main/cookie-setting",
+        note: "Figma 7334:130893 · 우하단 배너 · 설명 단일 문단(강제 줄바꿈 없음) · dim 50% · 라이브: /main/cookie-setting",
       },
       {
         id: "cookie_preferences_modal",
@@ -961,7 +962,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "CookiePreferencesModal.tsx",
         cssFile: "globals.css",
         element: "div",
-        note: "P-FO-COMMON-040000M · Figma 7334:130670 · 6개 쿠키 분류 설정 · 라이브: /main/cookie-setting/preferences",
+        note: "P-FO-COMMON-040000M · PC 7334:130670 · MO 7334:130983 · 6개 쿠키 분류 · PNG Check 22px · 3px scrollbar · MO actions 42px 세로 배치 · 라이브: /main/cookie-setting/preferences",
       },
       {
         id: "common_faq",
@@ -969,7 +970,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "FAQ",
         component: "CommonFaq.tsx",
         cssFile: "globals.css",
-        note: "desktop min-width 781px · mobile max-width 780px 공용 (Figma 5966:63556) · Markets · Service Center 등",
+        note: "desktop min-width 781px · mobile max-width 780px 공용 (Figma 5966:63556) · 아코디언 grid 0fr/1fr + opacity/translateY · Markets · Service Center 등",
       },
       {
         id: "highlight_news",
@@ -978,7 +979,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "HighlightNewsSection.tsx",
         cssFile: "globals.css",
         modifiers: ["--main", "--markets"],
-        note: "variant prop — main / markets",
+        note: "variant prop — main / markets · 이미지 highlight_01~03.jpg · --markets .tit 2줄 말줄임 · tablet 640~1200px 2열 (gap 24px)",
       },
     ],
   },
@@ -1560,7 +1561,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "SearchAllHero.tsx",
         cssFile: "search.css",
         anchorId: "search-all-hero",
-        note: "guide_field--search 80px · clear·검색 · 인기 태그 (Figma 4701:83900) · COMPONENT_GUIDE #search-80",
+        note: "guide_field--search 80px · clear 30px + ico_clear_12_black (Figma 6571:102541) · 검색 · 인기 태그 (Figma 4701:83900) · COMPONENT_GUIDE #search-80",
       },
       {
         id: "search_all",
@@ -1569,7 +1570,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "SearchAllTabContent.tsx",
         cssFile: "search.css",
         anchorId: "search-all",
-        note: "All 탭 · 탭 UI · AI 요약 (Figma 7334:108163 · badge PNG · CSS gradient 보더) · 섹션별 미리보기 · Pages Figma 4701:83902 · btn-text-30 Explore (Figma 4701:83900)",
+        note: "All 탭 · 탭 UI · AI 요약 (Figma 7334:108163 · badge PNG · CSS gradient 보더) · 섹션별 미리보기 · Pages Figma 4701:83902 · btn-text-30 Explore (Figma 4701:83900) · tablet 600~780px Product/Media 2열",
       },
       {
         id: "search_products",
@@ -1578,7 +1579,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "SearchProductsPanel.tsx",
         cssFile: "search.css",
         anchorId: "search-products",
-        note: "Products 탭 · devices_product_downloads 필터 · SearchTabActiveFilters · PageNumbering (Figma 4701:84687)",
+        note: "Products 탭 · devices_product_downloads 필터 · SearchTabActiveFilters · PageNumbering (Figma 4701:84687) · tablet 600~780px 2열",
       },
       {
         id: "search_documents",
@@ -1587,7 +1588,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "SearchDocumentsPanel.tsx",
         cssFile: "search.css",
         anchorId: "search-documents",
-        note: "Documents 탭 · SearchDocumentsCard · full-width 리스트 (Figma 4701:85037)",
+        note: "Documents 탭 · SearchDocumentsCard · full-width 리스트 (Figma 4701:85037) · MO active-filter clear #222 (Figma 6571:105004)",
       },
       {
         id: "search_media",
@@ -1596,7 +1597,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "SearchMediaPanel.tsx",
         cssFile: "search.css",
         anchorId: "search-media",
-        note: "Media 탭 · Document Type 필터 · 썸네일 리스트 (Figma 4701:84177)",
+        note: "Media 탭 · Document Type 필터 · 썸네일 리스트 (Figma 4701:84177) · tablet 600~780px 2열",
       },
       {
         id: "search_pages",

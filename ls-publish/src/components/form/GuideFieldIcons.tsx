@@ -16,7 +16,7 @@ export const guideCheckboxIconsDownloads = {
   checkedSrc: "/pub/ico/ico_checked_black.svg",
 } as const;
 
-/** Contact Us 동의 체크박스 (22px, Figma Check 2030:31397/31398) */
+/** 공용 PNG 체크박스 (22px, Figma Check 2030:31397/31398) */
 export const guideCheckboxIconsContactConsent = {
   uncheckedSrc: "/pub/ico/ico_checkbox_off_22.png",
   checkedSrc: "/pub/ico/ico_checkbox_on_22.png",

@@ -3,14 +3,13 @@
 import { articleDetailClass } from "@/app/()/company/articleDetailClass";
 import CompanyArticleDetail from "@/app/()/company/components/CompanyArticleDetail";
 import {
+  pressDetailBullets,
   pressDetailDate,
   pressDetailHero,
   pressDetailPager,
   pressDetailParagraphs,
   pressDetailTitle,
-  pressDetailYoutube,
 } from "@/app/()/company/data/pressDetailContent";
-import DevicesProductVideoPlayer from "@/components/video/DevicesProductVideoPlayer";
 import "@/assets/css/company.css";
 
 export default function CompanyPressDetailPage() {
@@ -21,18 +20,17 @@ export default function CompanyPressDetailPage() {
       title={pressDetailTitle}
       date={pressDetailDate}
       heroImage={pressDetailHero}
-      afterHero={
-        <DevicesProductVideoPlayer
-          youtubeVideoId={pressDetailYoutube.videoId}
-          title={pressDetailYoutube.title}
-        />
-      }
       pagerAriaLabel="Press post navigation"
       prev={pressDetailPager.prev}
       next={pressDetailPager.next}
       listHref="/company/press"
     >
       <div className={articleDetailClass("body")}>
+        <ul className={articleDetailClass("list")}>
+          {pressDetailBullets.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
         {pressDetailParagraphs.map((paragraph) => (
           <p key={paragraph}>{paragraph}</p>
         ))}
