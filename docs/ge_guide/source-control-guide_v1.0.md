@@ -1,7 +1,7 @@
 # Bo 형상관리(Git) 가이드
 
-> 버전: v1.3
-> 작성일: 2026-06-09 (최종 갱신 2026-07-14)
+> 버전: v1.4
+> 작성일: 2026-06-09 (최종 갱신 2026-07-22)
 > 대상: Bo 프로젝트에서 git push·커밋·브랜치를 다루는 모든 개발자 및 에이전트
 > 관련 파일: `.gitignore`, `.gitmodules`, `bo/`, `bo-api/`, `fo/`, `ls-publish/`
 
@@ -13,7 +13,7 @@ Bo 프로젝트는 **단일 monorepo**(`C:\...\workspace\Bo`)에서 관리되며
 `bo/`, `bo-api/`, `fo/`는 **git submodule**로, `ls-publish/`는 **정식 git subtree**로 각각 별도 GitHub 리포지토리와 연결되어 있다(아래 리모트 목록 참고).
 
 ```
-workspace/Bo/          ← 루트 monorepo (ge 리모트)
+workspace/Bo/          ← 루트 monorepo (리모트명: origin)
 ├── bo/                ← BO 프론트 (ge-bo submodule)
 ├── bo-api/            ← BE API   (ge-api submodule)
 ├── fo/                ← FO 프론트 (ge-fo submodule)
@@ -25,13 +25,14 @@ workspace/Bo/          ← 루트 monorepo (ge 리모트)
 
 | 리모트명 | GitHub URL | 대상 | 비고 |
 |---------|-----------|------|------|
-| `ge` | https://github.com/kfgabiz-lab/ge | 루트 전체 | 전체 monorepo. **루트에는 `origin`이 없음**에 주의 |
-| `ge-bo` | https://github.com/kfgabiz-lab/ge-bo | `bo/` | git submodule (`.gitmodules`에 `branch = master` 지정) |
-| `ge-api` | https://github.com/kfgabiz-lab/ge-api | `bo-api/` | git submodule (`.gitmodules`에 `branch = master` 지정) |
-| `ge-fo` | https://github.com/kfgabiz-lab/ge-fo | `fo/` | git submodule (`.gitmodules`에 `branch = master` 지정) |
+| `origin` | https://github.com/kfgabiz-lab/ge | 루트 전체 | 전체 monorepo. 루트에서 pull/push할 때 실제로 쓰는 리모트명은 `origin`이다 |
+| `ge-bo` | https://github.com/kfgabiz-lab/ge-bo | `bo/` | 루트에도 등록되어 있으나(참고용), 실제 pull/push는 `bo/` 폴더 안에서 `origin`으로 한다 |
+| `ge-api` | https://github.com/kfgabiz-lab/ge-api | `bo-api/` | 루트에도 등록되어 있으나(참고용), 실제 pull/push는 `bo-api/` 폴더 안에서 `origin`으로 한다 |
+| `ge-fo` | https://github.com/kfgabiz-lab/ge-fo | `fo/` | 루트에도 등록되어 있으나(참고용), 실제 pull/push는 `fo/` 폴더 안에서 `origin`으로 한다 |
 | `ls-publish-src` | https://github.com/timesky82/ls | `ls-publish/` | **ge와 무관한 제3자 저장소**. `pub` 브랜치가 최신 — `master`가 아님에 주의. `git subtree pull/push --prefix=ls-publish ls-publish-src pub` |
 
-> 리모트 확인 명령어(루트 `ge`에서): `git remote -v`
+> 리모트 확인 명령어(루트에서): `git remote -v`
+> ⚠️ `bo`/`bo-api`/`fo` 각 submodule 폴더 **안에서** `git remote -v`를 실행하면 그 폴더 자신의 리모트도 이름이 `origin`이다(각각 ge-bo/ge-api/ge-fo 저장소를 가리킴). 루트의 `ge-bo`/`ge-api`/`ge-fo` 리모트와는 별개의 설정이다.
 > `bo`/`bo-api`/`ge-fo` 3개 submodule은 **GitHub 기본 브랜치가 `main`**이라, `git submodule add` 시 반드시 `-b master`를 명시해야 한다. 지정하지 않으면 `main`(별개의 오래된/자동 브랜치, 실제 코드 없음)으로 클론되어 실제 작업 내용이 빠질 수 있다.
 > `ls-publish/`는 FO 이관 전 레거시 원본 사이트로, fo/ 작업 시 비교 참고용으로 사용한다. 자체 `node_modules`는 git 추적 대상이 아니므로, 해당 폴더에서 개발서버를 띄우려면 `npm install`을 먼저 실행해야 한다.
 > `bo`/`bo-api`/`fo`도 submodule 특성상 **자체 `node_modules`가 git 추적 대상이 아니므로**, 새로 clone하거나 submodule을 새로 추가한 직후에는 각 폴더에서 `npm install`(bo-api는 불필요, Gradle 사용)을 먼저 실행해야 dev 서버가 뜬다.
@@ -108,7 +109,7 @@ submodule 안에서 push를 마쳤으면, 루트 저장소는 그 submodule이 "
 ```bash
 git add bo bo-api fo      # 변경된 submodule만 지정해도 됨
 git commit -m "chore: bo/bo-api/fo 서브모듈 포인터 업데이트"
-git push ge master
+git push origin master
 ```
 
 > `ls-publish/`는 submodule이 아니라 subtree이므로 이 절차와 무관하다 — 필요 시(레거시 원본 자체를 수정한 경우만) `git subtree push --prefix=ls-publish ls-publish-src pub`로 별도 진행.
@@ -117,10 +118,10 @@ git push ge master
 
 ## 5. Pull 절차
 
-일반적인 개발 작업에서는 **루트 `ge` 한 곳만 pull 받으면 충분**하다.
+일반적인 개발 작업에서는 **루트 한 곳만 pull 받으면 충분**하다.
 
 ```bash
-git pull ge master
+git pull origin master
 ```
 
 단, submodule(`bo`/`bo-api`/`fo`)은 루트 pull만으로는 내용이 갱신되지 않는다 — 루트 저장소는 "포인터가 바뀌었다"는 것만 받아오고, 실제로 그 커밋을 받아오려면 아래를 추가로 실행해야 한다.
@@ -158,7 +159,7 @@ cd fo && git pull origin master && cd ..
 ## 7. 자주 쓰는 명령어 정리
 
 ```bash
-# 리모트 목록 확인(루트) — origin이 아니라 ge
+# 리모트 목록 확인(루트, 실제 리모트명은 origin)
 git remote -v
 
 # 변경 파일 확인(루트)
@@ -173,10 +174,10 @@ cd fo && git add <파일> && git commit -m "..." && git push origin master && cd
 # 루트에 submodule 포인터 반영
 git add bo bo-api fo
 git commit -m "chore: 서브모듈 포인터 업데이트"
-git push ge master
+git push origin master
 
 # 최신 내용 가져오기(루트 + submodule 포인터)
-git pull ge master
+git pull origin master
 git submodule update --init --recursive
 
 # 특정 submodule만 직접 최신화하고 싶을 때
