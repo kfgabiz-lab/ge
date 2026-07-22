@@ -131,4 +131,4 @@ CREATE INDEX idx_page_data_slug_created
     ON page_data (template_slug, created_at DESC);
 ```
 
-> 로컬 개발(`application-developer.yml`, `ddl-auto: update`)은 Entity 필드 추가만으로 컬럼이 자동 생성된다. 단 배포 환경(`application-dev.yml`, `ddl-auto: validate`)은 스키마 자동 변경이 차단되므로, 위 `ALTER TABLE` DDL을 **배포 전 수동으로 먼저 실행**해야 한다(프로젝트에 Flyway/Liquibase 등 마이그레이션 도구 없음 — 수동 DDL이 유일한 방법).
+> `ddl-auto: update`는 신규 컬럼을 `ALTER TABLE ... ADD COLUMN ... NOT NULL`로 자동 생성 시도하는데, PostgreSQL은 **기존 행이 있는 테이블에 DEFAULT 없는 NOT NULL 컬럼 추가를 거부**한다(`count`처럼 DEFAULT를 지정해도 Hibernate가 생성하는 ALTER 구문엔 DEFAULT절이 빠져 있어 동일하게 실패). 따라서 로컬(`application-local.yml`)이든 배포(`application-dev.yml`, `ddl-auto: validate`)든 **데이터가 이미 있는 테이블에 컬럼을 추가할 때는 위 `ALTER TABLE` DDL을 항상 수동으로 먼저 실행**해야 한다(프로젝트에 Flyway/Liquibase 등 마이그레이션 도구 없음 — 수동 DDL이 유일한 방법). 로컬 실행 시 이 DDL을 빠뜨리면 서버는 정상 기동되지만 해당 컬럼을 쓰는 API가 500 에러를 낸다.
