@@ -54,14 +54,12 @@ boolean existsByGroup_GroupCodeAndCodeAndActiveTrue(String groupCode, String cod
 | 필드 | 타입 | 필수 | 정적 검증(Bean Validation) | 추가 검증(서비스) | 저장 컬럼 |
 |:---|:---|:---|:---|:---|:---|
 | `type` | String | ✅ | `@NotBlank`, `@Size(max=30)` | `INQUIRY_TYPE` 활성 코드값 존재 | `inquiry_type` |
-| `productCategoryLv1Id` | Long | ✖ | - | - | `product_category_lv1_id` (devices-tree 행 rowId) |
-| `productCategoryLv2Id` | Long | ✖ | - | - | `product_category_lv2_id` (devices-tree 행 rowId) |
-| `productCategoryLv3Id` | Long | ✖ | - | - | `product_category_lv3_id` (devices-tree 행 rowId) |
+| `productCategory` | String | ✖ | `@Size(max=1000)` | - | `product_category` ("카테고리1 \| 카테고리2 \| 카테고리3" 결합 문자열) |
 | `email` | String | ✅ | `@NotBlank`, `@Email`, `@Size(max=255)` | - | `email` |
 | `firstName` | String | ✅ | `@NotBlank`, `@Size(max=255)` | - | `first_name` |
 | `lastName` | String | ✅ | `@NotBlank`, `@Size(max=255)` | - | `last_name` |
 | `companyName` | String | ✅ | `@NotBlank`, `@Size(max=100)` | - | `company_name` |
-| `country` | String | ✅ | `@NotBlank`, `@Size(max=2)` | `COUNTRY` 활성 코드값 존재 | `country` |
+| `country` | String | ✅ | `@NotBlank`, `@Size(max=2)` | `COUNTRYCODE` 활성 코드값 존재 | `country` |
 | `description` | String | ✅ | `@NotBlank` | - | `inquiry_content` |
 | `password` | String | ✅ | `@NotBlank`, `@Size(max=100)` | - | `password_hash` (BCrypt 해시 후 저장) |
 | `confirmPassword` | String | ✅ | `@NotBlank` | password와 일치 | 저장 안 함 (검증만) |
@@ -70,16 +68,14 @@ boolean existsByGroup_GroupCodeAndCodeAndActiveTrue(String groupCode, String cod
 
 > **`type`/`country` 검증 방식 변경**: 기존 `@Pattern`(정규식 하드코딩)/`@Size(min=2,max=2)` 정적 검증을 제거하고, 서비스 레이어에서 `CodeDetailRepository`로 **공통코드 실시간 존재·활성 검증**으로 전환. Bean Validation 단계는 null/blank/길이 상한만 거른 뒤, 실제 허용값 여부는 `code_detail`(활성)에 위임한다. BO 관리자가 코드를 추가/비활성해도 BE 소스 수정이 불필요하다.
 > - `type` 저장값 예: `PRODUCT_INFORMATION` / `QUOTATION_REQUEST` / `PURCHASE` / `OTHERS` (groupCode `INQUIRY_TYPE`)
-> - `country` 저장값 예: `US` / `CA` / `KR` (groupCode `COUNTRY`, ISO 3166-1 alpha-2 대문자)
+> - `country` 저장값 예: `US` / `CA` / `KR` (groupCode `COUNTRYCODE`, ISO 3166-1 alpha-2 대문자)
 > `created_ip`, `created_at` 은 요청 바디가 아니라 서버에서 채운다 (IP는 `HttpServletRequest`의 X-Forwarded-For 우선, 시각은 `CURRENT_TIMESTAMP`).
 
 ### 요청 예시
 ```json
 {
   "type": "QUOTATION_REQUEST",
-  "productCategoryLv1Id": 568,
-  "productCategoryLv2Id": 583,
-  "productCategoryLv3Id": 1743,
+  "productCategory": "LV Products and Systems | Magnetic Contactor | Metasol MS",
   "email": "john.doe@example.com",
   "firstName": "John",
   "lastName": "Doe",
@@ -102,7 +98,7 @@ boolean existsByGroup_GroupCodeAndCodeAndActiveTrue(String groupCode, String cod
 2) 공통코드 검증 (CodeDetailRepository)
    - existsByGroup_GroupCodeAndCodeAndActiveTrue("INQUIRY_TYPE", type) == false
        → BusinessException.badRequest("유효하지 않은 문의 유형입니다.")
-   - existsByGroup_GroupCodeAndCodeAndActiveTrue("COUNTRY", country) == false
+   - existsByGroup_GroupCodeAndCodeAndActiveTrue("COUNTRYCODE", country) == false
        → BusinessException.badRequest("유효하지 않은 국가입니다.")
 3) 교차 검증
    - password != confirmPassword → BusinessException.badRequest("비밀번호가 일치하지 않습니다.")
@@ -145,7 +141,7 @@ boolean existsByGroup_GroupCodeAndCodeAndActiveTrue(String groupCode, String cod
 | 필수값 누락 / 형식 위반 (`@NotBlank`,`@Email`,`@Size` 등) | 400 | `VALIDATION_FAILED` | `{ "status":400, "error":"VALIDATION_FAILED", "fieldErrors":{ "email":"..." } }` |
 | `@AssertTrue`(개인정보 미동의) | 400 | `VALIDATION_FAILED` | 위와 동일 (fieldErrors에 해당 필드) |
 | `type` 값이 `INQUIRY_TYPE` 활성 코드에 없음 | 400 | `BAD_REQUEST` | `{ "status":400, "error":"BAD_REQUEST", "message":"유효하지 않은 문의 유형입니다." }` |
-| `country` 값이 `COUNTRY` 활성 코드에 없음 | 400 | `BAD_REQUEST` | `{ "status":400, "error":"BAD_REQUEST", "message":"유효하지 않은 국가입니다." }` |
+| `country` 값이 `COUNTRYCODE` 활성 코드에 없음 | 400 | `BAD_REQUEST` | `{ "status":400, "error":"BAD_REQUEST", "message":"유효하지 않은 국가입니다." }` |
 | 비밀번호 불일치 (교차검증) | 400 | `BAD_REQUEST` | `{ "status":400, "error":"BAD_REQUEST", "message":"비밀번호가 일치하지 않습니다." }` |
 | JSON 파싱 실패 | 400 | `MALFORMED_JSON` | `{ "status":400, "error":"MALFORMED_JSON", ... }` |
 | 서버 오류 | 500 | `INTERNAL_SERVER_ERROR` | `{ "status":500, "error":"INTERNAL_SERVER_ERROR", ... }` |
@@ -162,7 +158,7 @@ boolean existsByGroup_GroupCodeAndCodeAndActiveTrue(String groupCode, String cod
 | 용도 | 요청 | 응답(200) |
 |:---|:---|:---|
 | 문의유형 옵션 | `GET /api/v1/fo/codes/INQUIRY_TYPE` | `[{ "code": "PRODUCT_INFORMATION", "name": "Product Information" }, ...]` |
-| 국가 옵션 | `GET /api/v1/fo/codes/COUNTRY` | `[{ "code": "US", "name": "United States" }, ...]` |
+| 국가 옵션 | `GET /api/v1/fo/codes/COUNTRYCODE` | `[{ "code": "US", "name": "United States" }, ...]` |
 
 - 응답은 `FoCodeResponse` 형태 `[{ code, name }]` — 활성 코드만 `sortOrder` 오름차순.
 - FE 매핑: 옵션 라벨은 `name`, 폼 제출 시 값은 `code` 그대로 전송(라디오/셀렉트 value = `code`).
