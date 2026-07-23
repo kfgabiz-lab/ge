@@ -54,11 +54,9 @@ boolean existsByGroup_GroupCodeAndCodeAndActiveTrue(String groupCode, String cod
 | 필드 | 타입 | 필수 | 정적 검증(Bean Validation) | 추가 검증(서비스) | 저장 컬럼 |
 |:---|:---|:---|:---|:---|:---|
 | `type` | String | ✅ | `@NotBlank`, `@Size(max=30)` | `INQUIRY_TYPE` 활성 코드값 존재 | `inquiry_type` |
-| `productCategoryLv1` | String | ✖ | `@Size(max=255)` | - | `product_category_lv1` |
-| `productCategoryLv2` | String | ✖ | `@Size(max=255)` | - | `product_category_lv2` |
-| `productCategoryLv3` | String | ✖ | `@Size(max=255)` | - | `product_category_lv3` |
-| `productCategoryLv1Id` | String | ✖ | `@Size(max=20)` | - | `product_category_lv1_id` |
-| `productCategoryLv2Id` | String | ✖ | `@Size(max=20)` | - | `product_category_lv2_id` |
+| `productCategoryLv1Id` | Long | ✖ | - | - | `product_category_lv1_id` (devices-tree 행 rowId) |
+| `productCategoryLv2Id` | Long | ✖ | - | - | `product_category_lv2_id` (devices-tree 행 rowId) |
+| `productCategoryLv3Id` | Long | ✖ | - | - | `product_category_lv3_id` (devices-tree 행 rowId) |
 | `email` | String | ✅ | `@NotBlank`, `@Email`, `@Size(max=255)` | - | `email` |
 | `firstName` | String | ✅ | `@NotBlank`, `@Size(max=255)` | - | `first_name` |
 | `lastName` | String | ✅ | `@NotBlank`, `@Size(max=255)` | - | `last_name` |
@@ -79,11 +77,9 @@ boolean existsByGroup_GroupCodeAndCodeAndActiveTrue(String groupCode, String cod
 ```json
 {
   "type": "QUOTATION_REQUEST",
-  "productCategoryLv1": "LV Devices and Systems",
-  "productCategoryLv2": "Magnetic Contactor",
-  "productCategoryLv3": "Metasol MS",
-  "productCategoryLv1Id": "L06",
-  "productCategoryLv2Id": "L06-01",
+  "productCategoryLv1Id": 568,
+  "productCategoryLv2Id": 583,
+  "productCategoryLv3Id": 1743,
   "email": "john.doe@example.com",
   "firstName": "John",
   "lastName": "Doe",
