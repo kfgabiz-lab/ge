@@ -1179,3 +1179,53 @@ VALUES
  true, 'SENTENCE', 'system', NOW(), 'system', NOW())
 
 ON CONFLICT ("key") DO NOTHING;
+
+-- ────────────── 이미지 업로드 밸리데이션(가로/세로 px, 용량 단위 KB/MB) 신규 키 ──────────────
+INSERT INTO message_resource ("key", ko, en, is_active, resource_type, created_by, created_at, updated_by, updated_at)
+VALUES
+
+('common.field.image_width_limit',
+ '''{label}'' 이미지는 가로 {px}px 이하만 업로드할 수 있습니다.',
+ '''{label}'' image must be {px}px wide or less.',
+ true, 'SENTENCE', 'system', NOW(), 'system', NOW()),
+
+('common.field.image_height_limit',
+ '''{label}'' 이미지는 세로 {px}px 이하만 업로드할 수 있습니다.',
+ '''{label}'' image must be {px}px tall or less.',
+ true, 'SENTENCE', 'system', NOW(), 'system', NOW())
+
+ON CONFLICT ("key") DO NOTHING;
+
+-- ────────────── 이미지 업로드 밸리데이션 — 용량 단위(KB/MB) 반영을 위한 기존 키 문구 수정 ──────────────
+-- ⚠️ 아래 2개 키는 이미 message_resource에 존재하므로 INSERT ON CONFLICT DO NOTHING으로는 반영되지 않는다.
+--    KB 단위 도입으로 인해 코드가 이제 {mb}/{size} 파라미터에 "500KB"처럼 단위가 포함된 문자열을 그대로 전달하므로,
+--    기존 문구에 하드코딩되어 있던 "MB" 접미사를 제거하는 UPDATE가 반드시 필요하다.
+UPDATE message_resource SET
+  ko = '{type} 파일은 최대 {mb}까지 업로드 가능합니다.',
+  en = '{type} files can be uploaded up to {mb}.',
+  updated_by = 'system', updated_at = NOW()
+WHERE "key" = 'common.field.file_size_limit';
+
+UPDATE message_resource SET
+  ko = '이미지 — {label} · 최대 {size}',
+  en = 'Image — {label} · Max {size}',
+  updated_by = 'system', updated_at = NOW()
+WHERE "key" = 'common.field.media_image_info';
+
+-- ────────────── 저장시점 검증 toast 단위(KB/MB) 표기 보완 — STEP6 리팩토링 ──────────────
+-- ⚠️ 아래 2개 키(max_file_size / row_max_file_size)는 maxFileSizeMB(단위 KB|MB 선택 가능)에 대응하는 저장시점
+--    toast로, 기존 문구에 "MB"가 하드코딩되어 있어 KB 설정 시 "50MB"처럼 잘못 표기되었다.
+--    코드가 이제 {size} 파라미터에 "50KB"처럼 단위를 포함한 문자열을 그대로 전달하므로 템플릿의 "MB" 하드코딩을 제거한다.
+--    (max_total_size / row_max_total_size는 대응하는 maxTotalSizeMB에 KB/MB 단위 선택 필드 자체가 없어
+--     항상 MB 고정이 맞으므로 변경 대상 아님 — 코드 확인 완료)
+UPDATE message_resource SET
+  ko = '''{label}'' 파일은 개당 최대 {size}까지 허용됩니다.',
+  en = '''{label}'' files must be under {size} each.',
+  updated_by = 'system', updated_at = NOW()
+WHERE "key" = 'common.validation.max_file_size';
+
+UPDATE message_resource SET
+  ko = '''{label}'' 항목은 {row}번째 행의 파일이 개당 최대 {size}까지 허용됩니다.',
+  en = '''{label}'' files in row {row} must be under {size} each.',
+  updated_by = 'system', updated_at = NOW()
+WHERE "key" = 'common.validation.row_max_file_size';
