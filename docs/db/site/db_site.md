@@ -37,6 +37,7 @@ CREATE TABLE site (
 | id | BIGINT IDENTITY | ✓ | PK |
 | name | TEXT | ✓ | 홈페이지명 (예: 북미홈페이지) |
 | description | TEXT | | 설명 |
+| timezone | TEXT | | 시간대(IANA, 예: America/New_York). NULL이면 서버 기본 시간대 사용. 3-5 참고 |
 | is_active | BOOLEAN DEFAULT TRUE | ✓ | 사용여부 |
 | created_by | TEXT | ✓ | 등록자 |
 | created_at | TIMESTAMPTZ | ✓ | 등록일시 |
@@ -114,6 +115,16 @@ ALTER TABLE page_template ALTER COLUMN site_id SET NOT NULL;
 
 CREATE INDEX page_template_site_id_idx ON page_template (site_id);
 ```
+
+### 3-5. `site` — timezone 컬럼 추가 (2026-07-24)
+
+사이트별 시간대 설정 기능 추가. `created_at`/`updated_at` 등 감사 컬럼과 게시기간(`_from`/`_to`) 상태 판정이 서버 고정 시간대 대신 이 값(사이트별 IANA 시간대) 기준으로 계산되도록 하기 위함.
+
+```sql
+ALTER TABLE site ADD COLUMN timezone TEXT;
+```
+
+> nullable, 기존 데이터는 NULL 유지(서버 기본 시간대로 폴백). 로컬(`ddl-auto: update`)은 자동 반영되지만, dev/prod(`ddl-auto: validate`)는 배포 전 위 DDL을 수동 실행해야 함.
 
 ---
 
