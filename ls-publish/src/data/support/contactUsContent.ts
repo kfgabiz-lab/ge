@@ -129,6 +129,8 @@ export const contactUsFormCopy = {
   passwordPlaceholder: "Enter Password",
   confirmPassword: "Confirm Password",
   confirmPasswordPlaceholder: "Enter Password Confirm",
+  /** Figma 1689:8145 — Textfield Error sample */
+  fieldError: "Input text error",
   sendLabel: "Send",
   sendLabelMobile: "LIST",
 } as const;

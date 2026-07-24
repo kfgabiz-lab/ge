@@ -1,4 +1,7 @@
-import type { ProductDownloadItem } from "@/app/()/products-systems/data/productDetailContent";
+import {
+  productDownloadFile,
+  type ProductDownloadItem,
+} from "@/app/()/products-systems/data/productDetailContent";
 import { emptyStateIconSrc } from "@/data/commonAssets";
 
 export const downloadCenterPage = {
@@ -144,8 +147,8 @@ export const downloadCenterItems: ProductDownloadItem[] = [
     version: "V38.0",
     versions: downloadVersions,
     files: [
-      { name: "MC-800a, 630a, 500a.pdf", size: "12.09MB" },
-      { name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB" },
+      productDownloadFile({ name: "MC-800a, 630a, 500a.pdf", size: "12.09MB", url: "https://www.ls-electric.com/download/MC-800a%2C%20630a%2C%20500a.pdf" }),
+      productDownloadFile({ name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB", url: "https://www.ls-electric.com/download/Metasol%20MS_MC-800a_500-800A_3P_2D%20CAD.pdf" }),
     ],
   },
   {
@@ -155,8 +158,8 @@ export const downloadCenterItems: ProductDownloadItem[] = [
     date: "Dec 9, 2025",
     version: "V38.0",
     files: [
-      { name: "MC-800a, 630a, 500a.pdf", size: "12.09MB" },
-      { name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB" },
+      productDownloadFile({ name: "MC-800a, 630a, 500a.pdf", size: "12.09MB", url: "https://www.ls-electric.com/download/MC-800a%2C%20630a%2C%20500a.pdf" }),
+      productDownloadFile({ name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB", url: "https://www.ls-electric.com/download/Metasol%20MS_MC-800a_500-800A_3P_2D%20CAD.pdf" }),
     ],
   },
   {
@@ -166,7 +169,7 @@ export const downloadCenterItems: ProductDownloadItem[] = [
     date: "Dec 9, 2025",
     version: "V38.0",
     versions: downloadVersions,
-    files: [{ name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB" }],
+    files: [productDownloadFile({ name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB", url: "https://www.ls-electric.com/download/%5BHVDC_and_FACTS%5D_EN_C84602-02-201905.pdf" })],
   },
   {
     id: "dl-4",
@@ -176,8 +179,8 @@ export const downloadCenterItems: ProductDownloadItem[] = [
     version: "V38.0",
     versions: downloadVersions,
     files: [
-      { name: "LS_Solution_Overview_EN_CZZZ02-04-202603", size: "" },
-      { name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB" },
+      productDownloadFile({ name: "LS_Solution_Overview_EN_CZZZ02-04-202603", size: "", url: "https://www.ls-electric.com/download/LS_Solution_Overview_EN_CZZZ02-04-202603" }),
+      productDownloadFile({ name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB", url: "https://www.ls-electric.com/download/%5BHVDC_and_FACTS%5D_EN_C84602-02-201905.pdf" }),
     ],
   },
   {
@@ -187,8 +190,8 @@ export const downloadCenterItems: ProductDownloadItem[] = [
     date: "Dec 9, 2025",
     version: "V38.0",
     files: [
-      { name: "LS_Solution_Overview_EN_CZZZ02-04-202603", size: "" },
-      { name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB" },
+      productDownloadFile({ name: "LS_Solution_Overview_EN_CZZZ02-04-202603", size: "", url: "https://www.ls-electric.com/download/LS_Solution_Overview_EN_CZZZ02-04-202603" }),
+      productDownloadFile({ name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB", url: "https://www.ls-electric.com/download/%5BHVDC_and_FACTS%5D_EN_C84602-02-201905.pdf" }),
     ],
   },
   {
@@ -197,6 +200,6 @@ export const downloadCenterItems: ProductDownloadItem[] = [
     title: "LV SWGR [UL LV Panelboard] IOM Manual",
     date: "Dec 9, 2025",
     version: "V38.0",
-    files: [{ name: "MC-800a, 630a, 500a.pdf", size: "12.09MB" }],
+    files: [productDownloadFile({ name: "MC-800a, 630a, 500a.pdf", size: "12.09MB", url: "https://www.ls-electric.com/download/MC-800a%2C%20630a%2C%20500a.pdf" })],
   },
 ];

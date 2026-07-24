@@ -1,4 +1,7 @@
-import type { ProductDownloadItem } from "@/app/()/products-systems/data/productDetailContent";
+import {
+  productDownloadFile,
+  type ProductDownloadItem,
+} from "@/app/()/products-systems/data/productDetailContent";
 import {
   searchProductCategories,
   searchProductDocumentTypes,
@@ -23,16 +26,16 @@ export const searchDocumentCategories = searchProductCategories;
 export const searchDocumentTypes: DownloadFilterOption[] = searchProductDocumentTypes;
 
 const catalogFiles = [
-  { name: "MC-800a, 630a, 500a.pdf", size: "12.09MB" },
-  { name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB" },
-] as const;
+  productDownloadFile({ name: "MC-800a, 630a, 500a.pdf", size: "12.09MB", url: "https://www.ls-electric.com/download/MC-800a%2C%20630a%2C%20500a.pdf" }),
+  productDownloadFile({ name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB", url: "https://www.ls-electric.com/download/Metasol%20MS_MC-800a_500-800A_3P_2D%20CAD.pdf" }),
+];
 
 const manualFiles = [
-  { name: "LS_Solution_Overview_EN_CZZZ02-04-202603 DC Device", size: "" },
-  { name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB" },
-  { name: "MC-800a, 630a, 500a.pdf", size: "12.09MB" },
-  { name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB" },
-] as const;
+  productDownloadFile({ name: "LS_Solution_Overview_EN_CZZZ02-04-202603 DC Device", size: "", url: "https://www.ls-electric.com/download/LS_Solution_Overview_EN_CZZZ02-04-202603%20DC%20Device" }),
+  productDownloadFile({ name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB", url: "https://www.ls-electric.com/download/%5BHVDC_and_FACTS%5D_EN_C84602-02-201905.pdf" }),
+  productDownloadFile({ name: "MC-800a, 630a, 500a.pdf", size: "12.09MB", url: "https://www.ls-electric.com/download/MC-800a%2C%20630a%2C%20500a.pdf" }),
+  productDownloadFile({ name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB", url: "https://www.ls-electric.com/download/Metasol%20MS_MC-800a_500-800A_3P_2D%20CAD.pdf" }),
+];
 
 /** Figma 6430:111082 · 111083 · 111085 — document card templates */
 const documentTemplates: ProductDownloadItem[] = [

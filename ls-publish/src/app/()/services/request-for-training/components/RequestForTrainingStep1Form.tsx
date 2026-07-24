@@ -1,13 +1,61 @@
 "use client";
 
 import { InputAdornment, TextField } from "@mui/material";
-import { useId, useState } from "react";
+import { useId, useState, type ReactNode } from "react";
 import {
   requestForTrainingStep1Copy,
   requestForTrainingTypeOptions,
 } from "@/data/services/requestForTrainingContent";
 import RequestForTrainingFieldLabel from "./RequestForTrainingFieldLabel";
 import RequestForTrainingQuestionnaireIntro from "./RequestForTrainingQuestionnaireIntro";
+
+const FIELD_ERROR = requestForTrainingStep1Copy.fieldError;
+
+/**
+ * 에러 / 정상 구분 (값 내용이 아니라 props로 판단) — Figma 1689:8145
+ * - 에러: FieldShell `error="메시지"` + TextField `error`
+ *   → `--field--error` 클래스, helper 문구, 빨간 보더
+ * - 정상: `error` prop 생략 (FieldShell / TextField 모두)
+ *   → 기본 보더, helper 없음
+ * 가이드: `/guide/components` · docs/COMPONENT_GUIDE.md
+ */
+function FieldError({ message }: { message: string }) {
+  return (
+    <p className="support_service_training_request__error" role="alert">
+      {message}
+    </p>
+  );
+}
+
+function FieldShell({
+  className = "",
+  error, // string이면 에러 UI, undefined면 정상
+  label,
+  children,
+}: {
+  className?: string;
+  error?: string;
+  label?: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      className={[
+        "support_service_training_request__field",
+        error ? "support_service_training_request__field--error" : "",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      <div className="support_service_training_request__control">
+        {label}
+        {children}
+      </div>
+      {error ? <FieldError message={error} /> : null}
+    </div>
+  );
+}
 
 export default function RequestForTrainingStep1Form() {
   const formId = useId();
@@ -16,6 +64,10 @@ export default function RequestForTrainingStep1Form() {
   const [trainingTrack, setTrainingTrack] = useState<TrainingTypeId>(
     requestForTrainingTypeOptions[0].id,
   );
+  /* Figma 1689:8145 — Error 샘플 (Text Address 2). Search는 정상 예시.
+   * 가이드: /guide/components#textfield-280 · docs/COMPONENT_GUIDE.md */
+  const [address2, setAddress2] = useState<string>(FIELD_ERROR);
+  const [streetSearch, setStreetSearch] = useState<string>("");
 
   return (
     <div className="support_service_training_request__panel">
@@ -62,7 +114,10 @@ export default function RequestForTrainingStep1Form() {
 
             <div className="support_service_training_request__form-row support_service_training_request__form-row--2">
               <div className="support_service_training_request__field">
-                <RequestForTrainingFieldLabel htmlFor={`${formId}-first-name`} required>
+                <RequestForTrainingFieldLabel
+                  htmlFor={`${formId}-first-name`}
+                  required
+                >
                   {fields.firstName.label}
                 </RequestForTrainingFieldLabel>
                 <TextField
@@ -99,39 +154,58 @@ export default function RequestForTrainingStep1Form() {
                 {fields.streetAddress.label}
               </RequestForTrainingFieldLabel>
               <div className="support_service_training_request__form-row support_service_training_request__form-row--address">
-                <TextField
-                  id={`${formId}-street`}
-                  className="guide_field guide_field--h50 guide_field--search support_service_training_request__input support_service_training_request__input--search"
-                  placeholder={fields.streetAddress.searchPlaceholder}
-                  slotProps={{
-                    input: {
-                      endAdornment: (
-                        <InputAdornment position="end" className="guide_field__search-adorn">
-                          <button
-                            type="button"
-                            className="guide_field__search-icon-button"
-                            aria-label="Search address"
+                {/* 정상: FieldShell / TextField에 error 없음 */}
+                <FieldShell
+                  className="support_service_training_request__field--address-search"
+                >
+                  <TextField
+                    id={`${formId}-street`}
+                    className="guide_field guide_field--h50 guide_field--search support_service_training_request__input support_service_training_request__input--search"
+                    placeholder={fields.streetAddress.searchPlaceholder}
+                    value={streetSearch}
+                    onChange={(event) => setStreetSearch(event.target.value)}
+                    slotProps={{
+                      input: {
+                        endAdornment: (
+                          <InputAdornment
+                            position="end"
+                            className="guide_field__search-adorn"
                           >
-                            <img
-                              src="/pub/ico/ico_search_24.svg"
-                              alt=""
-                              width={18}
-                              height={18}
-                              loading="lazy"
-                              decoding="async"
-                            />
-                          </button>
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
-                />
-                <TextField
-                  id={`${formId}-address-2`}
-                  className="guide_field guide_field--h50 support_service_training_request__input"
-                  placeholder={fields.streetAddress.address2Placeholder}
-                  aria-label={fields.streetAddress.address2Placeholder}
-                />
+                            <button
+                              type="button"
+                              className="guide_field__search-icon-button"
+                              aria-label="Search address"
+                            >
+                              <img
+                                src="/pub/ico/ico_search_24.svg"
+                                alt=""
+                                width={18}
+                                height={18}
+                                loading="lazy"
+                                decoding="async"
+                              />
+                            </button>
+                          </InputAdornment>
+                        ),
+                      },
+                    }}
+                  />
+                </FieldShell>
+                {/* 에러: FieldShell error={메시지} + TextField error */}
+                <FieldShell
+                  className="support_service_training_request__field--address-2"
+                  error={FIELD_ERROR}
+                >
+                  <TextField
+                    id={`${formId}-address-2`}
+                    className="guide_field guide_field--h50 support_service_training_request__input"
+                    placeholder={fields.streetAddress.address2Placeholder}
+                    aria-label={fields.streetAddress.address2Placeholder}
+                    value={address2}
+                    error
+                    onChange={(event) => setAddress2(event.target.value)}
+                  />
+                </FieldShell>
               </div>
             </div>
 

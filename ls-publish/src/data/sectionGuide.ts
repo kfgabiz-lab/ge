@@ -140,7 +140,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "Benefits",
         component: "MarketsBenefits.tsx",
         cssFile: "markets.css",
-        note: "공통 · marketsBenefitImages (`/pub/img/markets/benefits/benefit_01~10.jpg`) · 페이지별 순서는 각 markets*Content.ts",
+        note: "공통 marketsBenefitImages · oil-gas-mining/power-grid/data-center는 페이지별 `/pub/img/markets/{slug}/benefits/` (ogm Figma 7849:129545)",
       },
       {
         id: "markets_sustainability",
@@ -323,7 +323,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
           "DevicesProductDownloads.tsx · DevicesProductDownloadsFilter.tsx · DevicesProductDownloadsFilterParts.tsx",
         cssFile: "devices-product-detail.css",
         anchorId: "product-downloads",
-        note: "공용 필터(DevicesProductDownloadsFilter*) · Document type · btn-line-30 Copy / file-btn 다운로드",
+        note: "공용 필터 · list Figma 7922:118486 · DevicesProductDownloadsCopyLink (loading → Link copied! · file.url)",
       },
       {
         id: "devices_product_video",
@@ -615,7 +615,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "Shaping What's Next",
         component: "CompanyAmericaPage.tsx",
         cssFile: "company.css",
-        note: "다크 배경 · bastrop/utah 자동재생 webm · company-america-shaping__block · ico_map_16_white",
+        note: "다크 배경 · bastrop/utah 자동재생 webm · company-america-shaping__block · ico_map_16_white · 카피 Figma 7954:181924 / 7954:181899",
       },
       {
         id: "company_america_business",
@@ -1112,7 +1112,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "ContactUsViewResponseModalErrorPreview.tsx",
         cssFile: "globals.css, support.css",
         element: "div",
-        note: "Figma 5565:128558 · common_modal · field error state",
+        note: "Figma 5565:128558 · field Error 1689:8145 · value+helper Input text error · Confirm footer",
       },
       {
         id: "support_contact_view_response_detail_modal",
@@ -1139,7 +1139,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "ContactUsForm.tsx",
         cssFile: "support.css",
         anchorId: "support-contact-form",
-        note: "Figma 3670:30232",
+        note: "Figma 3670:30232 · Error sample 1 each: Select(Lv1) · Text(Email) · Textarea · Password · Checkbox(Personal Info)",
       },
       {
         id: "support_contact_terms_modal",
@@ -1275,7 +1275,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "ServiceCenterFlow.tsx",
         cssFile: "services.css",
         anchorId: "service-center-flow",
-        note: "5단계 플로우 · 모바일 세로 트랙 · 태블릿 diagram center · PC 781–1200 diagram 1440 센터",
+        note: "5단계 플로우 · CTA btn-text-30 + icon_link-14 (Figma 7577:140048) · 모바일 세로 트랙 · 태블릿 diagram center · PC 781–1200 diagram 1440 센터",
       },
       {
         id: "support_service_gics",
@@ -1477,7 +1477,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "EngineeringTrainingSessionDetail.tsx",
         cssFile: "training.css",
         anchorId: "engineering-training-session-detail",
-        note: "탭 · 아젠다 · 등록 폼 · 카운트다운 사이드바 (Figma 5552:121029)",
+        note: "탭 · 아젠다 PC 테이블 / MO 타임라인 (Figma 8007:107681) · 카운트다운 DAYS·HOURS·MINS (8007:106738) · 등록 폼 · Error sample · 사이드바 (Figma 5552:121029 / 1689:8145)",
       },
     ],
   },
@@ -1505,7 +1505,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "RequestForTraining.tsx",
         cssFile: "training.css",
         anchorId: "request-for-training",
-        note: "4단계 스텝바 · Training Questionnaire Step 1 · Next 220×52 (Figma 6135:157225)",
+        note: "4단계 스텝바 · Step 1 · Error sample 유형당 1개 (Search Keyword · Text Address 2) · Next 220×52 (Figma 6135:157225 / 1689:8145)",
       },
       {
         id: "support_service_training_request_step_02",

@@ -10,7 +10,7 @@
 | **GNB 사용 맥락** | `src/data/gnbGuide.ts` → [GNB_GUIDE.md](./GNB_GUIDE.md) |
 | **허브** | [DESIGN_GUIDE.md](./DESIGN_GUIDE.md) |
 
-**동기화**: `public/ico` 파일 수 = `icoItems.length` (현재 **95**개) · `pageIconItems.length` (**17**개)
+**동기화**: `public/ico` 파일 수 = `icoItems.length` (현재 **104**개) · `pageIconItems.length` (**17**개)
 
 `basePath`는 `/pub`입니다. 앱·CSS·MD 모두 `/pub/ico/...`, `/pub/img/...`로 참조합니다.
 
@@ -110,6 +110,8 @@
 | `ico_close_24.svg` | 24 | GNB 검색 패널 닫기 |
 | `ico_copy_14.svg` | 14 | Copy Link (라이트) |
 | `ico_copy_white_14.svg` | 14 | Copy Link (다크) |
+| `ico_loading_14.svg` | 14 | Copy Link 로딩 스피너 |
+| `ico_agenda_dot_8.svg` | 8 | Agenda 모바일 타임라인 닷 |
 | `ico_checked_footer_22.svg` | 22 | Footer 뉴스레터 checked |
 | `ico_download.svg` | 18 | 다운로드 CTA |
 | `ico_link.svg` | 56 | 섹션 링크 CTA · `icon_link-14` |
@@ -211,6 +213,7 @@ Figma [5552:121284](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB
 | `ico_training_class_size_18.svg` | CLASS SIZE | 기본 opacity |
 | `ico_training_location_18.svg` | LOCATION INFORMATION | location 카테고리 |
 | `ico_training_products_18.svg` | PRODUCTS COVERED | `iconMuted` |
+| `ico_agenda_dot_8.svg` | Agenda MO timeline | Figma 8007:107681 · `__agenda-dot` |
 
 ### Request for Training — Step Bar (`support_service_training_request`)
 

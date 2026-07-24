@@ -88,7 +88,7 @@ section.devices_product_hero .devices_product_hero__btns .icon_download {
     display: block;
     padding: 10px 0 10px 12px;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 400;
     line-height: 24px;
     color: #888;
     text-decoration: none;
@@ -116,7 +116,7 @@ section.devices_product_hero .devices_product_hero__btns .icon_download {
 
   .devices_product_nav__link:hover,
   .devices_product_nav__link.is-active {
-    color: var(--color-primary);
+    color: #222;
   }
 
   .devices_product_nav__link.is-active::before {
@@ -125,7 +125,7 @@ section.devices_product_hero .devices_product_hero__btns .icon_download {
   }
 
   .devices_product_nav__link.is-active {
-    font-weight: 600;
+    font-weight: 500;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -967,6 +967,7 @@ section.devices_product_lineup .devices_product_lineup__footer .btn-lv02--solid{
     width: 280px;
   }
 
+  /* PC — Figma 7922:118486 Accordion list (top rule + 30 / item gap 60) */
   section.devices_product_downloads .devices_product_downloads__list {
     display: flex;
     flex-direction: column;
@@ -977,13 +978,13 @@ section.devices_product_lineup .devices_product_lineup__footer .btn-lv02--solid{
     border-top: 1px solid #e8e8e8;
   }
 
-  /* PC — Figma 6571:102772 Downloads item */
+  /* PC — Figma 7922:118489 Downloads item (head gap 12 · title/version items-end · body gap 16) */
   section.devices_product_downloads .devices_product_downloads__item {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 0;
     width: 100%;
-    margin: 0;
+    margin: 0px;
     padding: 0;
   }
 
@@ -997,7 +998,7 @@ section.devices_product_lineup .devices_product_lineup__footer .btn-lv02--solid{
   section.devices_product_downloads .devices_product_downloads__item-head-main {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+
     min-width: 0;
     width: 100%;
   }
@@ -1008,22 +1009,23 @@ section.devices_product_lineup .devices_product_lineup__footer .btn-lv02--solid{
     justify-content: space-between;
     gap: 16px;
     width: 100%;
-    margin: 0;
+    margin: 0 0 12px;
   }
 
   section.devices_product_downloads .devices_product_downloads__item-head-title-row {
     display: flex;
-    align-items: flex-start;
+    align-items: flex-end;
     justify-content: space-between;
+    gap: 16px;
     width: 100%;
-    min-height: 48px;
+    min-height: 38px;
   }
 
   section.devices_product_downloads .devices_product_downloads__item-tit {
     flex: 1;
     min-width: 0;
     margin: 0;
-    padding-right: 16px;
+    padding: 4px 16px 4px 0;
     font-size: 20px;
     font-weight: 600;
     line-height: 30px;
@@ -1043,10 +1045,11 @@ section.devices_product_lineup .devices_product_lineup__footer .btn-lv02--solid{
   section.devices_product_downloads .devices_product_downloads__item-version {
     display: flex;
     flex-shrink: 0;
+    align-items: center;
     justify-content: flex-end;
     width: 140px;
     margin: 0;
-    padding-top: 10px;
+    padding: 0;
   }
 
   section.devices_product_downloads
@@ -1126,6 +1129,7 @@ section.devices_product_lineup .devices_product_lineup__footer .btn-lv02--solid{
     padding: 24px;
     background: #f5f7fa;
     border-radius: 4px;
+  margin-top: 16px;
   }
 
   section.devices_product_downloads .devices_product_downloads__files {
@@ -1180,7 +1184,8 @@ section.devices_product_lineup .devices_product_lineup__footer .btn-lv02--solid{
     display: flex;
     gap: 8px;
     flex-shrink: 0;
-    min-width: 209px;
+    justify-content: flex-end;
+    min-width: 219px;
   }
 
   /* Figma Btn / 30px / Line */

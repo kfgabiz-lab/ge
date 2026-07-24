@@ -54,7 +54,7 @@ Figma [LSEA 디자인](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_
 | `#level-03` | `btn-lv03` — `--solid`, `--line` |
 | `#icon-56` | `btn-icon-56`, `btn-icon-56--top` (Scroll to top) |
 | `#text-30` | `btn-text-30` + `btn-text-30__icon` (arrow / link / external) |
-| `#btn-line-30` | `btn-line-30`, `btn-line-30--on-dark` (Copy Link) |
+| `#btn-line-30` | `btn-line-30`, `btn-line-30--on-dark` (Copy Link) · Downloads: loading → `Link copied!` toast (`DevicesProductDownloadsCopyLink`) |
 | `#rolling-50` | `SwiperBarControls`, `SwiperNavButtons` |
 | `#check` | Check (05) |
 | `#check-22` | 22px 체크박스 세트 (default / Downloads) |
@@ -119,9 +119,17 @@ Figma [LSEA 디자인](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_
 
 | 클래스 | 아이콘 | 용도 |
 |--------|--------|------|
-| `btn-text-30` | `icon_arrow-14`, `icon_link-14`, `icon_arrow-18`, `icon_external-18` | 섹션 More·링크 CTA |
+| `btn-text-30` | `icon_arrow-14`, `icon_link-14`, `icon_arrow-18`, `icon_external-18` | 섹션 More·링크 CTA · Service Flow CTA는 `icon_link-14` |
 | `btn-line-30` | `btn-line-30__icon--copy` | Copy Link (라이트) |
 | `btn-line-30--on-dark` | white copy | 다크 배경 Copy |
+
+Downloads / Search / Download Center Copy Link는 `DevicesProductDownloadsCopyLink` (`devices_product_downloads__file-btn--copy`) 사용 — 클릭 시 로딩 1초 → `Link copied!` 말풍선 1초 · `file.url` (`productDownloadFile`).
+
+| 상태 | Figma | 클래스 |
+|------|-------|--------|
+| Default | 7954:145264 | `file-btn--copy` |
+| Loading | 7954:145265 | `is-loading` + `file-btn-spinner` (`ico_loading_14`) |
+| Copied | 7954:145273 | `copy-toast` |
 
 ### Flat · Rolling
 
@@ -153,6 +161,15 @@ MUI `Checkbox` + `GuideCheckboxIcon` (`src/components/form/GuideFieldIcons.tsx`)
 | `guideCheckboxIconsContactConsent` | `ico_checkbox_off_22.png` | `ico_checkbox_on_22.png` | Cookie Preferences · Contact Us · Training 폼 (Figma Check 2030:31397/31398) |
 | Footer 관심분야 | CSS 흰 테두리 | `ico_checked_footer_22.svg` | `MainFooter.css` |
 
+**에러 (공용 · `globals.css`)**
+
+| 클래스 | 역할 |
+|--------|------|
+| `guide_checkbox--error` | Checkbox `className`에 추가 → 아이콘 테두리 `#e53a3d` |
+| `guide_checkbox__error` | helper 문구 (`role="alert"`) |
+
+체크 시 `--error` / helper 제거. 페이지는 consent 레이아웃만 담당.
+
 라디오·비밀번호 PNG는 [ICON_GUIDE.md](./ICON_GUIDE.md) Form 섹션 참고.
 
 ---
@@ -170,6 +187,30 @@ MUI `TextField` / `FormControl` + `GuideSelect` + 클래스 `.guide_field`
 | `guide_field--search` | 검색 필드 + endAdornment |
 | `guide_field--fill-muted` | Select 배경 `#f5f5f5` (Lv/Sub Category 등) |
 | `guide_field--error-gap` | helperText 여백 |
+
+**상태 테두리** (`.guide_field` 전체 공통 · `globals.css`)
+
+| 상태 | 색 |
+|------|-----|
+| Default / Hover | `#ddd` (`--color-border`) |
+| Focus | `#666` (`--color-text-muted`) |
+| Error / Error+Hover / Error+Focus | `#e53a3d` (`--color-error`) |
+
+HelperText 에러 색도 공통: `.guide_field .MuiFormHelperText-root.Mui-error` → `--color-error`  
+페이지 CSS는 helper 위치·레이아웃만 담당 (예: `training.css` absolute error).
+
+**Error 샘플 (유형당 · Figma [1689:8145](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=1689-8145))** — `/guide/components`
+
+| 유형 | 앵커 | 적용 |
+|------|------|------|
+| Text | `#textfield-280` | `error` + `helperText` |
+| Search | `#search-280` | `guide_field--search` + `error` |
+| Select | `#dropdown` | `FormControl error` + `GuideSelect error` + `FormHelperText` |
+| Textarea | `#textarea` | `multiline` + `error` |
+| Password | `#password` | `type=password` + `error` |
+| Checkbox | `#check-22` (3. Error) | `guide_checkbox--error` + `guide_checkbox__error` |
+
+실사용: Contact Us (Select Lv1 / Text / Textarea / Password / Checkbox) · Session Detail (Text/Search/Select/Checkbox) · Request for Training (Text Address 2).
 
 | 헬퍼 | 역할 |
 |------|------|

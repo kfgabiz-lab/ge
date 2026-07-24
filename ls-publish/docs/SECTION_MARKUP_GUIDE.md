@@ -232,10 +232,18 @@ Hero 부제는 `__sub` — desktop 24px / weight **300** / line-height 34px (`ma
   - 루트에 `devices_product_downloads` 병기 → `DevicesProductDownloadsFilter*` 재사용 (`devices-product-detail.css`)
   - Products/Documents: `SearchTabActiveFilters` active chips
   - Documents: `SearchDocumentsCard` (All 탭 2열 `search_all__document` · 탭 full-width `search_documents__card`)
+  - Copy Link: `DevicesProductDownloadsCopyLink` · `file.url` (`productDownloadFile`) · loading → `Link copied!` toast
 - **tablet 600~780px** — All Product/Media · Products 탭 · Media 탭 2열 (`40px 20px`), list divider 숨김
 - **mobile 599px 이하** — 위 카드/리스트 1열
 - **페이지 조합** — `SearchAllPage` = `SearchAllHero` + `SearchAllTabContent`
 - 라이브: `/search` · Figma 4701:83900 (All) · 84687 · 85037 · 84177 · 84292
+
+### Services — Engineering Training Session — `training.css`
+
+- **Agenda PC** — `__table` + `SessionDetailTableScroll`
+- **Agenda MO** — `__agenda-list` 타임라인 (`__agenda-dot` · Figma 8007:107681) · 테이블 숨김
+- **Countdown** — DAYS / HOURS / MINS only (Figma 8007:106738)
+- 상세: [SECTION_CLASS_GUIDE.md](./SECTION_CLASS_GUIDE.md) Services — Engineering Training Session
 
 ### Software Product (`/products-systems/software/...`) — `devices-product-detail.css`
 

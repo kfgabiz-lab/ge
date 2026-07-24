@@ -10,7 +10,7 @@ type ContactUsViewResponseModalProps = {
   onClose: () => void;
   /** Section guide preview — in-flow layout without fixed overlay */
   embedded?: boolean;
-  /** Figma 5565:128558 — show validation errors on open */
+  /** Figma 5565:128558 · Textfield Error 1689:8145 — show validation errors on open */
   showErrorsOnOpen?: boolean;
 };
 
@@ -52,21 +52,24 @@ export default function ContactUsViewResponseModal({
     };
   }, [embedded, open, onClose]);
 
-  useEffect(() => {
+  const [prevOpen, setPrevOpen] = useState(open);
+
+  if (open !== prevOpen) {
+    setPrevOpen(open);
     if (!open) {
       setInquiryNumber("");
       setPassword("");
       setErrors({});
-      return;
-    }
-
-    if (showErrorsOnOpen) {
+    } else if (showErrorsOnOpen) {
+      /* Figma 1689:8145 — Error sample: value + helper both "Input text error" */
+      setInquiryNumber(contactUsViewResponseModal.fieldError);
+      setPassword(contactUsViewResponseModal.fieldError);
       setErrors({
         inquiryNumber: contactUsViewResponseModal.fieldError,
         password: contactUsViewResponseModal.fieldError,
       });
     }
-  }, [open, showErrorsOnOpen]);
+  }
 
   if (!open) return null;
 
@@ -133,65 +136,81 @@ export default function ContactUsViewResponseModal({
             </div>
           </div>
           <div className="support_contact_view_response_modal__fields">
-            <div className="support_contact_view_response_modal__field">
-              <label
-                className="support_contact_view_response_modal__label"
-                htmlFor={inquiryId}
-              >
-                {contactUsViewResponseModal.inquiryNumberLabel}
-                <span className="support_contact_view_response_modal__required" aria-hidden>
-                  {" "}
-                  *
-                </span>
-              </label>
-              <TextField
-                id={inquiryId}
-                className={`guide_field support_contact_view_response_modal__input${
-                  errors.inquiryNumber
-                    ? " support_contact_view_response_modal__input--error"
-                    : ""
-                }`}
-                value={inquiryNumber}
-                onChange={(event) => {
-                  setInquiryNumber(event.target.value);
-                  if (errors.inquiryNumber) {
-                    setErrors((prev) => ({ ...prev, inquiryNumber: undefined }));
-                  }
-                }}
-                error={Boolean(errors.inquiryNumber)}
-              />
+            <div
+              className={`support_contact_view_response_modal__field${
+                errors.inquiryNumber
+                  ? " support_contact_view_response_modal__field--error"
+                  : ""
+              }`}
+            >
+              <div className="support_contact_view_response_modal__control">
+                <label
+                  className="support_contact_view_response_modal__label"
+                  htmlFor={inquiryId}
+                >
+                  {contactUsViewResponseModal.inquiryNumberLabel}
+                  <span className="support_contact_view_response_modal__required" aria-hidden>
+                    {" "}
+                    *
+                  </span>
+                </label>
+                <TextField
+                  id={inquiryId}
+                  className={`guide_field support_contact_view_response_modal__input${
+                    errors.inquiryNumber
+                      ? " support_contact_view_response_modal__input--error"
+                      : ""
+                  }`}
+                  value={inquiryNumber}
+                  onChange={(event) => {
+                    setInquiryNumber(event.target.value);
+                    if (errors.inquiryNumber) {
+                      setErrors((prev) => ({ ...prev, inquiryNumber: undefined }));
+                    }
+                  }}
+                  error={Boolean(errors.inquiryNumber)}
+                />
+              </div>
               {errors.inquiryNumber ? (
                 <p className="support_contact_view_response_modal__error" role="alert">
                   {errors.inquiryNumber}
                 </p>
               ) : null}
             </div>
-            <div className="support_contact_view_response_modal__field">
-              <label
-                className="support_contact_view_response_modal__label"
-                htmlFor={passwordId}
-              >
-                {contactUsViewResponseModal.passwordLabel}
-                <span className="support_contact_view_response_modal__required" aria-hidden>
-                  {" "}
-                  *
-                </span>
-              </label>
-              <TextField
-                id={passwordId}
-                className={`guide_field support_contact_view_response_modal__input${
-                  errors.password ? " support_contact_view_response_modal__input--error" : ""
-                }`}
-                type="password"
-                value={password}
-                onChange={(event) => {
-                  setPassword(event.target.value);
-                  if (errors.password) {
-                    setErrors((prev) => ({ ...prev, password: undefined }));
-                  }
-                }}
-                error={Boolean(errors.password)}
-              />
+            <div
+              className={`support_contact_view_response_modal__field${
+                errors.password ? " support_contact_view_response_modal__field--error" : ""
+              }`}
+            >
+              <div className="support_contact_view_response_modal__control">
+                <label
+                  className="support_contact_view_response_modal__label"
+                  htmlFor={passwordId}
+                >
+                  {contactUsViewResponseModal.passwordLabel}
+                  <span className="support_contact_view_response_modal__required" aria-hidden>
+                    {" "}
+                    *
+                  </span>
+                </label>
+                <TextField
+                  id={passwordId}
+                  className={`guide_field support_contact_view_response_modal__input${
+                    errors.password
+                      ? " support_contact_view_response_modal__input--error"
+                      : ""
+                  }`}
+                  type="password"
+                  value={password}
+                  onChange={(event) => {
+                    setPassword(event.target.value);
+                    if (errors.password) {
+                      setErrors((prev) => ({ ...prev, password: undefined }));
+                    }
+                  }}
+                  error={Boolean(errors.password)}
+                />
+              </div>
               {errors.password ? (
                 <p className="support_contact_view_response_modal__error" role="alert">
                   {errors.password}

@@ -400,7 +400,7 @@ section.devices_product_lineup
 
 @media (min-width: 781px) {
   section.devices_product_lineup .devices_product_lineup__grid:has(.devices_product_lineup__table--metasol-ms) {
-    margin-bottom: 30px;
+    
   }
 
   section.devices_product_lineup

@@ -67,7 +67,7 @@ Figma·페이지 구현 시 **해당 MD + 라이브 가이드(`src/components/gu
 | GNB | [GNB_GUIDE](./GNB_GUIDE.md) | `gnb.css` | [ICON](./ICON_GUIDE.md) §3 |
 | Software products | [SECTION_CLASS](./SECTION_CLASS_GUIDE.md) Product Detail | `DevicesSoftwareHero` 등 | `ico_filter_14` · `ico_swipe_70` |
 | Company About | [SECTION_CLASS](./SECTION_CLASS_GUIDE.md) Company | `CompanyAboutIntroSection` 등 | `pageIconGuide.ts` |
-| Services | [SECTION_CLASS](./SECTION_CLASS_GUIDE.md) Services | `guide_field` · `PageNumbering` · Swiper · `btn-lv01`/`btn-lv02` | `icon_link-14` · `ico_swipe_70` (Warranty) · `ico_up_16` (Curriculum native select) |
+| Services | [SECTION_CLASS](./SECTION_CLASS_GUIDE.md) Services | `guide_field` · `PageNumbering` · Swiper · `btn-lv01`/`btn-lv02` · Session Agenda MO timeline · Countdown DAYS/HOURS/MINS | `icon_link-14` · `ico_agenda_dot_8` · `ico_swipe_70` (Warranty) · `ico_up_16` (Curriculum native select) |
 
 ---
 
