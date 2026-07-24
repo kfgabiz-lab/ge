@@ -96,6 +96,8 @@ export const requestForTrainingNavCopy = {
 export const requestForTrainingStep1Copy = {
   ...requestForTrainingQuestionnaireCopy,
   nextLabel: requestForTrainingNavCopy.nextLabel,
+  /** Figma 1689:8145 — Textfield Error sample */
+  fieldError: "Input text error",
   fields: {
     trainingTrack: {
       label: "Training Track",

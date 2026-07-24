@@ -658,6 +658,11 @@
     color: #666;
   }
 
+  /* Agenda timeline — mobile only (Figma 8007:107681) */
+  section.support_service_training_session_detail .support_service_training_session_detail__agenda-list {
+    display: none;
+  }
+
   section.support_service_training_session_detail .support_service_training_session_detail__form {
     display: flex;
     flex-direction: column;
@@ -697,13 +702,56 @@
   }
 
   section.support_service_training_session_detail .support_service_training_session_detail__form-row--address {
-    align-items: flex-end;
+    align-items: flex-start;
   }
 
   section.support_service_training_session_detail .support_service_training_session_detail__form-row--2 .support_service_training_session_detail__field,
   section.support_service_training_session_detail .support_service_training_session_detail__form-row--address .support_service_training_session_detail__field {
     flex: 1 1 0;
     min-width: 0;
+  }
+
+  /* Figma 1689:8145 — Label↔input 10px · error는 행 정렬 밖 */
+  section.support_service_training_session_detail .support_service_training_session_detail__control {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    gap: 10px;
+    width: 100%;
+  }
+
+  section.support_service_training_session_detail
+    .support_service_training_session_detail__control
+    > .guide_field,
+  section.support_service_training_session_detail
+    .support_service_training_session_detail__control
+    > .support_service_training_session_detail__input {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  section.support_service_training_session_detail .support_service_training_session_detail__field--error {
+    position: relative;
+    gap: 0;
+    padding-bottom: calc(8px + 23px);
+  }
+
+  section.support_service_training_session_detail .support_service_training_session_detail__error {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 23px;
+    color: var(--color-error, #e53a3d);
+  }
+
+  /* Address 2: 라벨 없음 → Street 라벨(26px)+gap(10px) 맞춤 */
+  section.support_service_training_session_detail
+    .support_service_training_session_detail__field--address-2 {
+    padding-top: calc(26px + 10px);
   }
 
   section.support_service_training_session_detail .support_service_training_session_detail__field {
@@ -743,6 +791,14 @@
   }
 
   section.support_service_training_session_detail .support_service_training_session_detail__consent {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    width: 100%;
+  }
+
+  section.support_service_training_session_detail .support_service_training_session_detail__consent-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -871,6 +927,13 @@
   section.support_service_training_session_detail .support_service_training_session_detail__countdown-unit:first-child {
     min-width: 76px;
     width: 76px;
+  }
+
+  /* Figma 8007:106738 — HOURS 52 · MINS 55 */
+  section.support_service_training_session_detail
+    .support_service_training_session_detail__countdown-unit:last-child {
+    min-width: 55px;
+    width: 55px;
   }
 
   section.support_service_training_session_detail .support_service_training_session_detail__countdown-value {
@@ -1240,13 +1303,74 @@
   }
 
   section.support_service_training_request .support_service_training_request__form-row--address {
-    align-items: center;
+    align-items: flex-start;
     width: 100%;
   }
 
-  section.support_service_training_request .support_service_training_request__form-row--address .support_service_training_request__input {
+  section.support_service_training_request
+    .support_service_training_request__form-row--address
+    .support_service_training_request__field--address-search,
+  section.support_service_training_request
+    .support_service_training_request__form-row--address
+    .support_service_training_request__field--address-2,
+  section.support_service_training_request
+    .support_service_training_request__form-row--address
+    .support_service_training_request__input {
     flex: 1 1 0;
     min-width: 0;
+  }
+
+  /* Figma 1689:8145 — Label↔input 10px · error는 행 정렬 밖 */
+  section.support_service_training_request .support_service_training_request__control {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    gap: 10px;
+    width: 100%;
+  }
+
+  section.support_service_training_request
+    .support_service_training_request__control
+    > .guide_field,
+  section.support_service_training_request
+    .support_service_training_request__control
+    > .support_service_training_request__input {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  section.support_service_training_request .support_service_training_request__field--error {
+    position: relative;
+    gap: 0;
+    padding-bottom: calc(8px + 23px);
+  }
+
+  section.support_service_training_request .support_service_training_request__error {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 23px;
+    color: var(--color-error, #e53a3d);
+  }
+
+  section.support_service_training_request
+    .guide_field
+    .MuiOutlinedInput-root.Mui-error
+    fieldset,
+  section.support_service_training_request
+    .guide_field
+    .MuiOutlinedInput-root.Mui-error:hover
+    fieldset,
+  section.support_service_training_request
+    .guide_field
+    .MuiOutlinedInput-root.Mui-error.Mui-focused
+    fieldset {
+    border-color: var(--color-error, #e53a3d);
+    border-width: 1px;
   }
 
   section.support_service_training_request .support_service_training_request__form-row--2 .support_service_training_request__field,
@@ -2745,6 +2869,101 @@
     margin-bottom: 70px;
   }
 
+  /* Agenda — hide table, show timeline (Figma 8007:107681) */
+  section.support_service_training_session_detail .support_service_training_session_detail__block--agenda .support_service_training_session_detail__table-viewport {
+    display: none;
+  }
+
+  section.support_service_training_session_detail .support_service_training_session_detail__agenda-list {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  section.support_service_training_session_detail .support_service_training_session_detail__agenda-list::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    bottom: 0;
+    left: 3.5px;
+    width: 0;
+    border-left: 1px dashed rgb(15 31 69 / 25%);
+  }
+
+  section.support_service_training_session_detail .support_service_training_session_detail__agenda-item {
+    position: relative;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  section.support_service_training_session_detail .support_service_training_session_detail__agenda-dot {
+    flex-shrink: 0;
+    width: 8px;
+    height: 14px;
+    margin-top: 3px;
+    background: url("/pub/ico/ico_agenda_dot_8.svg") center 6px / 8px 8px no-repeat;
+  }
+
+  section.support_service_training_session_detail .support_service_training_session_detail__agenda-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  section.support_service_training_session_detail .support_service_training_session_detail__agenda-time {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    color: #0f1f45;
+  }
+
+  section.support_service_training_session_detail .support_service_training_session_detail__agenda-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  section.support_service_training_session_detail .support_service_training_session_detail__agenda-main {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  section.support_service_training_session_detail .support_service_training_session_detail__agenda-tit {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    color: #222;
+  }
+
+  section.support_service_training_session_detail .support_service_training_session_detail__agenda-desc {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #666;
+  }
+
+  section.support_service_training_session_detail .support_service_training_session_detail__agenda-trainer {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #222;
+  }
+
   section.support_service_training_session_detail .support_service_training_session_detail__block--registration {
     display: flex;
     flex-direction: column;
@@ -2999,7 +3218,7 @@
   section.support_service_training_session_detail .support_service_training_session_detail__form-row--address {
     flex-direction: row;
     gap: 10px;
-    align-items: flex-end;
+    align-items: flex-start;
   }
 
   section.support_service_training_session_detail .support_service_training_session_detail__form-row--2 .support_service_training_session_detail__field,
@@ -3014,6 +3233,37 @@
     flex-direction: column;
     gap: 10px;
     width: 100%;
+  }
+
+  section.support_service_training_session_detail .support_service_training_session_detail__control {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    gap: 10px;
+    width: 100%;
+  }
+
+  section.support_service_training_session_detail .support_service_training_session_detail__field--error {
+    position: relative;
+    gap: 0;
+    padding-bottom: calc(8px + 23px);
+  }
+
+  section.support_service_training_session_detail .support_service_training_session_detail__error {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 23px;
+    color: var(--color-error, #e53a3d);
+  }
+
+  section.support_service_training_session_detail
+    .support_service_training_session_detail__field--address-2 {
+    padding-top: calc(26px + 10px);
   }
 
   /* GuideSelect native(max 780) — MuiNativeSelect-icon에 화살표 배경 필요 */
@@ -3061,6 +3311,14 @@
   }
 
   section.support_service_training_session_detail .support_service_training_session_detail__consent {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    width: 100%;
+  }
+
+  section.support_service_training_session_detail .support_service_training_session_detail__consent-row {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -3338,6 +3596,58 @@
     width: 100%;
   }
 
+  section.support_service_training_request .support_service_training_request__control {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    gap: 10px;
+    width: 100%;
+  }
+
+  section.support_service_training_request
+    .support_service_training_request__control
+    > .guide_field,
+  section.support_service_training_request
+    .support_service_training_request__control
+    > .support_service_training_request__input {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  section.support_service_training_request .support_service_training_request__field--error {
+    position: relative;
+    gap: 0;
+    padding-bottom: calc(8px + 23px);
+  }
+
+  section.support_service_training_request .support_service_training_request__error {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 23px;
+    color: var(--color-error, #e53a3d);
+  }
+
+  section.support_service_training_request
+    .guide_field
+    .MuiOutlinedInput-root.Mui-error
+    fieldset,
+  section.support_service_training_request
+    .guide_field
+    .MuiOutlinedInput-root.Mui-error:hover
+    fieldset,
+  section.support_service_training_request
+    .guide_field
+    .MuiOutlinedInput-root.Mui-error.Mui-focused
+    fieldset {
+    border-color: var(--color-error, #e53a3d);
+    border-width: 1px;
+  }
+
   section.support_service_training_request .support_service_training_request__field--full {
     width: 100%;
   }
@@ -3420,14 +3730,19 @@
   section.support_service_training_request .support_service_training_request__form-row--address {
     flex-direction: row;
     gap: 10px;
-    align-items: stretch;
+    align-items: flex-start;
   }
 
   section.support_service_training_request .support_service_training_request__form-row--2 .support_service_training_request__field,
+  section.support_service_training_request
+    .support_service_training_request__form-row--address
+    .support_service_training_request__field--address-search,
+  section.support_service_training_request
+    .support_service_training_request__form-row--address
+    .support_service_training_request__field--address-2,
   section.support_service_training_request .support_service_training_request__form-row--address .support_service_training_request__input {
     flex: 1 1 0;
     min-width: 0;
-    justify-content: space-between;
   }
 
   section.support_service_training_request .support_service_training_request__field--select,
@@ -3789,6 +4104,11 @@
     gap: 10px;
   }
 
+  section.support_service_training_session_detail
+    .support_service_training_session_detail__field--address-2 {
+    padding-top: 0;
+  }
+
   section.support_service_training_session_detail .support_service_training_session_detail__form-row--2 .support_service_training_session_detail__field,
   section.support_service_training_session_detail .support_service_training_session_detail__form-row--address .support_service_training_session_detail__field {
     flex: none;
@@ -3810,6 +4130,8 @@
     gap: 10px;
   }
 
+  section.support_service_training_request .support_service_training_request__form-row--address .support_service_training_request__field--address-search,
+  section.support_service_training_request .support_service_training_request__form-row--address .support_service_training_request__field--address-2,
   section.support_service_training_request .support_service_training_request__form-row--address .support_service_training_request__input {
     flex: none;
     width: 100%;

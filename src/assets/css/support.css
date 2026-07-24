@@ -1525,13 +1525,13 @@ section.support_connect_features  .support_connect_features__bg-img--pc{
     align-self: start;
     width: 140px;
     margin-top: 0;
-    padding-top: 10px;
+    padding-top: 0px;
   }
 
   section.support_download_contents.devices_product_downloads--center
     .devices_product_downloads__item-body {
     grid-column: 1 / -1;
-    margin-top: 0;
+    /* margin-top: 16px; */
   }
 
   main.support-page--download-center .support_download_mo-toolbar,
@@ -5589,7 +5589,7 @@ section.support_where_to_buy_banner .common_banner_02__link {
 
   section.support_contact_form .support_contact_form__label {
     font-size: 16px;
-    line-height: 26px;
+    line-height: 24px;
     color: #222;
   }
 
@@ -5650,15 +5650,75 @@ section.support_where_to_buy_banner .common_banner_02__link {
 
   section.support_contact_form .support_contact_form__row--category {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     gap: 10px;
     width: 100%;
   }
 
   section.support_contact_form .support_contact_form__field--category,
+  section.support_contact_form .support_contact_form__field--category-lv2,
   section.support_contact_form .support_contact_form__category-select {
     width: 340px;
-    flex-shrink: 0;
+    flex: 0 0 340px;
+  }
+
+  /* Lv2·Lv3는 라벨 없음 — Lv1 label+gap 만큼 내려 Select 라인 맞춤 */
+  section.support_contact_form
+    .support_contact_form__row--category
+    > .support_contact_form__category-select,
+  section.support_contact_form
+    .support_contact_form__row--category
+    > .support_contact_form__field--category-lv2 {
+    padding-top: calc(24px + 10px);
+  }
+
+  /* Figma 1689:8145 — Label↔input 10px · input↔error 8px (에러는 행 정렬 밖에) */
+  section.support_contact_form .support_contact_form__control {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    gap: 10px;
+    width: 100%;
+  }
+
+  section.support_contact_form .support_contact_form__control > .guide_field,
+  section.support_contact_form .support_contact_form__control > .support_contact_form__input {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  section.support_contact_form .support_contact_form__field--error {
+    position: relative;
+    gap: 0;
+    padding-bottom: calc(8px + 23px);
+  }
+
+  section.support_contact_form .support_contact_form__error {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 23px;
+    color: var(--color-error, #e53a3d);
+  }
+
+  section.support_contact_form .guide_field .MuiOutlinedInput-root.Mui-error fieldset,
+  section.support_contact_form .guide_field .MuiOutlinedInput-root.Mui-error:hover fieldset,
+  section.support_contact_form
+    .guide_field
+    .MuiOutlinedInput-root.Mui-error.Mui-focused
+    fieldset {
+    border-color: var(--color-error, #e53a3d);
+    border-width: 1px;
+  }
+
+  section.support_contact_form .support_contact_form__row--3,
+  section.support_contact_form .support_contact_form__row--password,
+  section.support_contact_form .support_contact_form__row--company-country {
+    align-items: start;
   }
 
   section.support_contact_form .support_contact_form__row--3 {
@@ -5763,6 +5823,13 @@ section.support_where_to_buy_banner .common_banner_02__link {
   }
 
   section.support_contact_form .support_contact_form__consent-row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  section.support_contact_form .support_contact_form__consent-row-main {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -5879,11 +5946,48 @@ section.support_where_to_buy_banner .common_banner_02__link {
   }
 
   section.support_contact_form .support_contact_form__row--category
-    .support_contact_form__field--category {
+    .support_contact_form__field--category,
+  section.support_contact_form .support_contact_form__row--category
+    .support_contact_form__field--category-lv2,
+  section.support_contact_form .support_contact_form__row--category
+    .support_contact_form__category-select {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    flex: 1 1 auto;
+    padding-top: 0;
+  }
+
+  section.support_contact_form .support_contact_form__control {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
     gap: 10px;
     width: 100%;
+  }
+
+  section.support_contact_form .support_contact_form__control > .guide_field,
+  section.support_contact_form .support_contact_form__control > .support_contact_form__input {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  section.support_contact_form .support_contact_form__field--error {
+    position: relative;
+    gap: 0;
+    padding-bottom: calc(8px + 23px);
+  }
+
+  section.support_contact_form .support_contact_form__error {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 23px;
+    color: var(--color-error, #e53a3d);
   }
 
   section.support_contact_form .support_contact_form__row--category
@@ -5936,6 +6040,14 @@ section.support_where_to_buy_banner .common_banner_02__link {
   }
 
   section.support_contact_form .support_contact_form__consent-row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    width: 100%;
+  }
+
+  section.support_contact_form .support_contact_form__consent-row-main {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -6085,6 +6197,7 @@ section.support_where_to_buy_banner .common_banner_02__link {
   }
 
   section.support_contact_form .support_contact_form__field--category,
+  section.support_contact_form .support_contact_form__field--category-lv2,
   section.support_contact_form .support_contact_form__category-select,
   section.support_contact_form .support_contact_form__field--half,
   section.support_contact_form .support_contact_form__field--third {
@@ -6251,7 +6364,18 @@ section.support_where_to_buy_banner .common_banner_02__link {
   margin-top: 40px;
 }
 
+/* Figma 1689:8145 — Label↔input 10px · input↔error 8px */
 .support_contact_view_response_modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.support_contact_view_response_modal__field--error {
+  gap: 8px;
+}
+
+.support_contact_view_response_modal__control {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -6259,7 +6383,7 @@ section.support_where_to_buy_banner .common_banner_02__link {
 
 .support_contact_view_response_modal__label {
   font-size: 16px;
-  line-height: 26px;
+  line-height: 24px;
   color: #222;
 }
 
@@ -6295,24 +6419,42 @@ section.support_where_to_buy_banner .common_banner_02__link {
 }
 
 .support_contact_view_response_modal__fields .guide_field .MuiOutlinedInput-root:hover fieldset,
-.support_contact_view_response_modal__input .MuiOutlinedInput-root:hover fieldset,
-.support_contact_view_response_modal__fields .guide_field .MuiOutlinedInput-root.Mui-focused fieldset,
-.support_contact_view_response_modal__input .MuiOutlinedInput-root.Mui-focused fieldset {
+.support_contact_view_response_modal__input .MuiOutlinedInput-root:hover fieldset {
   border-color: #ddd;
+}
+
+.support_contact_view_response_modal__fields .guide_field .MuiOutlinedInput-root.Mui-focused:not(.Mui-error) fieldset,
+.support_contact_view_response_modal__input .MuiOutlinedInput-root.Mui-focused:not(.Mui-error) fieldset {
+  border-color: var(--color-text-muted, #666);
+  border-width: 1px;
 }
 
 .support_contact_view_response_modal__input--error .MuiOutlinedInput-notchedOutline,
 .support_contact_view_response_modal__input.Mui-error .MuiOutlinedInput-notchedOutline,
 .support_contact_view_response_modal__fields .guide_field .MuiOutlinedInput-root.Mui-error fieldset,
-.support_contact_view_response_modal__input.Mui-error .MuiOutlinedInput-root fieldset {
-  border-color: #e53a3d;
+.support_contact_view_response_modal__fields
+  .guide_field
+  .MuiOutlinedInput-root.Mui-error:hover
+  fieldset,
+.support_contact_view_response_modal__fields
+  .guide_field
+  .MuiOutlinedInput-root.Mui-error.Mui-focused
+  fieldset,
+.support_contact_view_response_modal__input.Mui-error .MuiOutlinedInput-root fieldset,
+.support_contact_view_response_modal__input.Mui-error .MuiOutlinedInput-root:hover fieldset,
+.support_contact_view_response_modal__input.Mui-error
+  .MuiOutlinedInput-root.Mui-focused
+  fieldset {
+  border-color: var(--color-error, #e53a3d);
+  border-width: 1px;
 }
 
 .support_contact_view_response_modal__error {
   margin: 0;
   font-size: 15px;
+  font-weight: 400;
   line-height: 23px;
-  color: #e53a3d;
+  color: var(--color-error, #e53a3d);
 }
 
 .support_contact_view_response_modal__confirm {

@@ -40,7 +40,34 @@ export type ProductFrameLineup = {
 export type ProductDownloadFile = {
   name: string;
   size: string;
+  /** Copy Link clipboard target */
+  url: string;
 };
+
+/** Dummy download base — `url` 미지정 시 사용 */
+export const PRODUCT_DOWNLOAD_LINK_BASE =
+  "https://www.ls-electric.com/download" as const;
+
+type ProductDownloadFileInput = {
+  name: string;
+  size: string;
+  /** 생략 시 더미 URL 자동 생성. 하드코딩하려면 직접 입력 */
+  url?: string;
+};
+
+/**
+ * Download 파일 데이터.
+ * @example
+ * productDownloadFile({ name: "a.pdf", size: "1MB", url: "https://www.ls-electric.com/download/a.pdf" })
+ * productDownloadFile({ name: "a.pdf", size: "1MB", url: "https://example.com/a.pdf" })
+ */
+export function productDownloadFile({
+  name,
+  size,
+  url = `${PRODUCT_DOWNLOAD_LINK_BASE}/${encodeURIComponent(name)}`,
+}: ProductDownloadFileInput): ProductDownloadFile {
+  return { name, size, url };
+}
 
 export type ProductDownloadDescription = {
   paragraphs: string[];
@@ -206,8 +233,8 @@ const sharedDownloads: ProductDownloadItem[] = [
     versions: ["V38.0", "V37.0", "V36.0"],
     description: productDownloadDescriptionSample,
     files: [
-      { name: "MC-800a, 630a, 500a.pdf", size: "12.09MB" },
-      { name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB" },
+      productDownloadFile({ name: "MC-800a, 630a, 500a.pdf", size: "12.09MB", url: "https://www.ls-electric.com/download/MC-800a%2C%20630a%2C%20500a.pdf" }),
+      productDownloadFile({ name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB", url: "https://www.ls-electric.com/download/Metasol%20MS_MC-800a_500-800A_3P_2D%20CAD.pdf" }),
     ],
   },
   {
@@ -218,7 +245,7 @@ const sharedDownloads: ProductDownloadItem[] = [
     version: "V38.0",
     versions: ["V38.0", "V37.0", "V36.0"],
     files: [
-      { name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB" },
+      productDownloadFile({ name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB", url: "https://www.ls-electric.com/download/%5BHVDC_and_FACTS%5D_EN_C84602-02-201905.pdf" }),
     ],
   },
   {
@@ -229,13 +256,14 @@ const sharedDownloads: ProductDownloadItem[] = [
     version: "V38.0",
     versions: ["V38.0", "V37.0", "V36.0"],
     files: [
-      { name: "LS_Solution_Overview_EN_CZZZ02-04-202603", size: "" },
-      { name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB" },
+      productDownloadFile({ name: "LS_Solution_Overview_EN_CZZZ02-04-202603", size: "", url: "https://www.ls-electric.com/download/LS_Solution_Overview_EN_CZZZ02-04-202603" }),
+      productDownloadFile({ name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB", url: "https://www.ls-electric.com/download/%5BHVDC_and_FACTS%5D_EN_C84602-02-201905.pdf" }),
     ],
   },
 ];
 
 /** Figma 5841:132459 — downloads list (5 items) */
+/** Figma 7922:118486 — Downloads Accordion list */
 const metasolMsDownloads: ProductDownloadItem[] = [
   {
     id: "dl-1",
@@ -245,8 +273,8 @@ const metasolMsDownloads: ProductDownloadItem[] = [
     version: "V38.0",
     versions: ["V38.0", "V37.0", "V36.0"],
     files: [
-      { name: "MC-800a, 630a, 500a.pdf", size: "12.09MB" },
-      { name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB" },
+      productDownloadFile({ name: "MC-800a, 630a, 500a.pdf", size: "12.09MB", url: "https://www.ls-electric.com/download/MC-800a%2C%20630a%2C%20500a.pdf" }),
+      productDownloadFile({ name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB", url: "https://www.ls-electric.com/download/Metasol%20MS_MC-800a_500-800A_3P_2D%20CAD.pdf" }),
     ],
   },
   {
@@ -256,45 +284,45 @@ const metasolMsDownloads: ProductDownloadItem[] = [
     date: "Dec 9, 2025",
     version: "",
     files: [
-      { name: "MC-800a, 630a, 500a.pdf", size: "12.09MB" },
-      { name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB" },
+      productDownloadFile({ name: "MC-800a, 630a, 500a.pdf", size: "12.09MB", url: "https://www.ls-electric.com/download/MC-800a%2C%20630a%2C%20500a.pdf" }),
+      productDownloadFile({ name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB", url: "https://www.ls-electric.com/download/Metasol%20MS_MC-800a_500-800A_3P_2D%20CAD.pdf" }),
     ],
   },
   {
     id: "dl-3",
     type: "Manual",
-    title: "EMPR [UL SPD]USPE Series Manual",
+    title: "LV SWGR Smart LV Solution",
     date: "Dec 9, 2025",
     version: "V38.0",
     versions: ["V38.0", "V37.0", "V36.0"],
     files: [
-      { name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB" },
+      productDownloadFile({ name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB", url: "https://www.ls-electric.com/download/%5BHVDC_and_FACTS%5D_EN_C84602-02-201905.pdf" }),
     ],
   },
   {
     id: "dl-4",
     type: "Manual",
-    title: "EMPR [UL SPD]USPE Series Manual",
+    title: "LV SWGR Smart LV Solution",
     date: "Dec 9, 2025",
     version: "V38.0",
     versions: ["V38.0", "V37.0", "V36.0"],
     files: [
-      { name: "LS_Solution_Overview_EN_CZZZ02-04-202603", size: "" },
-      { name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB" },
-      { name: "MC-800a, 630a, 500a.pdf", size: "12.09MB" },
-      { name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB" },
+      productDownloadFile({ name: "LS_Solution_Overview_EN_CZZZ02-04-202603", size: "", url: "https://www.ls-electric.com/download/LS_Solution_Overview_EN_CZZZ02-04-202603" }),
+      productDownloadFile({ name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB", url: "https://www.ls-electric.com/download/%5BHVDC_and_FACTS%5D_EN_C84602-02-201905.pdf" }),
+      productDownloadFile({ name: "MC-800a, 630a, 500a.pdf", size: "12.09MB", url: "https://www.ls-electric.com/download/MC-800a%2C%20630a%2C%20500a.pdf" }),
+      productDownloadFile({ name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB", url: "https://www.ls-electric.com/download/Metasol%20MS_MC-800a_500-800A_3P_2D%20CAD.pdf" }),
     ],
   },
   {
     id: "dl-5",
     type: "Manual",
-    title: "EMPR [UL SPD]USPE Series Manual",
+    title: "LV SWGR Smart LV Solution",
     date: "Dec 9, 2025",
     version: "V38.0",
     versions: ["V38.0", "V37.0", "V36.0"],
     files: [
-      { name: "MC-800a, 630a, 500a.pdf", size: "12.09MB" },
-      { name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB" },
+      productDownloadFile({ name: "MC-800a, 630a, 500a.pdf", size: "12.09MB", url: "https://www.ls-electric.com/download/MC-800a%2C%20630a%2C%20500a.pdf" }),
+      productDownloadFile({ name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB", url: "https://www.ls-electric.com/download/Metasol%20MS_MC-800a_500-800A_3P_2D%20CAD.pdf" }),
     ],
   },
 ];

@@ -1,7 +1,7 @@
 import { engineeringTrainingSessionCountdownDisplay } from "@/data/services/engineeringTrainingSessionDetailContent";
 
 export default function EngineeringTrainingSessionCountdown() {
-  const { days, hours, minutes, seconds } = engineeringTrainingSessionCountdownDisplay;
+  const { days, hours, minutes } = engineeringTrainingSessionCountdownDisplay;
 
   return (
     <div className="support_service_training_session_detail__countdown" aria-hidden>
@@ -37,17 +37,6 @@ export default function EngineeringTrainingSessionCountdown() {
           </span>
           <span className="support_service_training_session_detail__countdown-name">
             MINS
-          </span>
-        </div>
-        <span className="support_service_training_session_detail__countdown-sep" aria-hidden>
-          :
-        </span>
-        <div className="support_service_training_session_detail__countdown-unit">
-          <span className="support_service_training_session_detail__countdown-value">
-            {seconds}
-          </span>
-          <span className="support_service_training_session_detail__countdown-name">
-            SECS
           </span>
         </div>
       </div>

@@ -66,16 +66,18 @@ const SHARED_AGENDA: EngineeringTrainingAgendaRow[] = [
     number: "2",
     time: "09:30~10:45",
     title: "MV, LV BREAKER: VCB, ACB, MCCB",
-    description: AGENDA_INTRO,
+    description:
+      "Introducing LS ELECTRIC, a global electrical solutions provider and electrical component manufacturer of UL",
     trainer: "Byron Black",
   },
   {
     id: "agenda-03",
     number: "3",
     time: "10:45~12:00",
-    title: "MV, LV SWITCH GEAR",
-    description: AGENDA_INTRO,
-    trainer: "Clarke Arnold",
+    title: "MV, LV BREAKER: VCB, ACB, MCCB",
+    description:
+      "Introducing LS ELECTRIC, a global electrical solutions provider and electrical component manufacturer of UL",
+    trainer: "Byron Black",
   },
   {
     id: "agenda-04",
@@ -88,24 +90,25 @@ const SHARED_AGENDA: EngineeringTrainingAgendaRow[] = [
     number: "5",
     time: "13:00~14:00",
     title: "CAST RESIN TRANSFORMER",
-    description: AGENDA_INTRO,
+    description:
+      "Introducing LS ELECTRIC, a global electrical solutions provider and electrical component manufacturer of UL",
     trainer: "Clarke Arnold",
   },
   {
     id: "agenda-06",
     number: "6",
-    time: "14:00~14:20",
+    time: "14:00~15:00",
     title: "Factory Line Tour",
-    description: AGENDA_INTRO,
+    description:
+      "Introducing LS ELECTRIC, a global electrical solutions provider and electrical component manufacturer of UL",
     trainer: "Clarke Arnold",
   },
   {
     id: "agenda-07",
     number: "7",
-    time: "14:20~15:00",
+    time: "15:00~16:00",
     title: "Circuit breaker & SWGR handling practice",
-    description: AGENDA_INTRO,
-    trainer: "Byron Black",
+    trainer: "Clarke Arnold",
   },
 ];
 
@@ -234,7 +237,6 @@ export const engineeringTrainingSessionCountdownDisplay = {
   days: 365,
   hours: 24,
   minutes: 60,
-  seconds: 60,
 } as const;
 
 export const engineeringTrainingSessionAssets = {
@@ -284,6 +286,7 @@ export const engineeringTrainingSessionShareLinks = [
 
 export const engineeringTrainingSessionFormCopy = {
   submitLabel: "Get the Whitepaper",
+  fieldError: "Input text error",
 } as const;
 
 export const engineeringTrainingSessionTabs = [

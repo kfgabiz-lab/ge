@@ -3,6 +3,7 @@
 import {
   Checkbox,
   FormControl,
+  FormHelperText,
   InputAdornment,
   InputLabel,
   MenuItem,
@@ -12,6 +13,7 @@ import { Suspense, useState } from "react";
 import {
   GuideCheckboxIcon,
   GuideSelectIcon,
+  guideCheckboxIconsContactConsent,
   guideCheckboxIconsDefault,
   guideCheckboxIconsDownloads,
   guideFieldLabelSlot,
@@ -64,6 +66,8 @@ export default function ComponentGuide() {
           </a>
           <a href="#check">05 Check</a>
           <a href="#textfield">06 Textfield</a>
+          <a href="#textarea">Textarea</a>
+          <a href="#password">Password</a>
           <a href="#pagination">07 Pagination</a>
           <a href="#banner">08 Banner</a>
         </nav>
@@ -716,6 +720,52 @@ export default function ComponentGuide() {
               </div>
             </div>
           </div>
+
+          <div className="component-guide__type">
+            <h3 className="component-guide__type-tit">3. Error</h3>
+            <p className="component-guide__type-spec">
+              {/* Figma 1689:8145 — Checkbox Error */}
+              <code>guide_checkbox--error</code>
+              <span className="component-guide__type-spec-sep" />
+              <code>guide_checkbox__error</code>
+              <span className="component-guide__type-spec-sep" />
+              <span>Consent PNG · 체크 시 에러 제거</span>
+            </p>
+            <div className="component-guide__states">
+              <div className="component-guide__state-col">
+                <span className="component-guide__state-label">Error</span>
+                <div className="component-guide__preview-light">
+                  <div className="component-guide__check-error">
+                    <label className="component-guide__check-error-label">
+                      <Checkbox
+                        className="guide_checkbox guide_checkbox--error"
+                        checked={false}
+                        disableRipple
+                        icon={
+                          <GuideCheckboxIcon
+                            {...guideCheckboxIconsContactConsent}
+                          />
+                        }
+                        checkedIcon={
+                          <GuideCheckboxIcon
+                            checked
+                            {...guideCheckboxIconsContactConsent}
+                          />
+                        }
+                        slotProps={{
+                          input: { "aria-label": "Consent error sample" },
+                        }}
+                      />
+                      <span>Consent label</span>
+                    </label>
+                    <p className="guide_checkbox__error" role="alert">
+                      Input text error
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -734,9 +784,12 @@ export default function ComponentGuide() {
       </header>
 
       <div className="component-guide__body">
-        {/* Text field — 280px (MUI) */}
+        {/* Text field — 280px (MUI) · Figma 1689:8145 Error */}
         <div className="component-guide__section" id="textfield-280">
           <h2 className="component-guide__section-tit">Text field</h2>
+          <p className="component-guide__type-spec">
+            <span>에러: <code>error</code> + <code>helperText</code> · 테두리 <code>--color-error</code></span>
+          </p>
           <div className="component-guide__states">
             <div className="component-guide__state-col">
               <span className="component-guide__state-label">Default</span>
@@ -773,6 +826,7 @@ export default function ComponentGuide() {
               </div>
             </div>
             <div className="component-guide__state-col">
+              {/* Figma 1689:8145 — Text Error */}
               <span className="component-guide__state-label">Error</span>
               <div className="component-guide__preview-light">
                 <TextField
@@ -788,38 +842,88 @@ export default function ComponentGuide() {
           </div>
         </div>
 
-        {/* Search — 280px (MUI TextField + IconButton) */}
+        {/* Search — 280px · Figma 1689:8145 Error */}
         <div className="component-guide__section" id="search-280">
           <h2 className="component-guide__section-tit">Search — Toolbar 280px</h2>
           <p className="component-guide__type-spec">
             <span>높이 50px · Download Center / Tech Hub / Where to Buy</span>
+            <span className="component-guide__type-spec-sep" />
+            <span>에러: <code>guide_field--search</code> + <code>error</code></span>
           </p>
-          <div className="component-guide__preview-light">
-            <TextField
-              className="guide_field guide_field--search"
-              placeholder="Search"
-              aria-label="Search"
-              slotProps={{
-                input: {
-                  endAdornment: (
-                    <InputAdornment position="end" className="guide_field__search-adorn">
-                      <button
-                        type="button"
-                        className="guide_field__search-icon-button"
-                        aria-label="Search"
-                      >
-                        <img loading="lazy" decoding="async"
-                          src="/pub/ico/ico_search_24.svg"
-                          alt=""
-                          width={18}
-                          height={18}
-                        />
-                      </button>
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
+          <div className="component-guide__states">
+            <div className="component-guide__state-col">
+              <span className="component-guide__state-label">Default</span>
+              <div className="component-guide__preview-light">
+                <TextField
+                  className="guide_field guide_field--search"
+                  placeholder="Search"
+                  aria-label="Search"
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment
+                          position="end"
+                          className="guide_field__search-adorn"
+                        >
+                          <button
+                            type="button"
+                            className="guide_field__search-icon-button"
+                            aria-label="Search"
+                          >
+                            <img
+                              loading="lazy"
+                              decoding="async"
+                              src="/pub/ico/ico_search_24.svg"
+                              alt=""
+                              width={18}
+                              height={18}
+                            />
+                          </button>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                />
+              </div>
+            </div>
+            <div className="component-guide__state-col">
+              {/* Figma 1689:8145 — Search Error */}
+              <span className="component-guide__state-label">Error</span>
+              <div className="component-guide__preview-light">
+                <TextField
+                  className="guide_field guide_field--search guide_field--error-gap"
+                  defaultValue="Input text error"
+                  error
+                  helperText="Input text error"
+                  aria-label="Search error"
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment
+                          position="end"
+                          className="guide_field__search-adorn"
+                        >
+                          <button
+                            type="button"
+                            className="guide_field__search-icon-button"
+                            aria-label="Search"
+                          >
+                            <img
+                              loading="lazy"
+                              decoding="async"
+                              src="/pub/ico/ico_search_24.svg"
+                              alt=""
+                              width={18}
+                              height={18}
+                            />
+                          </button>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -907,6 +1011,37 @@ export default function ComponentGuide() {
                   </FormControl>
                 </div>
               </div>
+              <div className="component-guide__state-col">
+                {/* Figma 1689:8145 — Select Error */}
+                <span className="component-guide__state-label">Error</span>
+                <div className="component-guide__preview-light">
+                  <FormControl
+                    className="guide_field guide_field--h50 guide_field--error-gap"
+                    error
+                  >
+                    <GuideSelect
+                      defaultValue="Input text error"
+                      error
+                      IconComponent={GuideSelectIcon}
+                      inputProps={{ "aria-label": "Select error" }}
+                      renderValue={(value) => (
+                        <span
+                          className="guide_field__select-value"
+                          title={String(value)}
+                        >
+                          {String(value)}
+                        </span>
+                      )}
+                    >
+                      <MenuItem value="Input text error">
+                        Input text error
+                      </MenuItem>
+                      <MenuItem value="Engineer">Engineer</MenuItem>
+                    </GuideSelect>
+                    <FormHelperText>Input text error</FormHelperText>
+                  </FormControl>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -941,6 +1076,112 @@ export default function ComponentGuide() {
                     </GuideSelect>
                   </FormControl>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Textarea · Figma 1689:8145 Error */}
+        <div className="component-guide__section" id="textarea">
+          <h2 className="component-guide__section-tit">Textarea</h2>
+          <p className="component-guide__type-spec">
+            <span><code>multiline</code> · Contact Us Comments</span>
+            <span className="component-guide__type-spec-sep" />
+            <span>에러: <code>error</code> + <code>helperText</code></span>
+          </p>
+          <div className="component-guide__states">
+            <div className="component-guide__state-col">
+              <span className="component-guide__state-label">Default</span>
+              <div className="component-guide__preview-light">
+                <TextField
+                  className="guide_field"
+                  placeholder="Please enter your inquiry details."
+                  multiline
+                  minRows={4}
+                  aria-label="Textarea default"
+                />
+              </div>
+            </div>
+            <div className="component-guide__state-col">
+              {/* Figma 1689:8145 — Textarea Error */}
+              <span className="component-guide__state-label">Error</span>
+              <div className="component-guide__preview-light">
+                <TextField
+                  className="guide_field guide_field--error-gap"
+                  defaultValue="Input text error"
+                  multiline
+                  minRows={4}
+                  error
+                  helperText="Input text error"
+                  aria-label="Textarea error"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Password · Figma 1689:8145 Error */}
+        <div className="component-guide__section" id="password">
+          <h2 className="component-guide__section-tit">Password</h2>
+          <p className="component-guide__type-spec">
+            <span>toggle <code>ico_password_on/off_22.png</code> · Contact Us</span>
+            <span className="component-guide__type-spec-sep" />
+            <span>에러: <code>error</code> + <code>helperText</code></span>
+          </p>
+          <div className="component-guide__states">
+            <div className="component-guide__state-col">
+              <span className="component-guide__state-label">Default</span>
+              <div className="component-guide__preview-light">
+                <TextField
+                  className="guide_field"
+                  type="password"
+                  placeholder="Enter Password"
+                  aria-label="Password default"
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <img
+                            src="/pub/ico/ico_password_off_22.png"
+                            alt=""
+                            width={22}
+                            height={22}
+                            aria-hidden
+                          />
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                />
+              </div>
+            </div>
+            <div className="component-guide__state-col">
+              {/* Figma 1689:8145 — Password Error */}
+              <span className="component-guide__state-label">Error</span>
+              <div className="component-guide__preview-light">
+                <TextField
+                  className="guide_field guide_field--error-gap"
+                  type="password"
+                  defaultValue="Input text error"
+                  error
+                  helperText="Input text error"
+                  aria-label="Password error"
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <img
+                            src="/pub/ico/ico_password_off_22.png"
+                            alt=""
+                            width={22}
+                            height={22}
+                            aria-hidden
+                          />
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                />
               </div>
             </div>
           </div>
