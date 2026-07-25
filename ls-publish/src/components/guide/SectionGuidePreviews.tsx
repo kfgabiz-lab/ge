@@ -81,6 +81,7 @@ import MainCards from "@/app/main/components/MainCards";
 import MainInfo from "@/app/main/components/MainInfo";
 import MainProducts from "@/app/main/components/MainProducts";
 import MainVisual from "@/app/main/components/MainVisual";
+import MainImagePopup from "@/app/main/components/MainImagePopup";
 import WhatWeDoSwiper from "@/app/main/components/WhatWeDoSwiper";
 import DevicesCategoryList from "@/app/()/products-systems/components/DevicesCategoryList";
 import DevicesHelp from "@/app/()/products-systems/components/DevicesHelp";
@@ -227,6 +228,9 @@ function block(id: string) {
 export function MainSectionPreviews() {
   return (
     <>
+      <SectionGuideBlock entry={block("main_image_popup")}>
+        <MainImagePopup embedded open />
+      </SectionGuideBlock>
       <SectionGuideBlock entry={block("main_visual")}>
         <MainVisual />
       </SectionGuideBlock>

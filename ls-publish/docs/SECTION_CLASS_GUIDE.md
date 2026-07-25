@@ -81,6 +81,7 @@ Support · Company 등 페이지 최상단 h1 패턴. 타이포 스펙·금지 �
 
 | 클래스 | 컴포넌트 | 비고 |
 |--------|----------|------|
+| `main_image_popup` | `MainImagePopup.tsx` | Figma 8086:102342 · **body portal** · embedded 가이드 |
 | `main_visual` | `MainVisual.tsx` | `main_notic`·`video-swiper-section`·`banner_swiper` 포함 |
 | `main_notic` | `MainVisual.tsx` | `main_visual` 하단 · MO Figma 6571:92270 · dark navy 123px · 15/23 Medium · white text/icon |
 | `main_info` | `MainInfo.tsx` | 스탯 카운트업 · `info_box__count` ghost/live 고정 너비 (`main.css`) |
@@ -90,6 +91,22 @@ Support · Company 등 페이지 최상단 h1 패턴. 타이포 스펙·금지 �
 | `what_we_do__inner` | `WhatWeDoSwiper.tsx` | 레거시: `__inner`가 루트 |
 | `video-swiper-section` | `VideoSwiper.tsx` | `<div>`, `main_visual` 내부 — **image** · **video** (`/pub/img/video1.mp4`) · **image** (타입 `youtube` 지원) |
 | `banner_swiper` | `BannerSwiper.tsx` | `<div>`, `main_visual` 내부 (가이드 미등록) |
+
+#### `main_image_popup` BEM
+
+| 요소 | 클래스 | 비고 |
+|------|--------|------|
+| root | `main_image_popup` | fixed overlay · `createPortal(document.body)` |
+| | `--embedded` | `/guide/sections` in-flow |
+| dim | `__dim` | 60% black · 클릭 닫기 없음 |
+| panel | `__panel` | 400px · image 400×560 + bar 46px |
+| media | `__media` | promo image link · top radius 4px |
+| bar | `__bar` | `#0c1625` · Don’t show / Close |
+| media | `__media` | promo image link · top radius 4px · `max-height: 80vh` · overflow auto |
+| hide | `__hide` · `__hide-label` | MUI `guide_checkbox` + `GuideCheckboxIcon` · 저장 없음 |
+| close | `__close` · `__close-icon` | `ico_clear_12_white` |
+
+데이터: `mainImagePopupContent.ts`
 
 ---
 

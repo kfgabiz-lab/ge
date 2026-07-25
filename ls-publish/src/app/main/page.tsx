@@ -8,13 +8,15 @@ import MainProducts from "./components/MainProducts";
 import CommonBanner01 from "@/components/banners/CommonBanner01";
 import CommonBanner03Link from "@/components/banners/CommonBanner03Link";
 import IconCards from "./components/IconCards";
+import MainImagePopup from "./components/MainImagePopup";
 import "@/assets/css/main.css";
 
 export default function MainPage() {
   return (
     <main className="main-page" id="Page_main">
+      <MainImagePopup />
       <MainVisual />
-   
+
       <MainInfo />
       <WhatWeDoSwiper />
       <HighlightNewsSection

@@ -28,6 +28,14 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
     livePage: "/main",
     entries: [
       {
+        id: "main_image_popup",
+        rootClass: "main_image_popup",
+        label: "Main Image Popup",
+        component: "MainImagePopup.tsx",
+        cssFile: "main.css",
+        note: "Figma 8086:102342 · body portal · Don’t show again today UI(저장 없음) · embedded 가이드 미리보기",
+      },
+      {
         id: "main_visual",
         rootClass: "main_visual",
         label: "Main Visual",

@@ -649,7 +649,7 @@ export const icoItems: IcoItem[] = [
     size: 22,
     color: "#DDD stroke",
     usage: "체크박스 미선택 (기본)",
-    usedIn: "GuideCheckboxIcon (default), ComponentGuide, MainFooter",
+    usedIn: "GuideCheckboxIcon (default), ComponentGuide, MainFooter, MainImagePopup",
   },
   {
     id: "ico_check_block",
@@ -671,7 +671,7 @@ export const icoItems: IcoItem[] = [
     size: 22,
     color: "primary fill",
     usage: "체크박스 선택 (기본)",
-    usedIn: "GuideCheckboxIcon (default), ComponentGuide, MainFooter",
+    usedIn: "GuideCheckboxIcon (default), ComponentGuide, MainFooter, MainImagePopup",
   },
   {
     id: "ico_checked_black",
@@ -790,6 +790,17 @@ export const icoItems: IcoItem[] = [
     usage: "Search Hero·404·PC GNB 검색어 초기화",
     usedIn:
       "SearchAllHero (Figma 6571:102541), NotFoundSearch (7334:130802), GnbSearchPanel (.gnb_search__clear-icon-pc)",
+  },
+  {
+    id: "ico_clear_12_white",
+    fileName: "ico_clear_12_white.svg",
+    path: "/pub/ico/ico_clear_12_white.svg",
+    category: "search",
+    name: "clear",
+    size: 12,
+    color: "#fff",
+    usage: "Main image popup Close",
+    usedIn: "MainImagePopup (Figma 8086:102342)",
   },
   {
     id: "ico_gnb_search_clear_24",
