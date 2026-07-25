@@ -273,7 +273,7 @@ All 탭 결과 카드 호버: Product/Media/Pages 제목에 `color: var(--color-
 | 탭 | `TabButton` | 페이지 CSS |
 | 화살표 버튼 | `BtnArrow` | — |
 | Flat 버튼 | `BtnFlat` | `btn_flat` |
-| 모달 | `CookieSettingsModal`, `CookiePreferencesModal`, `ContactUsViewResponseModal`, `ContactUsViewResponseDetailModal`, `PrivacyPolicyModal`, `ContactUsTermsModal`, `MarketsReferencesModal` | `common_modal` · Cookie Settings 배너는 전용 셸 · Markets는 **body portal** |
+| 모달 | `CookieSettingsModal`, `CookiePreferencesModal`, `ContactUsViewResponseModal`, `ContactUsViewResponseDetailModal`, `PrivacyPolicyModal`, `ContactUsTermsModal`, `MarketsReferencesModal`, `MainImagePopup` | `common_modal` · Cookie Settings 배너는 전용 셸 · Markets·Main image는 **body portal** |
 | 비디오 | `DevicesProductVideoPlayer`, `VideoSwiper` | YouTube embed (`youtubeEmbed.ts`, `useYoutubeInViewPlayback`) · MP4는 `<video>` sources |
 | 푸터 | `MainFooter`, `SiteFooter`, `CommonFooter` | `MainFooter.css` 등 |
 | 레이아웃 | `ScrollToTopButton`, `ScrollToTopOnNavigate` | `scroll_to_top` |

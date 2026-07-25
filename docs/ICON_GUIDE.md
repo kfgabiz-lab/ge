@@ -158,6 +158,7 @@ MUI 연동: `GuideCheckboxIcon`, `guideCheckboxIcons*` — [COMPONENT_GUIDE.md](
 | `ico_global_24_white.svg` | 24 | 글로벌 리전 트리거 (최상단) · 라벨 **America** |
 | `ico_clear_12.svg` | 12 | 검색어·필터 초기화 (`/search` Hero·active chips 포함) · Documents MO active-filter는 `brightness(25%)`로 `#222` 적용 |
 | `ico_clear_12_black.svg` | 12 | Search Hero·404·PC GNB 검색어 초기화 `#222` (Figma `6571:102541` · `7334:130802`) |
+| `ico_clear_12_white.svg` | 12 | Main image popup Close `#fff` (Figma `8086:102342`) |
 | `ico_gnb_search_clear_24.svg` | 24 | 모바일 GNB 검색어 초기화 (Figma `7334:131929`) |
 | `ico_right_14.svg` | 14 | 검색 product path chevron (`search_all__product-path-icon`) |
 | `ico_close_24.svg` | 24 | GNB 검색 패널 닫기 |

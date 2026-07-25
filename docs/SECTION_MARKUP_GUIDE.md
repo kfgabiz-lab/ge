@@ -143,7 +143,7 @@ Hero 부제는 `__sub` — desktop 24px / weight **300** / line-height 34px (`ma
 |------|-----|-------------|
 | 페이지 `<section>` | `markets_hero`, `devices_product_downloads` | `sectionGuide.ts` + 이 문서 |
 | 레이아웃·임베드 | `main_footer`, `devices_products--embedded` | `note` 또는 [SECTION_CLASS_GUIDE.md](./SECTION_CLASS_GUIDE.md) 공유 패턴 |
-| 모달·오버레이 | `common_modal`, `cookie_settings_modal`, `cookie_preferences_modal`, `markets_references_modal`, `support_contact_view_response_modal`, `support_contact_view_response_detail_modal`, `privacy_policy_modal` | Markets references 모달은 **body portal** (`createPortal`) |
+| 모달·오버레이 | `common_modal`, `cookie_settings_modal`, `cookie_preferences_modal`, `markets_references_modal`, `support_contact_view_response_modal`, `support_contact_view_response_detail_modal`, `privacy_policy_modal`, `main_image_popup` | Markets references · Main image popup은 **body portal** (`createPortal`) |
 
 ### Key-visual hero sticky (Markets)
 
