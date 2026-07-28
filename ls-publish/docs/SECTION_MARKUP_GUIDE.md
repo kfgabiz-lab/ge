@@ -49,7 +49,7 @@
 | `main_` | `/main` | `main.css` |
 | `markets_` | `/markets/...` | `markets.css` |
 | `devices_` | `/products-systems/...` | `devices-systems.css`, `devices-product-detail.css` |
-| `common_` | 공통 배너·FAQ·404 | `globals.css`, `main.css`, `common-404.css` |
+| `common_` | 공통 배너·FAQ·404·Privacy Policy | `globals.css`, `main.css`, `common-404.css`, `common-privacy-policy.css` |
 | `highlight_` | 공통 뉴스 섹션 | `globals.css` |
 | `support_` | `/support/...` | `support.css` |
 | `support_service_` | `/services/...` (Service Center · Warranty · Training) | `services.css`, `training.css` |
@@ -387,6 +387,8 @@ Hero 부제는 `__sub` — desktop 24px / weight **300** / line-height 34px (`ma
 | `services.css` | `support_service_*` — Service Center · Warranty Policy |
 | `training.css` | `support_service_training_*` — Engineering Training · Request for Training |
 | `search.css` | `search_*` — `/search` (탭·AI·필터 패널) |
+| `common-404.css` | `common_404_*` — `/404` |
+| `common-privacy-policy.css` | `common_privacy_policy*` — `/privacy-policy` |
 | `components/MainFooter.css` | `main_footer`, `main_footer_02` |
 
 ---

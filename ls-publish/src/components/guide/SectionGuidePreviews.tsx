@@ -69,12 +69,15 @@ import CommonBanner04 from "@/components/banners/CommonBanner04";
 import NotFoundHelpfulLinks from "@/components/common/not-found/NotFoundHelpfulLinks";
 import NotFoundSearch from "@/components/common/not-found/NotFoundSearch";
 import NotFoundTitle from "@/components/common/not-found/NotFoundTitle";
+import PrivacyPolicyBody from "@/app/()/privacy-policy/components/PrivacyPolicyBody";
+import PrivacyPolicyTitle from "@/app/()/privacy-policy/components/PrivacyPolicyTitle";
 import CookiePreferencesModal from "@/components/modals/CookiePreferencesModal";
 import CookieSettingsModal from "@/components/modals/CookieSettingsModal";
 import HighlightNewsSection from "@/components/content/HighlightNewsSection";
 import CommonFaq from "@/components/faq/CommonFaq";
 import SectionGuideBlock from "@/components/guide/SectionGuideBlock";
 import "@/assets/css/common-404.css";
+import "@/assets/css/common-privacy-policy.css";
 import { mainHighlightNewsItems } from "@/data/highlightNews";
 import IconCards from "@/app/main/components/IconCards";
 import MainCards from "@/app/main/components/MainCards";
@@ -495,6 +498,12 @@ export function CommonSectionPreviews() {
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("common_404_links")}>
         <NotFoundHelpfulLinks />
+      </SectionGuideBlock>
+      <SectionGuideBlock entry={block("common_privacy_policy_title")}>
+        <PrivacyPolicyTitle />
+      </SectionGuideBlock>
+      <SectionGuideBlock entry={block("common_privacy_policy")}>
+        <PrivacyPolicyBody />
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("cookie_settings_modal")}>
         <CookieSettingsModal open embedded />

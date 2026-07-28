@@ -892,8 +892,13 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
     id: "common",
     label: "Common",
     pageClass: "section-guide__common-scope",
-    cssFiles: ["globals.css", "main.css", "common-404.css"],
-    livePage: "/404",
+    cssFiles: [
+      "globals.css",
+      "main.css",
+      "common-404.css",
+      "common-privacy-policy.css",
+    ],
+    livePage: "/privacy-policy",
     entries: [
       {
         id: "common_banner_01",
@@ -953,6 +958,24 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         cssFile: "common-404.css",
         anchorId: "common-404-links",
         note: "4카드 · Homepage / Download / Contact / Request for Service · 아이콘 loading=lazy · tablet 600~780px 2열 · 하단 Light Blue BG #f5f7fa (PC 7334:130744 · MO 7334:131077)",
+      },
+      {
+        id: "common_privacy_policy_title",
+        rootClass: "common_privacy_policy_title",
+        label: "Privacy Policy — Title",
+        component: "PrivacyPolicyTitle.tsx",
+        cssFile: "common-privacy-policy.css",
+        anchorId: "privacy-policy-title",
+        note: "P-FO-COMMON-030000P · Figma PC 8113:132101 · MO 8113:132293 · H1 70/36 ExtraBold · 설명 없음",
+      },
+      {
+        id: "common_privacy_policy",
+        rootClass: "common_privacy_policy",
+        label: "Privacy Policy — Body",
+        component: "PrivacyPolicyBody.tsx",
+        cssFile: "common-privacy-policy.css",
+        anchorId: "privacy-policy-body",
+        note: "버전 Select_50px (#dropdown · guide_field--h50 --w200 · MO full) · intro · TOC 1–10 · section Medium 22px · MO Figma 8113:132293",
       },
       {
         id: "cookie_settings_modal",

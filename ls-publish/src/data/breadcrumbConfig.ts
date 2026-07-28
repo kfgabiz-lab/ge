@@ -62,6 +62,10 @@ const configs: Record<string, BreadcrumbConfig> = {
     crumbs: [],
     current: "404 Not found",
   },
+  "/privacy-policy": {
+    crumbs: [],
+    current: "Terms of Service",
+  },
   "/products-systems/lv-automation": {
     crumbs: [
       { label: "Products & Systems", href: "/products-systems/motor-control" },

@@ -285,7 +285,7 @@ export const engineeringTrainingSessionShareLinks = [
 ] as const;
 
 export const engineeringTrainingSessionFormCopy = {
-  submitLabel: "Get the Whitepaper",
+  submitLabel: "Register",
   fieldError: "Input text error",
 } as const;
 
