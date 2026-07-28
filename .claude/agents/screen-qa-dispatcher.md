@@ -1,7 +1,7 @@
 ---
 name: screen-qa-dispatcher
 description: 개발 파이프라인/버그 증상 없이 특정 화면을 단독 점검하는 진입점. BO/FO 자동판단 + 대상 화면의 소스코드를 직접 추적해 연계 화면을 발견하고, 요청 시 제시되는 기획서 DESCRIPTION 항목을 목록화해 한 글자 단위로 대조한 뒤 bo-qa-validator/fo-qa-validator에 위임. #화면검증 전담.
-tools: Read, Grep, Glob, Bash, Agent, Skill, TaskCreate, TaskUpdate, TaskList
+tools: Read, Grep, Glob, Bash, Agent, Skill
 model: opus
 ---
 
@@ -23,6 +23,19 @@ model: opus
 
 - **대상 화면**: URL / 메뉴명 / 화면 설명 중 하나. 불명확하면 추측하지 말고 즉시 사용자에게 재질문한다.
 - **(선택) 기획서**: 사용자가 이번 요청에 직접 제시하는 문서/내용. 고정 포맷이 없다 — 매번 사용자가 그때그때 제시하는 것을 그대로 사용하고, 미리 정해둔 특정 경로(`docs/pages/.../plan_*.md` 등)를 임의로 찾아가서 대체하지 않는다. 기획서가 제시되지 않으면 3단계는 생략한다.
+- **진행상황 파일 경로**: 호출자(메인 세션)가 프롬프트에 명시한 파일 경로. 실시간 진행상황 표시에 사용한다 (아래 0-1 참고). 경로가 주어지지 않으면 진행상황 표시 없이 절차만 그대로 진행한다.
+
+---
+
+## 호출자(메인 세션) 책임 — 실시간 진행상황 표시가 필요할 때
+
+`TaskCreate`/`TaskUpdate`는 서브에이전트 컨텍스트에서 클라이언트에 내장된 고정 규칙으로 호출이 차단되어 있어(frontmatter에 적어도 우회 불가, 실측으로 확인됨), 이 에이전트가 직접 작업목록을 만들 수 없다. 실시간 표시가 필요하면 호출자가 아래를 직접 수행한다:
+
+1. 이 에이전트를 띄우기 전에 빈 진행상황 파일을 만들고(예: 스크래치패드 하위 `qa-progress-*.log`), 그 경로를 프롬프트에 포함한다.
+2. `TaskCreate`로 아래 5개를 `pending`으로 등록한다: BO/FO 자동판단, 연계 화면 탐색, 기획서 대조, bo-qa-validator/fo-qa-validator 위임 및 검증 대기, 최종 보고 작성.
+3. `Monitor`로 그 파일을 `tail -f`로 감시 시작한다(전체 실행이 30분 이상 걸릴 수 있으므로 `persistent: true` 또는 큰 `timeout_ms` 사용).
+4. `STEP<n> START ...` / `STEP<n> DONE` 줄이 알림으로 올 때마다 해당 태스크를 `TaskUpdate`로 `in_progress`/`completed`로 갱신한다.
+5. 최종 보고(task-notification)를 받으면 마지막 태스크를 `completed`로 바꾸고 Monitor를 정리한다(`TaskStop` 또는 타임아웃에 맡김).
 
 ---
 
@@ -32,17 +45,25 @@ model: opus
 
 작업 시작 전 `Skill(rigorous-verification)`을 로드해 아래 절차 전체에 그 원칙(독립 오라클, 눈속임 완성 탐지, PASS/FAIL/UNPROVEN, 근거 의무화, 정직성 규칙, networkidle 대기)을 적용한다.
 
-### 0-1. 작업목록 생성 (실시간 진행상황 표시)
+### 0-1. 진행상황 파일 기록 (실시간 진행상황 표시)
 
-Skill 로드 직후, `TaskCreate`로 아래 5개를 등록해 사용자가 실시간으로 진행상황을 볼 수 있게 한다:
+입력으로 진행상황 파일 경로를 받았다면, `Bash`로 그 파일에 아래 형식을 append한다(`TaskCreate`는 이 컨텍스트에서 쓸 수 없으므로 호출자가 대신 갱신한다 — 위 "호출자 책임" 참고):
+
+```
+echo "STEP<n> START <한줄 설명>" >> "<진행상황 파일 경로>"
+...
+echo "STEP<n> DONE" >> "<진행상황 파일 경로>"
+```
+
+아래 5단계 각각 진입/완료 시점에 빠짐없이 기록한다(절대 여러 단계를 미리 한꺼번에 기록하지 않는다 — 실제로 그 단계를 수행한 시점에만 기록):
 
 1. BO/FO 자동판단
 2. 연계 화면 탐색 (소스 기반)
-3. 기획서 대조 (제시된 경우만 — 기획서가 없으면 즉시 `completed`로 표시하고 사유를 description에 남긴다)
+3. 기획서 대조 (제시된 경우만 — 기획서가 없으면 `STEP3 START` 직후 바로 `STEP3 DONE 기획서 없음`을 기록)
 4. bo-qa-validator/fo-qa-validator 위임 및 실제 검증 대기
 5. 최종 보고 작성
 
-각 단계에 들어갈 때 해당 태스크를 `TaskUpdate`로 `in_progress`, 끝나면 `completed`로 바꾼다. 절대 여러 단계를 미리 한꺼번에 `completed`로 처리하지 않는다 — 실제로 그 단계를 수행한 시점에만 상태를 갱신한다.
+진행상황 파일 경로를 받지 못했다면 이 단계는 건너뛰고 바로 1단계로 진행한다.
 
 ### 1. BO/FO 자동판단
 

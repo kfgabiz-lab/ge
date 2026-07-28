@@ -1,7 +1,7 @@
 ---
 name: fo-qa-validator
 description: FO(북미 홈페이지) 구현 결과를 브라우저에서 실제로 검증하는 QA 전담 에이전트. fo-fe-builder 개발 완료 후, 화면에 실제 데이터가 올바르게 반영됐는지(slug 기반 데이터 바인딩 결과, where 조건 필터링, row limit 등) Playwright로 확인한다. bo-qa-validator와 달리 preview/live 3화면 비교는 없음 — fo는 단일 실사이트이므로 실제 렌더링 결과만 검증.
-tools: Read, Write, Glob, Grep, Bash, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_take_screenshot, mcp__plugin_playwright_playwright__browser_snapshot, mcp__plugin_playwright_playwright__browser_click, mcp__plugin_playwright_playwright__browser_evaluate, mcp__plugin_playwright_playwright__browser_wait_for
+tools: Read, Write, Glob, Grep, Bash, mcp__playwright__browser_navigate, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_snapshot, mcp__playwright__browser_click, mcp__playwright__browser_evaluate, mcp__playwright__browser_wait_for
 model: opus
 ---
 
@@ -52,6 +52,13 @@ ls-publish(3003)와 fo(3002)는 같은 콘텐츠의 서로 다른 실사이트�
 - [ ] 정적 이미지/아이콘이 전부 로드되는지(404 없는지) 네트워크 상태로 확인
 - [ ] 콘솔 에러 확인 — 단, 이번 이관 스코프에서 의도적으로 제외한 형제/하위 페이지로의 링크(예: 아직 이관 안 된 형제 카테고리)로 인한 404는 정상이므로 이슈로 보고하지 않는다(사전에 오케스트레이터/이관 담당에게 의도된 dangling 링크 목록을 확인)
 - [ ] CSS 레이아웃(그리드/타이포/반응형 breakpoint)이 pub과 동일한지
+
+### ls-publish 원본 디자인 대조 (분류 무관 — 대상 화면에 ls-publish 원본이 존재하면 항상 수행)
+분류 0-6이 아니어도, 검증 대상 fo 화면의 `ls-publish/src/app/()/{같은 경로}` 원본이 실제로 존재하면 아래를 항상 함께 확인한다(2026-07-27 Training Request Step3 — 실제 주소 자동완성 붙이며 추가한 `street-wrap` div가 `__field` 클래스 없이 flex 행의 직계 자식으로 들어가 flex 규칙을 못 받아 Address 2가 화면 밖으로 밀려난 사례에서 확립).
+
+- [ ] ls-publish `http://localhost:3003/pub/{경로}`와 fo `http://localhost:3002/{경로}`를 데스크톱+모바일 뷰포트로 나란히 열어 레이아웃 비교
+- [ ] **fo가 pub에는 없던 실제 기능(자동완성, 유효성 검증, 데이터 바인딩 등)을 붙이며 새 wrapper/구조를 추가한 지점을 소스 diff로 찾아 그 지점을 집중 확인한다.** 새 wrapper가 기존 CSS 선택자(flex 직계 자식 규칙, grid 등)를 못 받아 레이아웃이 깨지는 패턴을 우선 의심한다(폭 0px 붕괴, 요소 밀림, 겹침 등)
+- [ ] 이런 레이아웃 이슈를 고칠 때는 **원본 CSS 규칙이나 pub 쪽 구조를 바꾸지 말고, fo에서 새로 추가된 wrapper 쪽에 기존 규칙이 요구하는 클래스/구조를 맞추는 방향으로 수정 제안한다** (예: 이미 같은 문제를 해결해둔 다른 Step/화면의 기존 패턴을 그대로 재사용)
 
 ---
 

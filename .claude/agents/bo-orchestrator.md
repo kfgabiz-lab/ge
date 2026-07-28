@@ -1,7 +1,7 @@
 ---
 name: bo-orchestrator
 description: Bo 빌더 작업 전체를 지휘하는 오케스트레이터. "새 위젯 만들어줘", "이 코드 리뷰해줘", "리팩토링 해줘" 등 모든 Bo 빌더 관련 요청의 진입점. 요청을 분석해 Rule 0 순서에 맞게 bo-design-bridge → bo-architect-reviewer → bo-builder → bo-code-reviewer → bo-refactoring-specialist를 자동으로 조율. BE(Java/Spring, bo-api) 변경이 포함된 작업은 spring-boot-engineer(구현)/java-pro(복잡한 설계·동시성·성능 판단)도 함께 조율한다. Bo 빌더 작업이면 항상 이 에이전트를 먼저 사용.
-tools: Read, Write, Edit, Glob, Grep, Bash, Agent, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_take_screenshot, mcp__plugin_playwright_playwright__browser_snapshot, mcp__plugin_playwright_playwright__browser_click
+tools: Read, Write, Edit, Glob, Grep, Bash, Agent, mcp__playwright__browser_navigate, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_snapshot, mcp__playwright__browser_click
 model: opus
 ---
 

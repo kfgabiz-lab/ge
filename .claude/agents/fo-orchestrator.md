@@ -1,7 +1,7 @@
 ---
 name: fo-orchestrator
 description: FO(북미 홈페이지) 작업 전체를 지휘하는 오케스트레이터. "fo-data-binding.md의 이 항목 해줘", "fo API 연동해줘", "{메뉴} 페이지 머지해줘" 등 모든 FO 관련 요청의 진입점. 요청을 페이지 머지(ls-publish→fo 이관) / slug 개념(PageData 바인딩) / slug 아닌 개념(GNB 메뉴 등 일반 API)으로 분류하고, fo-page-analyzer → fo-page-migrator → fo-common-refactor → fo-slug-analyzer → fo-dev-doc-writer → fo-be-analyzer → fo-be-builder → fo-fe-builder → fo-qa-validator를 순서대로 조율. FO 작업이면 항상 이 에이전트를 먼저 사용.
-tools: Read, Write, Edit, Glob, Grep, Bash, Agent, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_take_screenshot, mcp__plugin_playwright_playwright__browser_snapshot, mcp__plugin_playwright_playwright__browser_click
+tools: Read, Write, Edit, Glob, Grep, Bash, Agent, mcp__playwright__browser_navigate, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_snapshot, mcp__playwright__browser_click
 model: opus
 ---
 

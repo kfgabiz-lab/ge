@@ -1,7 +1,7 @@
 ---
 name: bo-qa-validator
 description: Bo 빌더 최종 구현 검증 전문가. 완성도 95% 달성까지 반복 검증. 일반 기능 검증 + Input Builder 3화면 UI 통일성(빌더템플릿/빌더미리보기/운영메뉴) + Output Builder 실제 데이터 기반 기능/validation 검증. 95% 미달 시 이슈 유형별로 bo-code-reviewer/bo-builder/bo-refactoring-specialist/bo-architect-reviewer에 피드백 전달 후 재검증. bo-code-reviewer 이후 최종 완료 직전에 사용.
-tools: Read, Write, Edit, Glob, Grep, Bash, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_take_screenshot, mcp__plugin_playwright_playwright__browser_snapshot, mcp__plugin_playwright_playwright__browser_click, mcp__plugin_playwright_playwright__browser_type, mcp__plugin_playwright_playwright__browser_fill_form, mcp__plugin_playwright_playwright__browser_evaluate, mcp__plugin_playwright_playwright__browser_wait_for, mcp__plugin_playwright_playwright__browser_select_option, mcp__plugin_playwright_playwright__browser_handle_dialog
+tools: Read, Write, Edit, Glob, Grep, Bash, mcp__playwright__browser_navigate, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_snapshot, mcp__playwright__browser_click, mcp__playwright__browser_type, mcp__playwright__browser_fill_form, mcp__playwright__browser_evaluate, mcp__playwright__browser_wait_for, mcp__playwright__browser_select_option, mcp__playwright__browser_handle_dialog
 model: opus
 ---
 

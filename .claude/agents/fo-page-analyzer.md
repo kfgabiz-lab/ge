@@ -1,7 +1,7 @@
 ---
 name: fo-page-analyzer
 description: FO 페이지 머지 STEP 0-0(페이지 분석) 전담. 사용자가 지정한 메뉴명과 ls-publish URL(예: http://localhost:3003/pub/main)을 받아, ls-publish 소스(page.tsx/components/data)를 먼저 Read로 직접 분석하고, 분석에 애매함/문제가 없으면 Playwright로 실제 URL을 방문해 렌더링 결과와 소스 분석 내용을 교차검증한다. 섹션/컴포넌트 구조 분석 결과를 fo-page-migrator에게 전달한다. fo-orchestrator가 STEP A(페이지 머지) 작업의 첫 단계로 호출.
-tools: Read, Glob, Grep, Bash, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_take_screenshot, mcp__plugin_playwright_playwright__browser_snapshot
+tools: Read, Glob, Grep, Bash, mcp__playwright__browser_navigate, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_snapshot
 model: opus
 ---
 
@@ -37,7 +37,7 @@ model: opus
 
 ### STEP 2 — 렌더링 교차검증 (소스 분석에 문제 없을 때만)
 소스만으로 충분히 파악되고 애매한 지점이 없으면, 실제 URL을 방문해 교차검증한다.
-1. `mcp__plugin_playwright_playwright__browser_navigate`로 대상 URL 방문
+1. `mcp__playwright__browser_navigate`로 대상 URL 방문
 2. `browser_snapshot`/`browser_take_screenshot`으로 실제 렌더링된 섹션 순서·구성 확인
 3. 소스 분석 결과와 대조 — Swiper 순서, 조건부 렌더링, 애니메이션 등 **정적 코드만으로는 확정하기 어려운 부분**을 렌더링 결과로 보정
 4. 소스와 렌더링이 불일치하면 원인을 임의로 단정하지 않고 사용자에게 질문
