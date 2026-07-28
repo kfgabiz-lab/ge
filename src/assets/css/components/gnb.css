@@ -54,7 +54,16 @@
   line-height: 19px;
   color: #888;
 }
+.is-at-top .main_header  .sub_breadcrumb .breadcrumb_nav{
+  color: rgb(255 255 255 / 50%);
+}
+.main_header .sub_breadcrumb .breadcrumb_nav{
+    color: #888;
+}
 
+.is-invert.is-gnb-hidden .sub_breadcrumb .breadcrumb_nav {
+  color: rgb(255 255 255 / 50%);
+}
 .sub_breadcrumb .breadcrumb_nav__group {
   display: contents;
 }
@@ -119,6 +128,13 @@
   .sub_breadcrumb
   .breadcrumb_links
   a {
+    opacity: .7;
+  }
+.sub_header-wrap:not(.is-at-top)
+  .gnb_menu_wrap.sub_header.is-gnb-hidden
+  .sub_breadcrumb
+  .breadcrumb_links
+  a:hover {
     opacity: 1;
   }
 
@@ -145,6 +161,10 @@
 }
 header.main_header.is-invert.is-gnb-hidden .breadcrumb_links a {
     color: #fff;
+    opacity: 0.7;
+}
+header.main_header.is-invert.is-gnb-hidden .breadcrumb_links a:hover {
+   opacity: 1;
 }
 .sub_breadcrumb .breadcrumb_links a {
   color: #666;
@@ -157,6 +177,10 @@ header.main_header.is-invert.is-gnb-hidden .breadcrumb_links a {
 }
 header.main_header.is-invert.is-gnb-hidden .sub_breadcrumb .icon_external{
   background: url("/pub/ico/ico_arrow_right_18_white.svg") center / contain no-repeat;
+}
+.sub_breadcrumb .breadcrumb_links a:hover  .icon_external{
+   background: url("/pub/ico/ico_arrow_right_18_gray_hover.svg") center / contain no-repeat;
+   opacity: 1;
 }
 .sub_breadcrumb .icon_external {
   display: block;
@@ -468,10 +492,10 @@ color: #fff;
   opacity: 0.5;
 }
 
-.main_header-wrap.is-gnb-hidden .main_header.main_header--breadcrumb-nav .sub_breadcrumb .breadcrumb_links a {
-  opacity: 1;
-}
-
+.main_header-wrap.is-gnb-hidden .main_header.main_header--breadcrumb-nav .sub_breadcrumb .breadcrumb_links a {opacity: .7;}
+.main_header-wrap.is-gnb-hidden .main_header.main_header--breadcrumb-nav .sub_breadcrumb .breadcrumb_links a:hover{
+  opacity:1;
+} 
 .main_header-wrap.is-gnb-hidden .main_header.main_header--breadcrumb-nav .sub_breadcrumb .breadcrumb_nav .breadcrumb_current {
   color: #fff;
   opacity: 1;
@@ -491,7 +515,9 @@ color: #fff;
   filter: brightness(0) invert(1);
   opacity: 0.7;
 }
-
+.main_header-wrap.is-gnb-hidden .main_header.main_header--breadcrumb-nav .sub_breadcrumb a:hover .icon_external {
+  opacity: 1;
+}
 .main_header .sub_breadcrumb .inner {
   justify-content: flex-end;
 }

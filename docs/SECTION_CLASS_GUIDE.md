@@ -40,6 +40,7 @@ Support · Company 등 페이지 최상단 h1 패턴. 타이포 스펙·금지 �
 | `company-press-title` | `company-feed.css` | `CompanyPressTitle.tsx` |
 | `company-articles-title` | `company-feed.css` | `CompanyArticlesTitle.tsx` |
 | `company-careers-title` | `company.css` | `CompanyCareersPage.tsx` |
+| `common_privacy_policy_title` | `common-privacy-policy.css` | `PrivacyPolicyTitle.tsx` |
 
 ---
 
@@ -61,7 +62,7 @@ Support · Company 등 페이지 최상단 h1 패턴. 타이포 스펙·금지 �
 | `company-articles` | Company — Articles | `company.css` | `/company/articles` |
 | `company-events` | Company — Events | `company.css` | `/company/events` |
 | `company-article-detail` | Company — Article Detail | `company.css` | `/company/articles/detail` |
-| `common` | Common | `globals.css`, `main.css` | — |
+| `common` | Common | `globals.css`, `main.css`, `common-404.css`, `common-privacy-policy.css` | `/privacy-policy` · `/404` |
 | `support` | Support — Connect Portal | `support.css` | `/support/connect-portal` |
 | `support-download` | Support — Download Center | `support.css`, `devices-product-detail.css` | `/support/download-center` |
 | `support-tech-hub` | Support — Tech Hub | `support.css`, `devices-product-detail.css` | `/support/tech-hub` |
@@ -501,6 +502,8 @@ America · LS ELECTRIC · Affiliate in America 페이지 공통 컴포넌트·�
 | `common_404_title` | `NotFoundTitle.tsx` | `common-404.css` · P-FO-COMMON-010000P |
 | `common_404_search` | `NotFoundSearch.tsx` | `common-404.css` · 검색 + Popular Keywords · `ico_clear_12_black` (Figma 7334:130802) |
 | `common_404_links` | `NotFoundHelpfulLinks.tsx` | `common-404.css` · Helpful Links 4카드 · 아이콘 `loading="lazy"` (React 19 preload 경고 방지) |
+| `common_privacy_policy_title` | `PrivacyPolicyTitle.tsx` | `common-privacy-policy.css` · P-FO-COMMON-030000P |
+| `common_privacy_policy` | `PrivacyPolicyBody.tsx` | `common-privacy-policy.css` · Select_50px `#dropdown` · 본문 |
 | `cookie_settings_modal` | `CookieSettingsModal.tsx` | `globals.css` · P-FO-COMMON-020000P · 우하단 동의 배너 · 설명 단일 문단(강제 줄바꿈 없음) |
 | `cookie_preferences_modal` | `CookiePreferencesModal.tsx` | `globals.css` · P-FO-COMMON-040000M · 상세 분류 설정 · MO Figma 7334:130983 · PNG Check 22px |
 | `highlight_news` | `HighlightNewsSection.tsx` | `globals.css` (`--main`, `--markets`) · 이미지 `highlight_01~03.jpg` · `--markets .tit` 2줄 말줄임 · tablet 640~1200px 2열 (gap 24px) |
@@ -516,6 +519,22 @@ Figma [7334:130743](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB
 | `common_404_links` | PC 4열 · tablet 600~780px 2열 · mobile 599px 이하 1열 · 하단 Light Blue BG `#f5f7fa` (PC section y=304px, MO y=200px부터 · Figma 7334:130744 / 7334:131077) · 아이콘 `loading="lazy"` |
 
 아이콘: `ico_clear_12_black` · `ico_404_home_80` · `ico_404_download_80` · `ico_404_contact_80` · `ico_404_request_80`
+
+### Privacy Policy (`/privacy-policy`) — `common-privacy-policy.css`
+
+Figma PC [8113:132101](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=8113-132101) · MO [8113:132293](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=8113-132293) · `P-FO-COMMON-030000P` · 페이지: `common-page--privacy-policy` · breadcrumb current `Terms of Service` · footer legal 연동
+
+| 섹션 | 스펙 (PC) |
+|------|-----------|
+| `common_privacy_policy_title` | 상단 75px · H1 70/80 ExtraBold · 설명 없음 |
+| `common_privacy_policy` | 버전 `guide_field--h50 --w200` Select_50px (`COMPONENT_GUIDE` `#dropdown`) · intro 16/24 · TOC 번호 목록 · section 제목 22/32 Medium · 하단 164px |
+
+| 섹션 | 스펙 (MO · Figma 8113:132293) |
+|------|-----------|
+| `common_privacy_policy_title` | 상단 40px · H1 36/46 ExtraBold · letter-spacing -0.02em |
+| `common_privacy_policy` | title→dropdown 40px · dropdown full(335) 50px · dropdown→body 30px · intro/section gap 40px · 본문·TOC 16/24 · section 제목 22/32 Medium · section 내부 gap 20 · 하단 80px |
+
+데이터: `privacyPolicyPageContent.ts` · 모달 카피(`privacyPolicyContent.ts`)와 별도
 
 ### Cookie Settings (`/main/cookie-setting`) — `globals.css`
 

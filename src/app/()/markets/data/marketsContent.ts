@@ -88,9 +88,9 @@ export const commercialResidentialHero = {
   titleLines: ["Commercial", "& Residential"],
   heroImage: "/pub/img/markets/commercial-residential/hero/hero.jpg",
   secondaryCta: {
-    label: "Go to Connect Portal",
+    label: "Get the Whitepaper",
     href: "",
-    icon: "link" as const,
+    icon: "download" as const,
   },
 };
 

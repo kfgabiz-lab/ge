@@ -109,7 +109,7 @@ export const pageIndexRows: PageIndexRow[] = [
     id: 13,
     pageId: "P-FO-MKT-070000P",
     link: "/markets/commercial-residential",
-    date: "2026-75-21",
+    date: "2026-07-21",
     status: "완료",
     note: "Commercial & Residential · solutions",
   },
@@ -460,6 +460,14 @@ export const pageIndexRows: PageIndexRow[] = [
     date: "2026-07-15",
     status: "완료",
     note: "Cookie Settings 단독 모달",
+  },
+  {
+    id: 70,
+    pageId: "privacy-policy",
+    link: "/privacy-policy",
+    date: "2026-07-27",
+    status: "완료",
+    note: "푸터 약관 공통",
   },
   {
     id: 69,

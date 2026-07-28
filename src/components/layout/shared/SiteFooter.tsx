@@ -133,7 +133,7 @@ export default function SiteFooter({
               </button>
               <p className="warn">
                 and I agree with the terms of use as described in the{" "}
-                <a href="">Privacy Policy.</a>
+                <a href="/privacy-policy">Privacy Policy.</a>
               </p>
             </div>
           </form>

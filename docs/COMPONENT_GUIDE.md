@@ -220,7 +220,7 @@ HelperText 에러 색도 공통: `.guide_field .MuiFormHelperText-root.Mui-error
 
 **모바일 (`max-width: 780px`)** — `GuideSelect` 기본 `useNativeOnMobile: true` → MUI `Select native`. 아이콘 클래스가 `.MuiSelect-icon`이 아니라 `.MuiNativeSelect-icon`이므로, 페이지 CSS에서 화살표 배경을 별도 지정해야 한다 (예: `training.css` curriculum · `devices-systems.css` explore). `appearance: none`으로 OS 기본 화살표를 숨긴다.
 
-실사용 페이지: `devices_product_downloads`, `support_download_*`, `support_where_to_buy_*`, `support_service_training_curriculum`, `company-press-list` (`CompanyPressListToolbar` · `#dropdown`), `company-events-past`, `company-blog-list`, `search_all_hero` 등.
+실사용 페이지: `devices_product_downloads`, `support_download_*`, `support_where_to_buy_*`, `support_service_training_curriculum`, `company-press-list` (`CompanyPressListToolbar` · `#dropdown`), `company-events-past`, `company-blog-list`, `search_all_hero`, `/privacy-policy` (`common_privacy_policy` · Select_50px 200px · `globals.css` 스코프) 등.
 
 `globals.css`는 위 섹션 루트를 스코프로 `.guide_field` 공통 스타일을 적용합니다. 페이지 전용 오버라이드는 해당 CSS(`training.css` 등)에 둡니다.
 
