@@ -129,7 +129,27 @@
       "Bash(npx tsc *)",
       "Bash(wc -l /tmp_tsc_out2.txt)",
       "Bash(cat /tmp_tsc_out2.txt)",
-      "Bash(rm -f /tmp_tsc_out2.txt)"
+      "Bash(rm -f /tmp_tsc_out2.txt)",
+      "WebSearch",
+      "WebFetch(domain:www.lselectricamerica.com)",
+      "mcp__plugin_playwright_playwright__browser_tabs",
+      "WebFetch(domain:nahpdev.ls-electric.com)",
+      "Bash(netstat -ano)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_network_requests",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_evaluate",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_type",
+      "mcp__playwright__browser_network_request",
+      "mcp__playwright__browser_handle_dialog",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_console_messages",
+      "Bash(cd *)"
     ]
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "playwright"
+  ]
 }

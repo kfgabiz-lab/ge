@@ -16,6 +16,7 @@ model: opus
 > 역할 경계
 > - `screen-qa-dispatcher` = 대상 판단 + 소스 기반 연계화면 탐색 + 기획서 대조항목 목록화 + 위임 (브라우저 직접 조작 안 함)
 > - `bo-qa-validator` / `fo-qa-validator` = 실제 브라우저 검증 수행 (기존 파일 그대로, 수정하지 않고 재사용)
+> - 브라우저 검증 도구 우선순위: claude.ai/chrome(Claude in Chrome) 우선, 사용 불가시 PLAYWRIGHT로 대체 (validator 쪽 설정 그대로 따름)
 
 ---
 

@@ -1,0 +1,221 @@
+- generic [active] [ref=f12e1]:
+  - region "Notifications alt+T"
+  - generic [ref=f12e13]:
+    - complementary [ref=f12e14]:
+      - img "LS ELECTRIC" [ref=f12e16] [cursor=pointer]
+      - navigation [ref=f12e17]:
+        - button "대시보드" [ref=f12e19]
+        - button "페이지 관리" [ref=f12e24]
+        - button "제품 관리" [ref=f12e29]
+        - button "시스템" [ref=f12e34]
+        - button "통계" [ref=f12e39]
+        - button "관리자 관리" [ref=f12e44]
+        - button "시스템" [ref=f12e49]
+      - generic [ref=f12e54] [cursor=pointer]:
+        - generic [ref=f12e55]: 이병
+        - generic [ref=f12e56]:
+          - paragraph [ref=f12e57]: 이병권
+          - paragraph [ref=f12e58]: comlbg
+    - generic [ref=f12e61]:
+      - banner [ref=f12e62]:
+        - navigation [ref=f12e63]:
+          - generic [ref=f12e67]: list
+        - generic [ref=f12e71]:
+          - combobox [ref=f12e76] [cursor=pointer]:
+            - option "북미홈페이지" [selected]
+            - option "테스트홈페이지"
+          - button "한국어" [ref=f12e78]
+          - button "로그아웃" [ref=f12e86]
+      - main [ref=f12e90]:
+        - generic [ref=f12e91]:
+          - generic [ref=f12e93]:
+            - heading "페이지 메이커 — List" [level=1] [ref=f12e94]
+            - paragraph [ref=f12e98]: 필드를 추가하면 검색폼/테이블 코드가 자동 생성됩니다.
+          - generic [ref=f12e99]:
+            - generic [ref=f12e100]:
+              - generic [ref=f12e102]:
+                - button "템플릿 선택..." [ref=f12e103]
+                - generic [ref=f12e278]:
+                  - textbox "템플릿 검색..." [ref=f12e284]
+                  - generic [ref=f12e285]: 저장된 템플릿이 없습니다.
+              - button "생성 이력..." [ref=f12e109]
+              - generic [ref=f12e113]:
+                - generic [ref=f12e114]:
+                  - button "검색 0" [ref=f12e115]:
+                    - text: 검색
+                    - generic [ref=f12e119]: "0"
+                  - button "테이블 0" [ref=f12e120]:
+                    - text: 테이블
+                    - generic [ref=f12e123]: "0"
+                  - button "버튼 0" [ref=f12e124]:
+                    - text: 버튼
+                    - generic [ref=f12e131]: "0"
+                - button "패널 닫기" [ref=f12e132]
+              - generic [ref=f12e137]:
+                - generic [ref=f12e287]:
+                  - generic [ref=f12e288] [cursor=pointer]:
+                    - generic [ref=f12e289]:
+                      - button [ref=f12e290]
+                      - generic [ref=f12e300]: Row 1
+                      - generic [ref=f12e301]:
+                        - button "1" [ref=f12e302]
+                        - button "2" [ref=f12e303]
+                        - button "3" [ref=f12e304]
+                        - button "4" [ref=f12e305]
+                        - button "5" [ref=f12e306]
+                    - generic [ref=f12e307]:
+                      - button [disabled] [ref=f12e308]
+                      - button [disabled] [ref=f12e311]
+                      - button [ref=f12e314]
+                  - generic [ref=f12e318]:
+                    - generic [ref=f12e319]: 이곳으로 필드를 드래그하여 추가하세요
+                    - generic [ref=f12e356]:
+                      - generic [ref=f12e357]:
+                        - generic [ref=f12e358]:
+                          - generic [ref=f12e359]: input
+                          - generic [ref=f12e360]: 필드 설정
+                        - button [ref=f12e361]
+                      - generic [ref=f12e365]:
+                        - generic [ref=f12e366]:
+                          - generic [ref=f12e367]:
+                            - generic [ref=f12e368]: 라벨 *
+                            - button "선택" [ref=f12e370]
+                          - generic [ref=f12e376]:
+                            - generic [ref=f12e377]: 연결 Slug
+                            - textbox "연동 없음" [ref=f12e379]
+                        - generic [ref=f12e380]:
+                          - generic [ref=f12e381]:
+                            - generic [ref=f12e382]: Key *
+                            - 'textbox "예: userName, status..." [ref=f12e383]'
+                          - generic [ref=f12e385]:
+                            - generic [ref=f12e386]: Data
+                            - 'textbox "예: code=1?title:title2" [ref=f12e387]'
+                        - generic [ref=f12e388]:
+                          - generic [ref=f12e389]: 설명 (선택)
+                          - button "선택" [ref=f12e391]
+                        - generic [ref=f12e397]:
+                          - generic [ref=f12e398]: ColSpan (가로)
+                          - generic [ref=f12e399]:
+                            - button "1" [ref=f12e400]
+                            - button "2" [ref=f12e401]
+                            - button "3" [ref=f12e402]
+                            - button "4" [ref=f12e403]
+                            - button "5" [ref=f12e404]
+                        - generic [ref=f12e405]:
+                          - generic [ref=f12e406]:
+                            - generic [ref=f12e407]: 필수 항목
+                            - button [ref=f12e408]
+                          - generic [ref=f12e410]:
+                            - generic [ref=f12e411]: 검색 제외
+                            - button [ref=f12e412]
+                        - generic [ref=f12e414]:
+                          - generic [ref=f12e415]:
+                            - generic [ref=f12e416]: 동적 HIDE 조건 (선택)
+                            - 'textbox "예: status=1,type=Y / status= (빈값)" [ref=f12e417]'
+                          - generic [ref=f12e418]:
+                            - generic [ref=f12e419]: 동적 Disable 조건 (선택)
+                            - 'textbox "예: status=1,type=Y / status= (빈값)" [ref=f12e420]'
+                        - generic [ref=f12e421]:
+                          - text: 조인 검색 연동
+                          - generic [ref=f12e422]:
+                            - generic [ref=f12e423]: 연동 Slug
+                            - textbox "연동 없음" [ref=f12e425]
+                        - generic [ref=f12e426]:
+                          - generic [ref=f12e427]: Placeholder
+                          - button "선택" [ref=f12e429]
+                        - generic [ref=f12e434]:
+                          - generic [ref=f12e435]: 기본값
+                          - button "선택" [ref=f12e437]
+                        - generic [ref=f12e443]:
+                          - paragraph [ref=f12e444]: Validation
+                          - generic [ref=f12e445]:
+                            - generic [ref=f12e446]: 글자수 표시
+                            - button [ref=f12e447]
+                          - generic [ref=f12e449]:
+                            - generic [ref=f12e450]:
+                              - generic [ref=f12e451]: 최소 글자
+                              - spinbutton [ref=f12e452]
+                            - generic [ref=f12e453]:
+                              - generic [ref=f12e454]: 최대 글자
+                              - spinbutton [ref=f12e455]
+                          - generic [ref=f12e456]:
+                            - generic [ref=f12e457]: 정규식 패턴
+                            - 'textbox "예: ^[0-9]+$" [ref=f12e458]'
+                        - generic [ref=f12e459]:
+                          - text: 공통코드 연동
+                          - generic [ref=f12e460]:
+                            - generic [ref=f12e461]: 코드 그룹
+                            - combobox [ref=f12e462]:
+                              - option "그룹 선택" [selected]
+                              - option "자료 유형 (DOC_TYPE)"
+                              - option "메일 수신자 (EMAIL_RECIPIENT)"
+                              - option "국가 (COUNTRY)"
+                              - option "문의유형 (INQUIRY_TYPE)"
+                              - option "Type of Business (BUSINESSTYPE)"
+                              - option "Prefix (BANNER_PREFIX)"
+                              - option "세일즈팀 제품 구분코드 (SALESCATEGORY)"
+                              - option "교육 유형 (TRAININGTYPE)"
+                              - option "로그인 잠금 기능 활성화 여부 (LOGIN_LOCK_ENABLED)"
+                              - option "로그인 최대 시도 횟수 (LOGIN_LOCK_MAX_ATTEMPTS)"
+                              - option "주문방식 (ORDERMETHOD)"
+                              - option "대분류 (MAINCATEGORY)"
+                              - option "발송상태 (SENDSTATUS)"
+                              - option "Email 발송 유형 (EMAILSENDTYPE)"
+                              - option "저장 상태 (SAVESTATUS)"
+                              - option "게시상태 (PUBLISHSTATUS)"
+                              - option "교육 비용 (TRAININGFEETYPE)"
+                              - option "국가 코드 (COUNTRYCODE)"
+                              - option "기간 타입 (CURRDTLPERIODTYPE)"
+                              - option "직급 (TEST)"
+                              - option "Design Awards (DESIGNAWARDS)"
+                              - option "Training 과정 (TRAININGCOURSE)"
+                              - option "Training 일정 유형 (TRAININGSCHEDULETYPE)"
+                              - option "검색 기간 구분 (SEARCHPERIODTYPE)"
+                              - option "제품 카테고리 (PRODUCTCATEGORY)"
+                              - option "검색월 (SEARCHMONTH)"
+                              - option "블로그 카테고리 (BLOGCATEGORY)"
+                              - option "약관 구분 (TERMSTYPE)"
+                              - option "공개설정 (VISIBILITY)"
+                              - option "Markets (MARKETS)"
+                              - option "카테고리 LV2 목록 (CATEGORY_LV2)"
+                              - option "판매상태 (SALESSTATUS)"
+                              - option "거래처 구분 코드 (CHANNELTYPE)"
+                              - option "담당지역 National 상세 코드 (AREA_NA)"
+                              - option "담당지역 West 상세 코드 (AREA_WE)"
+                              - option "담당지역 South 상세 코드 (AREA_SO)"
+                              - option "담당지역 Midwest 상세 코드 (AREA_MW)"
+                              - option "담당지역 Northeast 상세 코드 (AREA_NE)"
+                              - option "담당지역 코드 (AREA)"
+                              - option "배너위치구분코드 (BANNERTYPE)"
+                              - option "제품 구분 (PRODUCTTYPE)"
+                              - option "노출여부 (ISVISIBLE)"
+                              - option "카테고리 레벨 코드 (LEVEL)"
+                              - option "상태 코드 (STATUS)"
+                              - option "테스트01 (TEST01)"
+                        - generic [ref=f12e464]:
+                          - paragraph [ref=f12e465]: 데이터생성
+                          - button "+ 추가" [ref=f12e466]
+                      - generic [ref=f12e467]:
+                        - button "취소" [ref=f12e468]
+                        - button "추가" [disabled] [ref=f12e469]
+                - status [ref=f12e138]
+                - button "행 추가" [ref=f12e139]
+            - generic [ref=f12e141]:
+              - generic [ref=f12e142]:
+                - generic [ref=f12e144]:
+                  - button "미리보기" [ref=f12e145]
+                  - button "코드" [ref=f12e149]
+                - generic [ref=f12e153]:
+                  - button "저장" [ref=f12e154]
+                  - button "생성" [ref=f12e159]
+                  - button "코드 복사" [ref=f12e162]
+              - generic [ref=f12e166]:
+                - generic [ref=f12e167]:
+                  - paragraph [ref=f12e171]: 왼쪽에서 검색 필드를 추가하세요
+                  - paragraph [ref=f12e172]: Input, Select, Date 등을 조합하여 검색폼을 만들 수 있습니다
+                - generic [ref=f12e173]:
+                  - paragraph [ref=f12e176]: 왼쪽에서 테이블 컬럼을 추가하세요
+                  - paragraph [ref=f12e177]: 헤더명, accessor, 너비, 정렬을 설정할 수 있습니다
+  - button "Open Tanstack query devtools" [ref=f12e228] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=f12e9] [cursor=pointer]
+  - alert [ref=f12e277]

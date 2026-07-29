@@ -22,9 +22,11 @@ FO 구현물이 실제로 브라우저에서 올바르게 동작하는지 검증
 ```
 FE: http://localhost:3002
 BE: http://localhost:8080
-브라우저: 엣지
+브라우저: 크롬
 profile: local
 ```
+
+**브라우저 검증 도구 우선순위**: claude.ai/chrome(Claude in Chrome) 활용을 우선한다. 사용 불가한 경우에만 PLAYWRIGHT(`mcp__plugin_playwright_playwright__*`)로 대체한다.
 
 ---
 

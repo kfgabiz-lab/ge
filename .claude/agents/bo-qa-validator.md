@@ -25,7 +25,7 @@ Bo 빌더 구현물의 최종 품질을 검증하는 전문 QA 에이전트.
 ```
 FE:  http://localhost:3002
 BE:  http://localhost:8002
-브라우저: 엣지
+브라우저: 크롬
 profile: local
 
 빌더 템플릿:  http://localhost:3002/admin/templates/make/widget
@@ -33,6 +33,8 @@ profile: local
 운영 메뉴:    http://localhost:3002/admin/{해당 메뉴 경로}
 builder-contents-layout: http://localhost:3002/admin/templates/builder-contents-layout
 ```
+
+**브라우저 검증 도구 우선순위**: claude.ai/chrome(Claude in Chrome) 활용을 우선한다. 사용 불가한 경우에만 PLAYWRIGHT(`mcp__plugin_playwright_playwright__*`)로 대체한다.
 
 ---
 
