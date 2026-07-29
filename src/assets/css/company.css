@@ -273,6 +273,7 @@
     font-size: 12px;
     line-height: 18px;
     padding: 2px 8px;
+    font-weight: 500;
     background: #fff;
   }
 
@@ -479,16 +480,39 @@
     padding: 0;
     box-sizing: border-box;
     font-size: 15px;
+    font-weight: 400;
     line-height: 23px;
     color: var(--color-text);
     background: var(--color-bg);
     border-radius: var(--field-radius);
   }
 
+  section.company-blog-list .guide_field .MuiOutlinedInput-root fieldset {
+    border-color: var(--color-border);
+  }
+
+  section.company-blog-list .guide_field .MuiOutlinedInput-root:hover fieldset {
+    border-color: var(--color-border);
+    border-width: 1px;
+  }
+
+  section.company-blog-list .guide_field .MuiOutlinedInput-root.Mui-focused:not(.Mui-error) fieldset {
+    border-color: var(--color-text-muted);
+    border-width: 1px;
+  }
+
   section.company-blog-list .guide_field .MuiOutlinedInput-input {
     height: 50px;
     padding: 0 20px;
     box-sizing: border-box;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 23px;
+  }
+
+  section.company-blog-list .guide_field .MuiOutlinedInput-input::placeholder {
+    color: var(--color-text-light);
+    opacity: 1;
   }
 
   section.company-blog-list .guide_field--search .MuiOutlinedInput-root {
@@ -503,6 +527,46 @@
     padding: 0;
   }
 
+  section.company-blog-list .guide_field--search .guide_field__search-adorn {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    height: auto;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  section.company-blog-list .guide_field--search .guide_field__search-clear {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    background: var(--color-bg);
+    cursor: pointer;
+  }
+
+  section.company-blog-list .guide_field--search .guide_field__search-clear-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 10px;
+    height: 10px;
+  }
+
+  section.company-blog-list .guide_field--search .guide_field__search-clear-icon img {
+    display: block;
+    width: 10px;
+    height: 10px;
+  }
+
   section.company-blog-list .guide_field .MuiSelect-select {
     height: 50px;
     min-height: 50px;
@@ -511,7 +575,28 @@
     display: flex;
     align-items: center;
     font-size: 15px;
+    font-weight: 400;
     line-height: 23px;
+  }
+
+  section.company-blog-list .guide_field .guide_field__select-icon,
+  section.company-blog-list .guide_field .MuiSelect-icon {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    padding: 0;
+    transform: translateY(-50%) rotate(0deg);
+    transform-origin: center center;
+    transition: transform 0.25s ease;
+    pointer-events: none;
+    background: url("/pub/ico/ico_up_16.svg") center / contain no-repeat;
+  }
+
+  section.company-blog-list .guide_field .MuiSelect-icon.MuiSelect-iconOpen {
+    transform: translateY(-50%) rotate(180deg);
   }
 
   section.company-blog-list .company-blog-list__items {
@@ -4954,7 +5039,7 @@ section.company-blog-list .company-blog-list__content:hover .company-blog-list__
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.8;
+    opacity: 1;
   }
 
   section.company-ls-electric-highlights .company-ls-electric-highlights__bg-img--mo {
@@ -4963,8 +5048,8 @@ section.company-blog-list .company-blog-list__content:hover .company-blog-list__
 
   section.company-ls-electric-highlights .company-ls-electric-highlights__overlay {
     position: absolute;
-    inset: 0;
-    background: rgb(12 22 45 / 76%);
+    /* inset: 0; */
+    /* background: rgb(12 22 45 / 76%); */
   }
 
   section.company-ls-electric-highlights .inner {
@@ -5257,7 +5342,7 @@ section.company-blog-list .company-blog-list__content:hover .company-blog-list__
 
   section.company-ls-electric-global .company-ls-electric-global__visual {
     position: relative;
-    margin-top: 40px;
+    margin-top: 50px;
   }
 
   section.company-ls-electric-global .company-ls-electric-global__map {
@@ -5267,9 +5352,10 @@ section.company-blog-list .company-blog-list__content:hover .company-blog-list__
 
   section.company-ls-electric-global .company-ls-electric-global__map img {
     display: block;
-    width: 100%;
-    height: 100%;
+    width: 1211px;
+    height: 622px;
     object-fit: contain;
+    margin: 0 auto;
   }
 
   section.company-ls-electric-global .company-ls-electric-global__stats {
@@ -5278,7 +5364,8 @@ section.company-blog-list .company-blog-list__content:hover .company-blog-list__
     display: flex;
     gap: 40px;
     align-items: stretch;
-    margin-top: -72px;
+    margin-top: -232px;
+    justify-content: center;
   }
 
   section.company-ls-electric-global .company-ls-electric-global__stat {

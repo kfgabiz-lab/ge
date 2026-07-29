@@ -347,7 +347,7 @@ header.main_header.is-invert.is-gnb-hidden .sub_breadcrumb .icon_external{
   }
 
   .gnb_menu_wrap.sub_header.is-top .gnb_nav_list .link {
-    color: var(--color-primary);
+    color: #222;
   }
 
   .gnb_menu_wrap.sub_header.is-top .icon_menu span {
@@ -703,7 +703,7 @@ color: #fff;
 }
 
 .main_header.is-invert .main_header__nav-link {
-  color: var(--color-primary, #0f1f45);
+  color: #222;
 }
 
 .main_header.is-invert .main_header__icon-menu span {

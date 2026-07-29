@@ -1,18 +1,16 @@
 "use client";
 
-import {
-  getReferenceForModal,
-  REFERENCES_MODAL_DEFAULT_ID,
-} from "../data/marketsContent";
+import { references } from "../data/marketsContent";
 import MarketsReferencesModal from "./MarketsReferencesModal";
 
-/** Section guide — LG reference modal (multi-image gallery) */
+/** Section guide — LG reference modal (multi-image gallery + list nav) */
 export default function MarketsReferencesModalPreview() {
   return (
     <MarketsReferencesModal
       embedded
       open
-      item={getReferenceForModal(REFERENCES_MODAL_DEFAULT_ID)!}
+      item={references[0] ?? null}
+      items={references}
       onClose={() => undefined}
     />
   );

@@ -16,6 +16,8 @@ type MarketsReferencesModalProps = {
   item?: ReferenceItem | null;
   items?: ReferenceItem[];
   onClose: () => void;
+  /** prev/next 전환 시 현재 레퍼런스 동기화 */
+  onActiveItemChange?: (item: ReferenceItem) => void;
   /** Section guide preview — in-flow layout without fixed overlay */
   embedded?: boolean;
 };
@@ -25,6 +27,7 @@ export default function MarketsReferencesModal({
   item = null,
   items,
   onClose,
+  onActiveItemChange,
   embedded = false,
 }: MarketsReferencesModalProps) {
   const titleId = useId();
@@ -40,7 +43,6 @@ export default function MarketsReferencesModal({
   );
   const isMultiReference = referenceItems.length > 1;
   const activeItem = referenceItems[referenceIndex] ?? null;
-  const referenceItemsKey = referenceItems.map((entry) => entry.id).join(",");
 
   useEffect(() => {
     setCanPortal(true);
@@ -72,10 +74,15 @@ export default function MarketsReferencesModal({
   }, [embedded, onClose, open]);
 
   useEffect(() => {
-    setReferenceIndex(0);
+    if (!open) return;
+
+    const nextIndex = item
+      ? referenceItems.findIndex((entry) => entry.id === item.id)
+      : 0;
+    setReferenceIndex(nextIndex >= 0 ? nextIndex : 0);
     setImageIndex(0);
     swiperRef.current?.slideTo(0, 0);
-  }, [referenceItemsKey]);
+  }, [open, item, referenceItems]);
 
   useEffect(() => {
     setImageIndex(0);
@@ -99,17 +106,28 @@ export default function MarketsReferencesModal({
     swiperRef.current?.slideNext();
   }, []);
 
+  const goToReference = useCallback(
+    (nextIndex: number) => {
+      const nextItem = referenceItems[nextIndex];
+      if (!nextItem) return;
+
+      setReferenceIndex(nextIndex);
+      setImageIndex(0);
+      swiperRef.current?.slideTo(0, 0);
+      onActiveItemChange?.(nextItem);
+    },
+    [onActiveItemChange, referenceItems],
+  );
+
   const handlePrevReference = useCallback(() => {
-    setReferenceIndex((current) =>
-      current > 0 ? current - 1 : referenceItems.length - 1,
-    );
-  }, [referenceItems.length]);
+    if (referenceIndex <= 0) return;
+    goToReference(referenceIndex - 1);
+  }, [goToReference, referenceIndex]);
 
   const handleNextReference = useCallback(() => {
-    setReferenceIndex((current) =>
-      current < referenceItems.length - 1 ? current + 1 : 0,
-    );
-  }, [referenceItems.length]);
+    if (referenceIndex >= referenceItems.length - 1) return;
+    goToReference(referenceIndex + 1);
+  }, [goToReference, referenceIndex, referenceItems.length]);
 
   if (!open || !activeItem) return null;
 
@@ -118,6 +136,9 @@ export default function MarketsReferencesModal({
   const imageCount = modalData.images.length;
   const isPrevDisabled = imageIndex === 0;
   const isNextDisabled = imageIndex === imageCount - 1;
+  const isPrevReferenceDisabled = referenceIndex === 0;
+  const isNextReferenceDisabled =
+    referenceIndex >= referenceItems.length - 1;
 
   const modalElement = (
     <div
@@ -269,16 +290,28 @@ export default function MarketsReferencesModal({
         <div className="markets_references_modal__reference-nav" aria-hidden={embedded}>
           <button
             type="button"
-            className="markets_references_modal__reference-nav-btn markets_references_modal__reference-nav-btn--prev"
+            className={
+              isPrevReferenceDisabled
+                ? "markets_references_modal__reference-nav-btn markets_references_modal__reference-nav-btn--prev is-disabled"
+                : "markets_references_modal__reference-nav-btn markets_references_modal__reference-nav-btn--prev"
+            }
             aria-label="Previous reference"
+            aria-disabled={isPrevReferenceDisabled}
+            disabled={isPrevReferenceDisabled}
             onClick={handlePrevReference}
           >
             <span className="markets_references_modal__reference-nav-icon" />
           </button>
           <button
             type="button"
-            className="markets_references_modal__reference-nav-btn markets_references_modal__reference-nav-btn--next"
+            className={
+              isNextReferenceDisabled
+                ? "markets_references_modal__reference-nav-btn markets_references_modal__reference-nav-btn--next is-disabled"
+                : "markets_references_modal__reference-nav-btn markets_references_modal__reference-nav-btn--next"
+            }
             aria-label="Next reference"
+            aria-disabled={isNextReferenceDisabled}
+            disabled={isNextReferenceDisabled}
             onClick={handleNextReference}
           >
             <span className="markets_references_modal__reference-nav-icon" />

@@ -10,7 +10,7 @@
 | **GNB 사용 맥락** | `src/data/gnbGuide.ts` → [GNB_GUIDE.md](./GNB_GUIDE.md) |
 | **허브** | [DESIGN_GUIDE.md](./DESIGN_GUIDE.md) |
 
-**동기화**: `public/ico` 파일 수 = `icoItems.length` (현재 **104**개) · `pageIconItems.length` (**17**개)
+**동기화**: `public/ico` 파일 수 = `icoItems.length` (현재 **106**개) · `pageIconItems.length` (**17**개)
 
 `basePath`는 `/pub`입니다. 앱·CSS·MD 모두 `/pub/ico/...`, `/pub/img/...`로 참조합니다.
 
@@ -60,7 +60,7 @@
 | ID | 라벨 | 개수 |
 |----|------|------|
 | `arrow` | Arrow / Chevron | 21 |
-| `ui` | UI | 39 |
+| `ui` | UI | 40 |
 | `form` | Form | 10 |
 | `breadcrumb` | Breadcrumb | 2 |
 | `search` | Search / Global | 10 |
@@ -114,6 +114,7 @@
 | `ico_agenda_dot_8.svg` | 8 | Agenda 모바일 타임라인 닷 |
 | `ico_checked_footer_22.svg` | 22 | Footer 뉴스레터 checked |
 | `ico_download.svg` | 18 | 다운로드 CTA |
+| `ico_external_14.svg` | 14 | 외부 링크 CTA · `icon_external-18` (Figma Icon / 14px / Link) |
 | `ico_link.svg` | 56 | 섹션 링크 CTA · `icon_link-14` |
 | `ico_modal_plus.svg` | 24 | 모달·확장 |
 | `ico_more.svg` | 24 | View More |
@@ -265,7 +266,7 @@ Figma [5552:121036](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB
 | `icon_arrow-20` | `ico_arrow_right_24_blue.svg` | `btn-icon-56` |
 | `icon_arrow-top-20` | `ico_arrow_up_20.svg` | `btn-icon-56--top`, `.scroll_to_top__icon` |
 | `icon_link-14` | `ico_link.svg` | `btn-text-30`, `common_banner_02` |
-| `icon_external-18` | `ico_arrow_right_18.svg` | 외부 링크 CTA |
+| `icon_external-18` | `ico_external_14.svg` | 외부 링크 CTA |
 | `icon_download` | `ico_download.svg` | `btn-lv01--line` |
 | `icon_more` | `ico_more.svg` | `btn-lv02--more` |
 | `guide_field__select-icon` | `ico_up_16` / `ico_down_16` (상태) | MUI Select |
