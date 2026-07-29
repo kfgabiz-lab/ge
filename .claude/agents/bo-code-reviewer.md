@@ -1,6 +1,6 @@
 ---
 name: bo-code-reviewer
-description: Bo 빌더 소스코드 정적 분석 전담 리뷰어. styles.ts 공통 상수 사용 여부, types.ts 타입 일치, 한글 주석, Tailwind v4 동적 클래스 금지, 인라인 코딩 금지 등 Bo 빌더 규칙 준수 여부를 소스코드 기반으로만 검토. 브라우저 동적 검증(3화면 UI 일치·기능 동작)은 bo-qa-validator 전담. 컴포넌트 개발 완료 후, PR 전, 코드 품질 점검이 필요할 때 사용.
+description: Bo 빌더 소스코드 정적 분석 전담 리뷰어. styles.ts 공통 상수 사용 여부, types.ts 타입 일치, 주석 미작성, Tailwind v4 동적 클래스 금지, 인라인 코딩 금지 등 Bo 빌더 규칙 준수 여부를 소스코드 기반으로만 검토. 브라우저 동적 검증(3화면 UI 일치·기능 동작)은 bo-qa-validator 전담. 컴포넌트 개발 완료 후, PR 전, 코드 품질 점검이 필요할 때 사용.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model: opus
 ---
@@ -140,12 +140,11 @@ const isPreview = mode === 'preview';
 ### 주석 규칙
 
 ```typescript
-// ❌ 금지
+// ❌ 금지 — 주석 자체를 작성하지 않는다 (설명용/WHY용 포함 전부 금지)
 // Render input field
-// Handle change event
-
-// ✅ 올바름 (핵심 로직, 한글)
 // rowSpan 계산: 72×N + 8×(N-1) — GridCell 상수 기준
+
+// ✅ 올바름 — 주석 없이 식별자/구조로 의도를 드러낸다
 ```
 
 ---
@@ -157,7 +156,7 @@ const isPreview = mode === 'preview';
 - [ ] `styles.ts` 공통 상수(`inputCls`, `selectCls`, `btnPrimary`, `btnSecondary`) 사용 여부
 - [ ] Tailwind 동적 클래스 문자열 생성 없음
 - [ ] preview/live 모드 — UI 동일, 기능만 분기
-- [ ] 모든 주석이 한글인가
+- [ ] 주석이 전혀 없는가(설명용/WHY용 포함 일체 금지)
 - [ ] 인라인 코딩 없이 컴포넌트로 분리됐는가
 - [ ] `types.ts` 임포트를 올바른 경로에서 하는가 (`../../types`)
 - [ ] 새 필드 타입 추가 시 `FieldRenderer` + `CommonFieldDispatcher` 모두 수정했는가
@@ -165,7 +164,7 @@ const isPreview = mode === 'preview';
 ### TypeScript 품질
 
 - [ ] `any` 타입 사용 없음
-- [ ] 불필요한 타입 단언(`as unknown as`) 없음 (불가피한 경우 주석 필수)
+- [ ] 불필요한 타입 단언(`as unknown as`) 없음
 - [ ] props 타입이 `types.ts` 정의와 일치하는가
 - [ ] 옵셔널 체이닝(`?.`) 과용 없음 (실제 nullable 인 경우만)
 - [ ] `interface` vs `type` 일관성
@@ -185,7 +184,7 @@ const isPreview = mode === 'preview';
 
 ### 공통 코드 체계
 
-- [ ] 공통 함수 생성 시 사용법 주석 포함
+- [ ] 공통 함수 생성 시 사용법 주석 없이 함수/파라미터 이름만으로 의도가 드러나는가
 - [ ] 기존 공통 컴포넌트 재사용 전에 새로 만들지 않았는가
 - [ ] 초보자도 이해하기 쉬운 코드 구조인가
 
