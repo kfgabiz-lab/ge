@@ -4,6 +4,12 @@ export type IndustryTab = {
   title: string;
   description: string;
   image: string;
+  /** Explore panel CTA (예: power-grid BESS · Visit LS Energy Solutions) */
+  cta?: {
+    label: string;
+    href: string;
+    external?: boolean;
+  };
 };
 
 export type BenefitItem = {

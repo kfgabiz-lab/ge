@@ -116,7 +116,7 @@ export const icoItems: IcoItem[] = [
     size: 18,
     color: "#222",
     usage: "버튼·링크 화살표 (기본)",
-    usedIn: "globals.css (btn-lv01, icon_external-18, icon_arrow-18, CommonBanner03)",
+    usedIn: "globals.css (btn-lv01, icon_arrow-18, CommonBanner03)",
   },
   {
     id: "ico_arrow_right_18_white",
@@ -463,6 +463,17 @@ export const icoItems: IcoItem[] = [
     usedIn: "globals.css (btn-lv01--line), markets.css, devices-product-detail (Hero·파일)",
   },
   {
+    id: "ico_external_14",
+    fileName: "ico_external_14.svg",
+    path: "/pub/ico/ico_external_14.svg",
+    category: "ui",
+    name: "external",
+    size: 14,
+    color: "#222",
+    usage: "외부 링크 CTA · icon_external-18",
+    usedIn: "globals.css (btn-text-30 .icon_external-18, btn-lv03--solid), DevicesHelp overlay, ServiceCenterHelp, MarketsExplore BESS CTA",
+  },
+  {
     id: "ico_link",
     fileName: "ico_link.svg",
     path: "/pub/ico/ico_link.svg",
@@ -789,7 +800,7 @@ export const icoItems: IcoItem[] = [
     color: "#222",
     usage: "Search Hero·404·PC GNB 검색어 초기화",
     usedIn:
-      "SearchAllHero (Figma 6571:102541), NotFoundSearch (7334:130802), GnbSearchPanel (.gnb_search__clear-icon-pc)",
+      "SearchAllHero (Figma 6571:102541), NotFoundSearch (7334:130802), GnbSearchPanel (.gnb_search__clear-icon-pc), CompanyBlogListToolbar · CompanyPressListToolbar · CompanyArticlesListToolbar (7311:194983)",
   },
   {
     id: "ico_clear_12_white",

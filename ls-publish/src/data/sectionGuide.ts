@@ -122,7 +122,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "MarketsExplore.tsx",
         cssFile: "markets.css",
         modifiers: ["--wide-tabs"],
-        note: "commercial-residential · public-infrastructure · oil-gas-mining · power-grid · industrial (`layout=\"wide-tabs\"` 5탭) · 라이브 예: /markets/power-grid",
+        note: "commercial-residential · public-infrastructure · oil-gas-mining · power-grid · industrial (`layout=\"wide-tabs\"` 5탭) · power-grid BESS CTA Visit LS Energy Solutions (Figma 8300:135392) · 라이브 예: /markets/power-grid",
       },
       {
         id: "markets_references",
@@ -130,7 +130,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "References",
         component: "MarketsReferences.tsx",
         cssFile: "markets.css",
-        note: "카드 클릭 → fade 모달 (createPortal body) · modal.images 2장 이상 시 갤러리",
+        note: "카드 클릭 → fade 모달 · items 전달 시 prev/next로 markets_references__list 인덱스 전환 · modal.images 2장 이상 시 갤러리",
       },
       {
         id: "markets_references_modal",
@@ -140,7 +140,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         cssFile: "markets.css",
         element: "div",
         anchorId: "markets-references-modal",
-        note: "Figma 3955:48576 · common_modal · body portal · modal.images 2+ → Rolling 50px · 라이브: /markets/references-modal",
+        note: "Figma 3955:48576 · common_modal · body portal · items 2+ → __reference-nav prev/next · modal.images 2+ → Rolling 50px · 라이브: /markets/references-modal",
       },
       {
         id: "markets_benefits",
@@ -311,7 +311,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         cssFile: "devices-product-detail.css",
         anchorId: "product-lineup",
         note:
-          "variant=type1 · table=\"susol-frame\" 하드코딩(Figma 6788:7576) · 또는 items(MCCB interrupting) · __grid--type1 · 라이브: /products-systems/motor-control/susol-ul-smart-mccb",
+          "variant=type1 · table 하드코딩 마크업 + 스타일 devices-product-detail.css 공용 · susol-frame(Figma 6788:7576) · metasol-ms · product-template · 또는 items(MCCB)",
       },
       {
         id: "devices_product_lineup_type2",
@@ -321,7 +321,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         cssFile: "devices-product-detail.css",
         anchorId: "product-lineup",
         note:
-          "table=\"h100-plus\" 하드코딩(Figma 6843:65056) · Ratings + Options · __grids--h100-plus · 라이브: /products-systems/motor-control/h100_plus",
+          "table=\"h100-plus\" 하드코딩(Figma 6843:65056) · Ratings + Options · 스타일 devices-product-detail.css 공용 · 라이브: /products-systems/motor-control/h100_plus",
       },
       {
         id: "devices_product_downloads",

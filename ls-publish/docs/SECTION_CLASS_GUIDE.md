@@ -132,9 +132,9 @@ key-visual 6페이지 공통: `MainHeader` + breadcrumb · hero sticky scroll-ov
 | `markets_hero` | `MarketsHero.tsx` | `--key-visual` · `--has-img` |
 | `markets_intro` | `MarketsIntro.tsx` | 공통 · z-index 1 · 흰 배경 · `paragraphs` prop (power-grid 등) |
 | `markets_stats` | `MarketsStats.tsx` | data-center · commercial-residential · industrial |
-| `markets_explore` | `MarketsExplore.tsx` | commercial-residential · industrial · public-infrastructure · oil-gas-mining · power-grid (`--wide-tabs` 5탭) |
-| `markets_references` | `MarketsReferences.tsx` | 카드 클릭 → 모달 |
-| `markets_references_modal` | `MarketsReferencesModal.tsx` | `common_modal` · **`createPortal(document.body)`** · embedded 가이드만 in-flow |
+| `markets_explore` | `MarketsExplore.tsx` | commercial-residential · industrial · public-infrastructure · oil-gas-mining · power-grid (`--wide-tabs` 5탭 · BESS CTA) |
+| `markets_references` | `MarketsReferences.tsx` | 카드 클릭 → 모달 · `items` 전달 시 prev/next로 리스트 인덱스 전환 |
+| `markets_references_modal` | `MarketsReferencesModal.tsx` | `common_modal` · **`createPortal(document.body)`** · items 2+ → `__reference-nav` · embedded 가이드만 in-flow |
 | `markets_benefits` | `MarketsBenefits.tsx` | 공통 · 이미지 `public/img/markets/benefits/benefit_01~10.jpg` · `marketsBenefitImages` (`marketsContent.ts`) · 페이지별 매핑은 각 `*Content.ts` |
 | `markets_solutions_panel` | `MarketsSolutionsPanel.tsx` | `--grouped` · `--stacked` · diagram-only (industrial) |
 
@@ -235,7 +235,7 @@ key-visual 6페이지 공통: `MainHeader` + breadcrumb · hero sticky scroll-ov
 | `devices_product_hero` | `DevicesProductHero.tsx` | `product-top` |
 | `devices_product_features` | `DevicesProductFeaturesSection.tsx` | `product-key-feature` · `product-benefits` · `--list` · `desc` |
 | `common_banner_02` | `CommonBanner02.tsx` | `--expert` · Key Features 아래 |
-| `devices_product_lineup` | `DevicesProductLineup.tsx` | `product-lineup` · `table="susol-frame"`(Figma 6788:7576) · `table="metasol-ms"`(Figma 6788:8458) · `items` / `frameLineup` · `__footer` + `btn-lv02--solid` |
+| `devices_product_lineup` | `DevicesProductLineup.tsx` | `product-lineup` · 하드코딩 테이블 스타일 `devices-product-detail.css` 공용 · `table="susol-frame"` / `metasol-ms` / `h100-plus` / `product-template` · `items` / `frameLineup` · `__footer` |
 | `devices_product_downloads` | `DevicesProductDownloads.tsx` | `product-downloads` — list Figma 7922:118486 · Copy Link: `DevicesProductDownloadsCopyLink` (loading 1s → `Link copied!` toast 1s · `file.url`) |
 | `devices_product_video` | `DevicesProductVideo.tsx` | `product-video` |
 | `devices_product_other` | `DevicesProductOtherProducts.tsx` | `product-other` · Figma 4713:26185 · 50px 제목 · 카드 288px · IF 뱃지 type2(50px)만 · 슬라이드 4개 이하 시 `swiper_type_01_controls` 미표시 |

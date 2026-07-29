@@ -1,7 +1,7 @@
-import WarrantyPolicyApply from "./components/WarrantyPolicyApply";
+// import WarrantyPolicyApply from "./components/WarrantyPolicyApply";
 import WarrantyPolicyBanner from "./components/WarrantyPolicyBanner";
 import WarrantyPolicyCoverage from "./components/WarrantyPolicyCoverage";
-import WarrantyPolicyExtension from "./components/WarrantyPolicyExtension";
+// import WarrantyPolicyExtension from "./components/WarrantyPolicyExtension";
 import WarrantyPolicyTitle from "./components/WarrantyPolicyTitle";
 import "@/assets/css/company.css";
 import "@/assets/css/services.css";
@@ -15,8 +15,8 @@ export default function WarrantyPolicyPage() {
       <WarrantyPolicyTitle />
       <WarrantyPolicyCoverage />
       <WarrantyPolicyBanner />
-      <WarrantyPolicyExtension />
-      <WarrantyPolicyApply />
+      {/* <WarrantyPolicyExtension /> */}
+      {/* <WarrantyPolicyApply /> */}
     </main>
   );
 }
