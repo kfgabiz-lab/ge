@@ -1,7 +1,7 @@
 ---
 name: fo-qa-validator
 description: FO(북미 홈페이지) 구현 결과를 브라우저에서 실제로 검증하는 QA 전담 에이전트. fo-fe-builder 개발 완료 후, 화면에 실제 데이터가 올바르게 반영됐는지(slug 기반 데이터 바인딩 결과, where 조건 필터링, row limit 등) Playwright로 확인한다. bo-qa-validator와 달리 preview/live 3화면 비교는 없음 — fo는 단일 실사이트이므로 실제 렌더링 결과만 검증.
-tools: Read, Write, Glob, Grep, Bash, mcp__playwright__browser_navigate, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_snapshot, mcp__playwright__browser_click, mcp__playwright__browser_evaluate, mcp__playwright__browser_wait_for
+tools: Read, Write, Glob, Grep, Bash, mcp__claude-in-chrome__tabs_context_mcp, mcp__claude-in-chrome__navigate, mcp__claude-in-chrome__computer, mcp__claude-in-chrome__read_page, mcp__claude-in-chrome__tabs_create_mcp, mcp__claude-in-chrome__read_console_messages, mcp__claude-in-chrome__read_network_requests, mcp__playwright__browser_navigate, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_snapshot, mcp__playwright__browser_click, mcp__playwright__browser_evaluate, mcp__playwright__browser_wait_for
 model: opus
 ---
 
