@@ -11,6 +11,8 @@ const cacheRoot = path.join(
   path.basename(projectRoot),
 );
 const cacheTarget = path.join(cacheRoot, ".next");
+const nodeModulesLinkPath = path.join(cacheRoot, "node_modules");
+const nodeModulesTarget = path.join(projectRoot, "node_modules");
 
 function isLinkedNext(targetPath) {
   if (!fs.existsSync(targetPath)) {
@@ -37,9 +39,33 @@ function createPosixSymlink(linkPath, targetPath) {
   fs.symlinkSync(targetPath, linkPath, "dir");
 }
 
+function linkNodeModulesIntoCache() {
+  if (fs.existsSync(nodeModulesLinkPath) || !fs.existsSync(nodeModulesTarget)) {
+    return;
+  }
+
+  try {
+    fs.mkdirSync(cacheRoot, { recursive: true });
+    if (process.platform === "win32") {
+      execSync(`cmd /c mklink /J "${nodeModulesLinkPath}" "${nodeModulesTarget}"`, {
+        stdio: "inherit",
+      });
+    } else {
+      fs.symlinkSync(nodeModulesTarget, nodeModulesLinkPath, "dir");
+    }
+    console.log(`[link-next-cache] Linked node_modules -> ${nodeModulesLinkPath}`);
+  } catch (error) {
+    console.warn(
+      `[link-next-cache] Could not link node_modules into cache (${error instanceof Error ? error.message : error}).`,
+    );
+  }
+}
+
 if (process.env.NEXT_LOCAL_CACHE === "0") {
   process.exit(0);
 }
+
+linkNodeModulesIntoCache();
 
 if (fs.existsSync(dotNextPath)) {
   if (isLinkedNext(dotNextPath)) {

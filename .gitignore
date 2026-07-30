@@ -58,3 +58,6 @@ bo/src/app/admin/test1/
 bo/src/app/admin/test2/
 bo/src/app/admin/test3/
 
+# 하드블록 훅 마커 (세션 중 생성/삭제되는 임시 파일)
+.claude/.dev-approved
+
