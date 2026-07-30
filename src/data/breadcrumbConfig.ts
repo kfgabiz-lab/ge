@@ -55,8 +55,7 @@ const configs: Record<string, BreadcrumbConfig> = {
   },
   "/search": {
     crumbs: [],
-    current: "",
-    homeOnly: true,
+    current: "Search",
   },
   "/404": {
     crumbs: [],
@@ -113,6 +112,56 @@ const configs: Record<string, BreadcrumbConfig> = {
       },
     ],
     current: "H100 Plus",
+  },
+  "/products-systems/motor-control/lineup_lv": {
+    crumbs: [
+      { label: "Products & Systems", href: "/products-systems/motor-control" },
+      {
+        label: "LV Products and Systems",
+        href: "/products-systems/motor-control",
+      },
+    ],
+    current: "Lineup LV",
+  },
+  "/products-systems/motor-control/lineup_mv": {
+    crumbs: [
+      { label: "Products & Systems", href: "/products-systems/motor-control" },
+      {
+        label: "MV Products and Systems",
+        href: "/products-systems/motor-control",
+      },
+    ],
+    current: "Lineup MV",
+  },
+  "/products-systems/motor-control/lineup_dc": {
+    crumbs: [
+      { label: "Products & Systems", href: "/products-systems/motor-control" },
+      {
+        label: "DC Products",
+        href: "/products-systems/motor-control",
+      },
+    ],
+    current: "Lineup DC",
+  },
+  "/products-systems/motor-control/lineup_hv": {
+    crumbs: [
+      { label: "Products & Systems", href: "/products-systems/motor-control" },
+      {
+        label: "HV Systems",
+        href: "/products-systems/motor-control",
+      },
+    ],
+    current: "Lineup HV",
+  },
+  "/products-systems/motor-control/lineup_industrial_automation": {
+    crumbs: [
+      { label: "Products & Systems", href: "/products-systems/motor-control" },
+      {
+        label: "Industrial Automation and Control",
+        href: "/products-systems/motor-control",
+      },
+    ],
+    current: "Lineup Industrial Automation",
   },
   "/products-systems/motor-control/template": {
     crumbs: [

@@ -800,7 +800,7 @@ export const icoItems: IcoItem[] = [
     color: "#222",
     usage: "Search Hero·404·PC GNB 검색어 초기화",
     usedIn:
-      "SearchAllHero (Figma 6571:102541), NotFoundSearch (7334:130802), GnbSearchPanel (.gnb_search__clear-icon-pc), CompanyBlogListToolbar · CompanyPressListToolbar · CompanyArticlesListToolbar (7311:194983)",
+      "SearchAllHero (Figma 6571:102541), NotFoundSearch (7334:130802), GnbSearchPanel (.gnb_search__clear-icon-pc), CompanyBlogListToolbar · CompanyPressListToolbar · CompanyArticlesListToolbar · Engineering/Sales/Service TrainingCurriculum (7311:194983)",
   },
   {
     id: "ico_clear_12_white",

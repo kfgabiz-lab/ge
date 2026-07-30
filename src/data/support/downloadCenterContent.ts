@@ -11,7 +11,7 @@ export const downloadCenterPage = {
   searchPlaceholder: "Find products, solutions, or resources for your business",
   searchPlaceholderMobile: "Find products, solutions, or...",
   popularSearchLabel: "Popular Keywords :",
-  popularSearchLabelMobile: "Popular Search :",
+  popularSearchLabelMobile: "Popular Keywords :",
   filterByLabel: "Filter by",
   sortByLabel: "Sort by",
   applyLabel: "Apply",
@@ -41,7 +41,8 @@ export type DownloadFilterOption = {
 export type DownloadCategoryOption = DownloadFilterOption & {
   hasArrow?: boolean;
   defaultExpanded?: boolean;
-  nested?: DownloadFilterOption[];
+  /** Recursive subcategory tree (Figma 7922:118142 — up to 3 levels). */
+  nested?: DownloadCategoryOption[];
 };
 
 /** Figma 3670:31451 — active filter chips above results list */
@@ -83,11 +84,12 @@ export const downloadCenterActiveFilterDefaults: DownloadActiveFilterChip[] = [
   { id: "filter-type-manuals", group: "Types", value: "Manuals" },
 ];
 
+/** Figma 7922:118142 — Download Center PC Product Category tree */
 export const downloadProductCategories: DownloadCategoryOption[] = [
   {
     id: "lv-products",
     label: "LV Products and Systems",
-    count: 124,
+    count: 100,
     hasArrow: true,
     defaultExpanded: true,
     nested: [
@@ -95,23 +97,60 @@ export const downloadProductCategories: DownloadCategoryOption[] = [
         id: "acb-pcb",
         label: "Air Circuit Breaker / Power Circuit Breaker",
         count: 60,
-        defaultChecked: true,
       },
       {
         id: "mccb",
         label: "Molded Case Circuit Breaker",
         count: 60,
-        defaultChecked: true,
+        hasArrow: true,
+        defaultExpanded: true,
+        nested: [
+          {
+            id: "mccb-susol-ul",
+            label: "Susol UL MCCB",
+            count: 30,
+            defaultChecked: true,
+          },
+          {
+            id: "mccb-susol-smart",
+            label: "Susol UL Smart MCCB",
+            count: 10,
+          },
+          {
+            id: "mccb-susol-1kv",
+            label: "Susol UL MCCB(up to 1000V)",
+            count: 20,
+          },
+        ],
       },
+      { id: "mcb", label: "Miniature Circuit Breaker", count: 100 },
+      {
+        id: "spd",
+        label: "Surge Protective Device",
+        count: 60,
+        hasArrow: true,
+      },
+      { id: "ul67", label: "UL67 Panelboard", count: 100 },
+      { id: "rpp", label: "Remote Power Panel", count: 100 },
+      { id: "ul891", label: "UL891 Switchboard", count: 100 },
+      { id: "ul1558", label: "UL1558 Switchgear", count: 100 },
+      { id: "ehouse", label: "E House", count: 100 },
+      {
+        id: "contactor",
+        label: "Magnetic Contactor",
+        count: 60,
+        hasArrow: true,
+      },
+      { id: "vfd", label: "Variable Fequency Drive", count: 100 },
     ],
   },
   {
     id: "mv-products",
     label: "MV Products and Systems",
-    count: 200,
+    count: 100,
     hasArrow: true,
   },
-  { id: "hv-systems", label: "HV Systems", count: 98, hasArrow: true },
+  { id: "hv-systems", label: "HV Systems", count: 100, hasArrow: true },
   { id: "dc-products", label: "DC Products", count: 352, hasArrow: true },
   {
     id: "industrial-auto",
