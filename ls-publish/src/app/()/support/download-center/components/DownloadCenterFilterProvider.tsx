@@ -12,6 +12,7 @@ import {
   downloadDocumentTypes,
   downloadProductCategories,
   type DownloadActiveFilterChip,
+  type DownloadCategoryOption,
 } from "@/data/support/downloadCenterContent";
 
 type FilterSection = "category" | "document";
@@ -23,26 +24,48 @@ type FilterMeta = {
   section: FilterSection;
 };
 
+const CATEGORY_ID_PREFIX = "dc-category";
+
+function categoryId(id: string) {
+  return `${CATEGORY_ID_PREFIX}-${id}`;
+}
+
+function walkCategories(
+  options: DownloadCategoryOption[],
+  visit: (option: DownloadCategoryOption, parent?: DownloadCategoryOption) => void,
+  parent?: DownloadCategoryOption,
+) {
+  for (const option of options) {
+    visit(option, parent);
+
+    if (option.nested?.length) {
+      walkCategories(option.nested, visit, option);
+    }
+  }
+}
+
+function collectDescendantIds(option: DownloadCategoryOption): string[] {
+  const ids: string[] = [];
+
+  for (const nested of option.nested ?? []) {
+    ids.push(categoryId(nested.id));
+    ids.push(...collectDescendantIds(nested));
+  }
+
+  return ids;
+}
+
 function buildFilterRegistry(): FilterMeta[] {
   const items: FilterMeta[] = [];
 
-  for (const option of downloadProductCategories) {
+  walkCategories(downloadProductCategories, (option) => {
     items.push({
-      id: `dc-category-${option.id}`,
+      id: categoryId(option.id),
       label: option.label,
       group: "Category",
       section: "category",
     });
-
-    for (const nested of option.nested ?? []) {
-      items.push({
-        id: `dc-category-${nested.id}`,
-        label: nested.label,
-        group: "Category",
-        section: "category",
-      });
-    }
-  }
+  });
 
   for (const option of downloadDocumentTypes) {
     items.push({
@@ -59,24 +82,22 @@ function buildFilterRegistry(): FilterMeta[] {
 const FILTER_REGISTRY = buildFilterRegistry();
 
 const CATEGORY_CHILDREN_MAP = new Map<string, string[]>();
+const CATEGORY_DESCENDANTS_MAP = new Map<string, string[]>();
 const CATEGORY_PARENT_MAP = new Map<string, string>();
 
-for (const option of downloadProductCategories) {
-  const parentId = `dc-category-${option.id}`;
-  const childIds = (option.nested ?? []).map(
-    (nested) => `dc-category-${nested.id}`,
-  );
+walkCategories(downloadProductCategories, (option, parent) => {
+  const id = categoryId(option.id);
+  const childIds = (option.nested ?? []).map((nested) => categoryId(nested.id));
 
-  if (childIds.length === 0) {
-    continue;
+  if (childIds.length) {
+    CATEGORY_CHILDREN_MAP.set(id, childIds);
+    CATEGORY_DESCENDANTS_MAP.set(id, collectDescendantIds(option));
   }
 
-  CATEGORY_CHILDREN_MAP.set(parentId, childIds);
-
-  for (const childId of childIds) {
-    CATEGORY_PARENT_MAP.set(childId, parentId);
+  if (parent) {
+    CATEGORY_PARENT_MAP.set(id, categoryId(parent.id));
   }
-}
+});
 
 function syncCategoryParentState(
   next: Record<string, boolean>,
@@ -91,6 +112,41 @@ function syncCategoryParentState(
   next[parentId] = childIds.every((childId) => next[childId]);
 }
 
+function syncCategoryAncestors(
+  next: Record<string, boolean>,
+  startParentId?: string,
+) {
+  let parentId = startParentId;
+
+  while (parentId) {
+    syncCategoryParentState(next, parentId);
+    parentId = CATEGORY_PARENT_MAP.get(parentId);
+  }
+}
+
+function applyDefaultChecked(
+  next: Record<string, boolean>,
+  option: DownloadCategoryOption,
+) {
+  const id = categoryId(option.id);
+
+  if (option.defaultChecked) {
+    next[id] = true;
+
+    for (const descendantId of CATEGORY_DESCENDANTS_MAP.get(id) ?? []) {
+      next[descendantId] = true;
+    }
+
+    return;
+  }
+
+  for (const nested of option.nested ?? []) {
+    applyDefaultChecked(next, nested);
+  }
+
+  syncCategoryParentState(next, id);
+}
+
 function buildInitialChecked(): Record<string, boolean> {
   const checked: Record<string, boolean> = {};
 
@@ -99,25 +155,8 @@ function buildInitialChecked(): Record<string, boolean> {
   }
 
   for (const option of downloadProductCategories) {
-    const parentId = `dc-category-${option.id}`;
-
-    if (option.defaultChecked) {
-      checked[parentId] = true;
-
-      for (const nested of option.nested ?? []) {
-        checked[`dc-category-${nested.id}`] = true;
-      }
-
-      continue;
-    }
-
-    for (const nested of option.nested ?? []) {
-      if (nested.defaultChecked) {
-        checked[`dc-category-${nested.id}`] = true;
-      }
-    }
-
-    syncCategoryParentState(checked, parentId);
+    applyDefaultChecked(checked, option);
+    syncCategoryAncestors(checked, categoryId(option.id));
   }
 
   for (const option of downloadDocumentTypes) {
@@ -178,19 +217,15 @@ export function DownloadCenterFilterProvider({
   const toggleFilter = useCallback((id: string, nextChecked: boolean) => {
     setChecked((current) => {
       const next = { ...current, [id]: nextChecked };
-      const childIds = CATEGORY_CHILDREN_MAP.get(id);
+      const descendantIds = CATEGORY_DESCENDANTS_MAP.get(id);
 
-      if (childIds) {
-        for (const childId of childIds) {
-          next[childId] = nextChecked;
+      if (descendantIds) {
+        for (const descendantId of descendantIds) {
+          next[descendantId] = nextChecked;
         }
       }
 
-      const parentId = CATEGORY_PARENT_MAP.get(id);
-
-      if (parentId) {
-        syncCategoryParentState(next, parentId);
-      }
+      syncCategoryAncestors(next, CATEGORY_PARENT_MAP.get(id));
 
       return next;
     });

@@ -413,12 +413,21 @@ export default function EngineeringTrainingSessionDetailForm({
         />
       </div>
 
-      <button
-        type="submit"
-        className="btn-base btn-lv01 btn-lv01--solid support_service_training_session_detail__submit"
-      >
-        {engineeringTrainingSessionFormCopy.submitLabel}
-      </button>
+      <div className="support_service_training_session_detail__submit-wrap">
+        <button
+          type="button"
+          disabled
+          className="btn-base btn-lv01 btn-lv01--solid support_service_training_session_detail__submit"
+        >
+          {engineeringTrainingSessionFormCopy.submitLabel}
+        </button>
+        <button
+          type="submit"
+          className="btn-base btn-lv01 btn-lv01--solid support_service_training_session_detail__submit"
+        >
+          {engineeringTrainingSessionFormCopy.submitLabel}
+        </button>
+      </div>
     </form>
   );
 }

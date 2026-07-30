@@ -1601,11 +1601,8 @@ section .swiper_type_01_nav,
 section .products_swipers_nav {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 20px; /* Figma Rolling_50px 1569:26352 */
   flex-shrink: 0;
-}
-section .products_swipers_nav {
-  gap: 20px;
 }
 
 /* Page numbering ??Figma 994:2611 */
@@ -2109,7 +2106,11 @@ section.devices_product_downloads .guide_field--search .MuiOutlinedInput-input ,
 }
 section.component-guide .guide_field--search .guide_field__search-adorn,
 section.devices_product_downloads .guide_field--search .guide_field__search-adorn , section.support_download_contents .guide_field--search .guide_field__search-adorn , section.support_download_search .guide_field--search .guide_field__search-adorn , section.support_where_to_buy_contents .guide_field--search .guide_field__search-adorn , section.support_where_to_buy_search .guide_field--search .guide_field__search-adorn, section.support_service_training_curriculum .guide_field--search .guide_field__search-adorn , section.support_service_training_detail_schedule .guide_field--search .guide_field__search-adorn , section.support_service_training_session_detail .guide_field--search .guide_field__search-adorn , section.support_service_training_request .guide_field--search .guide_field__search-adorn, section.devices_explore .guide_field--search .guide_field__search-adorn, section.common_privacy_policy .guide_field--search .guide_field__search-adorn {
+  display: flex;
   flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
   height: auto;
   max-height: none;
   margin: 0;
@@ -2161,6 +2162,43 @@ section.devices_product_downloads .guide_field--search .guide_field__search-icon
   display: block;
   width: 18px;
   height: 18px;
+}
+
+/* Search / 280px filled clear · Figma 7311:194983 · #search-280 */
+section.component-guide .guide_field--search .guide_field__search-clear {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-bg);
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+section.component-guide .guide_field--search .guide_field__search-clear:hover {
+  background: #f5f7fa;
+  border-color: #ccc;
+}
+
+section.component-guide .guide_field--search .guide_field__search-clear-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 10px;
+  height: 10px;
+}
+
+section.component-guide .guide_field--search .guide_field__search-clear-icon img {
+  display: block;
+  width: 10px;
+  height: 10px;
 }
 
 /* 브라우저 기본 search clear 숨김 (커스텀 clear 사용) */

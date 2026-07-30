@@ -12,17 +12,17 @@ export default function SearchAllHero() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const qParam = searchParams.get("q");
-  const [draft, setDraft] = useState<string | null>(null);
+  const initialQuery =
+    qParam !== null ? qParam : searchAllPage.defaultQuery;
+  const [query, setQuery] = useState(initialQuery);
   const [isMobile, setIsMobile] = useState(false);
 
-  const query =
-    draft !== null ? draft : qParam !== null ? qParam : searchAllPage.defaultQuery;
   const hasQuery = query.length > 0;
   const { popularTagsMobile } = searchAllPage;
 
   useEffect(() => {
-    setDraft(null);
-  }, [searchParams]);
+    setQuery(qParam !== null ? qParam : searchAllPage.defaultQuery);
+  }, [qParam]);
 
   useEffect(() => {
     const media = window.matchMedia("(max-width: 1023px)");
@@ -37,7 +37,7 @@ export default function SearchAllHero() {
     : searchAllPage.searchPlaceholder;
 
   const navigateToQuery = (nextQuery: string) => {
-    setDraft(nextQuery);
+    setQuery(nextQuery);
     router.push(buildSearchAllHref(nextQuery));
   };
 
@@ -59,7 +59,7 @@ export default function SearchAllHero() {
             placeholder={placeholder}
             aria-label={searchAllPage.searchPlaceholder}
             value={query}
-            onChange={(event) => setDraft(event.target.value)}
+            onChange={(event) => setQuery(event.target.value)}
             slotProps={{
               input: {
                 endAdornment: (

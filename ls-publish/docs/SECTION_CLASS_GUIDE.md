@@ -714,7 +714,7 @@ Figma [5966:63556](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%
 | `search_media` | `SearchMediaPanel.tsx` | `search-media` — Media 탭 · tablet 600~780px 2열 (Figma 4701:84177) |
 | `search_pages` | `SearchPagesPanel.tsx` | `search-pages` — Pages 탭 (Figma 4701:84292 · list 4701:83912) |
 
-페이지 래퍼: `.search-page` · breadcrumb `homeOnly` · 탭 패널은 `devices_product_downloads` 필터·`PageNumbering` 재사용
+페이지 래퍼: `.search-page` · breadcrumb `Home > Search` (Figma 7944:137978) · 탭 패널은 `devices_product_downloads` 필터·`PageNumbering` 재사용
 
 | 헬퍼 (섹션 루트 아님) | 컴포넌트 | 비고 |
 |----------------------|----------|------|

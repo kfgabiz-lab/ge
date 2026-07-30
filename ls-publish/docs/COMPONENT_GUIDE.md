@@ -55,12 +55,12 @@ Figma [LSEA 디자인](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_
 | `#icon-56` | `btn-icon-56`, `btn-icon-56--top` (Scroll to top) |
 | `#text-30` | `btn-text-30` + `btn-text-30__icon` (arrow / link / external) |
 | `#btn-line-30` | `btn-line-30`, `btn-line-30--on-dark` (Copy Link) · Downloads: loading → `Link copied!` toast (`DevicesProductDownloadsCopyLink`) |
-| `#rolling-50` | `SwiperBarControls`, `SwiperNavButtons` |
+| `#rolling-50` | `SwiperNavButtons` · scroll line · dark numbered + pause (`video-pagination`) · [Figma Rolling_50px](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=1569-26352) |
 | `#check` | Check (05) |
 | `#check-22` | 22px 체크박스 세트 (default / Downloads) |
 | `#textfield` | Textfield (06) |
 | `#textfield-280` | Text field 280px |
-| `#search-280` | Search field 280px + `ico_search_24` |
+| `#search-280` | Search field 280px + `ico_search_24` · Filled Clear `guide_field__search-clear` |
 | `#search-80` | Search field 80px full-width (`/search` hero) |
 | `#dropdown` | Select 50px / 38px |
 | `#pagination` | Pagination (07) |
@@ -137,8 +137,23 @@ Downloads / Search / Download Center Copy Link는 `DevicesProductDownloadsCopyLi
 |-------------------|------|
 | `btn_flat` | Footer 뉴스레터 Submit (`BtnFlat.tsx`, `MainFooter`, `CommonFooter`) |
 | `SwiperBarControls` | 진행 바 + prev/next (`SwiperBarControls.tsx`) |
-| `SwiperNavButtons` | 원형 prev/next (`SwiperNavButtons.tsx`) |
+| `SwiperNavButtons` | 원형 prev/next 50px · Icon 18px · nav gap 20px (`SwiperNavButtons.tsx`, Figma Rolling_50px) |
 | `BannerNavButtons` | 메인 배너 네비 (`BannerNavButtons.tsx`) |
+| `.video-pagination` | 메인 비주얼 번호·진행바·재생/일시정지 (`VideoSwiper.tsx`, `main.css`) |
+
+#### Rolling_50px (`#rolling-50`)
+
+| 스펙 | 값 |
+|------|-----|
+| 버튼 | `--btn-rolling-50` (50px) · `swiper_type_01_btn` |
+| 아이콘 | 18px · `swiper_type_01_icon` |
+| 스크롤 라인 ↔ 네비 | `30px` |
+| 스크롤 라인 | track 1px `#e8e8e8` · fill 2px `#888` ([Figma line](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=1569-26321)) |
+| L ↔ R | `20px` (`.swiper_type_01_nav`) |
+| Default | 흰 배경 · primary 보더 · 다크 화살표 |
+| Hover | primary 배경 · 흰 화살표 |
+| Disabled | `opacity: 0.35` |
+| Dark pagination | `01 02 03` + 110px progress + 14px pause (가이드 샘플 · 실사용 `.video-pagination`) |
 
 #### `btn_flat` 스코프
 
@@ -204,7 +219,7 @@ HelperText 에러 색도 공통: `.guide_field .MuiFormHelperText-root.Mui-error
 | 유형 | 앵커 | 적용 |
 |------|------|------|
 | Text | `#textfield-280` | `error` + `helperText` |
-| Search | `#search-280` | `guide_field--search` + `error` |
+| Search | `#search-280` | `guide_field--search` + `error` · Filled Clear (Figma [7311:194983](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=7311-194983)) |
 | Select | `#dropdown` | `FormControl error` + `GuideSelect error` + `FormHelperText` |
 | Textarea | `#textarea` | `multiline` + `error` |
 | Password | `#password` | `type=password` + `error` |
@@ -228,7 +243,7 @@ HelperText 에러 색도 공통: `.guide_field .MuiFormHelperText-root.Mui-error
 
 | 변형 | 높이·너비 | CSS 스코프 | 실사용 |
 |------|-----------|------------|--------|
-| Toolbar | 50px · 280px | `globals.css` | Download Center, Tech Hub, Where to Buy (`#search-280`) |
+| Toolbar | 50px · 280px | `globals.css` | Default / Filled Clear / Error (`#search-280`) · Blog · Press · Articles · Training · Download Center |
 | Hero | 80px · 100% | `search.css` · `section.search_all_hero` | `/search` · `SearchAllHero.tsx` (`#search-80`) |
 
 Hero 변형은 `search_all_hero__field`·`search_all_hero__clear`·인기 태그와 함께 씁니다. Clear는 30px 원형 버튼 + `ico_clear_12_black`(Figma `6571:102541`)을 사용합니다. 글로벌 `guide_field--search` 규칙과 충돌하지 않도록 `section.search_all_hero` 스코프를 유지합니다.

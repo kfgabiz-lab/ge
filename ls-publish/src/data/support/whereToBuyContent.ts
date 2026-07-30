@@ -10,6 +10,7 @@ export const whereToBuyPage = {
   viewMapLabel: "View Map",
   totalResults: 2658,
   mapPinImage: "/pub/img/support/where-to-buy/pin.png",
+  /** Figma 7104:136637 */
   mapBrandPinImage: "/pub/img/support/where-to-buy/pin-brand.png",
   mapDefaultCenter: { lat: 41.95, lng: -88.15 },
   mapDefaultZoom: 9,

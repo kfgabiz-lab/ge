@@ -19,6 +19,7 @@ import {
   guideFieldLabelSlot,
 } from "@/components/form/GuideFieldIcons";
 import GuideSelect from "@/components/form/GuideSelect";
+import { guideSearchFieldMobileSlotProps } from "@/components/form/guideFieldMobileProps";
 import GuideNav from "@/components/guide/GuideNav";
 import GuideRelated from "@/components/guide/GuideRelated";
 import CommonBanner01 from "@/components/banners/CommonBanner01";
@@ -27,13 +28,14 @@ import CommonBanner03 from "@/components/banners/CommonBanner03";
 import CommonBanner04 from "@/components/banners/CommonBanner04";
 import PageNumbering from "@/components/pagination/PageNumbering";
 import SearchAllHero from "@/app/()/search/components/SearchAllHero";
-import SwiperBarControls from "@/components/swiper/SwiperBarControls";
 import SwiperNavButtons from "@/components/swiper/SwiperNavButtons";
 
 /** Figma 04_Button, 05_Check, 06_Textfield, 07 Pagination, 08 Banner */
 export default function ComponentGuide() {
   const [rollingIndex, setRollingIndex] = useState(1);
+  const [search280Query, setSearch280Query] = useState("DC");
   const rollingCount = 4;
+  const hasSearch280Query = search280Query.length > 0;
 
   return (
     <section className="component-guide">
@@ -531,7 +533,7 @@ export default function ComponentGuide() {
           </div>
         </div>
 
-        {/* Rolling 50px */}
+        {/* Rolling 50px — Figma 1569:26352 */}
         <div className="component-guide__section" id="rolling-50">
           <h2 className="component-guide__section-tit">Rolling_50px</h2>
           <p className="component-guide__type-spec">
@@ -541,7 +543,7 @@ export default function ComponentGuide() {
           </p>
 
           <div className="component-guide__rolling-demo">
-            <div className="component-guide__rolling-line">
+            <div className="component-guide__rolling-line" aria-hidden="true">
               <span className="component-guide__rolling-track" />
               <span
                 className="component-guide__rolling-fill"
@@ -550,13 +552,10 @@ export default function ComponentGuide() {
                 }}
               />
             </div>
-            <SwiperBarControls
+            <SwiperNavButtons
               variant="swiper_type_01"
-              count={rollingCount}
-              activeIndex={rollingIndex}
               isPrevDisabled={rollingIndex === 0}
               isNextDisabled={rollingIndex === rollingCount - 1}
-              onSelect={setRollingIndex}
               onPrev={() => setRollingIndex((i) => Math.max(0, i - 1))}
               onNext={() =>
                 setRollingIndex((i) => Math.min(rollingCount - 1, i + 1))
@@ -564,52 +563,127 @@ export default function ComponentGuide() {
             />
           </div>
 
-          <div className="component-guide__states" style={{ marginTop: 48 }}>
+          <div className="component-guide__rolling-states">
             <div className="component-guide__state-col">
+              <button
+                type="button"
+                className="swiper_type_01_btn swiper_type_01_btn--prev"
+                aria-label="이전 (Default)"
+              >
+                <span
+                  className="swiper_type_01_icon swiper_type_01_icon--prev"
+                  aria-hidden="true"
+                />
+              </button>
               <span className="component-guide__state-label">Default</span>
-              <SwiperNavButtons
-                variant="swiper_type_01"
-                isPrevDisabled={false}
-                isNextDisabled={false}
-                onPrev={() => {}}
-                onNext={() => {}}
-              />
             </div>
             <div className="component-guide__state-col">
+              <button
+                type="button"
+                className="swiper_type_01_btn swiper_type_01_btn--prev is-hover"
+                aria-label="이전 (Hover)"
+              >
+                <span
+                  className="swiper_type_01_icon swiper_type_01_icon--prev"
+                  aria-hidden="true"
+                />
+              </button>
               <span className="component-guide__state-label">Hover</span>
-              <div style={{ display: "flex", gap: 12 }}>
-                <button
-                  type="button"
-                  className="swiper_type_01_btn swiper_type_01_btn--prev"
-                  style={{ background: "var(--color-primary)" }}
+            </div>
+            <div className="component-guide__state-col">
+              <button
+                type="button"
+                className="swiper_type_01_btn swiper_type_01_btn--prev is-disabled"
+                aria-label="이전 (Disabled)"
+                aria-disabled="true"
+                disabled
+              >
+                <span
+                  className="swiper_type_01_icon swiper_type_01_icon--prev"
+                  aria-hidden="true"
+                />
+              </button>
+              <span className="component-guide__state-label">Disabled</span>
+            </div>
+            <div className="component-guide__state-col">
+              <button
+                type="button"
+                className="swiper_type_01_btn swiper_type_01_btn--next"
+                aria-label="다음 (Default)"
+              >
+                <span
+                  className="swiper_type_01_icon swiper_type_01_icon--next"
+                  aria-hidden="true"
+                />
+              </button>
+              <span className="component-guide__state-label">Default</span>
+            </div>
+            <div className="component-guide__state-col">
+              <button
+                type="button"
+                className="swiper_type_01_btn swiper_type_01_btn--next is-hover"
+                aria-label="다음 (Hover)"
+              >
+                <span
+                  className="swiper_type_01_icon swiper_type_01_icon--next"
+                  aria-hidden="true"
+                />
+              </button>
+              <span className="component-guide__state-label">Hover</span>
+            </div>
+            <div className="component-guide__state-col">
+              <button
+                type="button"
+                className="swiper_type_01_btn swiper_type_01_btn--next is-disabled"
+                aria-label="다음 (Disabled)"
+                aria-disabled="true"
+                disabled
+              >
+                <span
+                  className="swiper_type_01_icon swiper_type_01_icon--next"
+                  aria-hidden="true"
+                />
+              </button>
+              <span className="component-guide__state-label">Disabled</span>
+            </div>
+          </div>
+
+          <div
+            className="component-guide__rolling-pagination"
+            aria-label="비디오·오토플레이 페이지네이션 샘플"
+          >
+            <div className="component-guide__rolling-pagination-nums">
+              <span className="component-guide__rolling-pagination-num">01</span>
+              <span className="component-guide__rolling-pagination-num">02</span>
+              <div className="component-guide__rolling-pagination-active">
+                <span className="component-guide__rolling-pagination-num is-active">
+                  03
+                </span>
+                <div
+                  className="component-guide__rolling-pagination-bar"
+                  role="progressbar"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={33}
+                  aria-label="진행률"
                 >
                   <span
-                    className="swiper_type_01_icon swiper_type_01_icon--prev"
-                    style={{ filter: "brightness(0) invert(1)" }}
+                    className="component-guide__rolling-pagination-bar-fill"
+                    style={{ width: "36px" }}
                   />
-                </button>
-                <button
-                  type="button"
-                  className="swiper_type_01_btn swiper_type_01_btn--next"
-                  style={{ background: "var(--color-primary)" }}
-                >
-                  <span
-                    className="swiper_type_01_icon swiper_type_01_icon--next"
-                    style={{ filter: "brightness(0) invert(1)" }}
-                  />
-                </button>
+                </div>
               </div>
             </div>
-            <div className="component-guide__state-col">
-              <span className="component-guide__state-label">Disabled</span>
-              <SwiperNavButtons
-                variant="swiper_type_01"
-                isPrevDisabled
-                isNextDisabled
-                onPrev={() => {}}
-                onNext={() => {}}
+            <button
+              type="button"
+              className="component-guide__rolling-pagination-pause"
+              aria-label="일시정지"
+            >
+              <span
+                className="component-guide__rolling-pagination-pause-icon"
+                aria-hidden="true"
               />
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -842,11 +916,24 @@ export default function ComponentGuide() {
           </div>
         </div>
 
-        {/* Search — 280px · Figma 1689:8145 Error */}
+        {/* Search — 280px · Figma 1569:27396 / 7311:194983 Clear */}
         <div className="component-guide__section" id="search-280">
           <h2 className="component-guide__section-tit">Search — Toolbar 280px</h2>
           <p className="component-guide__type-spec">
-            <span>높이 50px · Download Center / Tech Hub / Where to Buy</span>
+            <span>높이 50px · Blog / Press / Articles / Training · Download Center</span>
+            <span className="component-guide__type-spec-sep" />
+            <span>
+              Clear: <code>guide_field__search-clear</code> +{" "}
+              <code>ico_clear_12_black</code> (Figma{" "}
+              <a
+                href="https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=7311-194983"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                7311:194983
+              </a>
+              )
+            </span>
             <span className="component-guide__type-spec-sep" />
             <span>에러: <code>guide_field--search</code> + <code>error</code></span>
           </p>
@@ -858,13 +945,77 @@ export default function ComponentGuide() {
                   className="guide_field guide_field--search"
                   placeholder="Search"
                   aria-label="Search"
+                  defaultValue=""
                   slotProps={{
+                    ...guideSearchFieldMobileSlotProps,
                     input: {
                       endAdornment: (
                         <InputAdornment
                           position="end"
                           className="guide_field__search-adorn"
                         >
+                          <button
+                            type="button"
+                            className="guide_field__search-icon-button"
+                            aria-label="Search"
+                          >
+                            <img
+                              loading="lazy"
+                              decoding="async"
+                              src="/pub/ico/ico_search_24.svg"
+                              alt=""
+                              width={18}
+                              height={18}
+                            />
+                          </button>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                />
+              </div>
+            </div>
+            <div className="component-guide__state-col">
+              <span className="component-guide__state-label">Filled / Clear</span>
+              <div className="component-guide__preview-light">
+                <TextField
+                  className={`guide_field guide_field--search${
+                    hasSearch280Query ? " guide_field--search-filled" : ""
+                  }`}
+                  placeholder="Search"
+                  aria-label="Search filled"
+                  value={search280Query}
+                  onChange={(event) => setSearch280Query(event.target.value)}
+                  slotProps={{
+                    ...guideSearchFieldMobileSlotProps,
+                    input: {
+                      endAdornment: (
+                        <InputAdornment
+                          position="end"
+                          className="guide_field__search-adorn"
+                        >
+                          {hasSearch280Query ? (
+                            <button
+                              type="button"
+                              className="guide_field__search-clear"
+                              aria-label="Clear search"
+                              onClick={() => setSearch280Query("")}
+                            >
+                              <span
+                                className="guide_field__search-clear-icon"
+                                aria-hidden
+                              >
+                                <img
+                                  loading="lazy"
+                                  decoding="async"
+                                  src="/pub/ico/ico_clear_12_black.svg"
+                                  alt=""
+                                  width={10}
+                                  height={10}
+                                />
+                              </span>
+                            </button>
+                          ) : null}
                           <button
                             type="button"
                             className="guide_field__search-icon-button"
@@ -897,6 +1048,7 @@ export default function ComponentGuide() {
                   helperText="Input text error"
                   aria-label="Search error"
                   slotProps={{
+                    ...guideSearchFieldMobileSlotProps,
                     input: {
                       endAdornment: (
                         <InputAdornment

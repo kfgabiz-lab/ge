@@ -355,7 +355,7 @@ header.main_header.is-invert.is-gnb-hidden .sub_breadcrumb .icon_external{
   }
 
   .gnb_menu_wrap.sub_header.is-invert .gnb_nav_list .link {
-    color: var(--color-primary, #0f1f45);
+    color: #222;
   }
 
   .gnb_menu_wrap.sub_header.is-invert .icon_menu span {
@@ -2436,14 +2436,10 @@ html.is-mega-open-scroll-lock body {
   background: #f5f5f5;
 }
 
-.gnb_search__field .MuiOutlinedInput-root fieldset {
-  border: 1px solid #9535ff;
-}
-
+.gnb_search__field .MuiOutlinedInput-root fieldset,
 .gnb_search__field .MuiOutlinedInput-root:hover fieldset,
 .gnb_search__field .MuiOutlinedInput-root.Mui-focused fieldset {
-  border: 1px solid #9535ff;
-  border-width: 1px;
+  border: 1px solid #9535ff !important;
 }
 
 .gnb_search__field .MuiOutlinedInput-input {
@@ -2657,14 +2653,10 @@ html.is-mega-open-scroll-lock body {
     background: #f5f5f5;
   }
 
-  .gnb_search__field .MuiOutlinedInput-root fieldset {
-    border: 1px solid #9535ff;
-  }
-
+  .gnb_search__field .MuiOutlinedInput-root fieldset,
   .gnb_search__field .MuiOutlinedInput-root:hover fieldset,
   .gnb_search__field .MuiOutlinedInput-root.Mui-focused fieldset {
-    border: 1px solid #9535ff;
-    border-width: 1px;
+    border: 1px solid #9535ff !important;
   }
 
   .gnb_search__field .MuiOutlinedInput-input {

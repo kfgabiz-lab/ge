@@ -17,7 +17,7 @@ function toTags(labels: readonly string[]): GnbSearchTag[] {
 export const gnbSearchContent = {
   searchPlaceholder: downloadCenterPage.searchPlaceholder,
   searchPlaceholderMobile: downloadCenterPage.searchPlaceholderMobile,
-  popularSearchLabel: "Popular Search :",
+  popularSearchLabel: "Popular Keywords :",
   popularTags: toTags(downloadCenterPage.popularTags),
   popularTagsMobile: {
     row1: toTags(downloadCenterPage.popularTagsMobile.row1),

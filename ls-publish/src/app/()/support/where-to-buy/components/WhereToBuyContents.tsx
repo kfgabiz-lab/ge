@@ -110,6 +110,15 @@ export default function WhereToBuyContents({
             activeLocation={activeLocation}
             onLocationSelect={setActiveId}
           />
+          {/* Figma 7104:136637 — LS brand map pin */}
+          <img
+            className="support_where_to_buy_contents__map-brand-pin"
+            src={whereToBuyPage.mapBrandPinImage}
+            alt=""
+            width={34}
+            height={48}
+            decoding="async"
+          />
           {!noDataPage ? (
             <div className="support_where_to_buy_map__popup-anchor support_where_to_buy_map__popup-anchor--sample support_where_to_buy_map__popup-anchor--mobile">
               <WhereToBuyMapPopup location={activeLocation} />

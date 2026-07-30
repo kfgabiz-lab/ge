@@ -3,6 +3,7 @@
 import { FormControl, InputAdornment, MenuItem, TextField } from "@mui/material";
 import { useState } from "react";
 import { GuideSelectIcon } from "@/components/form/GuideFieldIcons";
+import { guideSearchFieldMobileSlotProps } from "@/components/form/guideFieldMobileProps";
 import GuideSelect from "@/components/form/GuideSelect";
 import PageNumbering from "@/components/pagination/PageNumbering";
 import { engineeringTrainingPage } from "@/data/services/engineeringTrainingContent";
@@ -124,12 +125,32 @@ export default function EngineeringTrainingCurriculum() {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             slotProps={{
+              ...guideSearchFieldMobileSlotProps,
               input: {
                 endAdornment: (
                   <InputAdornment
                     position="end"
                     className="guide_field__search-adorn"
                   >
+                    {hasQuery ? (
+                      <button
+                        type="button"
+                        className="guide_field__search-clear"
+                        aria-label="Clear search"
+                        onClick={() => setQuery("")}
+                      >
+                        <span className="guide_field__search-clear-icon" aria-hidden>
+                          <img
+                            src="/pub/ico/ico_clear_12_black.svg"
+                            alt=""
+                            width={10}
+                            height={10}
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        </span>
+                      </button>
+                    ) : null}
                     <button
                       type="button"
                       className="guide_field__search-icon-button"
