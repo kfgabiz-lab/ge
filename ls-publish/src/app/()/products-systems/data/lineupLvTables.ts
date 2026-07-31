@@ -277,18 +277,18 @@ export const lineupLvProducts: LineupLvProduct[] = [
       </tr>
       <tr>
         <th scope="row" class="devices_product_lineup__label">Rated Current</th>
-        <td>1–63 A</td>
-        <td>1–63 A</td>
+        <td>1-63 A</td>
+        <td>1-63 A</td>
       </tr>
       <tr>
         <th scope="row" class="devices_product_lineup__label">Rated Short Circuit Capacity (AC)</th>
-        <td>1P : 10 kA@120/240 VAC, 10 kA@277 VAC (1~25 A)<br>10 kA@120/240 VAC(30~63 A)<br>2P, 3P : 10 kA@240 VAC, 480Y/277 VAC(1~25 A)<br>10 kA@240 VAC(30~63 A)</td>
-        <td>1P : 10 kA@120/240 VAC<br>6 kA@277 VAC<br>2P~4P : 10 kA@120/240 VAC<br>6 kA@480Y/277 VAC</td>
+        <td>1P : 10 kA@120/​240 VAC, 10 kA@​277 VAC (1~​25 A)<br>10 kA@120/​240 VAC(30~​63 A)<br>2P, 3P : 10 kA@​240 VAC, 480Y/277 VAC(1~​25 A)<br>10 kA@​240 VAC(30~​63 A)</td>
+        <td>1P : 10 kA@120/​240 VAC<br>6 kA@​277 VAC<br>2P~4P : 10 kA@120/​240 VAC<br>6 kA@480Y/277 VAC</td>
       </tr>
       <tr>
         <th scope="row" class="devices_product_lineup__label">Rated Short Circuit Capacity (DC)</th>
-        <td>1P : 10 kA@60 VDC<br>2P, 3P : 10 kA@125 VDC</td>
-        <td>1P : 10 kA@60 VDC<br>2P~4P : 10 kA@125 VDC</td>
+        <td>1P : 10 kA@60 VDC<br>2P, 3P : 10 kA@​125 VDC</td>
+        <td>1P : 10 kA@60 VDC<br>2P~4P : 10 kA@​125 VDC</td>
       </tr>
       <tr>
         <th scope="row" class="devices_product_lineup__label">Tripping Curve</th>
@@ -551,7 +551,7 @@ export const lineupLvProducts: LineupLvProduct[] = [
         <td colspan="3">Up to 635 V</td>
       </tr>
       <tr>
-        <th scope="row" class="devices_product_lineup__category" rowspan="2" style="text-align: left;">Rated short circuit withstand current (kA)</th>
+        <th scope="row" class="devices_product_lineup__category" rowspan="2">Rated short circuit withstand current (kA)</th>
         <th scope="row" class="devices_product_lineup__label">H-BUS</th>
         <td>100(@635V)</td>
         <td>100(@635V)</td>

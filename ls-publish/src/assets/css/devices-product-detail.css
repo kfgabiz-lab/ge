@@ -4483,10 +4483,11 @@ section.devices_product_lineup
   table-layout: fixed;
 }
 
-/* Metasol MS (/motor-control/metasol-ms) — PC에서 한 화면에 전체 표시 (가로 스크롤 없음) */
+/* Metasol MS (/motor-control/metasol-ms) — PC에서 한 화면에 전체 표시 (가로 스크롤 없음)
+   lineup_lv 미리보기는 제외 — 다른 표와 동일하게 1224px 유지 */
 @media (min-width: 781px) {
   section.devices_product_lineup
-    .devices_product_lineup__grids
+    .devices_product_lineup__grids:not(.devices_product_lineup__grids--lineup-lv)
     .devices_product_lineup__grid--type1[data-layout="metasol"] {
     width: 100%;
     max-width: 100%;
@@ -4494,7 +4495,7 @@ section.devices_product_lineup
   }
 
   section.devices_product_lineup
-    .devices_product_lineup__grids
+    .devices_product_lineup__grids:not(.devices_product_lineup__grids--lineup-lv)
     .devices_product_lineup__grid--type1[data-layout="metasol"]
     .devices_product_lineup__grid-scroll {
     max-width: 100%;
@@ -4502,11 +4503,11 @@ section.devices_product_lineup
   }
 
   section.devices_product_lineup
-    .devices_product_lineup__grids
+    .devices_product_lineup__grids:not(.devices_product_lineup__grids--lineup-lv)
     .devices_product_lineup__grid--type1[data-layout="metasol"]
     table,
   section.devices_product_lineup
-    .devices_product_lineup__grids
+    .devices_product_lineup__grids:not(.devices_product_lineup__grids--lineup-lv)
     .devices_product_lineup__grid--type1[data-layout="metasol"]
     [data-slugkey="product_etc.line_up"]
     table {
@@ -4567,7 +4568,7 @@ section.devices_product_lineup
   }
 
   section.devices_product_lineup
-    .devices_product_lineup__grids
+    .devices_product_lineup__grids:not(.devices_product_lineup__grids--lineup-lv)
     .devices_product_lineup__grid--type1[data-layout="metasol"]
     .devices_product_lineup__swipe {
     display: none;
@@ -4608,6 +4609,15 @@ section.devices_product_lineup
   [data-slugkey="product_etc.line_up"]
   td {
   text-align: center !important;
+}
+
+/* Metal Enclosed Load Interrupter Switchgear — 왼쪽 th 왼쪽 정렬 */
+section.devices_product_lineup
+  #lineup-metal-enclosed-load-interrupter-switchgear
+  [data-slugkey="product_etc.line_up"]
+  tbody
+  th {
+  text-align: left !important;
 }
 
 /* DC Relay — th 왼쪽 / td·제품헤더 중앙 */
@@ -4909,6 +4919,10 @@ section.devices_product_lineup
   color: #222;
   border-right: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
+  /* iOS Safari: 숫자·전압 표기 셀만 자동으로 글자 키우는 것 방지 */
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+  max-height: 999999px;
 }
 
 section.devices_product_lineup [data-slugkey="product_etc.line_up"] table th,
@@ -5279,7 +5293,6 @@ section.devices_product_lineup
   line-height: 22px;
 }
 
-/* Susol UL VCB — UVL/UVM/UVH 행 높이 절반 (이미지 행 222px → 111px) */
 section.devices_product_lineup
   #lineup-susol-ul-vcb
   [data-slugkey="product_etc.line_up"]
@@ -5294,8 +5307,6 @@ section.devices_product_lineup
   thead
   tr:nth-child(2)
   th {
-  height: 111px;
-  min-height: 111px;
   padding: 12px 16px;
 }
 
@@ -5613,6 +5624,175 @@ section.devices_product_lineup
   box-sizing: border-box;
 }
 
+/* UL1558 Switchgear — PC: 한 화면 fluid / 모바일은 아래 max-width:780 전용 규칙 */
+@media (min-width: 781px) {
+  section.devices_product_lineup
+    #lineup-ul1558-switchgear
+    [data-slugkey="product_etc.line_up"]
+    table {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  section.devices_product_lineup
+    #lineup-ul1558-switchgear
+    [data-slugkey="product_etc.line_up"]
+    col:nth-child(1) {
+    width: 28% !important;
+    min-width: 0 !important;
+  }
+
+  section.devices_product_lineup
+    #lineup-ul1558-switchgear
+    [data-slugkey="product_etc.line_up"]
+    col:nth-child(2) {
+    width: 12%;
+    min-width: 0;
+  }
+
+  section.devices_product_lineup
+    #lineup-ul1558-switchgear
+    [data-slugkey="product_etc.line_up"]
+    col:nth-child(n + 3) {
+    width: 20%;
+    min-width: 0;
+  }
+
+  section.devices_product_lineup
+    #lineup-ul1558-switchgear
+    [data-slugkey="product_etc.line_up"]
+    tbody
+    th.devices_product_lineup__category {
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    text-align: left;
+    white-space: normal;
+  }
+
+  section.devices_product_lineup
+    #lineup-ul1558-switchgear
+    [data-slugkey="product_etc.line_up"]
+    tbody
+    th.devices_product_lineup__label {
+    text-align: left;
+  }
+}
+
+/* UL1558 — iOS Safari colspan/넓은 셀 텍스트 팽창 방지 */
+section.devices_product_lineup
+  #lineup-ul1558-switchgear
+  [data-slugkey="product_etc.line_up"]
+  table {
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+section.devices_product_lineup
+  #lineup-ul1558-switchgear
+  [data-slugkey="product_etc.line_up"]
+  tbody
+  td {
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  line-height: 24px !important;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+/* UL1558 Switchgear — 모바일: 열 합=표 폭 고정 → 스크롤이 끝까지 가도록 */
+@media (max-width: 780px) {
+  section.devices_product_lineup
+    #lineup-ul1558-switchgear
+    .devices_product_lineup__grid-scroll
+    > *,
+  section.devices_product_lineup
+    #lineup-ul1558-switchgear
+    [data-slugkey="product_etc.line_up"] {
+    width: 750px;
+    min-width: 750px;
+    max-width: none;
+  }
+
+  section.devices_product_lineup
+    #lineup-ul1558-switchgear
+    [data-slugkey="product_etc.line_up"]
+    table {
+    width: 750px;
+    min-width: 750px;
+    max-width: none;
+    table-layout: fixed;
+  }
+
+  /* 공통 th min-width:150 이 표를 밀어 overflow 클리핑 나는 것 방지 */
+  section.devices_product_lineup
+    #lineup-ul1558-switchgear
+    [data-slugkey="product_etc.line_up"]
+    table
+    th,
+  section.devices_product_lineup
+    #lineup-ul1558-switchgear
+    [data-slugkey="product_etc.line_up"]
+    table
+    td {
+    min-width: 0;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    line-height: 19px !important;
+    -webkit-text-size-adjust: none !important;
+    text-size-adjust: none !important;
+  }
+
+  section.devices_product_lineup
+    #lineup-ul1558-switchgear
+    [data-slugkey="product_etc.line_up"]
+    table
+    th {
+    font-weight: 600 !important;
+  }
+
+  section.devices_product_lineup
+    #lineup-ul1558-switchgear
+    [data-slugkey="product_etc.line_up"]
+    col:nth-child(1) {
+    width: 150px !important;
+    min-width: 150px !important;
+    max-width: 150px;
+  }
+
+  section.devices_product_lineup
+    #lineup-ul1558-switchgear
+    [data-slugkey="product_etc.line_up"]
+    col:nth-child(2) {
+    width: 90px;
+    min-width: 90px;
+    max-width: 90px;
+  }
+
+  section.devices_product_lineup
+    #lineup-ul1558-switchgear
+    [data-slugkey="product_etc.line_up"]
+    col:nth-child(n + 3) {
+    width: 170px;
+    min-width: 170px;
+    max-width: 170px;
+  }
+
+  section.devices_product_lineup
+    #lineup-ul1558-switchgear
+    [data-slugkey="product_etc.line_up"]
+    tbody
+    th.devices_product_lineup__category {
+    width: 150px;
+    min-width: 150px;
+    max-width: 150px;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+}
+
 @media (max-width: 780px) {
   section.devices_product_lineup [data-slugkey="product_etc.line_up"] table,
   section.devices_product_lineup
@@ -5721,12 +5901,60 @@ section.devices_product_lineup
     [data-slugkey="product_etc.line_up"]
     table
     td {
-    font-size: 13px;
-    line-height: 19px;
+    font-size: 13px !important;
+    line-height: 19px !important;
     padding: 12px 10px;
     word-break: break-word;
     overflow-wrap: break-word;
     overflow: hidden;
+    /* iOS: 넓은 표·숫자 스펙 셀 자동 확대 완전 차단 */
+    -webkit-text-size-adjust: none !important;
+    text-size-adjust: none !important;
+  }
+
+  section.devices_product_lineup [data-slugkey="product_etc.line_up"] table tbody td,
+  section.devices_product_lineup
+    .devices_product_lineup__grid--type1
+    [data-slugkey="product_etc.line_up"]
+    table
+    tbody
+    td,
+  section.devices_product_lineup [data-slugkey="product_etc.line_up"] table tbody td *,
+  section.devices_product_lineup
+    .devices_product_lineup__grid--type1
+    [data-slugkey="product_etc.line_up"]
+    table
+    tbody
+    td
+    * {
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    line-height: 19px !important;
+    -webkit-text-size-adjust: none !important;
+    text-size-adjust: none !important;
+  }
+
+  section.devices_product_lineup [data-slugkey="product_etc.line_up"] table tbody th,
+  section.devices_product_lineup
+    .devices_product_lineup__grid--type1
+    [data-slugkey="product_etc.line_up"]
+    table
+    tbody
+    th {
+    font-weight: 600 !important;
+  }
+
+  section.devices_product_lineup [data-slugkey="product_etc.line_up"] table thead th p,
+  section.devices_product_lineup
+    .devices_product_lineup__grid--type1
+    [data-slugkey="product_etc.line_up"]
+    table
+    thead
+    th
+    p {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    line-height: 18px !important;
   }
 
   section.devices_product_lineup
@@ -7246,9 +7474,14 @@ section.devices_product_lineup
     height: auto;
     min-height: 56px;
     padding: 12px 8px;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+    line-height: 19px !important;
     white-space: normal;
     word-break: break-word;
     overflow-wrap: break-word;
     overflow: hidden;
+    -webkit-text-size-adjust: none !important;
+    text-size-adjust: none !important;
   }
 }

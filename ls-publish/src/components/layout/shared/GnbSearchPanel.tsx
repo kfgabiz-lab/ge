@@ -29,13 +29,16 @@ function PopularTags({
     <ul className={className}>
       {tags.map((tag) => (
         <li key={tag.label}>
-          <a
-            href={withBasePath(tag.href)}
+          <button
+            type="button"
             className="gnb_search__tag"
             tabIndex={isOpen ? undefined : -1}
+            onClick={() => {
+              window.location.href = withBasePath(tag.href);
+            }}
           >
             {tag.label}
-          </a>
+          </button>
         </li>
       ))}
     </ul>
