@@ -2396,7 +2396,8 @@ html.is-mega-open-scroll-lock body {
   left: 0;
   z-index: 9999;
   width: 100%;
-  height: 316px;
+  min-height: 316px;
+  height: auto;
   margin: 0;
   background: #fff;
   opacity: 0;

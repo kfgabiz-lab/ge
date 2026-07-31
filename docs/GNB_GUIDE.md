@@ -195,7 +195,7 @@ GNB·메가·모바일 **사용 맥락**: `src/data/gnbGuide.ts` → `gnbGuideIc
 | Product Finder | `https://pfinder.ls-electric.com/UL/product/list.do` |
 | Product Match Guide | `https://pmg.ls-electric.com/` |
 | LS Pre-Engineering | `https://lspe-x.ls-electric.com/` |
-| Request for Service | `https://gics.ls-electric.com/public/index.do` |
+| Request for Service | `https://gics.ls-electric.com/loginForm.do?lang=ko` |
 
 데이터: `src/data/gnb/mega/support.ts` · `services.ts` (Request for Service)
 

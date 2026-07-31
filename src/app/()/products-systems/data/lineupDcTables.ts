@@ -20,6 +20,7 @@ export const lineupDcProducts: LineupDcProduct[] = [
         <th scope="col">Max. Operational Voltage(Ue)</th>
         <th scope="col">Ampere Frame</th>
         <th scope="col">Breaking Capacity</th>
+        <th scope="col">Applicable Standard</th>
       </tr>
     </thead>
     <tbody>
@@ -32,24 +33,28 @@ export const lineupDcProducts: LineupDcProduct[] = [
         <td>1200 Vdc (4P) / 750 Vdc (3P)</td>
         <td>1600, 2500, 3200, 4000 AF</td>
         <td>35 kA@1200 Vdc(4P)<br />60 kA@ 500 Vdc(3P)</td>
+        <td>IEC60947-2</td>
       </tr>
       <tr>
         <td>ADH</td>
         <td>1200 Vdc (4P) / 750 Vdc (3P)</td>
         <td>1600, 2500, 3200, 4000 AF</td>
         <td>40 kA@1200 Vdc(4P)<br />85 kA@ 500 Vdc(3P)</td>
+        <td>IEC60947-2</td>
       </tr>
       <tr>
         <td>ADV</td>
         <td>1500 Vdc (4P) / 1000 Vdc (3P)</td>
         <td>1600, 2500, 3200, 4000 AF</td>
         <td>50 kA@1500 Vdc(4P)<br />60 kA@ 750 Vdc(3P)</td>
+        <td>IEC60947-2</td>
       </tr>
       <tr>
         <td>ADV</td>
         <td>1500 Vdc (4P) / 1000 Vdc (3P)</td>
         <td>1600, 2500, 3200, 4000 AF</td>
         <td>60 kA@1500 Vdc(4P)<br />70 kA@ 750 Vdc(3P)</td>
+        <td>IEC60947-2</td>
       </tr>
     </tbody>
   </table>
@@ -63,6 +68,7 @@ export const lineupDcProducts: LineupDcProduct[] = [
         <th scope="col">Max. Operational Voltage(Ue)</th>
         <th scope="col">Ampere Frame</th>
         <th scope="col">Rated Short-time Withstand Current (Icw)</th>
+        <th scope="col">Applicable Standard</th>
       </tr>
     </thead>
     <tbody>
@@ -75,12 +81,14 @@ export const lineupDcProducts: LineupDcProduct[] = [
         <td>1200 Vdc (4P) / 750 Vdc (3P)</td>
         <td>800, 1000, 1250, 1600, 2000 AF</td>
         <td>100 kA/1 s</td>
+        <td>IEC 60947-3</td>
       </tr>
       <tr>
         <td>DDV</td>
         <td>1500 Vdc (4P) / 1000 Vdc (3P)</td>
         <td>800, 1000, 1250, 1600, 2000, 2500 AF</td>
         <td>100 kA/1 s</td>
+        <td>IEC 60947-3</td>
       </tr>
       <tr>
         <th scope="row" rowspan="5">
@@ -91,30 +99,35 @@ export const lineupDcProducts: LineupDcProduct[] = [
         <td>750 Vdc (2P)</td>
         <td>800, 1000, 1250, 1600, 2000, 2500, 3200, 4000, 5000, 6300 AF</td>
         <td>100 kA/1 s</td>
+        <td>IEC 60947-3</td>
       </tr>
       <tr>
         <td>DDH</td>
         <td>1200 Vdc (4P) / 750 Vdc (3P)</td>
         <td>800, 1000, 1250, 1600, 2000, 2500, 3200, 4000 AF</td>
         <td>150 kA/1 s</td>
+        <td>IEC 60947-3</td>
       </tr>
       <tr>
         <td>DDV</td>
         <td>1500 Vdc (4P) / 1000 Vdc (3P)</td>
         <td>800, 1000, 1250, 1600, 2000, 2500, 3200, 4000 AF</td>
         <td>150 kA/1 s</td>
+        <td>IEC 60947-3</td>
       </tr>
       <tr>
         <td>DDX</td>
         <td>1800 Vdc (4P) / 1000 Vdc (3P)</td>
         <td>800, 1000, 1250, 1600, 2000, 2500, 3200, 4000 AF</td>
         <td>100 kA/1 s</td>
+        <td>IEC 60947-3</td>
       </tr>
       <tr>
         <td>DDZ</td>
         <td>2500 Vdc (4P)</td>
         <td>800, 1000, 1250, 1600, 2000, 2500, 3200, 4000AF</td>
         <td>100 kA/1 s</td>
+        <td>IEC 60947-3</td>
       </tr>
       <tr>
         <th scope="row" rowspan="2">
@@ -125,12 +138,14 @@ export const lineupDcProducts: LineupDcProduct[] = [
         <td>1200 Vdc (4P) / 750 Vdc (3P)</td>
         <td>4000, 5000, 6300, 7000 AF</td>
         <td>150 kA/1 s</td>
+        <td>IEC 60947-3</td>
       </tr>
       <tr>
         <td>DDV</td>
         <td>1500 Vdc (4P) / 1000 Vdc (3P)</td>
         <td>4000, 5000, 6300, 7000 AF</td>
         <td>150 kA/1 s</td>
+        <td>IEC 60947-3</td>
       </tr>
     </tbody>
   </table>`,

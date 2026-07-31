@@ -1,6 +1,6 @@
 import type { CommonFaqEntry } from "@/components/faq/CommonFaq";
 
-export const GICS_REQUEST_URL = "https://gics.ls-electric.com/public/index.do";
+export const GICS_REQUEST_URL = "https://gics.ls-electric.com/loginForm.do?lang=ko";
 
 export const serviceCenterPage = {
   title: "Service Center",
@@ -51,7 +51,7 @@ export const serviceCenterPage = {
         description:
           "Enhance your product knowledge with instructor-led training programs.",
         icon: "/pub/img/services/service-center/icon-training.svg",
-        href: "/services/engineering-training",
+        href: "https://gics.ls-electric.com/loginForm.do?lang=ko",
         external: false,
       },
       {
