@@ -21,9 +21,10 @@ FO (Next.js): 3002
 BO (Next.js): 3001
 BE (API): 8080
 
-## 5-1. API 서버(bo-api) 기동시 윈도우 환경변수 참조
-- `JAVA_TOOL_OPTIONS` : 로컬 환경에 시스템 전역으로 설정되어 있으며, gradle/java 실행시 자동 인식(`-Djava.net.preferIPv4Stack=true`)
-- ⚠️ 위 변수는 모두 `${VAR:기본값}` 형태로 기본값이 있어 미설정 상태에서도 기동 자체는 가능. 단, 실제 DB 접속/CTP 연동 등 기능 동작을 위해서는 값이 필요
+## 5-1. bo-api 재기동
+- `JAVA_TOOL_OPTIONS`는 레지스트리 미설정(과거 기재 오류, 없어도 기동은 됨)
+- `SPRING_PROFILES_ACTIVE=local`은 User 환경변수로 이미 저장돼 있음
+- 절차: 8080 포트 확인 → `gradlew.bat bootRun` 백그라운드+로그리다이렉트 실행 → 로그 `Started BoApplication` 대기 → 8080 재확인
 
 ## 6. 테스트 환경 — 데이터 정합성 예외
 - 현재는 테스트 진행 중이며, 데이터 정합성(整合性)은 우선순위가 아니다

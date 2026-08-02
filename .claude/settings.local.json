@@ -145,11 +145,43 @@
       "mcp__playwright__browser_handle_dialog",
       "mcp__playwright__browser_take_screenshot",
       "mcp__playwright__browser_console_messages",
-      "Bash(cd *)"
+      "Bash(cd *)",
+      "mcp__playwright__browser_select_option",
+      "mcp__claude-in-chrome__*",
+      "mcp__playwright__browser_wait_for",
+      "mcp__playwright__browser_fill_form",
+      "mcp__playwright__browser_press_key",
+      "mcp__playwright__browser_run_code_unsafe",
+      "Bash(:)"
     ]
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "playwright"
-  ]
+  ],
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{try{const j=JSON.parse(d);const p=(j.prompt||'').trim();const f='C:/Users/Administrator/.gemini/workspace/Bo/.claude/.dev-approved';if(/#완료/.test(p)){try{require('fs').unlinkSync(f);}catch(e){}}else if(/#(개발|진행|수정)/.test(p)){require('fs').writeFileSync(f,'1');}}catch(e){}});\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"if(!require('fs').existsSync('C:/Users/Administrator/.gemini/workspace/Bo/.claude/.dev-approved')){console.log(JSON.stringify({hookSpecificOutput:{hookEventName:'PreToolUse',permissionDecision:'deny',permissionDecisionReason:'#개발/#진행/#수정 승인 없이는 파일 수정 불가 (CLAUDE.md 룰)'}}));}\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
 }
