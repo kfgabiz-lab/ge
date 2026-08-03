@@ -152,7 +152,8 @@
       "mcp__playwright__browser_fill_form",
       "mcp__playwright__browser_press_key",
       "mcp__playwright__browser_run_code_unsafe",
-      "Bash(:)"
+      "Bash(:)",
+      "Bash(timeout 180 tail -f bootrun.log)"
     ]
   },
   "enableAllProjectMcpServers": true,
