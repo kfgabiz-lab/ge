@@ -33,7 +33,7 @@ function MarketsStatValue({ item, isActive, delay }: MarketsStatValueProps) {
     !item.valueSuffix && item.value.trim().endsWith("+") ? "+" : null;
 
   return (
-    <p className="markets_stats__value">
+    <span className="markets_stats__value">
       {displayValue}
       {item.valueUnit ? (
         <span className="markets_stats__value-unit">{item.valueUnit}</span>
@@ -43,7 +43,7 @@ function MarketsStatValue({ item, isActive, delay }: MarketsStatValueProps) {
           {item.valueSuffix ?? inlinePlusSuffix}
         </span>
       ) : null}
-    </p>
+    </span>
   );
 }
 
@@ -57,17 +57,21 @@ export default function MarketsStats({ items }: MarketsStatsProps) {
           <div className="markets_stats__grid">
             {items.map((item, index) => (
               <article key={item.id} className="markets_stats__col">
-                <p className="markets_stats__label">{item.label}</p>
-                <div className="markets_stats__headline">
-                  <MarketsStatValue
-                    item={item}
-                    isActive={isInView}
-                    delay={index * 120}
-                  />
-                  {item.sublabel ? (
-                    <p className="markets_stats__sublabel">{item.sublabel}</p>
-                  ) : null}
-                </div>
+                <h3 className="markets_stats__head">
+                  <span className="markets_stats__label">{item.label}</span>
+                  <div className="markets_stats__headline">
+                    <MarketsStatValue
+                      item={item}
+                      isActive={isInView}
+                      delay={index * 120}
+                    />
+                    {item.sublabel ? (
+                      <span className="markets_stats__sublabel">
+                        {item.sublabel}
+                      </span>
+                    ) : null}
+                  </div>
+                </h3>
                 <p className="markets_stats__desc">{item.description}</p>
               </article>
             ))}

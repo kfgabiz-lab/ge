@@ -200,7 +200,7 @@ export const hvdcDownloads: ProductDownloadItem[] = [
 
 const HVDC_OTHER_PRODUCT_SUBTITLE = "Metasol Contactor & Overload Relay";
 
-export const hvdcOtherProductsTitle = "Relavant Products";
+export const hvdcOtherProductsTitle = "Relevant Products";
 
 export const hvdcOtherProducts: ProductOtherItem[] = [
   {
@@ -272,7 +272,7 @@ export const hvdcNavItems: readonly ProductNavItem[] = [
   { id: "product-applications", label: "Applications" },
   { id: "product-why", label: "Why" },
   { id: "product-downloads", label: "Downloads" },
-  { id: "product-other", label: "Relavant Products" },
+  { id: "product-other", label: "Relevant Products" },
   { id: "product-markets", label: "Markets" },
   { id: "product-help", label: "Help" },
 ];

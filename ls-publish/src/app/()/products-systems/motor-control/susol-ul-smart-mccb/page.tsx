@@ -39,7 +39,7 @@ export default function SusolUlSmartMccbProductPage() {
           backgroundSrc={susolUlSmartMccbDetail.configuratorBannerBg}
         />
         <DevicesProductLineup
-          table="susol-frame"
+          table="susol-ul-smart-mccb"
           configuratorHref={susolUlSmartMccbDetail.configuratorHref}
           configuratorExternal={susolUlSmartMccbDetail.configuratorExternal}
         />

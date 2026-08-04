@@ -17,6 +17,23 @@ export default function DevicesProductLineupGrid({
   const scrollRef = useRef<HTMLDivElement>(null);
   const [swipeHidden, setSwipeHidden] = useState(false);
 
+  const updateSwipeVisibility = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const canScroll = el.scrollWidth > el.clientWidth + 1;
+    if (!canScroll) {
+      setSwipeHidden(true);
+      return;
+    }
+
+    if (el.scrollLeft > 0) {
+      setSwipeHidden(true);
+    } else {
+      setSwipeHidden(false);
+    }
+  }, []);
+
   const handleScroll = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -30,23 +47,30 @@ export default function DevicesProductLineupGrid({
     const el = scrollRef.current;
     if (!el) return;
 
-    if (el.scrollWidth <= el.clientWidth + 1) {
-      setSwipeHidden(true);
-    }
+    updateSwipeVisibility();
 
+    const rafId = window.requestAnimationFrame(updateSwipeVisibility);
     el.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", updateSwipeVisibility);
+
+    const resizeObserver =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => updateSwipeVisibility())
+        : null;
+    resizeObserver?.observe(el);
 
     return () => {
+      window.cancelAnimationFrame(rafId);
       el.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", updateSwipeVisibility);
+      resizeObserver?.disconnect();
     };
-  }, [handleScroll]);
-
-  const layoutAttr = modifier === "type1" ? layout ?? "mccb" : undefined;
+  }, [handleScroll, updateSwipeVisibility, children]);
 
   return (
     <div
       className={`devices_product_lineup__grid devices_product_lineup__grid--${modifier}`}
-      data-layout={layoutAttr}
+      {...(layout ? { "data-layout": layout } : {})}
     >
       <div className="devices_product_lineup__grid-viewport">
         <div ref={scrollRef} className="devices_product_lineup__grid-scroll">

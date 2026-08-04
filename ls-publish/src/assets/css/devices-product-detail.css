@@ -1283,7 +1283,7 @@ section.devices_product_lineup .devices_product_lineup__footer .btn-lv02--solid{
     border: none;
   }
 
-  /* Relavant / Other Products — Figma 4713:26185 · swiper 4-up · Rolling 50px (swiper_type_01) */
+  /* Relevant / Other Products — Figma 4713:26185 · swiper 4-up · Rolling 50px (swiper_type_01) */
   section.devices_product_other {
     padding-bottom: 150px;
     background: #fff;
@@ -2874,10 +2874,13 @@ section.devices_product_lineup .devices_product_lineup__footer .btn-lv02--solid{
 
   section.devices_product_lineup .devices_product_lineup__grid-viewport {
     position: relative;
+    max-width: 100%;
+    min-width: 0;
   }
 
   section.devices_product_lineup .devices_product_lineup__grid-scroll {
-    max-width: none;
+    max-width: 100%;
+    min-width: 0;
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
@@ -4217,9 +4220,12 @@ section.devices_product_lineup .devices_product_lineup__grids--h100-plus {
 }
 
 section.devices_product_lineup .devices_product_lineup__grids--h100-plus .devices_product_lineup__grid,
+section.devices_product_lineup .devices_product_lineup__grids--h100-plus .devices_product_lineup__grid--type1,
 section.devices_product_lineup .devices_product_lineup__grids--h100-plus .devices_product_lineup__grid--type2 {
   margin-bottom: 0;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 section.devices_product_lineup .devices_product_lineup__grids--h100-plus .devices_product_lineup__sub-tit {
@@ -4356,6 +4362,7 @@ section.devices_product_lineup .devices_product_lineup__grids--h100-plus .device
   min-height: 192px;
 }
 
+section.devices_product_lineup .devices_product_lineup__grids--h100-plus .devices_product_lineup__table--h100-plus-options th.devices_product_lineup__category,
 section.devices_product_lineup .devices_product_lineup__grids--h100-plus .devices_product_lineup__table--h100-plus-options th[scope="rowgroup"] {
   height: 448px;
   min-height: 448px;
@@ -4376,11 +4383,11 @@ section.devices_product_lineup .devices_product_lineup__grids--h100-plus .device
 
 @media (max-width: 780px) {
   section.devices_product_lineup .devices_product_lineup__grids--h100-plus {
-    align-items: flex-start;
+    align-items: stretch;
     gap: 16px;
-    width: max-content;
-    min-width: 100%;
-    max-width: none;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
   }
 
   section.devices_product_lineup .devices_product_lineup__grids--h100-plus .devices_product_lineup__sub-tit {
@@ -4455,6 +4462,7 @@ section.devices_product_lineup .devices_product_lineup__grids--h100-plus .device
 
   section.devices_product_lineup .devices_product_lineup__grids--h100-plus .devices_product_lineup__table--h100-plus-options th[rowspan="2"],
   section.devices_product_lineup .devices_product_lineup__grids--h100-plus .devices_product_lineup__table--h100-plus-options th[rowspan="3"],
+  section.devices_product_lineup .devices_product_lineup__grids--h100-plus .devices_product_lineup__table--h100-plus-options th.devices_product_lineup__category,
   section.devices_product_lineup .devices_product_lineup__grids--h100-plus .devices_product_lineup__table--h100-plus-options th[scope="rowgroup"],
   section.devices_product_lineup .devices_product_lineup__grids--h100-plus .devices_product_lineup__table--h100-plus-options tr[data-other] th,
   section.devices_product_lineup .devices_product_lineup__grids--h100-plus .devices_product_lineup__table--h100-plus-options tr[data-other] td {

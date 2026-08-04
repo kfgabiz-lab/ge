@@ -171,7 +171,7 @@ export const smartFactoryDownloads: ProductDownloadItem[] = [
 
 const SMART_FACTORY_OTHER_PRODUCT_SUBTITLE = "Metasol Contactor & Overload Relay";
 
-export const smartFactoryOtherProductsTitle = "Relavant Products";
+export const smartFactoryOtherProductsTitle = "Relevant Products";
 
 export const smartFactoryOtherProducts: ProductOtherItem[] = [
   {
@@ -243,7 +243,7 @@ export const smartFactoryNavItems: readonly ProductNavItem[] = [
   { id: "product-applications", label: "Applications" },
   { id: "product-why", label: "Why" },
   { id: "product-downloads", label: "Downloads" },
-  { id: "product-other", label: "Relavant Products" },
+  { id: "product-other", label: "Relevant Products" },
   { id: "product-markets", label: "Markets" },
   { id: "product-help", label: "Help" },
 ];

@@ -206,7 +206,7 @@ export const xemsDownloads: ProductDownloadItem[] = [
 
 const XEMS_OTHER_PRODUCT_SUBTITLE = "Metasol Contactor & Overload Relay";
 
-export const xemsOtherProductsTitle = "Relavant Products";
+export const xemsOtherProductsTitle = "Relevant Products";
 
 export const xemsOtherProducts: ProductOtherItem[] = [
   {
@@ -278,7 +278,7 @@ export const xemsNavItems: readonly ProductNavItem[] = [
   { id: "product-applications", label: "Applications" },
   { id: "product-why", label: "Why" },
   { id: "product-downloads", label: "Downloads" },
-  { id: "product-other", label: "Relavant Products" },
+  { id: "product-other", label: "Relevant Products" },
   { id: "product-markets", label: "Markets" },
   { id: "product-help", label: "Help" },
 ];
