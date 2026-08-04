@@ -153,7 +153,8 @@
       "mcp__playwright__browser_press_key",
       "mcp__playwright__browser_run_code_unsafe",
       "Bash(:)",
-      "Bash(timeout 180 tail -f bootrun.log)"
+      "Bash(timeout 180 tail -f bootrun.log)",
+      "Bash(exit 1)"
     ]
   },
   "enableAllProjectMcpServers": true,
@@ -166,7 +167,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node -e \"let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{try{const j=JSON.parse(d);const p=(j.prompt||'').trim();const f='C:/Users/Administrator/.gemini/workspace/Bo/.claude/.dev-approved';if(/#완료/.test(p)){try{require('fs').unlinkSync(f);}catch(e){}}else if(/#(개발|진행|수정)/.test(p)){require('fs').writeFileSync(f,'1');}}catch(e){}});\"",
+            "command": "node -e \"let d='';process.stdin.on('data',c=>d+=c);process.stdin.on('end',()=>{try{const j=JSON.parse(d);const p=(j.prompt||'').trim();const f='C:/workspace/ge/.claude/.dev-approved';if(/#완료/.test(p)){try{require('fs').unlinkSync(f);}catch(e){}}else if(/#(개발|진행|수정)/.test(p)){require('fs').writeFileSync(f,'1');}}catch(e){}});\"",
             "timeout": 5
           }
         ]
@@ -178,7 +179,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node -e \"if(!require('fs').existsSync('C:/Users/Administrator/.gemini/workspace/Bo/.claude/.dev-approved')){console.log(JSON.stringify({hookSpecificOutput:{hookEventName:'PreToolUse',permissionDecision:'deny',permissionDecisionReason:'#개발/#진행/#수정 승인 없이는 파일 수정 불가 (CLAUDE.md 룰)'}}));}\"",
+            "command": "node -e \"if(!require('fs').existsSync('C:/workspace/ge/.claude/.dev-approved')){console.log(JSON.stringify({hookSpecificOutput:{hookEventName:'PreToolUse',permissionDecision:'deny',permissionDecisionReason:'#개발/#진행/#수정 승인 없이는 파일 수정 불가 (CLAUDE.md 룰)'}}));}\"",
             "timeout": 5
           }
         ]
