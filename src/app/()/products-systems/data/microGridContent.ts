@@ -162,7 +162,7 @@ export const microGridDownloads: ProductDownloadItem[] = [
 
 const MICRO_GRID_OTHER_PRODUCT_SUBTITLE = "Metasol Contactor & Overload Relay";
 
-export const microGridOtherProductsTitle = "Relavant Products";
+export const microGridOtherProductsTitle = "Relevant Products";
 
 export const microGridOtherProducts: ProductOtherItem[] = [
   {
@@ -234,7 +234,7 @@ export const microGridNavItems: readonly ProductNavItem[] = [
   { id: "product-applications", label: "Applications" },
   { id: "product-why", label: "Why" },
   { id: "product-downloads", label: "Downloads" },
-  { id: "product-other", label: "Relavant Products" },
+  { id: "product-other", label: "Relevant Products" },
   { id: "product-markets", label: "Markets" },
   { id: "product-help", label: "Help" },
 ];

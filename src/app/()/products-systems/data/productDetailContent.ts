@@ -518,43 +518,43 @@ const mccbInterrupting = ["35 kA(Ni)", "65 kA(Hi)", "100 kA(Li)"];
 export const susolUlSmartMccbInterruptingLineup: ProductLineupRow[] = [
   {
     type: {
-      image: "/pub/img/devices-systems/lineup/lineup_uts150.png",
+      image: "/pub/img/devices-systems/lineup/Susol_UL_Smart_MCCB/UTS150.png",
       label: "UTS150",
     },
-    ratedCurrent: "40-150A",
+    ratedCurrent: "40~150 A",
     interrupting: mccbInterrupting,
     standard: "UL 489, CSA",
   },
   {
     type: {
-      image: "/pub/img/devices-systems/lineup/lineup_uts250.png",
+      image: "/pub/img/devices-systems/lineup/Susol_UL_Smart_MCCB/UTS250.png",
       label: "UTS250",
     },
-    ratedCurrent: "250A",
+    ratedCurrent: "250 A",
     interrupting: mccbInterrupting,
     standard: "UL 489, CSA",
   },
   {
     type: {
-      image: "/pub/img/devices-systems/lineup/lineup_uts400.png",
+      image: "/pub/img/devices-systems/lineup/Susol_UL_Smart_MCCB/UTS400.png",
       label: "UTS400",
     },
-    ratedCurrent: "250-400A",
+    ratedCurrent: "250~400 A",
     interrupting: mccbInterrupting,
     standard: "UL 489, CSA",
   },
   {
     type: {
-      image: "/pub/img/devices-systems/lineup/lineup_uts600.png",
+      image: "/pub/img/devices-systems/lineup/Susol_UL_Smart_MCCB/UTS600.png",
       label: "UTS600",
     },
-    ratedCurrent: "600A",
+    ratedCurrent: "600 A",
     interrupting: mccbInterrupting,
     standard: "UL 489, CSA",
   },
   {
     type: {
-      image: "/pub/img/devices-systems/lineup/lineup_uts800.png",
+      image: "/pub/img/devices-systems/lineup/Susol_UL_Smart_MCCB/UTS800.png",
       label: "UTS800",
     },
     ratedCurrent: "400~800 A",
@@ -563,10 +563,10 @@ export const susolUlSmartMccbInterruptingLineup: ProductLineupRow[] = [
   },
   {
     type: {
-      image: "/pub/img/devices-systems/lineup/lineup_uts1200.png",
+      image: "/pub/img/devices-systems/lineup/Susol_UL_Smart_MCCB/UTS1200.png",
       label: "UTS1200",
     },
-    ratedCurrent: "800-1200A",
+    ratedCurrent: "800~1200 A",
     interrupting: mccbInterrupting,
     standard: "UL 489, CSA",
   },

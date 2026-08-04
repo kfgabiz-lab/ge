@@ -122,7 +122,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "MarketsExplore.tsx",
         cssFile: "markets.css",
         modifiers: ["--wide-tabs"],
-        note: "commercial-residential · public-infrastructure · oil-gas-mining · power-grid · industrial (`layout=\"wide-tabs\"` 5탭) · power-grid BESS CTA Visit LS Energy Solutions (Figma 8300:135392) · 라이브 예: /markets/power-grid",
+        note: "commercial-residential · public-infrastructure · oil-gas-mining · power-grid · industrial (`layout=\"wide-tabs\"` 5탭) · power-grid BESS Contact + Copy Email/Link (PC 8549:104555 · MO 8549:100751) · 라이브 예: /markets/power-grid",
       },
       {
         id: "markets_references",
@@ -344,7 +344,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
       {
         id: "devices_product_other",
         rootClass: "devices_product_other",
-        label: "Relavant Products",
+        label: "Relevant Products",
         component: "DevicesProductOtherProducts.tsx",
         cssFile: "devices-product-detail.css",
         anchorId: "product-other",

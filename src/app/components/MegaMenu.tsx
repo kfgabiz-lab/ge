@@ -96,11 +96,11 @@ export default function MegaMenu() {
   return (
     <header className={getHeaderClassName(isAtTop, isHeaderHidden)}>
       <div className="gnb_menu_inner">
-        <h1 className="logo">
+        <div className="logo">
           <Link href="/">
             <img loading="eager" decoding="async" src="/pub/img/logo_white.svg" alt="LS ELECTRIC" />
           </Link>
-        </h1>
+        </div>
 
         <nav className="gnb_nav_wrap" aria-label="주 메뉴">
           <ul className="gnb_nav_list">

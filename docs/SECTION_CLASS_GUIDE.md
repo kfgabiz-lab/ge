@@ -132,7 +132,7 @@ key-visual 6페이지 공통: `MainHeader` + breadcrumb · hero sticky scroll-ov
 | `markets_hero` | `MarketsHero.tsx` | `--key-visual` · `--has-img` |
 | `markets_intro` | `MarketsIntro.tsx` | 공통 · z-index 1 · 흰 배경 · `paragraphs` prop (power-grid 등) |
 | `markets_stats` | `MarketsStats.tsx` | data-center · commercial-residential · industrial |
-| `markets_explore` | `MarketsExplore.tsx` | commercial-residential · industrial · public-infrastructure · oil-gas-mining · power-grid (`--wide-tabs` 5탭 · BESS CTA) |
+| `markets_explore` | `MarketsExplore.tsx` | commercial-residential · industrial · public-infrastructure · oil-gas-mining · power-grid (`--wide-tabs` 5탭 · BESS Contact + Copy Email) |
 | `markets_references` | `MarketsReferences.tsx` | 카드 클릭 → 모달 · `items` 전달 시 prev/next로 리스트 인덱스 전환 |
 | `markets_references_modal` | `MarketsReferencesModal.tsx` | `common_modal` · **`createPortal(document.body)`** · items 2+ → `__reference-nav` · embedded 가이드만 in-flow |
 | `markets_benefits` | `MarketsBenefits.tsx` | 공통 · 이미지 `public/img/markets/benefits/benefit_01~10.jpg` · `marketsBenefitImages` (`marketsContent.ts`) · 페이지별 매핑은 각 `*Content.ts` |

@@ -327,7 +327,7 @@ export const icoItems: IcoItem[] = [
     size: 14,
     color: "#222",
     usage: "링크·텍스트 복사",
-    usedIn: "globals.css (btn-line-30), devices-product-detail.css, support.css",
+    usedIn: "globals.css (btn-line-30), devices-product-detail.css, support.css, MarketsExplore BESS Copy Email",
   },
   {
     id: "ico_loading_14",
@@ -471,7 +471,7 @@ export const icoItems: IcoItem[] = [
     size: 14,
     color: "#222",
     usage: "외부 링크 CTA · icon_external-18",
-    usedIn: "globals.css (btn-text-30 .icon_external-18, btn-lv03--solid), DevicesHelp overlay, ServiceCenterHelp, MarketsExplore BESS CTA",
+    usedIn: "globals.css (btn-text-30 .icon_external-18, btn-lv03--solid), DevicesHelp overlay, ServiceCenterHelp",
   },
   {
     id: "ico_link",

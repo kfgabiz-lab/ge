@@ -1,4 +1,5 @@
 import { Fragment, type ReactNode } from "react";
+import { lineupLvProducts } from "../../data/lineupLvTables";
 import type {
   ProductFrameLineup,
   ProductLineupRow,
@@ -13,11 +14,17 @@ type DevicesProductLineupProps = {
   /**
    * `susol-frame` — Figma 6788:7576
    * `metasol-ms` — Figma 6788:8458
+   * `susol-ul-smart-mccb` — docs/product-etc-line-up-tables-lv.txt (UTS lineup)
    * `h100-plus` — Figma 6843:65056
    * `product-template` — MMS-32 / 63 / 100 lineup (template page)
    * (미지정 시 items / frameLineup으로 동적 생성)
    */
-  table?: "susol-frame" | "metasol-ms" | "h100-plus" | "product-template";
+  table?:
+    | "susol-frame"
+    | "metasol-ms"
+    | "susol-ul-smart-mccb"
+    | "h100-plus"
+    | "product-template";
   /** @default "type1" — 가이드: type1(MCCB) · type2(VFD frame) */
   variant?: ProductLineupVariant;
   configuratorHref?: string;
@@ -337,6 +344,70 @@ function MetasolMsLineupTable() {
   );
 }
 
+/** Susol UL Smart MCCB — docs/product-etc-line-up-tables-lv.txt (metasol-ms 패턴) */
+function SusolUlSmartMccbLineupTable() {
+  const img = (name: string) =>
+    `/pub/img/devices-systems/lineup/Susol_UL_Smart_MCCB/${name}.png`;
+
+  const rows = [
+    { id: "UTS150", ratedCurrent: "40~150 A" },
+    { id: "UTS250", ratedCurrent: "250 A" },
+    { id: "UTS400", ratedCurrent: "250~400 A" },
+    { id: "UTS600", ratedCurrent: "600 A" },
+    { id: "UTS800", ratedCurrent: "400~800 A" },
+    { id: "UTS1200", ratedCurrent: "800~1200 A" },
+  ] as const;
+
+  const interrupting = ["35 kA(Ni)", "65 kA(Hi)", "100 kA(Li)"];
+
+  return (
+    <DevicesProductLineupGrid modifier="type1" layout="mccb">
+      <div data-slug="product-data" data-slugkey="product_etc.line_up">
+        <table>
+          <colgroup>
+            <col />
+            <col />
+            <col />
+            <col />
+          </colgroup>
+          <thead>
+            <tr>
+              <th scope="col" />
+              <th scope="col">Rated Current</th>
+              <th scope="col">
+                Interrupting Capacity
+                <br />
+                (at 480 Vac)
+              </th>
+              <th scope="col">Standard</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.id}>
+                <th scope="row">
+                  <img
+                    loading="lazy"
+                    decoding="async"
+                    src={img(row.id)}
+                    alt=""
+                  />
+                  <p>{row.id}</p>
+                </th>
+                <td>{row.ratedCurrent}</td>
+                <td>
+                  <LineupInterrupting values={[...interrupting]} />
+                </td>
+                <td>UL 489, CSA</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </DevicesProductLineupGrid>
+  );
+}
+
 function LineupTableGrid({
   modifier,
   layout,
@@ -505,104 +576,21 @@ function ProductTemplateLineupTable() {
   );
 }
 
-/** Figma 6843:65056 — H100 Plus Ratings + Options (hardcoded) */
+/** H100 Plus — docs/product-etc-line-up-tables-lv.txt (Ratings + Options in product-data) */
 function H100PlusLineupTable() {
-  return (
-    <div className="devices_product_lineup__grids devices_product_lineup__grids--h100-plus">
-      <h3 className="devices_product_lineup__sub-tit">Ratings</h3>
-      <DevicesProductLineupGrid modifier="type2">
-        <div className="devices_product_lineup__table devices_product_lineup__table--h100-plus devices_product_lineup__table--h100-plus-ratings">
-          <table>
-              <colgroup>
-                <col />
-                <col />
-                <col />
-                <col />
-              </colgroup>
-              <thead>
-                <tr>
-                  <th scope="col">Supply Voltages</th>
-                  <th scope="col">3 x 200-240VAC</th>
-                  <th scope="col">3 x 380-480VAC</th>
-                  <th scope="col">3 x 525-600VAC</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row" rowSpan={2}>
-                    Power Range
-                  </th>
-                  <td>1-125HP</td>
-                  <td>1-1000HP</td>
-                  <td>7.5-400HP</td>
-                </tr>
-                <tr>
-                  <td>0.75-90kW</td>
-                  <td>0.75-750kW</td>
-                  <td>5.5-300kW</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </DevicesProductLineupGrid>
+  const product = lineupLvProducts.find((item) => item.id === "h100-plus");
+  if (!product) return null;
 
-        <h3 className="devices_product_lineup__sub-tit">Options</h3>
-        <DevicesProductLineupGrid modifier="type2">
-          <div className="devices_product_lineup__table devices_product_lineup__table--h100-plus devices_product_lineup__table--h100-plus-options">
-            <table>
-              <colgroup>
-                <col />
-                <col />
-                <col />
-              </colgroup>
-              <tbody>
-                <tr>
-                  <th scope="rowgroup" rowSpan={7}>
-                    Communication
-                  </th>
-                  <th scope="row" rowSpan={2}>
-                    Ethernet
-                  </th>
-                  <td>EtherNet IP/ Modbus TCP (2-Port)</td>
-                </tr>
-                <tr>
-                  <td>RAPIEnet+</td>
-                </tr>
-                <tr>
-                  <th scope="row" rowSpan={2}>
-                    FieldBus
-                  </th>
-                  <td>Modbus RTU (Built-in)</td>
-                </tr>
-                <tr>
-                  <td>LS INV 485 (Built-in)</td>
-                </tr>
-                <tr>
-                  <th scope="row" rowSpan={3}>
-                    BAS (Building Automation)
-                  </th>
-                  <td>BACnet/MSTP (Built-in)</td>
-                </tr>
-                <tr>
-                  <td>Lonworks (Built-in)</td>
-                </tr>
-                <tr>
-                  <td>MetaSys N2 (Built-in)</td>
-                </tr>
-                <tr data-other="">
-                  <th scope="row" colSpan={2}>
-                    Other
-                  </th>
-                  <td>
-                    Extension I/O, Remote cable (2/3m), Flange, Conduit,
-                    Disconnect switch
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </DevicesProductLineupGrid>
-      </div>
+  return (
+    <div className="devices_product_lineup__grids">
+      <DevicesProductLineupGrid modifier="type1">
+        <div
+          data-slug="product-data"
+          data-slugkey="product_etc.line_up"
+          dangerouslySetInnerHTML={{ __html: product.html }}
+        />
+      </DevicesProductLineupGrid>
+    </div>
   );
 }
 
@@ -650,6 +638,7 @@ export default function DevicesProductLineup({
   const tables =
     table === "susol-frame" ||
     table === "metasol-ms" ||
+    table === "susol-ul-smart-mccb" ||
     table === "h100-plus" ||
     table === "product-template"
       ? []
@@ -664,6 +653,10 @@ export default function DevicesProductLineup({
         ) : table === "metasol-ms" ? (
           <div className="devices_product_lineup__grids">
             <MetasolMsLineupTable />
+          </div>
+        ) : table === "susol-ul-smart-mccb" ? (
+          <div className="devices_product_lineup__grids">
+            <SusolUlSmartMccbLineupTable />
           </div>
         ) : table === "h100-plus" ? (
           <H100PlusLineupTable />
