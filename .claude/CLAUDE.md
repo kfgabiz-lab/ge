@@ -23,7 +23,7 @@ BE (API): 8080
 
 ## 5-1. bo-api 재기동
 - `JAVA_TOOL_OPTIONS`는 레지스트리 미설정(과거 기재 오류, 없어도 기동은 됨)
-- `SPRING_PROFILES_ACTIVE=local`은 User 환경변수로 이미 저장돼 있음
+- 환경변수로 실행 
 - 절차: 8080 포트 확인 → `gradlew.bat bootRun` 백그라운드+로그리다이렉트 실행 → 로그 `Started BoApplication` 대기 → 8080 재확인
 
 ## 6. 테스트 환경 — 데이터 정합성 예외
