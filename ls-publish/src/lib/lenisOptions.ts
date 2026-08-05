@@ -1,10 +1,4 @@
-import type Lenis from "lenis";
 import type { LenisOptions } from "lenis";
-import {
-  isInMarketsHeroSnapZone,
-  isMarketsHeroSnapping,
-  scrollToMarketsHeroNextSection,
-} from "@/app/()/markets/lib/scrollToMarketsHeroNextSection";
 
 /** wheel/touch 한 틱에 적용되는 최대 스크롤 delta (px) */
 export const LENIS_WHEEL_DELTA_CAP = 72;
@@ -54,9 +48,7 @@ function capVirtualScrollDelta(delta: number, cap: number): number {
 }
 
 /** Lenis 인스턴스 옵션 — 과도한 wheel delta 완화 */
-export function createLenisOptions(
-  getLenis: () => Lenis | null = () => null,
-): LenisOptions {
+export function createLenisOptions(): LenisOptions {
   if (typeof window === "undefined") {
     return { autoRaf: true };
   }
@@ -81,21 +73,6 @@ export function createLenisOptions(
     syncTouch: false,
     prevent: (node) => shouldPreventSmoothScroll(node),
     virtualScroll: (data) => {
-      const lenis = getLenis();
-
-      if (isMarketsHeroSnapping()) {
-        return false;
-      }
-
-      if (
-        lenis &&
-        data.deltaY > 0 &&
-        isInMarketsHeroSnapZone(lenis)
-      ) {
-        scrollToMarketsHeroNextSection({ lenis });
-        return false;
-      }
-
       data.deltaY = capVirtualScrollDelta(
         data.deltaY,
         LENIS_WHEEL_DELTA_CAP,

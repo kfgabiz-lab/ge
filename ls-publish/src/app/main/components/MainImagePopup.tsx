@@ -16,6 +16,7 @@ import {
   guideCheckboxIconsDefault,
 } from "@/components/form/GuideFieldIcons";
 import { mainImagePopupContent } from "@/data/main/mainImagePopupContent";
+import { getWindowScrollY, lockPageScroll, unlockPageScroll } from "@/lib/lenisScroll";
 import { useModalFocusTrap } from "@/lib/useModalFocusTrap";
 
 type MainImagePopupProps = {
@@ -63,12 +64,12 @@ export default function MainImagePopup({
       if (event.key === "Escape") handleClose();
     };
 
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    const scrollY = getWindowScrollY();
+    lockPageScroll(scrollY);
     window.addEventListener("keydown", onKeyDown);
 
     return () => {
-      document.body.style.overflow = prevOverflow;
+      unlockPageScroll(scrollY);
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [embedded, open, handleClose]);

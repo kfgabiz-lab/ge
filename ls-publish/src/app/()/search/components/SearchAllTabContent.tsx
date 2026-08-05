@@ -11,7 +11,7 @@ import SearchPageList from "./SearchPageList";
 import SearchPagesPanel from "./SearchPagesPanel";
 import SearchProductsPanel from "./SearchProductsPanel";
 import {
-  searchAllAiSummary,
+  searchAllAiSummaryHtml,
   searchAllDocuments,
   searchAllMedia,
   searchAllPage,
@@ -103,12 +103,14 @@ export default function SearchAllTabContent({
               </div>
               <div className="search_all__ai-body">
                 <ul className="search_all__ai-list">
-                  {searchAllAiSummary.map((line, index) => (
-                    <li key={`ai-${index}`}>
-                      <span className="search_all__ai-bullet" aria-hidden />
-                      <span className="search_all__ai-list-text">{line}</span>
-                    </li>
-                  ))}
+                  <li>
+                    <div
+                      className="search_all__ai-list-text"
+                      dangerouslySetInnerHTML={{
+                        __html: searchAllAiSummaryHtml,
+                      }}
+                    />
+                  </li>
                 </ul>
               </div>
             </div>

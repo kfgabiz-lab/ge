@@ -58,7 +58,7 @@
     font-size: 70px;
     font-weight: 800;
     line-height: 80px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
   }
 
@@ -278,7 +278,7 @@
     font-size: 70px;
     font-weight: 800;
     line-height: 80px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
   }
 
@@ -557,7 +557,7 @@
     font-size: 50px;
     font-weight: 700;
     line-height: 62px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
   }
 
@@ -693,7 +693,7 @@
     font-size: 36px;
     font-weight: 800;
     line-height: 46px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
     word-break: break-word;
   }
@@ -905,7 +905,7 @@
     font-size: 36px;
     font-weight: 800;
     line-height: 46px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
   }
 
   section.devices_hero.devices_hero--with-products .devices_products--embedded {
@@ -1020,7 +1020,7 @@
     font-size: 30px;
     font-weight: 700;
     line-height: 40px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
     word-break: break-word;
   }
@@ -1174,7 +1174,7 @@
     font-size: 30px;
     font-weight: 700;
     line-height: 40px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
   }
 
@@ -1411,7 +1411,7 @@ section.devices_explore .guide_field .MuiSelect-icon.MuiSelect-iconOpen {
     font-size: 70px;
     font-weight: 800;
     line-height: 80px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
   }
 

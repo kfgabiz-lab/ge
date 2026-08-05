@@ -708,7 +708,7 @@ Figma [5966:63556](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%
 | 클래스 | 컴포넌트 | id · 비고 |
 |--------|----------|-----------|
 | `search_all_hero` | `SearchAllHero.tsx` | `search-all-hero` — `guide_field--search` 80px · clear 30px + `ico_clear_12_black` (Figma 4701:83900 · 6571:102541) |
-| `search_all` | `SearchAllTabContent.tsx` | `search-all` — All 탭 · AI·Product/Documents/Media/Pages · tablet 600~780px Product/Media 2열 (Figma 4701:83900 · Pages 4701:83902) |
+| `search_all` | `SearchAllTabContent.tsx` | `search-all` — All 탭 · AI HTML 요약(`.search_all__ai-list-text`) · Product/Documents/Media/Pages · tablet 600~780px Product/Media 2열 (Figma 4701:83900 · Pages 4701:83902) |
 | `search_products` | `SearchProductsPanel.tsx` | `search-products` — Products 탭 · tablet 600~780px 2열 (Figma 4701:84687) |
 | `search_documents` | `SearchDocumentsPanel.tsx` | `search-documents` — Documents 탭 · MO active-filter clear `#222` (Figma 4701:85037 · 6571:105004) |
 | `search_media` | `SearchMediaPanel.tsx` | `search-media` — Media 탭 · tablet 600~780px 2열 (Figma 4701:84177) |

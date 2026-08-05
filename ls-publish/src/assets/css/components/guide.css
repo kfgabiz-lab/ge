@@ -37,7 +37,7 @@ main.guide-hub .guide-hub__header {
 main.guide-hub .guide-hub__header h1 {
   font-size: 28px;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -2%;
   margin-bottom: 8px;
 }
 main.guide-hub .guide-hub__header p {
@@ -108,7 +108,7 @@ section.gnb-guide {
 .guide-doc__header h1 {
   font-size: 28px;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -2%;
   margin-bottom: 8px;
 }
 
@@ -242,7 +242,7 @@ section.ico-guide .ico-guide-header {
 section.ico-guide .ico-guide-header h1 {
   font-size: 28px;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -2%;
   margin-bottom: 8px;
 }
 section.ico-guide .ico-guide-header p {
@@ -439,7 +439,7 @@ section.component-guide .component-guide__title {
   font-weight: 700;
   line-height: 1.1;
   color: #fff;
-  letter-spacing: -0.02em;
+  letter-spacing: -2%;
 }
 section.component-guide .component-guide__date {
   display: flex;
@@ -782,7 +782,7 @@ section.section-guide .section-guide__category-head {
 section.section-guide .section-guide__category-head h2 {
   font-size: 22px;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -2%;
   margin-bottom: 8px;
 }
 section.section-guide .section-guide__category-head p {

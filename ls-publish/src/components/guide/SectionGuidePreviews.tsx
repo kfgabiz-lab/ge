@@ -696,24 +696,26 @@ export function CompanyBlogSectionPreviews() {
             className="company-blog-top__bg"
           />
           <div className="inner">
-            <Link href="/company/blog/detail" className="company-blog-featured__card">
-              <div className="company-blog-featured__image">
+            <div className="company-blog-featured__card">
+              <Link href="/company/blog/detail" className="company-blog-featured__image">
                 <img src={guideBlogFeatured.image} alt={guideBlogFeatured.title} />
-              </div>
+              </Link>
               <div className="company-blog-featured__content">
-                <p className="company-blog-featured__category">{guideBlogFeatured.category}</p>
-                <h2 className="company-blog-featured__title">{guideBlogFeatured.title}</h2>
-                <p className="company-blog-featured__desc">{guideBlogFeatured.description}</p>
-                <p className="company-blog-featured__date">{guideBlogFeatured.date}</p>
+                <Link href="/company/blog/detail" className="company-blog-featured__text">
+                  <p className="company-blog-featured__category">{guideBlogFeatured.category}</p>
+                  <h2 className="company-blog-featured__title">{guideBlogFeatured.title}</h2>
+                  <p className="company-blog-featured__desc">{guideBlogFeatured.description}</p>
+                  <p className="company-blog-featured__date">{guideBlogFeatured.date}</p>
+                </Link>
                 <div className="company-blog-featured__tags">
                   {guideBlogFeatured.tags.map((tag) => (
-                    <div key={tag} className="company-blog-featured__tag">
+                    <a key={tag} href="#" className="company-blog-featured__tag">
                       {tag}
-                    </div>
+                    </a>
                   ))}
                 </div>
               </div>
-            </Link>
+            </div>
           </div>
         </section>
       </SectionGuideBlock>
@@ -727,21 +729,23 @@ export function CompanyBlogSectionPreviews() {
                     <div className="company-blog-list__image">
                       <img src="/pub/img/company/blog/list_01.jpg" alt="" />
                     </div>
-                    <Link href="/company/blog/detail" className="company-blog-list__content">
-                      <p className="company-blog__category">{guideBlogFeatured.category}</p>
-                      <h3 className="company-blog-list__title">{guideBlogFeatured.title}</h3>
-                      <p className="company-blog-list__desc">{guideBlogFeatured.description}</p>
-                      <p className="company-blog__date">{guideBlogFeatured.date}</p>
+                    <div className="company-blog-list__content">
+                      <Link href="/company/blog/detail" className="company-blog-list__content-link">
+                        <p className="company-blog__category">{guideBlogFeatured.category}</p>
+                        <h3 className="company-blog-list__title">{guideBlogFeatured.title}</h3>
+                        <p className="company-blog-list__desc">{guideBlogFeatured.description}</p>
+                        <p className="company-blog__date">{guideBlogFeatured.date}</p>
+                      </Link>
                       <div className="company-blog-list__tags-row">
                         <div className="company-blog__tags">
                           {guideBlogFeatured.tags.map((tag) => (
-                            <div key={tag} className="company-blog__tag">
+                            <a key={tag} href="#" className="company-blog__tag">
                               {tag}
-                            </div>
+                            </a>
                           ))}
                         </div>
                       </div>
-                    </Link>
+                    </div>
                   </div>
                 </div>
               </li>

@@ -15,16 +15,17 @@ const SUB_TOP_THRESHOLD = 8;
 export default function SubHeader() {
   const pathname = usePathname();
   const isProductDetail = isDevicesProductDetailPath(pathname);
-  const [isMegaOpen, setIsMegaOpen] = useState(false);  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMegaOpen, setIsMegaOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [frozenWrapAtTop, setFrozenWrapAtTop] = useState<boolean | null>(null);
 
   const { isAtTop, isGnbHidden: scrollGnbHidden, isHeaderRevealed, revealHeader } =
     useHeaderScroll({
-      hideGnbOnScroll: !isMobileMenuOpen && !isMegaOpen,
+      hideGnbOnScroll: !isMobileMenuOpen && !isMegaOpen && !isSearchOpen,
     });
 
-  const isGnbHidden = scrollGnbHidden && !isSearchOpen;
+  const isGnbHidden = scrollGnbHidden && !isSearchOpen && !isMegaOpen;
   const resolvedIsAtTop =
     frozenWrapAtTop !== null ? frozenWrapAtTop : isAtTop;
 

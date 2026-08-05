@@ -255,7 +255,7 @@ section.devices_product_hero .devices_product_hero__btns .icon_download {
     line-height: 40px;
     color: #222;
     white-space: pre-line;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
   }
 
   section.devices_product_hero .devices_product_hero__btns {
@@ -1295,7 +1295,7 @@ section.devices_product_lineup .devices_product_lineup__footer .btn-lv02--solid{
     font-size: 50px;
     font-weight: 700;
     line-height: 62px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
   }
 
@@ -1448,7 +1448,7 @@ section.devices_product_lineup .devices_product_lineup__footer .btn-lv02--solid{
     font-size: 70px;
     font-weight: 800;
     line-height: 80px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
   }
 
@@ -1494,7 +1494,7 @@ section.devices_product_lineup .devices_product_lineup__footer .btn-lv02--solid{
     font-size: 50px;
     font-weight: 700;
     line-height: 62px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
   }
 
@@ -1751,7 +1751,7 @@ section.devices_product_lineup .devices_product_lineup__footer .btn-lv02--solid{
     font-size: 50px;
     font-weight: 700;
     line-height: 62px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
     font-feature-settings: "liga" 0;
   }
@@ -1766,7 +1766,7 @@ section.devices_product_lineup .devices_product_lineup__footer .btn-lv02--solid{
     font-size: 50px;
     font-weight: 700;
     line-height: 62px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
     font-feature-settings: "liga" 0;
   }

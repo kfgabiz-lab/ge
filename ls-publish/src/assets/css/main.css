@@ -139,7 +139,7 @@
       font-weight: 800;
       font-size: 82px;
       line-height: 96px;
-      letter-spacing: -0.2px;
+      letter-spacing: -2%;
       margin-bottom: 60px;
     }
 
@@ -599,7 +599,7 @@ section.main_notic .txt:before {
       font-size: 42px;
       font-weight: 500;
       line-height: 54px;
-      letter-spacing: -0.02em;
+      letter-spacing: -2%;
       color: #fff;
       margin-bottom: 100px;
     }
@@ -628,7 +628,7 @@ section.main_notic .txt:before {
     .info_box .tit strong {
       font-size: 82px;
       font-weight: 600;
-      letter-spacing: -0.02em;
+      letter-spacing: -2%;
       line-height: 80px;
       font-variant-numeric: tabular-nums;
     }
@@ -700,7 +700,7 @@ section.main_notic .txt:before {
       font-size: 50px;
       font-weight: 700;
       line-height: 62px;
-      letter-spacing: -0.02em;
+      letter-spacing: -2%;
       color: #fff;
       font-family: jaka;
     }
@@ -820,7 +820,7 @@ section.main_notic .txt:before {
     font-size: 50px;
     font-weight: 700;
     line-height: 62px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
     margin-bottom: 120px;
   }
@@ -937,7 +937,7 @@ section.main_notic .txt:before {
     font-size: 50px;
     font-weight: 700;
     line-height: 62px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
   }
 
@@ -1031,9 +1031,9 @@ section.main_notic .txt:before {
     margin-bottom: 40px;
     font-family: jaka;
     font-size: 50px;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 62px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
   }
 
@@ -1205,7 +1205,7 @@ section.main_notic .txt:before {
     font-size: 50px;
     font-weight: 700;
     line-height: 62px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #fff;
   }
 
@@ -1319,7 +1319,7 @@ section.main_notic .txt:before {
     font-size: 24px;
     font-weight: 600;
     line-height: 32px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
     margin-bottom: 10px;
   }
@@ -1971,7 +1971,7 @@ section.main_notic .txt:before {
       font-size: 28px;
       font-weight: 500;
       line-height: 38px;
-      letter-spacing: -0.02em;
+      letter-spacing: -2%;
       color: #fff;
       margin-bottom: 40px;
     }
@@ -2001,7 +2001,7 @@ section.main_notic .txt:before {
     .info_box .tit strong {
       font-size: 50px;
       font-weight: 700;
-      letter-spacing: -0.02em;
+      letter-spacing: -2%;
       line-height: 60px;
       font-variant-numeric: tabular-nums;
     }
@@ -2043,7 +2043,7 @@ section.main_notic .txt:before {
     font-size: 30px;
     font-weight: 700;
     line-height: 40px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
   }
 
@@ -2396,7 +2396,7 @@ section.main_notic .txt:before {
     font-size: 30px;
     font-weight: 700;
     line-height: 40px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #fff;
   }
 

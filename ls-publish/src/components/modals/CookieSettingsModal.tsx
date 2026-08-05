@@ -6,6 +6,7 @@ import {
   cookieSettingsModal,
   type CookieConsentValue,
 } from "@/data/common/cookieSettingsContent";
+import { getWindowScrollY, lockPageScroll, unlockPageScroll } from "@/lib/lenisScroll";
 import { useModalFocusTrap } from "@/lib/useModalFocusTrap";
 
 type CookieSettingsModalProps = {
@@ -43,12 +44,12 @@ export default function CookieSettingsModal({
       if (event.key === "Escape") onClose?.();
     };
 
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    const scrollY = getWindowScrollY();
+    lockPageScroll(scrollY);
     window.addEventListener("keydown", onKeyDown);
 
     return () => {
-      document.body.style.overflow = prevOverflow;
+      unlockPageScroll(scrollY);
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [embedded, open, onClose]);
