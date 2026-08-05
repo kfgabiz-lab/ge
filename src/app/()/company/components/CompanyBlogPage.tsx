@@ -14,7 +14,11 @@ import PageNumbering from "@/components/pagination/PageNumbering";
 import "@/assets/css/company.css";
 
 function BlogTag({ label }: { label: string }) {
-  return <div className="company-blog__tag">{label}</div>;
+  return (
+    <a href="#" className="company-blog__tag">
+      {label}
+    </a>
+  );
 }
 
 type CompanyBlogPageProps = {
@@ -50,24 +54,26 @@ export default function CompanyBlogPage({
       <section className="company-blog-top">
         <img src={blogHeroBgImage} alt="" className="company-blog-top__bg" />
         <div className="inner">
-          <Link href="/company/blog/detail" className="company-blog-featured__card">
-            <div className="company-blog-featured__image">
+          <div className="company-blog-featured__card">
+            <Link href="/company/blog/detail" className="company-blog-featured__image">
               <img src={blogHeroMainImage} alt={blogFeatured.title} />
-            </div>
+            </Link>
             <div className="company-blog-featured__content">
-              <p className="company-blog-featured__category">{blogFeatured.category}</p>
-              <h2 className="company-blog-featured__title">{blogFeatured.title}</h2>
-              <p className="company-blog-featured__desc">{blogFeatured.description}</p>
-              <p className="company-blog-featured__date">{blogFeatured.date}</p>
+              <Link href="/company/blog/detail" className="company-blog-featured__text">
+                <p className="company-blog-featured__category">{blogFeatured.category}</p>
+                <h2 className="company-blog-featured__title">{blogFeatured.title}</h2>
+                <p className="company-blog-featured__desc">{blogFeatured.description}</p>
+                <p className="company-blog-featured__date">{blogFeatured.date}</p>
+              </Link>
               <div className="company-blog-featured__tags">
                 {blogFeatured.tags.map((tag) => (
-                  <div key={tag} className="company-blog-featured__tag">
+                  <a key={tag} href="#" className="company-blog-featured__tag">
                     {tag}
-                  </div>
+                  </a>
                 ))}
               </div>
             </div>
-          </Link>
+          </div>
         </div>
       </section>
 
@@ -90,11 +96,13 @@ export default function CompanyBlogPage({
                               <img src={item.image} alt={item.title} />
                             </Link>
                           </div>
-                          <Link href="/company/blog/detail" className="company-blog-list__content">
-                            <p className="company-blog__category">{item.category}</p>
-                            <h3 className="company-blog-list__title">{item.title}</h3>
-                            <p className="company-blog-list__desc">{item.description}</p>
-                            <p className="company-blog__date">{item.date}</p>
+                          <div className="company-blog-list__content">
+                            <Link href="/company/blog/detail" className="company-blog-list__content-link">
+                              <p className="company-blog__category">{item.category}</p>
+                              <h3 className="company-blog-list__title">{item.title}</h3>
+                              <p className="company-blog-list__desc">{item.description}</p>
+                              <p className="company-blog__date">{item.date}</p>
+                            </Link>
                             <div className="company-blog-list__tags-row">
                               <div className="company-blog__tags">
                                 {item.tags.map((tag, tagIndex) => (
@@ -102,7 +110,7 @@ export default function CompanyBlogPage({
                                 ))}
                               </div>
                             </div>
-                          </Link>
+                          </div>
                         </div>
                       </div>
                     </li>

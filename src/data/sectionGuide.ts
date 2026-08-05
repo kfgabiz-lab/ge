@@ -1601,7 +1601,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "SearchAllTabContent.tsx",
         cssFile: "search.css",
         anchorId: "search-all",
-        note: "All 탭 · 탭 UI · AI 요약 (Figma 7334:108163 · badge PNG · CSS gradient 보더) · 섹션별 미리보기 · Pages Figma 4701:83902 · btn-text-30 Explore (Figma 4701:83900) · tablet 600~780px Product/Media 2열",
+        note: "All 탭 · 탭 UI · AI HTML 요약 `.search_all__ai-list-text` (h1~h3·중첩 ul) · Figma 7334:108163 · badge PNG · CSS gradient 보더 · 섹션별 미리보기 · Pages Figma 4701:83902 · btn-text-30 Explore · tablet 600~780px Product/Media 2열",
       },
       {
         id: "search_products",

@@ -44,6 +44,7 @@
 html {
   height: 100%;
   overflow-y: scroll;
+  scrollbar-gutter: stable;
   -webkit-text-size-adjust: none;
   text-size-adjust: none;
 }
@@ -77,6 +78,32 @@ body {
   max-width: 100%;
   overflow-x: clip;
 }
+
+/* 오버레이(GNB·모달) 오픈 시 페이지 스크롤 잠금
+   overflow-y: scroll 유지 — 스크롤바 소실로 레이아웃 폭이 흔들리지 않게 */
+html.is-page-scroll-lock {
+  overflow-y: scroll;
+  overflow-x: clip;
+  overscroll-behavior: none;
+  scrollbar-gutter: stable;
+}
+
+/*
+  Lenis stop() → .lenis-stopped { overflow: clip } (specificity 0,3,0)
+  이 규칙이 scroll-lock을 덮어 스크롤바가 사라지면 딤 뒤 페이지가 흔들림.
+*/
+html.is-page-scroll-lock.lenis.lenis-stopped,
+html.is-page-scroll-lock.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow-y: scroll;
+  overflow-x: clip;
+  scrollbar-gutter: stable;
+}
+
+html.is-page-scroll-lock body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 body {
   min-height: 100%;
   display: flex;
@@ -108,7 +135,7 @@ section .section_tit {
   font-size: 50px;
   font-weight: 600;
   line-height: 62px;
-  letter-spacing: -0.02em;
+  letter-spacing: -2%;
   color: var(--color-text);
 }
 section .section_desc {
@@ -143,7 +170,7 @@ section .btn-base.is-disabled {
   pointer-events: none;
 }
 
-/* Level 01 ??52px */
+/* Level 01 — 52px */
 section .btn-lv01 {
   min-height: var(--btn-lv01-h);
   min-width: var(--btn-lv01-min-w);
@@ -208,7 +235,7 @@ section .btn_outline:hover .icon_download {
   /* opacity: 0.85; */
 }
 
-/* Level 02 ??46px */
+/* Level 02 — 42px */
 section .btn-lv02 {
   min-height: var(--btn-lv02-h);
   min-width: var(--btn-lv02-min-w);
@@ -254,7 +281,7 @@ section .btn-lv02--more:hover .icon_more {
   filter: brightness(0) invert(1);
 }
 
-/* Level 03 ??42px */
+/* Level 03 — 42px */
 section .btn-lv03 {
   min-height: var(--btn-lv03-h);
   min-width: var(--btn-lv03-min-w);
@@ -714,7 +741,7 @@ section .icon_arrow-18 {
     font-size: 42px;
     font-weight: 700;
     line-height: 52px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #fff;
     width: 100%;
   }
@@ -793,7 +820,7 @@ section .icon_arrow-18 {
     font-size: 24px;
     font-weight: 600;
     line-height: 34px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #fff;
     width: 100%;
   }
@@ -1137,7 +1164,7 @@ section.common_banner_01 .btn-lv01--line-solid .icon_arrow-18 {
     font-size: 42px;
     font-weight: 700;
     line-height: 52px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
   }
 
   section.common_banner_04 .common_banner_04__desc {
@@ -2497,7 +2524,7 @@ section.company-blog-list .guide_field .MuiOutlinedInput-root:has(.MuiSelect-ico
 
   section.common_faq .common_faq__head .section_tit {
     font-weight: 700;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
   }
 
   section.common_faq .common_faq__head .section_desc {
@@ -3314,9 +3341,9 @@ section.highlight_news--markets .section_tit {
     margin-bottom: 40px;
     font-family: jaka, Arial, Helvetica, sans-serif;
     font-size: 50px;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 62px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
   }
 
@@ -3414,7 +3441,7 @@ section.highlight_news--markets .section_tit {
     font-size: 30px;
     font-weight: 700;
     line-height: 40px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
   }
 
@@ -3470,7 +3497,7 @@ section.highlight_news--markets .section_tit {
     font-size: 30px;
     font-weight: 700;
     line-height: 40px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
   }
 

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import GnbMobileMenuPanel from "@/components/layout/shared/GnbMobileMenuPanel";
+import { getWindowScrollY, lockPageScroll, unlockPageScroll } from "@/lib/lenisScroll";
 import "@/assets/css/components/gnb.css";
 
 const gnbNavItems = [
@@ -54,11 +55,12 @@ export default function MegaMenu() {
       }
     };
 
-    document.body.style.overflow = "hidden";
+    const scrollY = getWindowScrollY();
+    lockPageScroll(scrollY);
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.body.style.overflow = "";
+      unlockPageScroll(scrollY);
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [closeMobileMenu, isMobileMenuOpen]);

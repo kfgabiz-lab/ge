@@ -79,26 +79,200 @@ export type SearchPageItem = {
   description: string;
 };
 
-export const searchAllAiSummary = [
-  "General-purpose control for automation: A PLC is a general-purpose controller that operates machinery in a defined order and conditions by program, and is used for factory and process automation ranging from large-scale plant automation systems to general equipment.",
-  "Flexible I/O programming and response control: Input and Output terminals can be programmed, and the response time for signal input and output can be adjusted.",
-  "Remote monitoring and control options: With simple sequence configuration, operation is possible from local operator panels (LOP) and MCC panels, and remote monitoring/control via communications is possible for automatic operation using PLC or DCS.",
-  "Reduced downtime through engineering convenience:",
-  "Point import functions for IEC 61850, PLC, and Smart LV devices",
-  "Flexible I/O programming and response control: Input and Output terminals can be programmed, and the response time for signal input and output can be adjusted.",
-  "Remote monitoring and control options: With simple sequence configuration",
-  "Remote monitoring and control options: With simple sequence configuration, operation is possible from local operator panels (LOP) and MCC panels, and remote monitoring/control via",
-  "communications is possible for automatic operation using PLC or DCS.",
-  "Point import functions for IEC 61850, PLC, and Smart LV devices help streamline commissioning and reduce wiring errors during installation.",
-  "DC protection devices overview: DC miniature circuit breakers (MCBs) and molded case circuit breakers (MCCBs) protect circuits against overload and short-circuit conditions in DC applications such as solar, battery storage, and EV charging infrastructure.",
-  "Metasol MS series: Metasol contactors and overload relays provide reliable motor control with compact dimensions, suitable for panel builders and OEMs integrating motor starters into control cabinets.",
-  "Susol UL Smart MCCB: Smart molded case circuit breakers with communication capabilities enable remote status monitoring, trip history review, and integration with building or plant management systems.",
-  "Selection criteria for DC breakers: Consider rated voltage, breaking capacity, trip curve characteristics, and compliance with applicable standards (IEC, UL) when matching a breaker to your application.",
-  "Documentation and downloads: Product catalogs, technical datasheets, CAD drawings, and software tools are available from the product detail pages and the Download Center for engineering and procurement teams.",
-  "Related product families: Explore motor control, power distribution, automation controllers, and smart low-voltage devices under Devices & Systems to find complementary solutions for your project.",
-  "Support resources: Application notes, installation guides, and FAQ content on LS Electric global sites can help verify specifications before finalizing your bill of materials.",
-  "Search tip: Use product names (e.g. Metasol MS, Susol MCCB), categories (DC Device, MCCB), or document types (catalog, datasheet) to narrow results across Products, Documents, Media, and Pages tabs.",
-];
+/** AI summary HTML — rendered inside `.search_all__ai-list-text` */
+export const searchAllAiSummaryHtml = `
+<h1>MCCB</h1>
+<h2>Overview</h2>
+<ul>
+<li>
+<p><strong>MCCB</strong> appears in the provided materials as <strong>Molded Case Circuit Breaker</strong>.</p>
+</li>
+<li>
+<p>In the <strong>Susol Smart MCCB</strong> material, it is described as a product developed by combining <strong>digital technology</strong> with LS ELECTRIC’s <strong>power device technology accumulated over 40 years</strong>.</p>
+</li>
+<li>
+<p>The document states that the <strong>relay and measurement functions for line protection</strong> have been upgraded.</p>
+</li>
+<li>
+<p>It also states that, by using <strong>accessory devices for connectivity between low-voltage devices</strong>, it is possible to <strong>diagnose and maintain devices by collecting and analyzing data</strong>.</p>
+</li>
+</ul>
+<h2>Basic information</h2>
+<h3>Susol Smart MCCB</h3>
+<ul>
+<li>
+<p>Supports <strong>on-site monitoring</strong> and <strong>on-site maintenance convenience</strong> through a <strong>short-range wireless mobile app service</strong>.</p>
+</li>
+<li>
+<p>Mobile app services include:</p>
+<ul>
+<li><strong>Real-time system and device operation status monitoring</strong></li>
+<li><strong>Energy use and failure analysis service measure</strong></li>
+</ul>
+</li>
+<li>
+<p>Mobile application features include:</p>
+<ul>
+<li><strong>Device search and automatic recognition</strong></li>
+<li><strong>Device status and operation information inquiry</strong></li>
+<li><strong>Graphic chart by element</strong></li>
+</ul>
+</li>
+</ul>
+<h3>GridSol CARE related configuration</h3>
+<ul>
+<li>
+<p><strong>Smart MCCB</strong> is listed as a component of <strong>GridSol CARE</strong>, along with:</p>
+<ul>
+<li>Upper level system</li>
+<li>Communication device</li>
+<li>Accessory device</li>
+<li>ACB</li>
+<li>MCB</li>
+</ul>
+</li>
+<li>
+<p>The document states that GridSol CARE provides <strong>power monitoring and control functions remotely</strong> through its software.</p>
+</li>
+</ul>
+<h2>Features found in the provided documents</h2>
+<h3>UL489 MCCB related features</h3>
+<p>From the <strong>UL891 switchboard solution</strong> material using <strong>UL489 MCCBs</strong>:</p>
+<ul>
+<li>
+<p>Meets <strong>UL67 / UL891 certification standards</strong> for bus straps and interiors utilizing UL489 MCCBs</p>
+</li>
+<li>
+<p>Provides flexibility through:</p>
+<ul>
+<li><strong>Five types of interiors</strong></li>
+<li><strong>Three types of bus straps</strong></li>
+<li><strong>A wide range of MCCBs</strong></li>
+</ul>
+</li>
+<li>
+<p>Described as:</p>
+<ul>
+<li><strong>Cost effective</strong></li>
+<li>Allowing <strong>safe installation</strong></li>
+<li>Allowing <strong>interchangeability</strong></li>
+</ul>
+</li>
+</ul>
+<h3>Listed panel-related features</h3>
+<ul>
+<li>
+<p><strong>UL67 / UL891 Panelboards</strong></p>
+</li>
+<li>
+<p><strong>UL489 Molded case circuit breakers</strong></p>
+</li>
+<li>
+<p><strong>Main bus, 1200 / 2000 / 2400 / 4000 / 6000A copper</strong></p>
+</li>
+<li>
+<p><strong>Branch-bus direct connection</strong></p>
+</li>
+<li>
+<p><strong>Up to 1200A breaker mounted as a branch device</strong></p>
+</li>
+<li>
+<p><strong>Double branched 150, 250 and 400AF breakers</strong></p>
+</li>
+<li>
+<p><strong>Interior maximum short circuit interrupting rating 100kA at 480Vac</strong></p>
+</li>
+<li>
+<p><strong>Individual breaker protection cover plates</strong></p>
+</li>
+</ul>
+<h2>Product line examples shown in the documents</h2>
+<h3>UL489 MCCB supply scope</h3>
+<ul>
+<li>
+<p><strong>UTS1200</strong></p>
+</li>
+<li>
+<p><strong>UTS800</strong></p>
+</li>
+<li>
+<p><strong>UTS600</strong></p>
+</li>
+<li>
+<p><strong>UTS400</strong></p>
+</li>
+<li>
+<p><strong>UTS250</strong></p>
+</li>
+<li>
+<p><strong>UTS150</strong></p>
+</li>
+</ul>
+<h3>Susol MCCB overview chart labels</h3>
+<p>The overview image shows the following model labels:</p>
+<ul>
+<li>
+<p><strong>TD100</strong></p>
+</li>
+<li>
+<p><strong>TD160</strong></p>
+</li>
+<li>
+<p><strong>TS100</strong></p>
+</li>
+<li>
+<p><strong>TS160</strong></p>
+</li>
+<li>
+<p><strong>TS250</strong></p>
+</li>
+<li>
+<p><strong>TS400</strong></p>
+</li>
+<li>
+<p><strong>TS630</strong></p>
+</li>
+<li>
+<p><strong>TS800</strong></p>
+</li>
+<li>
+<p><strong>TS1000</strong></p>
+</li>
+<li>
+<p><strong>TS1250</strong></p>
+</li>
+<li>
+<p><strong>TS1600</strong></p>
+</li>
+</ul>
+<h2>Additional information</h2>
+<ul>
+<li>
+<p>One document states that <strong>LSIS MCCB can operate ON / OFF remotely when using MOP (Motor Operator)</strong>.</p>
+</li>
+<li>
+<p>It describes <strong>MOP</strong> as <strong>an accessory which contains a motor for operating</strong>.</p>
+</li>
+<li>
+<p>The applicable range shown for <strong>Susol MCCB</strong> is:</p>
+<ul>
+<li><strong>TD160 ~ TS800</strong></li>
+</ul>
+</li>
+</ul>
+<h2>Note</h2>
+<ul>
+<li>
+<p>Please refer to the official catalog for precise specifications and technical requirements.</p>
+</li>
+<li>
+<p>For manuals, certificates, CAD drawings, or other detailed resources, please visit the <a href="https://www.ls-electric.com/support/download-center">LS ELECTRIC Download Center</a>.</p>
+</li>
+</ul>
+`.trim();
+
+/** @deprecated Use `searchAllAiSummaryHtml` — kept for any string-array consumers */
+export const searchAllAiSummary = [searchAllAiSummaryHtml];
 
 export const searchAllProducts: SearchProductItem[] = [
   {

@@ -25,7 +25,7 @@
     font-family: jaka;
     font-size: 70px;
     line-height: 80px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
     font-weight: 800;
   }
@@ -530,7 +530,7 @@ section.company-blog-list .guide_field .MuiSelect-icon.MuiSelect-iconOpen {
     font-family: jaka;
     font-size: 36px;
     line-height: 46px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
     font-weight: 800;
   }
@@ -769,13 +769,13 @@ section.company-blog-list .guide_field .MuiSelect-icon.MuiSelect-iconOpen {
   .company-page--press section.company-press-title .company-press-title__heading {
     font-size: 36px;
     line-height: 46px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
   }
 
   .company-page--articles section.company-articles-title .company-articles-title__heading {
     font-size: 36px;
     line-height: 46px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
   }
 
   .company-page--articles section.company-articles-title .company-articles-title__desc {

@@ -15,7 +15,7 @@
     font-size: 70px;
     font-weight: 800;
     line-height: 80px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
   }
 
@@ -60,7 +60,7 @@
     font-size: 36px;
     font-weight: 800;
     line-height: 46px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
   }
 
@@ -159,7 +159,7 @@
     font-size: 50px;
     font-weight: 700;
     line-height: 62px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
   }
 
@@ -231,7 +231,7 @@
     font-size: 50px;
     font-weight: 700;
     line-height: 62px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #fff;
   }
 
@@ -471,7 +471,7 @@
     font-size: 30px;
     font-weight: 700;
     line-height: 40px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
   }
 
@@ -541,7 +541,7 @@ section.support_connect_features  .support_connect_features__bg-img--pc{
     font-size: 30px;
     font-weight: 700;
     line-height: 40px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #fff;
   }
 
@@ -3269,7 +3269,7 @@ section.support_download_contents.devices_product_downloads--center.devices_prod
     font-size: 42px;
     font-weight: 700;
     line-height: 52px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
   }
 
@@ -3509,7 +3509,7 @@ section.support_download_contents.devices_product_downloads--center.devices_prod
     font-size: 28px;
     font-weight: 700;
     line-height: 38px;
-    letter-spacing: -0.02em;
+    letter-spacing: -2%;
     color: #222;
   }
 

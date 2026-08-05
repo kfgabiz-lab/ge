@@ -168,9 +168,9 @@ export default function ComponentGuide() {
           </div>
         </div>
 
-        {/* Level 02 — 46px */}
+        {/* Level 02 — 42px */}
         <div className="component-guide__section" id="level-02">
-          <h2 className="component-guide__section-tit">Level 02_46px</h2>
+          <h2 className="component-guide__section-tit">Level 02_42px</h2>
 
           <div className="component-guide__type">
             <h3 className="component-guide__type-tit">1. Solid</h3>
@@ -197,43 +197,6 @@ export default function ComponentGuide() {
                     style={{ background: "var(--color-primary-hover)" }}
                   >
                     Go to Configurator
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="component-guide__type">
-            <h3 className="component-guide__type-tit">2. Line + Solid</h3>
-            <p className="component-guide__type-spec">
-              <span>최소사이즈 150px</span>
-              <span className="component-guide__type-spec-sep" />
-              <span>Icon 14px</span>
-            </p>
-            <div className="component-guide__states">
-              <div className="component-guide__state-col">
-                <span className="component-guide__state-label">Default</span>
-                <div className="component-guide__preview-light">
-                  <a href="" className="btn-base btn-lv02 btn-lv02--more">
-                    Read more
-                    <span className="icon_plus" aria-hidden="true" />
-                  </a>
-                </div>
-              </div>
-              <div className="component-guide__state-col">
-                <span className="component-guide__state-label">Hover</span>
-                <div className="component-guide__preview-light">
-                  <a
-                    href=""
-                    className="btn-base btn-lv02 btn-lv02--more"
-                    style={{
-                      color: "#fff",
-                      background: "var(--color-primary)",
-                      borderColor: "var(--color-primary)",
-                    }}
-                  >
-                    Read more
-                    <span className="icon_plus" aria-hidden="true" />
                   </a>
                 </div>
               </div>
