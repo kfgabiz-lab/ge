@@ -5,14 +5,26 @@ import type { GnbMegaSimplePanelStateProps } from "@/components/layout/shared/gn
 import type { GnbSimpleMegaSection } from "@/data/gnb";
 import { companyMegaMenu } from "@/data/gnb/mega/company";
 
+/** Figma 8793:231732 — #gnb-mega-panel-company */
 export default function GnbCompanyMegaPanel({
   onItemClick,
+  onClose,
 }: GnbMegaSimplePanelStateProps) {
   const sections =
     companyMegaMenu.layout === "sections" ? companyMegaMenu.sections : [];
 
   return (
     <div className="gnb_mega__inner gnb_mega__inner--sections">
+      {onClose ? (
+        <button
+          type="button"
+          className="gnb_mega__close"
+          aria-label="메뉴 닫기"
+          onClick={onClose}
+        >
+          <span className="ir">close menu</span>
+        </button>
+      ) : null}
       <div className="gnb_mega__head">
         <h2 className="gnb_mega__tit">Company</h2>
       </div>

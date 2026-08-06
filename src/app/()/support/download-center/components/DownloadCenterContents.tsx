@@ -1,136 +1,35 @@
 "use client";
 
-import { Checkbox, FormControl, MenuItem } from "@mui/material";
-import type { ReactNode } from "react";
+import { FormControl, MenuItem } from "@mui/material";
 import { useMemo, useState } from "react";
-import {
-  GuideCheckboxIcon,
-  GuideSelectIcon,
-  guideCheckboxIconsDownloads,
-} from "@/components/form/GuideFieldIcons";
+import DevicesProductDownloadsCopyLink from "@/app/()/products-systems/components/product/DevicesProductDownloadsCopyLink";
+import { GuideSelectIcon } from "@/components/form/GuideFieldIcons";
 import GuideSelect from "@/components/form/GuideSelect";
 import PageNumbering from "@/components/pagination/PageNumbering";
-import DevicesProductDownloadsCheckLabel from "@/app/()/devices-systems/components/product/DevicesProductDownloadsCheckLabel";
 import DownloadCenterActiveFilters from "./DownloadCenterActiveFilters";
 import DownloadCenterEmpty from "./DownloadCenterEmpty";
+import { DownloadCenterFilterBoundary } from "./DownloadCenterFilterProvider";
+import DownloadCenterFilterPanel from "./DownloadCenterFilterPanel";
 import {
   downloadCenterItems,
   downloadCenterPage,
-  downloadDocumentTypes,
-  downloadProductCategories,
-  type DownloadCategoryOption,
-  type DownloadFilterOption,
 } from "@/data/support/downloadCenterContent";
-
-function FilterCheckRow({
-  id,
-  label,
-  count,
-  defaultChecked,
-  wrapLi = true,
-}: DownloadFilterOption & { id: string; wrapLi?: boolean }) {
-  const row = (
-    <label className="devices_product_downloads__check-row" htmlFor={id}>
-      <Checkbox
-        className="guide_checkbox devices_product_downloads__check"
-        defaultChecked={defaultChecked}
-        disableRipple
-        icon={<GuideCheckboxIcon {...guideCheckboxIconsDownloads} />}
-        checkedIcon={
-          <GuideCheckboxIcon checked {...guideCheckboxIconsDownloads} />
-        }
-        slotProps={{ input: { id, name: id } }}
-      />
-      <DevicesProductDownloadsCheckLabel label={label} count={count} />
-    </label>
-  );
-
-  return wrapLi ? <li>{row}</li> : row;
-}
-
-function CategoryFilterRow({ option }: { option: DownloadCategoryOption }) {
-  const [expanded, setExpanded] = useState(
-    Boolean(option.nested?.length && option.defaultExpanded),
-  );
-
-  return (
-    <li>
-      <div className="devices_product_downloads__category-row">
-        <FilterCheckRow
-          id={`dc-category-${option.id}`}
-          label={option.label}
-          count={option.count}
-          defaultChecked={option.defaultChecked}
-          wrapLi={false}
-        />
-        {option.hasArrow ? (
-          <button
-            type="button"
-            className={`devices_product_downloads__filter-arrow devices_product_downloads__filter-arrow--14${
-              expanded ? " is-open" : ""
-            }`}
-            aria-expanded={expanded}
-            aria-label={`${option.label} subcategories`}
-            onClick={() => setExpanded((open) => !open)}
-          />
-        ) : null}
-      </div>
-      {option.nested?.length && expanded ? (
-        <ul className="devices_product_downloads__filter-list devices_product_downloads__filter-list--nested">
-          {option.nested.map((nested) => (
-            <FilterCheckRow
-              key={nested.id}
-              id={`dc-category-${nested.id}`}
-              label={nested.label}
-              count={nested.count}
-              defaultChecked={nested.defaultChecked}
-            />
-          ))}
-        </ul>
-      ) : null}
-    </li>
-  );
-}
-
-function FilterSection({
-  title,
-  children,
-  variant,
-}: {
-  title: string;
-  children: ReactNode;
-  variant?: "document";
-}) {
-  return (
-    <div
-      className={`devices_product_downloads__filter-section${
-        variant === "document"
-          ? " devices_product_downloads__filter-section--document"
-          : ""
-      }`}
-    >
-      <div className="devices_product_downloads__filter-head">
-        <div className="devices_product_downloads__filter-head-row">
-          <span className="devices_product_downloads__filter-tit">{title}</span>
-          <button type="button" className="devices_product_downloads__refresh">
-            <span className="devices_product_downloads__refresh-icon" aria-hidden />
-            <span className="ir">Reset filters</span>
-          </button>
-        </div>
-        <hr className="devices_product_downloads__filter-head-divider" />
-      </div>
-      <div className="devices_product_downloads__filter-panel">
-        <ul className="devices_product_downloads__filter-list">{children}</ul>
-      </div>
-    </div>
-  );
-}
 
 type DownloadCenterContentsProps = {
   empty?: boolean;
 };
 
 export default function DownloadCenterContents({
+  empty = false,
+}: DownloadCenterContentsProps) {
+  return (
+    <DownloadCenterFilterBoundary>
+      <DownloadCenterContentsBody empty={empty} />
+    </DownloadCenterFilterBoundary>
+  );
+}
+
+function DownloadCenterContentsBody({
   empty = false,
 }: DownloadCenterContentsProps) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -155,163 +54,152 @@ export default function DownloadCenterContents({
   return (
     <section
       className={`support_download_contents devices_product_downloads devices_product_downloads--center${
-        empty ? " support_download_contents--no-data" : ""
+        empty
+          ? " support_download_contents--no-data devices_product_downloads--no-data"
+          : ""
       }`}
       id="support-download-contents"
     >
       <div className="inner">
         <div className="devices_product_downloads__body">
-          <div className="devices_product_downloads__filter-stack">
-            <aside className="devices_product_downloads__filter">
-              <FilterSection title="Product Category">
-                {downloadProductCategories.map((option) => (
-                  <CategoryFilterRow key={option.id} option={option} />
-                ))}
-              </FilterSection>
-
-              <FilterSection title="Document Type" variant="document">
-                {downloadDocumentTypes.map((option) => (
-                  <FilterCheckRow
-                    key={option.id}
-                    id={`dc-doc-${option.id}`}
-                    label={option.label}
-                    count={option.count}
-                    defaultChecked={option.defaultChecked}
-                  />
-                ))}
-              </FilterSection>
-            </aside>
-          </div>
+          <DownloadCenterFilterPanel variant="sidebar" />
 
           <div className="devices_product_downloads__main">
+            {!empty ? <DownloadCenterActiveFilters /> : null}
             <div className="devices_product_downloads__toolbar">
               <p className="devices_product_downloads__count">
                 Total <strong>{resultCount.toLocaleString()}</strong>
               </p>
-              {!empty ? 
-              <div className="devices_product_downloads__search-row">
-                <FormControl className="guide_field guide_field--w200">
-                  <GuideSelect
-                    defaultValue="Sort by"
-                    IconComponent={GuideSelectIcon}
-                    inputProps={{ "aria-label": "Sort by" }}
-                    renderValue={(value) => (
-                      <span className="guide_field__select-value" title={String(value)}>
-                        {String(value)}
-                      </span>
-                    )}
-                  >
-                    <MenuItem value="Newest">Newest</MenuItem>
-                    <MenuItem value="Oldest">Oldest</MenuItem>
-                    <MenuItem value="Title A-Z">Title A-Z</MenuItem>
-                  </GuideSelect>
-                </FormControl>
-              </div> : null}
+              {!empty ? (
+                <div className="devices_product_downloads__search-row support_download_sort--pc">
+                  <FormControl className="guide_field guide_field--w200">
+                    <GuideSelect
+                      defaultValue="Sort by"
+                      IconComponent={GuideSelectIcon}
+                      inputProps={{ "aria-label": "Sort by" }}
+                      renderValue={(value) => (
+                        <span className="guide_field__select-value" title={String(value)}>
+                          {String(value)}
+                        </span>
+                      )}
+                    >
+                      <MenuItem value="Newest">Newest</MenuItem>
+                      <MenuItem value="Oldest">Oldest</MenuItem>
+                      <MenuItem value="Title A-Z">Title A-Z</MenuItem>
+                    </GuideSelect>
+                  </FormControl>
+                </div>
+              ) : null}
             </div>
-
-            {!empty ? <DownloadCenterActiveFilters /> : null}
 
             {empty ? (
               <DownloadCenterEmpty />
             ) : (
               <>
-            <div className="devices_product_downloads__list">
-              {pageItems.map((item, index) => (
-                <article
-                  key={`${item.id}-${currentPage}-${index}`}
-                  className="devices_product_downloads__item"
-                >
-                  <header className="devices_product_downloads__item-head devices_product_downloads__item-head--center">
-                    <div className="devices_product_downloads__item-head-main">
-                      <span className="devices_product_downloads__type">{item.type}</span>
-                      <h2 className="devices_product_downloads__item-tit">{item.title}</h2>
-                    </div>
-                    {item.versions && item.versions.length > 0 ? (
-                      <div className="devices_product_downloads__item-version">
-                        <FormControl className="guide_field guide_field--h38 guide_field--w120 devices_product_downloads__version-select">
-                          <GuideSelect
-                            defaultValue={item.version}
-                            IconComponent={GuideSelectIcon}
-                            inputProps={{ "aria-label": `Version for ${item.title}` }}
-                            renderValue={(value) => (
-                              <span
-                                className="guide_field__select-value"
-                                title={String(value)}
+                <div className="devices_product_downloads__list">
+                  {pageItems.map((item, index) => (
+                    <article
+                      key={`${item.id}-${currentPage}-${index}`}
+                      className="devices_product_downloads__item"
+                    >
+                      <header className="devices_product_downloads__item-head devices_product_downloads__item-head--center">
+                        <div className="devices_product_downloads__item-head-main">
+                          <div className="devices_product_downloads__item-head-meta">
+                            <span className="devices_product_downloads__type">{item.type}</span>
+                            <time
+                              className="devices_product_downloads__date"
+                              dateTime={item.date}
+                            >
+                              {item.date}
+                            </time>
+                          </div>
+                          <div className="devices_product_downloads__item-head-title-row">
+                            <h2 className="devices_product_downloads__item-tit">{item.title}</h2>
+                          </div>
+                        </div>
+                      </header>
+
+                      <div className="devices_product_downloads__item-downloads">
+                        {item.versions && item.versions.length > 0 ? (
+                          <div className="devices_product_downloads__item-version">
+                            <FormControl className="guide_field guide_field--h38 guide_field--w120 devices_product_downloads__version-select">
+                              <GuideSelect
+                                defaultValue={item.version}
+                                IconComponent={GuideSelectIcon}
+                                inputProps={{ "aria-label": `Version for ${item.title}` }}
+                                renderValue={(value) => (
+                                  <span
+                                    className="guide_field__select-value"
+                                    title={String(value)}
+                                  >
+                                    {String(value)}
+                                  </span>
+                                )}
                               >
-                                {String(value)}
-                              </span>
-                            )}
-                          >
-                            {item.versions.map((version) => (
-                              <MenuItem key={version} value={version}>
-                                {version}
-                              </MenuItem>
-                            ))}
-                          </GuideSelect>
-                        </FormControl>
+                                {item.versions.map((version) => (
+                                  <MenuItem key={version} value={version}>
+                                    {version}
+                                  </MenuItem>
+                                ))}
+                              </GuideSelect>
+                            </FormControl>
+                          </div>
+                        ) : null}
+
+                        <div className="devices_product_downloads__item-body">
+                          <div className="devices_product_downloads__files-panel">
+                            <ul className="devices_product_downloads__files">
+                              {item.files.map((file) => (
+                                <li key={file.name} className="devices_product_downloads__file">
+                                  <div className="devices_product_downloads__file-main">
+                                    <span className="devices_product_downloads__pdf" aria-hidden>
+                                      <img
+                                        src="/pub/ico/ico_pdf_18.svg"
+                                        alt=""
+                                        width={18}
+                                        height={18}
+                                        loading="lazy"
+                                        decoding="async"
+                                      />
+                                    </span>
+                                    <span className="devices_product_downloads__file-name">
+                                      {file.name}
+                                      {file.size ? ` (${file.size})` : ""}
+                                    </span>
+                                  </div>
+                                  <div className="devices_product_downloads__file-actions">
+                                    <DevicesProductDownloadsCopyLink
+                                      className="devices_product_downloads__file-btn--line"
+                                      url={file.url}
+                                    />
+                                    <button
+                                      type="button"
+                                      className="devices_product_downloads__file-btn devices_product_downloads__file-btn--download"
+                                    >
+                                      Download
+                                      <span
+                                        className="devices_product_downloads__file-btn-icon"
+                                        aria-hidden
+                                      />
+                                    </button>
+                                  </div>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
                       </div>
-                    ) : null}
-                  </header>
+                    </article>
+                  ))}
+                </div>
 
-                  <div className="devices_product_downloads__item-body">
-                    <div className="devices_product_downloads__files-panel">
-                      <ul className="devices_product_downloads__files">
-                        {item.files.map((file) => (
-                          <li key={file.name} className="devices_product_downloads__file">
-                            <div className="devices_product_downloads__file-main">
-                              <span className="devices_product_downloads__pdf" aria-hidden>
-                                <img
-                                  src="/ico/ico_pdf_18.svg"
-                                  alt=""
-                                  width={18}
-                                  height={18}
-                                  loading="lazy"
-                                  decoding="async"
-                                />
-                              </span>
-                              <span className="devices_product_downloads__file-name">
-                                {file.name}
-                                {file.size ? ` (${file.size})` : ""}
-                              </span>
-                            </div>
-                            <div className="devices_product_downloads__file-actions">
-                              <button
-                                type="button"
-                                className="devices_product_downloads__file-btn devices_product_downloads__file-btn--copy devices_product_downloads__file-btn--line"
-                              >
-                                Copy Link
-                                <span
-                                  className="devices_product_downloads__file-btn-icon"
-                                  aria-hidden
-                                />
-                              </button>
-                              <button
-                                type="button"
-                                className="devices_product_downloads__file-btn devices_product_downloads__file-btn--download"
-                              >
-                                Download
-                                <span
-                                  className="devices_product_downloads__file-btn-icon"
-                                  aria-hidden
-                                />
-                              </button>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-
-            <PageNumbering
-              className="devices_product_downloads__pagination"
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-              ariaLabel="Download Center pagination"
-            />
+                <PageNumbering
+                  className="devices_product_downloads__pagination"
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                  ariaLabel="Download Center pagination"
+                />
               </>
             )}
           </div>

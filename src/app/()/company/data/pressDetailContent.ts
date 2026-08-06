@@ -1,15 +1,21 @@
+export const pressDetailTitle =
+  "LS ELECTRIC Showcases Capabilities in \u201cEnergy Highway\u201d Business Built on Unrivaled HVDC";
+
+export const pressDetailDate = "Dec 9, 2025";
+
+/** Optional Venue · Dates header (events-style press variant) */
+export const pressDetailMeta = {
+  venue: "Las Vegas",
+  dates: "Feb 02, 2026~ Feb 04, 2026",
+};
+
+/** Figma 7575:82740 — article hero */
 export const pressDetailHero = {
-  src: "/img/company/press/detail_hero.png",
-  alt: "LS ELECTRIC exhibition at Energy Highway business showcase",
+  src: "/pub/img/company/press/detail_hero.png",
+  alt: "LS ELECTRIC team at Utah MCM Engineering II expansion site",
 };
 
-/** Figma 3525:39831 — devices_product_video__player 패턴 */
-export const pressDetailYoutube = {
-  videoId: "WtQN9rcdI-0",
-  title: "LS ELECTRIC MCCB Line Introduction (ENG)",
-  poster: "/img/company/press/detail_video_poster.png",
-};
-
+/** Figma 7575:82740 — article highlight bullets */
 export const pressDetailBullets = [
   "Utah Inland Port Authority decides on tax relief for the MCM Engineering II expansion project",
   "To invest $168 million by 2030 to build three new production buildings",
@@ -29,7 +35,7 @@ export const pressDetailParagraphs = [
 
 export const pressDetailPager = {
   prev: {
-    href: "/company/press/detail",
+    href: "/company/articles/detail",
     title: "LS ELECTRIC to shake up the industry in the era of a Supercycle",
   },
   next: {

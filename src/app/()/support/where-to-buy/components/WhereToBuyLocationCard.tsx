@@ -63,10 +63,10 @@ export default function WhereToBuyLocationCard({
           </span>
           <img
             className="support_where_to_buy_card__action-icon"
-            src="/ico/ico_map_16.svg"
+            src="/pub/ico/ico_map_14_navy.svg"
             alt=""
-            width={16}
-            height={16}
+            width={14}
+            height={14}
             aria-hidden
           />
         </a>
@@ -79,10 +79,10 @@ export default function WhereToBuyLocationCard({
           </span>
           <img
             className="support_where_to_buy_card__action-icon"
-            src="/ico/ico_call_16.svg"
+            src="/pub/ico/ico_call_14_navy.svg"
             alt=""
-            width={16}
-            height={16}
+            width={14}
+            height={14}
             aria-hidden
           />
         </a>

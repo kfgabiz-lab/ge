@@ -4,6 +4,7 @@ import GuideRelated from "@/components/guide/GuideRelated";
 import GnbGuidePreview from "@/components/guide/GnbGuidePreview";
 import {
   gnbGuideClassRefs,
+  gnbGuideGlobal,
   gnbGuideIcons,
   gnbGuidePanels,
 } from "@/data/gnbGuide";
@@ -48,7 +49,8 @@ export default function GnbGuide() {
         </h2>
         <p className="gnb-guide__lead">
           실제 <code>GnbMenu</code> 컴포넌트입니다. 1depth 클릭으로 메가 메뉴·Explore
-          All·depth_1 active 보더를 확인하세요.
+          All·depth_1 active 보더를 확인하세요. Devices → Software hover 시 depth3
+          화살표 링크·depth4 비움 레이아웃을 확인할 수 있습니다.
         </p>
         <GnbGuidePreview />
       </section>
@@ -58,10 +60,11 @@ export default function GnbGuide() {
         <div className="guide-doc__rules">
           <pre className="gnb-guide__tree">
 {`GnbMenu.tsx (variant: main | markets)
-  └── gnbNavItems (src/data/gnb/navItems.ts)
+  └── gnbNavItems (src/data/gnb/navItems.ts) — Products & Systems · Markets · …
         └── megaMenu per nav
               ├── devices  → GnbDevicesMegaPanel / GnbMegaPanel (4depth)
-              └── simple   → grid (Markets) | sections (Services, Support, …)`}
+              └── simple   → grid (Markets) | sections (Services, Support, Company, …)
+  └── GnbGlobalTrigger → #${gnbGuideGlobal.menuId} (active: ${gnbGuideGlobal.triggerLabel})`}
           </pre>
           <ul>
             <li>
@@ -72,8 +75,17 @@ export default function GnbGuide() {
               CSS modifier: <code>getMegaPanelClassName.ts</code>
             </li>
             <li>
+              글로벌 리전: <code>{gnbGuideGlobal.dataFile}</code> · 활성{" "}
+              <strong>{gnbGuideGlobal.triggerLabel}</strong> · Figma{" "}
+              {gnbGuideGlobal.figmaNote}
+            </li>
+            <li>
               Explore All: <code>src/data/gnbExploreAllProducts.ts</code> ·{" "}
-              <code>gnb_mega--explore-all</code>
+              <code>/products-systems/explore-all</code>
+            </li>
+            <li>
+              Software mega: <code>depth3AsLinks</code> — depth3 화살표 링크 ·
+              depth4 비움 · Figma 8793:231550
             </li>
           </ul>
         </div>

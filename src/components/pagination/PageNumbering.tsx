@@ -35,7 +35,7 @@ type PageNumberingProps = {
 function ChevronIcon({ className }: { className?: string }) {
   return (
     <img loading="lazy" decoding="async"
-      src="/ico/ico_pag_chev_10.svg"
+      src="/pub/ico/ico_pag_chev_10.svg"
       alt=""
       width={6}
       height={10}

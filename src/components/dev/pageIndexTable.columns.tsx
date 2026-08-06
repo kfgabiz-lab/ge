@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Chip } from "@mui/material";
 import type { GridColDef } from "@mui/x-data-grid";
+import { getBreadcrumbTrail } from "@/data/breadcrumbConfig";
 import type { PageIndexRow, PageStatus } from "@/data/pageIndex";
 
 const statusColor: Record<
@@ -13,19 +14,31 @@ const statusColor: Record<
   보류중: "default",
 };
 
-function getDepthLabel(link: string, depthIndex: number): string {
+function getUrlDepthLabel(link: string, depthIndex: number): string {
   const pathname = link.split("?")[0].split("#")[0];
   const segments = pathname.split("/").filter(Boolean);
   return segments[depthIndex] ?? "-";
 }
 
-export const pageIndexColumns: GridColDef<PageIndexRow>[] = [
+function getDepthLabel(link: string, depthIndex: number): string {
+  const pathname = link.split("?")[0].split("#")[0];
+  const trail = getBreadcrumbTrail(pathname);
+  if (trail.length > 0) {
+    return trail[depthIndex] ?? "-";
+  }
+  return getUrlDepthLabel(link, depthIndex);
+}
+
+export type PageIndexTableRow = PageIndexRow & { no: number };
+
+export const pageIndexColumns: GridColDef<PageIndexTableRow>[] = [
   {
-    field: "id",
+    field: "no",
     headerName: "No.",
     width: 72,
     align: "center",
     headerAlign: "center",
+    sortable: false,
   },
   {
     field: "pageId",
@@ -75,6 +88,7 @@ export const pageIndexColumns: GridColDef<PageIndexRow>[] = [
     field: "date",
     headerName: "날짜",
     width: 120,
+    renderCell: ({ row }) => (row.status === "완료" ? row.date ?? "" : ""),
   },
   {
     field: "status",

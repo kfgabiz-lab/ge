@@ -1,15 +1,19 @@
 import {
-  downloadProductCategories,
   type DownloadCategoryOption,
   type DownloadFilterOption,
 } from "@/data/support/downloadCenterContent";
+import { emptyStateIconSrc } from "@/data/commonAssets";
 
 export { type DownloadCategoryOption, type DownloadFilterOption };
 
 export const techHubPage = {
-  title: "LS ELECTRIC Tech Hub",
+  /** Figma 6858:158687 PC one line · 6858:160491 MO wraps via max-width */
+  title: "Tech Hub",
   description: "Access Manuals, Tutorials, and Support Resources",
-  searchPlaceholder: "Search for products, solutions, or documentation",
+  searchPlaceholder: "Find products, solutions, or resources for your business",
+  searchPlaceholderMobile: "Find products, solutions, or...",
+  filterByLabel: "Filter by",
+  applyLabel: "Apply",
   defaultSearchQuery: "",
   totalResults: 2658,
   pageSize: 12,
@@ -20,8 +24,8 @@ export const techHubNoDataSearchQuery = "" as const;
 
 export const techHubEmptyContent = {
   title: "There are no results",
-  subtitle: "Check if all the words are spelled correctly",
-  iconSrc: "/img/support/download-center/empty_icon.png",
+  subtitle: "Try changing your search term, adjusting filters, or viewing all products.",
+  iconSrc: emptyStateIconSrc,
   viewAllLabel: "View All",
   viewAllHref: "/support/tech-hub",
 } as const;
@@ -43,68 +47,107 @@ const techHubVideoSeed: TechHubVideoItem[] = [
   {
     id: "th-1",
     title: ["[VCB] VL Type_Insertion VCB", "using trolley"],
-    poster: "/img/support/tech-hub/thumb-vcb.jpg",
+    poster: "/pub/img/support/tech-hub/thumb-vcb.jpg",
   },
   {
     id: "th-2",
     title: ["[VCB] VL Type_Insertion VCB", "using trolley"],
-    poster: "/img/support/tech-hub/thumb-vcb.jpg",
+    poster: "/pub/img/support/tech-hub/thumb-vcb.jpg",
   },
   {
     id: "th-3",
     title: ["[VCB] VL Type_Insertion VCB", "using trolley"],
-    poster: "/img/support/tech-hub/thumb-vcb.jpg",
+    poster: "/pub/img/support/tech-hub/thumb-vcb.jpg",
   },
   {
     id: "th-4",
     title: "[GIMAC-IV] Appearance and Composition",
-    poster: "/img/support/tech-hub/thumb-gimac.jpg",
+    poster: "/pub/img/support/tech-hub/thumb-gimac.jpg",
   },
   {
     id: "th-5",
     title: "[EMPR] MMP Rated Current and CT Ratio Setting Manual",
-    poster: "/img/support/tech-hub/thumb-empr.jpg",
+    poster: "/pub/img/support/tech-hub/thumb-empr.jpg",
   },
   {
     id: "th-6",
     title: "[ACB] UVT Coil Replacement Manual",
-    poster: "/img/support/tech-hub/thumb-acb.jpg",
+    poster: "/pub/img/support/tech-hub/thumb-acb.jpg",
   },
   {
     id: "th-7",
     title: ["[VCB] VL Type_Insertion VCB", "using trolley"],
-    poster: "/img/support/tech-hub/thumb-vcb.jpg",
+    poster: "/pub/img/support/tech-hub/thumb-vcb.jpg",
   },
   {
     id: "th-8",
     title: ["[VCB] VL Type_Insertion VCB", "using trolley"],
-    poster: "/img/support/tech-hub/thumb-vcb.jpg",
+    poster: "/pub/img/support/tech-hub/thumb-vcb.jpg",
   },
   {
     id: "th-9",
     title: "[GIMAC-IV] Appearance and Composition",
-    poster: "/img/support/tech-hub/thumb-gimac.jpg",
+    poster: "/pub/img/support/tech-hub/thumb-gimac.jpg",
   },
   {
     id: "th-10",
     title: "[EMPR] MMP Rated Current and CT Ratio Setting Manual",
-    poster: "/img/support/tech-hub/thumb-empr.jpg",
+    poster: "/pub/img/support/tech-hub/thumb-empr.jpg",
   },
   {
     id: "th-11",
     title: "[ACB] UVT Coil Replacement Manual",
-    poster: "/img/support/tech-hub/thumb-acb.jpg",
+    poster: "/pub/img/support/tech-hub/thumb-acb.jpg",
   },
   {
     id: "th-12",
     title: ["[VCB] VL Type_Insertion VCB", "using trolley"],
-    poster: "/img/support/tech-hub/thumb-vcb.jpg",
+    poster: "/pub/img/support/tech-hub/thumb-vcb.jpg",
   },
 ];
 
 export const techHubVideos: TechHubVideoItem[] = techHubVideoSeed;
 
-export const techHubProductCategories = downloadProductCategories;
+export const techHubProductCategories: DownloadCategoryOption[] = [
+  {
+    id: "lv-motor-control",
+    label: "LV Motor Control",
+    count: 100,
+    hasArrow: true,
+    nested: [
+      { id: "mccb", label: "Molded Case Circuit Breaker", count: 60 },
+      { id: "contactor", label: "Contactor", count: 40 },
+    ],
+  },
+  {
+    id: "lv-automation",
+    label: "LV Automation",
+    count: 100,
+    hasArrow: true,
+    nested: [
+      { id: "plc", label: "PLC", count: 60 },
+      { id: "hmi", label: "HMI", count: 40 },
+    ],
+  },
+  {
+    id: "lv-power-distribution",
+    label: "LV Power Distribution",
+    count: 100,
+    hasArrow: true,
+    nested: [
+      { id: "acb", label: "Air Circuit Breaker", count: 60 },
+      { id: "panelboard", label: "Panelboard", count: 40 },
+    ],
+  },
+  {
+    id: "mv-power-distribution",
+    label: "MV Power Distribution",
+    count: 352,
+  },
+  { id: "dc-device", label: "DC Device", count: 100 },
+  { id: "hv-system", label: "HV System", count: 30 },
+  { id: "software", label: "Software", count: 0 },
+];
 
 /** Figma 3670:31687 — Tech Hub View */
 export type TechHubSeriesItem = {
@@ -127,7 +170,7 @@ export type TechHubViewDetail = {
   listHref: string;
 };
 
-const techHubViewPoster = "/img/support/tech-hub/thumb-vcb.jpg";
+const techHubViewPoster = "/pub/img/support/tech-hub/thumb-vcb.jpg";
 
 export const techHubViewDetail: TechHubViewDetail = {
   chapter: "Chapter2",

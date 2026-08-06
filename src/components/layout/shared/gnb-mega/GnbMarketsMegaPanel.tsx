@@ -4,15 +4,26 @@ import GnbMegaItemLink from "@/components/layout/shared/gnb-mega/GnbMegaItemLink
 import type { GnbMegaSimplePanelStateProps } from "@/components/layout/shared/gnb-mega/types";
 import { marketsMegaMenu } from "@/data/gnb/mega/markets";
 
-/** Figma 2741:10579 — #gnb-mega-panel-markets */
+/** Figma 8793:231598 — #gnb-mega-panel-markets */
 export default function GnbMarketsMegaPanel({
   onItemClick,
+  onClose,
 }: GnbMegaSimplePanelStateProps) {
   const items =
     marketsMegaMenu.layout === "grid" ? marketsMegaMenu.items : [];
 
   return (
     <div className="gnb_mega__inner gnb_mega__inner--grid">
+      {onClose ? (
+        <button
+          type="button"
+          className="gnb_mega__close"
+          aria-label="메뉴 닫기"
+          onClick={onClose}
+        >
+          <span className="ir">close menu</span>
+        </button>
+      ) : null}
       <div className="gnb_mega__head">
         <h2 className="gnb_mega__tit">Markets</h2>
       </div>

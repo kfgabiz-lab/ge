@@ -1,11 +1,17 @@
+import { emptyStateIconSrc } from "@/data/commonAssets";
+
+/** Figma 5752:47179 — Where to Buy */
 export const whereToBuyPage = {
   title: "Where to Buy",
   description: "LS ELECTRIC America Sales Team and Distributors Around the U.S",
   searchPlaceholder: "Enter city, state, or ZIP code",
   useMyLocationLabel: "use my location",
+  viewListLabel: "View List",
+  viewMapLabel: "View Map",
   totalResults: 2658,
-  mapPinImage: "/img/support/where-to-buy/pin.png",
-  mapBrandPinImage: "/img/support/where-to-buy/pin-brand.png",
+  mapPinImage: "/pub/img/support/where-to-buy/pin.png",
+  /** Figma 7104:136637 */
+  mapBrandPinImage: "/pub/img/support/where-to-buy/pin-brand.png",
   mapDefaultCenter: { lat: 41.95, lng: -88.15 },
   mapDefaultZoom: 9,
   mapActiveZoom: 12,
@@ -18,16 +24,8 @@ export const whereToBuyDistanceOptions = [
   { value: "50mi", label: "50mi" },
 ] as const;
 
-export const whereToBuyCategoryOptions = [
-  { value: "all", label: "All" },
-  { value: "distributor", label: "Distributor" },
-  { value: "rep", label: "Rep" },
-  { value: "sales", label: "Sales" },
-] as const;
-
 export const whereToBuyFilterLabels = {
   distance: "Distance",
-  category: "Type of Business",
 } as const;
 
 export type WhereToBuyBadge = "Distributor" | "Rep" | "Sales";
@@ -92,10 +90,21 @@ export const whereToBuyLocations: WhereToBuyLocation[] = [
 
 export const whereToBuyDefaultActiveId = "marshall-wolf";
 
-/** Figma 3670:30719 — Where to Buy / No Data */
+/** Figma 3670:30719 (PC) · 6561:75390 (mobile View List) */
 export const whereToBuyEmptyContent = {
   title: "There are no results",
-  iconSrc: "/img/support/download-center/empty_icon.png",
+  iconSrc: emptyStateIconSrc,
   viewAllLabel: "View All",
   viewAllHref: "/support/where-to-buy",
+} as const;
+
+/** Figma 5752:47255 — ## 02_Banner · 모바일 6561:74243 */
+export const whereToBuyBanner = {
+  backgroundImage: "/pub/img/support/where-to-buy/banner.jpg",
+  backgroundImageMobile: "/pub/img/support/where-to-buy/banner-mo.jpg",
+  title: "Finding the Right Place to Purchase?",
+  description:
+    "Our experts are ready to guide you to the right distribution channel.",
+  ctaLabel: "Talk to an Expert",
+  ctaHref: "/support/contact-us",
 } as const;

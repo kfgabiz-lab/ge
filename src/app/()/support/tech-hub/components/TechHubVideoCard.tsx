@@ -23,15 +23,6 @@ export default function TechHubVideoCard({ item }: TechHubVideoCardProps) {
       >
         <span className="support_tech_hub_card__thumb" aria-hidden>
           <img src={item.poster} alt="" loading="lazy" decoding="async" />
-          <span className="support_tech_hub_card__dim" />
-        </span>
-        <span className="support_tech_hub_card__play" aria-hidden>
-          <img
-            src="/ico/play-48.svg"
-            alt=""
-            width={48}
-            height={48}
-          />
         </span>
       </Link>
       <h2 className="support_tech_hub_card__tit">

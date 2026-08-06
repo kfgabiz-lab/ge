@@ -1,129 +1,107 @@
 "use client";
 
-import { FormControl, MenuItem } from "@mui/material";
 import { useState } from "react";
-import {
-  GuideSelectIcon,
-} from "@/components/form/GuideFieldIcons";
-import GuideSelect from "@/components/form/GuideSelect";
+import WhereToBuyControls from "./WhereToBuyControls";
 import WhereToBuyEmpty from "./WhereToBuyEmpty";
 import WhereToBuyLocationCard from "./WhereToBuyLocationCard";
 import WhereToBuyMap from "./WhereToBuyMap";
+import WhereToBuyMapPopup from "./WhereToBuyMapPopup";
+import WhereToBuyViewToggle, {
+  type WhereToBuyMobileView,
+} from "./WhereToBuyViewToggle";
 import {
-  whereToBuyCategoryOptions,
   whereToBuyDefaultActiveId,
-  whereToBuyDistanceOptions,
-  whereToBuyFilterLabels,
   whereToBuyLocations,
   whereToBuyPage,
 } from "@/data/support/whereToBuyContent";
 
-function renderSelectValue(label: string) {
-  return (
-    <span className="guide_field__select-value" title={label}>
-      {label}
-    </span>
-  );
-}
-
 type WhereToBuyContentsProps = {
-  empty?: boolean;
+  /** 메인 페이지: list-col 하단 no-data 프리뷰 */
+  showNoDataPreview?: boolean;
+  /** /no-data 전용 페이지 */
+  noDataPage?: boolean;
 };
 
 export default function WhereToBuyContents({
-  empty = false,
+  showNoDataPreview = false,
+  noDataPage = false,
 }: WhereToBuyContentsProps) {
   const [activeId, setActiveId] = useState(whereToBuyDefaultActiveId);
+  const [refreshSpin, setRefreshSpin] = useState(false);
+  const [mobileView, setMobileView] = useState<WhereToBuyMobileView>(
+    noDataPage ? "list" : "map",
+  );
   const activeLocation =
     whereToBuyLocations.find((item) => item.id === activeId) ??
     whereToBuyLocations[0];
 
   return (
     <section
-      className={`support_where_to_buy_contents${
-        empty ? " support_where_to_buy_contents--no-data" : ""
+      className={`support_where_to_buy_contents support_where_to_buy_contents--mobile-${mobileView}${
+        noDataPage ? " support_where_to_buy_contents--no-data-page" : ""
       }`}
       id="support-where-to-buy-contents"
     >
       <div className="support_where_to_buy_contents__shell">
         <div className="support_where_to_buy_contents__list-col">
-          <div className="support_where_to_buy_contents__filters">
-            <FormControl className="guide_field">
-              <GuideSelect
-                defaultValue={whereToBuyDistanceOptions[0].value}
-                IconComponent={GuideSelectIcon}
-                inputProps={{ "aria-label": whereToBuyFilterLabels.distance }}
-                renderValue={(value) => {
-                  const label =
-                    whereToBuyDistanceOptions.find((item) => item.value === value)
-                      ?.label ?? String(value);
-                  return renderSelectValue(label);
-                }}
-              >
-                {whereToBuyDistanceOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </GuideSelect>
-            </FormControl>
+          <WhereToBuyControls />
 
-            <FormControl className="guide_field">
-              <GuideSelect
-                defaultValue={whereToBuyCategoryOptions[0].value}
-                IconComponent={GuideSelectIcon}
-                inputProps={{ "aria-label": whereToBuyFilterLabels.category }}
-                renderValue={(value) => {
-                  const label =
-                    whereToBuyCategoryOptions.find((item) => item.value === value)
-                      ?.label ?? String(value);
-                  return renderSelectValue(label);
-                }}
-              >
-                {whereToBuyCategoryOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </GuideSelect>
-            </FormControl>
-          </div>
+          {!noDataPage ? (
+            <div className="support_where_to_buy_contents__results">
+              <div className="support_where_to_buy_contents__count-row">
+                <p className="support_where_to_buy_contents__count">
+                  Total{" "}
+                  <strong>
+                    {whereToBuyPage.totalResults.toLocaleString()}
+                  </strong>
+                </p>
+                <button
+                  type="button"
+                  className="support_where_to_buy_contents__refresh"
+                  onClick={() => setRefreshSpin(true)}
+                >
+                  <span
+                    className={
+                      refreshSpin
+                        ? "support_where_to_buy_contents__refresh-icon is-spinning"
+                        : "support_where_to_buy_contents__refresh-icon"
+                    }
+                    onAnimationEnd={() => setRefreshSpin(false)}
+                    aria-hidden
+                  />
+                  <span className="ir">Refresh results</span>
+                </button>
+              </div>
 
-          <div className="support_where_to_buy_contents__results">
-            <div className="support_where_to_buy_contents__count-row">
-              <p className="support_where_to_buy_contents__count">
-                Total{" "}
-                <strong>
-                  {(empty ? 0 : whereToBuyPage.totalResults).toLocaleString()}
-                </strong>
-              </p>
-              <button              
-                type="button"
-                className="support_where_to_buy_contents__refresh"
-              >
-                <span
-                  className="support_where_to_buy_contents__refresh-icon"
-                  aria-hidden
-                />
-                <span className="ir">Refresh results</span>
-              </button>
-            </div>
-
-            <div className="support_where_to_buy_contents__list">
-              {empty ? (
-                <WhereToBuyEmpty />
-              ) : (
-                whereToBuyLocations.map((location) => (
+              <div className="support_where_to_buy_contents__list">
+                {whereToBuyLocations.map((location) => (
                   <WhereToBuyLocationCard
                     key={location.id}
                     location={location}
                     isActive={location.id === activeId}
                     onSelect={() => setActiveId(location.id)}
                   />
-                ))
-              )}
+                ))}
+              </div>
             </div>
-          </div>
+          ) : null}
+
+          {noDataPage || showNoDataPreview ? (
+            <div className="support_where_to_buy_contents__no-data">
+              <div className="support_where_to_buy_contents__count-total">
+                <div className="support_where_to_buy_contents__count-row">
+                  <p className="support_where_to_buy_contents__count">
+                    Total <strong>0</strong>
+                  </p>
+                </div>
+                <hr
+                  className="support_where_to_buy_contents__count-divider"
+                  aria-hidden
+                />
+              </div>
+              <WhereToBuyEmpty />
+            </div>
+          ) : null}
         </div>
 
         <div id="store_locator_main" className="support_where_to_buy_contents__map-col">
@@ -132,8 +110,29 @@ export default function WhereToBuyContents({
             activeLocation={activeLocation}
             onLocationSelect={setActiveId}
           />
+          {/* Figma 7104:136637 — LS brand map pin */}
+          <img
+            className="support_where_to_buy_contents__map-brand-pin"
+            src={whereToBuyPage.mapBrandPinImage}
+            alt=""
+            width={34}
+            height={48}
+            decoding="async"
+          />
+          {!noDataPage ? (
+            <div className="support_where_to_buy_map__popup-anchor support_where_to_buy_map__popup-anchor--sample support_where_to_buy_map__popup-anchor--mobile">
+              <WhereToBuyMapPopup location={activeLocation} />
+            </div>
+          ) : null}
         </div>
       </div>
+
+      <WhereToBuyViewToggle
+        view={mobileView}
+        onToggle={() =>
+          setMobileView((current) => (current === "map" ? "list" : "map"))
+        }
+      />
     </section>
   );
 }

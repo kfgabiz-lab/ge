@@ -18,14 +18,6 @@ export default function TechHubViewSeriesItem({
       <Link href={item.href} className={itemClass}>
         <span className="support_tech_hub_view__series-thumb" aria-hidden>
           <img src={item.poster} alt="" loading="lazy" decoding="async" />
-          <span className="support_tech_hub_view__series-dim" />
-          <img
-            className="support_tech_hub_view__series-play"
-            src="/ico/play-48.svg"
-            alt=""
-            width={34}
-            height={34}
-          />
         </span>
         <span className="support_tech_hub_view__series-meta">
           <span className="support_tech_hub_view__chapter">{item.chapter}</span>

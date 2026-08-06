@@ -1,9 +1,21 @@
 "use client";
 
-import { DataGrid } from "@mui/x-data-grid";
+import dynamic from "next/dynamic";
+import type { ComponentType } from "react";
+import type { DataGridProps } from "@mui/x-data-grid";
 import GuideNav from "@/components/guide/GuideNav";
 import { pageIndexRows } from "@/data/pageIndex";
-import { pageIndexColumns } from "./pageIndexTable.columns";
+import { pageIndexColumns, type PageIndexTableRow } from "./pageIndexTable.columns";
+
+const DataGrid = dynamic(
+  () => import("@mui/x-data-grid").then((mod) => mod.DataGrid),
+  { ssr: false },
+) as ComponentType<DataGridProps<PageIndexTableRow>>;
+
+const pageIndexTableRows: PageIndexTableRow[] = pageIndexRows.map((row, index) => ({
+  ...row,
+  no: index + 1,
+}));
 
 export default function PageIndexTable() {
   return (
@@ -15,12 +27,13 @@ export default function PageIndexTable() {
       </header>
       <div className="page-index__grid">
         <DataGrid
-          rows={pageIndexRows}
+          rows={pageIndexTableRows}
           columns={pageIndexColumns}
+          getRowId={(row: PageIndexTableRow) => row.id}
           disableRowSelectionOnClick
-          pageSizeOptions={[pageIndexRows.length]}
+          pageSizeOptions={[pageIndexTableRows.length]}
           initialState={{
-            pagination: { paginationModel: { pageSize: pageIndexRows.length } },
+            pagination: { paginationModel: { pageSize: pageIndexTableRows.length } },
           }}
           getRowHeight={() => "auto"}
           sx={{

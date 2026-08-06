@@ -3,47 +3,39 @@
 import {
   Checkbox,
   FormControl,
+  FormHelperText,
   InputAdornment,
   InputLabel,
   MenuItem,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import {
   GuideCheckboxIcon,
   GuideSelectIcon,
+  guideCheckboxIconsContactConsent,
   guideCheckboxIconsDefault,
   guideCheckboxIconsDownloads,
   guideFieldLabelSlot,
 } from "@/components/form/GuideFieldIcons";
 import GuideSelect from "@/components/form/GuideSelect";
+import { guideSearchFieldMobileSlotProps } from "@/components/form/guideFieldMobileProps";
 import GuideNav from "@/components/guide/GuideNav";
 import GuideRelated from "@/components/guide/GuideRelated";
 import CommonBanner01 from "@/components/banners/CommonBanner01";
 import CommonBanner02 from "@/components/banners/CommonBanner02";
 import CommonBanner03 from "@/components/banners/CommonBanner03";
 import CommonBanner04 from "@/components/banners/CommonBanner04";
-import DevicesProductDownloadDescriptionModal from "@/app/()/devices-systems/components/product/DevicesProductDownloadDescriptionModal";
 import PageNumbering from "@/components/pagination/PageNumbering";
-import SwiperBarControls from "@/components/swiper/SwiperBarControls";
+import SearchAllHero from "@/app/()/search/components/SearchAllHero";
 import SwiperNavButtons from "@/components/swiper/SwiperNavButtons";
-import type { ProductDownloadDescription } from "@/app/()/devices-systems/data/productDetailContent";
 
-const GUIDE_MODAL_DESCRIPTION: ProductDownloadDescription = {
-  paragraphs: [
-    "Due to internal structure changes due to the addition of the history alarm function starting from V3.80, a HistoryAlarm Error Message may occur if alarm data from the existing V3.70 or lower version remains in the device.",
-    "Starting from V3.80.0605, the warning message has been strengthened when NVRAM data is not deleted. Please refer to the 3.80.0605 Release Note.",
-    "When the HMI is turned off, turn on the backup battery switch on the back of the device and take action related to NVRAM as described in Release Note.",
-  ],
-  image: "/img/devices/product/download_description.png",
-  imageAlt: "Download software interface screenshot",
-};
-
-/** Figma 04_Button, 05_Check, 06_Textfield, 07 Pagination, 08 Banner, 09 Modal */
+/** Figma 04_Button, 05_Check, 06_Textfield, 07 Pagination, 08 Banner */
 export default function ComponentGuide() {
   const [rollingIndex, setRollingIndex] = useState(1);
+  const [search280Query, setSearch280Query] = useState("DC");
   const rollingCount = 4;
-  const [modalOpen, setModalOpen] = useState(false);
+  const hasSearch280Query = search280Query.length > 0;
 
   return (
     <section className="component-guide">
@@ -63,7 +55,7 @@ export default function ComponentGuide() {
 
       <div className="component-guide__body">
         <p className="component-guide__intro">
-          Figma 04~09 공통 UI 패턴. 아이콘 목록은{" "}
+          Figma 04~08 공통 UI 패턴. 아이콘 목록은{" "}
           <a href="/guide/ico">Icon Guide</a>, GNB·메가 메뉴는{" "}
           <a href="/guide/gnb">GNB Guide</a> · <code>docs/GNB_GUIDE.md</code>
         </p>
@@ -76,9 +68,10 @@ export default function ComponentGuide() {
           </a>
           <a href="#check">05 Check</a>
           <a href="#textfield">06 Textfield</a>
+          <a href="#textarea">Textarea</a>
+          <a href="#password">Password</a>
           <a href="#pagination">07 Pagination</a>
           <a href="#banner">08 Banner</a>
-          <a href="#modal">09 Modal</a>
         </nav>
 
         {/* Level 01 — 52px */}
@@ -175,9 +168,9 @@ export default function ComponentGuide() {
           </div>
         </div>
 
-        {/* Level 02 — 46px */}
+        {/* Level 02 — 42px */}
         <div className="component-guide__section" id="level-02">
-          <h2 className="component-guide__section-tit">Level 02_46px</h2>
+          <h2 className="component-guide__section-tit">Level 02_42px</h2>
 
           <div className="component-guide__type">
             <h3 className="component-guide__type-tit">1. Solid</h3>
@@ -204,43 +197,6 @@ export default function ComponentGuide() {
                     style={{ background: "var(--color-primary-hover)" }}
                   >
                     Go to Configurator
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="component-guide__type">
-            <h3 className="component-guide__type-tit">2. Line + Solid</h3>
-            <p className="component-guide__type-spec">
-              <span>최소사이즈 150px</span>
-              <span className="component-guide__type-spec-sep" />
-              <span>Icon 14px</span>
-            </p>
-            <div className="component-guide__states">
-              <div className="component-guide__state-col">
-                <span className="component-guide__state-label">Default</span>
-                <div className="component-guide__preview-light">
-                  <a href="" className="btn-base btn-lv02 btn-lv02--more">
-                    Read more
-                    <span className="icon_plus" aria-hidden="true" />
-                  </a>
-                </div>
-              </div>
-              <div className="component-guide__state-col">
-                <span className="component-guide__state-label">Hover</span>
-                <div className="component-guide__preview-light">
-                  <a
-                    href=""
-                    className="btn-base btn-lv02 btn-lv02--more"
-                    style={{
-                      color: "#fff",
-                      background: "var(--color-primary)",
-                      borderColor: "var(--color-primary)",
-                    }}
-                  >
-                    Read more
-                    <span className="icon_plus" aria-hidden="true" />
                   </a>
                 </div>
               </div>
@@ -305,6 +261,35 @@ export default function ComponentGuide() {
               </div>
             </div>
           </div>
+
+          <div className="component-guide__type">
+            <h3 className="component-guide__type-tit">3. Line + Download</h3>
+            <p className="component-guide__type-spec">
+              <span>최소사이즈 150px</span>
+              <span className="component-guide__type-spec-sep" />
+              <span>Icon 16px · icon_download</span>
+            </p>
+            <div className="component-guide__states">
+              <div className="component-guide__state-col">
+                <span className="component-guide__state-label">Default</span>
+                <div className="component-guide__preview-light">
+                  <a href="" className="btn-base btn-lv03 btn-lv03--line">
+                    Download
+                    <span className="icon_download" aria-hidden="true" />
+                  </a>
+                </div>
+              </div>
+              <div className="component-guide__state-col">
+                <span className="component-guide__state-label">Hover</span>
+                <div className="component-guide__preview-light">
+                  <a href="" className="btn-base btn-lv03 btn-lv03--line">
+                    Download
+                    <span className="icon_download" aria-hidden="true" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Icon 56px */}
@@ -339,6 +324,36 @@ export default function ComponentGuide() {
                     aria-hidden="true"
                     style={{ filter: "brightness(0) invert(1)" }}
                   />
+                </button>
+              </div>
+            </div>
+          </div>
+          <p className="component-guide__type-spec" style={{ marginTop: 32 }}>
+            <span>Top — white / #ddd border / up arrow</span>
+          </p>
+          <div className="component-guide__states">
+            <div className="component-guide__state-col">
+              <span className="component-guide__state-label">Default</span>
+              <div className="component-guide__preview-light">
+                <button
+                  type="button"
+                  className="btn-icon-56 btn-icon-56--top"
+                  aria-label="Scroll to top"
+                >
+                  <span className="icon_arrow-top-20" aria-hidden="true" />
+                </button>
+              </div>
+            </div>
+            <div className="component-guide__state-col">
+              <span className="component-guide__state-label">Hover</span>
+              <div className="component-guide__preview-light">
+                <button
+                  type="button"
+                  className="btn-icon-56 btn-icon-56--top"
+                  aria-label="Scroll to top"
+                  style={{ borderColor: "#bbb" }}
+                >
+                  <span className="icon_arrow-top-20" aria-hidden="true" />
                 </button>
               </div>
             </div>
@@ -413,7 +428,75 @@ export default function ComponentGuide() {
           </div>
         </div>
 
-        {/* Rolling 50px */}
+        {/* Btn 30px Line */}
+        <div className="component-guide__section" id="btn-line-30">
+          <h2 className="component-guide__section-tit">Btn_30px_Line</h2>
+          <p className="component-guide__type-spec">
+            <span>Figma Btn / 30px / Line</span>
+            <span className="component-guide__type-spec-sep" />
+            <span>호버: border-color만 변경</span>
+          </p>
+          <div className="component-guide__states">
+            <div className="component-guide__state-col">
+              <span className="component-guide__state-label">Light · Default</span>
+              <div className="component-guide__preview-light">
+                <button type="button" className="btn-base btn-line-30">
+                  Copy Link
+                  <span
+                    className="btn-line-30__icon btn-line-30__icon--copy"
+                    aria-hidden="true"
+                  />
+                </button>
+              </div>
+            </div>
+            <div className="component-guide__state-col">
+              <span className="component-guide__state-label">Light · Hover</span>
+              <div className="component-guide__preview-light">
+                <button
+                  type="button"
+                  className="btn-base btn-line-30"
+                  style={{ borderColor: "var(--color-primary)" }}
+                >
+                  Copy Link
+                  <span
+                    className="btn-line-30__icon btn-line-30__icon--copy"
+                    aria-hidden="true"
+                  />
+                </button>
+              </div>
+            </div>
+            <div className="component-guide__state-col">
+              <span className="component-guide__state-label">On dark · Default</span>
+              <div className="component-guide__preview-dark">
+                <button type="button" className="btn-base btn-line-30 btn-line-30--on-dark">
+                  Copy Link
+                  <span
+                    className="btn-line-30__icon btn-line-30__icon--copy"
+                    aria-hidden="true"
+                  />
+                </button>
+              </div>
+            </div>
+            <div className="component-guide__state-col">
+              <span className="component-guide__state-label">On dark · Hover</span>
+              <div className="component-guide__preview-dark">
+                <button
+                  type="button"
+                  className="btn-base btn-line-30 btn-line-30--on-dark"
+                  style={{ borderColor: "#fff" }}
+                >
+                  Copy Link
+                  <span
+                    className="btn-line-30__icon btn-line-30__icon--copy"
+                    aria-hidden="true"
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Rolling 50px — Figma 1569:26352 */}
         <div className="component-guide__section" id="rolling-50">
           <h2 className="component-guide__section-tit">Rolling_50px</h2>
           <p className="component-guide__type-spec">
@@ -423,7 +506,7 @@ export default function ComponentGuide() {
           </p>
 
           <div className="component-guide__rolling-demo">
-            <div className="component-guide__rolling-line">
+            <div className="component-guide__rolling-line" aria-hidden="true">
               <span className="component-guide__rolling-track" />
               <span
                 className="component-guide__rolling-fill"
@@ -432,13 +515,10 @@ export default function ComponentGuide() {
                 }}
               />
             </div>
-            <SwiperBarControls
+            <SwiperNavButtons
               variant="swiper_type_01"
-              count={rollingCount}
-              activeIndex={rollingIndex}
               isPrevDisabled={rollingIndex === 0}
               isNextDisabled={rollingIndex === rollingCount - 1}
-              onSelect={setRollingIndex}
               onPrev={() => setRollingIndex((i) => Math.max(0, i - 1))}
               onNext={() =>
                 setRollingIndex((i) => Math.min(rollingCount - 1, i + 1))
@@ -446,52 +526,127 @@ export default function ComponentGuide() {
             />
           </div>
 
-          <div className="component-guide__states" style={{ marginTop: 48 }}>
+          <div className="component-guide__rolling-states">
             <div className="component-guide__state-col">
+              <button
+                type="button"
+                className="swiper_type_01_btn swiper_type_01_btn--prev"
+                aria-label="이전 (Default)"
+              >
+                <span
+                  className="swiper_type_01_icon swiper_type_01_icon--prev"
+                  aria-hidden="true"
+                />
+              </button>
               <span className="component-guide__state-label">Default</span>
-              <SwiperNavButtons
-                variant="swiper_type_01"
-                isPrevDisabled={false}
-                isNextDisabled={false}
-                onPrev={() => {}}
-                onNext={() => {}}
-              />
             </div>
             <div className="component-guide__state-col">
+              <button
+                type="button"
+                className="swiper_type_01_btn swiper_type_01_btn--prev is-hover"
+                aria-label="이전 (Hover)"
+              >
+                <span
+                  className="swiper_type_01_icon swiper_type_01_icon--prev"
+                  aria-hidden="true"
+                />
+              </button>
               <span className="component-guide__state-label">Hover</span>
-              <div style={{ display: "flex", gap: 12 }}>
-                <button
-                  type="button"
-                  className="swiper_type_01_btn swiper_type_01_btn--prev"
-                  style={{ background: "var(--color-primary)" }}
+            </div>
+            <div className="component-guide__state-col">
+              <button
+                type="button"
+                className="swiper_type_01_btn swiper_type_01_btn--prev is-disabled"
+                aria-label="이전 (Disabled)"
+                aria-disabled="true"
+                disabled
+              >
+                <span
+                  className="swiper_type_01_icon swiper_type_01_icon--prev"
+                  aria-hidden="true"
+                />
+              </button>
+              <span className="component-guide__state-label">Disabled</span>
+            </div>
+            <div className="component-guide__state-col">
+              <button
+                type="button"
+                className="swiper_type_01_btn swiper_type_01_btn--next"
+                aria-label="다음 (Default)"
+              >
+                <span
+                  className="swiper_type_01_icon swiper_type_01_icon--next"
+                  aria-hidden="true"
+                />
+              </button>
+              <span className="component-guide__state-label">Default</span>
+            </div>
+            <div className="component-guide__state-col">
+              <button
+                type="button"
+                className="swiper_type_01_btn swiper_type_01_btn--next is-hover"
+                aria-label="다음 (Hover)"
+              >
+                <span
+                  className="swiper_type_01_icon swiper_type_01_icon--next"
+                  aria-hidden="true"
+                />
+              </button>
+              <span className="component-guide__state-label">Hover</span>
+            </div>
+            <div className="component-guide__state-col">
+              <button
+                type="button"
+                className="swiper_type_01_btn swiper_type_01_btn--next is-disabled"
+                aria-label="다음 (Disabled)"
+                aria-disabled="true"
+                disabled
+              >
+                <span
+                  className="swiper_type_01_icon swiper_type_01_icon--next"
+                  aria-hidden="true"
+                />
+              </button>
+              <span className="component-guide__state-label">Disabled</span>
+            </div>
+          </div>
+
+          <div
+            className="component-guide__rolling-pagination"
+            aria-label="비디오·오토플레이 페이지네이션 샘플"
+          >
+            <div className="component-guide__rolling-pagination-nums">
+              <span className="component-guide__rolling-pagination-num">01</span>
+              <span className="component-guide__rolling-pagination-num">02</span>
+              <div className="component-guide__rolling-pagination-active">
+                <span className="component-guide__rolling-pagination-num is-active">
+                  03
+                </span>
+                <div
+                  className="component-guide__rolling-pagination-bar"
+                  role="progressbar"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={33}
+                  aria-label="진행률"
                 >
                   <span
-                    className="swiper_type_01_icon swiper_type_01_icon--prev"
-                    style={{ filter: "brightness(0) invert(1)" }}
+                    className="component-guide__rolling-pagination-bar-fill"
+                    style={{ width: "36px" }}
                   />
-                </button>
-                <button
-                  type="button"
-                  className="swiper_type_01_btn swiper_type_01_btn--next"
-                  style={{ background: "var(--color-primary)" }}
-                >
-                  <span
-                    className="swiper_type_01_icon swiper_type_01_icon--next"
-                    style={{ filter: "brightness(0) invert(1)" }}
-                  />
-                </button>
+                </div>
               </div>
             </div>
-            <div className="component-guide__state-col">
-              <span className="component-guide__state-label">Disabled</span>
-              <SwiperNavButtons
-                variant="swiper_type_01"
-                isPrevDisabled
-                isNextDisabled
-                onPrev={() => {}}
-                onNext={() => {}}
+            <button
+              type="button"
+              className="component-guide__rolling-pagination-pause"
+              aria-label="일시정지"
+            >
+              <span
+                className="component-guide__rolling-pagination-pause-icon"
+                aria-hidden="true"
               />
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -602,6 +757,52 @@ export default function ComponentGuide() {
               </div>
             </div>
           </div>
+
+          <div className="component-guide__type">
+            <h3 className="component-guide__type-tit">3. Error</h3>
+            <p className="component-guide__type-spec">
+              {/* Figma 1689:8145 — Checkbox Error */}
+              <code>guide_checkbox--error</code>
+              <span className="component-guide__type-spec-sep" />
+              <code>guide_checkbox__error</code>
+              <span className="component-guide__type-spec-sep" />
+              <span>Consent PNG · 체크 시 에러 제거</span>
+            </p>
+            <div className="component-guide__states">
+              <div className="component-guide__state-col">
+                <span className="component-guide__state-label">Error</span>
+                <div className="component-guide__preview-light">
+                  <div className="component-guide__check-error">
+                    <label className="component-guide__check-error-label">
+                      <Checkbox
+                        className="guide_checkbox guide_checkbox--error"
+                        checked={false}
+                        disableRipple
+                        icon={
+                          <GuideCheckboxIcon
+                            {...guideCheckboxIconsContactConsent}
+                          />
+                        }
+                        checkedIcon={
+                          <GuideCheckboxIcon
+                            checked
+                            {...guideCheckboxIconsContactConsent}
+                          />
+                        }
+                        slotProps={{
+                          input: { "aria-label": "Consent error sample" },
+                        }}
+                      />
+                      <span>Consent label</span>
+                    </label>
+                    <p className="guide_checkbox__error" role="alert">
+                      Input text error
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -620,9 +821,12 @@ export default function ComponentGuide() {
       </header>
 
       <div className="component-guide__body">
-        {/* Text field — 280px (MUI) */}
+        {/* Text field — 280px (MUI) · Figma 1689:8145 Error */}
         <div className="component-guide__section" id="textfield-280">
           <h2 className="component-guide__section-tit">Text field</h2>
+          <p className="component-guide__type-spec">
+            <span>에러: <code>error</code> + <code>helperText</code> · 테두리 <code>--color-error</code></span>
+          </p>
           <div className="component-guide__states">
             <div className="component-guide__state-col">
               <span className="component-guide__state-label">Default</span>
@@ -659,6 +863,7 @@ export default function ComponentGuide() {
               </div>
             </div>
             <div className="component-guide__state-col">
+              {/* Figma 1689:8145 — Text Error */}
               <span className="component-guide__state-label">Error</span>
               <div className="component-guide__preview-light">
                 <TextField
@@ -674,35 +879,182 @@ export default function ComponentGuide() {
           </div>
         </div>
 
-        {/* Search — 280px (MUI TextField + IconButton) */}
+        {/* Search — 280px · Figma 1569:27396 / 7311:194983 Clear */}
         <div className="component-guide__section" id="search-280">
-          <h2 className="component-guide__section-tit">Search</h2>
-          <div className="component-guide__preview-light">
-            <TextField
-              className="guide_field guide_field--search"
-              placeholder="Search"
-              aria-label="Search"
-              slotProps={{
-                input: {
-                  endAdornment: (
-                    <InputAdornment position="end" className="guide_field__search-adorn">
-                      <button
-                        type="button"
-                        className="guide_field__search-icon-button"
-                        aria-label="Search"
-                      >
-                        <img loading="lazy" decoding="async"
-                          src="/ico/ico_search_24.svg"
-                          alt=""
-                          width={18}
-                          height={18}
-                        />
-                      </button>
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
+          <h2 className="component-guide__section-tit">Search — Toolbar 280px</h2>
+          <p className="component-guide__type-spec">
+            <span>높이 50px · Blog / Press / Articles / Training · Download Center</span>
+            <span className="component-guide__type-spec-sep" />
+            <span>
+              Clear: <code>guide_field__search-clear</code> +{" "}
+              <code>ico_clear_12_black</code> (Figma{" "}
+              <a
+                href="https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=7311-194983"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                7311:194983
+              </a>
+              )
+            </span>
+            <span className="component-guide__type-spec-sep" />
+            <span>에러: <code>guide_field--search</code> + <code>error</code></span>
+          </p>
+          <div className="component-guide__states">
+            <div className="component-guide__state-col">
+              <span className="component-guide__state-label">Default</span>
+              <div className="component-guide__preview-light">
+                <TextField
+                  className="guide_field guide_field--search"
+                  placeholder="Search"
+                  aria-label="Search"
+                  defaultValue=""
+                  slotProps={{
+                    ...guideSearchFieldMobileSlotProps,
+                    input: {
+                      endAdornment: (
+                        <InputAdornment
+                          position="end"
+                          className="guide_field__search-adorn"
+                        >
+                          <button
+                            type="button"
+                            className="guide_field__search-icon-button"
+                            aria-label="Search"
+                          >
+                            <img
+                              loading="lazy"
+                              decoding="async"
+                              src="/pub/ico/ico_search_24.svg"
+                              alt=""
+                              width={18}
+                              height={18}
+                            />
+                          </button>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                />
+              </div>
+            </div>
+            <div className="component-guide__state-col">
+              <span className="component-guide__state-label">Filled / Clear</span>
+              <div className="component-guide__preview-light">
+                <TextField
+                  className={`guide_field guide_field--search${
+                    hasSearch280Query ? " guide_field--search-filled" : ""
+                  }`}
+                  placeholder="Search"
+                  aria-label="Search filled"
+                  value={search280Query}
+                  onChange={(event) => setSearch280Query(event.target.value)}
+                  slotProps={{
+                    ...guideSearchFieldMobileSlotProps,
+                    input: {
+                      endAdornment: (
+                        <InputAdornment
+                          position="end"
+                          className="guide_field__search-adorn"
+                        >
+                          {hasSearch280Query ? (
+                            <button
+                              type="button"
+                              className="guide_field__search-clear"
+                              aria-label="Clear search"
+                              onClick={() => setSearch280Query("")}
+                            >
+                              <span
+                                className="guide_field__search-clear-icon"
+                                aria-hidden
+                              >
+                                <img
+                                  loading="lazy"
+                                  decoding="async"
+                                  src="/pub/ico/ico_clear_12_black.svg"
+                                  alt=""
+                                  width={10}
+                                  height={10}
+                                />
+                              </span>
+                            </button>
+                          ) : null}
+                          <button
+                            type="button"
+                            className="guide_field__search-icon-button"
+                            aria-label="Search"
+                          >
+                            <img
+                              loading="lazy"
+                              decoding="async"
+                              src="/pub/ico/ico_search_24.svg"
+                              alt=""
+                              width={18}
+                              height={18}
+                            />
+                          </button>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                />
+              </div>
+            </div>
+            <div className="component-guide__state-col">
+              {/* Figma 1689:8145 — Search Error */}
+              <span className="component-guide__state-label">Error</span>
+              <div className="component-guide__preview-light">
+                <TextField
+                  className="guide_field guide_field--search guide_field--error-gap"
+                  defaultValue="Input text error"
+                  error
+                  helperText="Input text error"
+                  aria-label="Search error"
+                  slotProps={{
+                    ...guideSearchFieldMobileSlotProps,
+                    input: {
+                      endAdornment: (
+                        <InputAdornment
+                          position="end"
+                          className="guide_field__search-adorn"
+                        >
+                          <button
+                            type="button"
+                            className="guide_field__search-icon-button"
+                            aria-label="Search"
+                          >
+                            <img
+                              loading="lazy"
+                              decoding="async"
+                              src="/pub/ico/ico_search_24.svg"
+                              alt=""
+                              width={18}
+                              height={18}
+                            />
+                          </button>
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="component-guide__section" id="search-80">
+          <h2 className="component-guide__section-tit">Search — Hero 80px</h2>
+          <p className="component-guide__type-spec">
+            <span>Figma 4701:83900 · `/search`</span>
+            <span className="component-guide__type-spec-sep" />
+            <span>스타일: `search.css` · `section.search_all_hero`</span>
+            <span className="component-guide__type-spec-sep" />
+            <span>섹션 가이드: `search_all_hero`</span>
+          </p>
+          <div className="component-guide__preview-light component-guide__preview-light--search-hero">
+            <Suspense fallback={null}>
+              <SearchAllHero />
+            </Suspense>
           </div>
         </div>
 
@@ -774,6 +1126,37 @@ export default function ComponentGuide() {
                   </FormControl>
                 </div>
               </div>
+              <div className="component-guide__state-col">
+                {/* Figma 1689:8145 — Select Error */}
+                <span className="component-guide__state-label">Error</span>
+                <div className="component-guide__preview-light">
+                  <FormControl
+                    className="guide_field guide_field--h50 guide_field--error-gap"
+                    error
+                  >
+                    <GuideSelect
+                      defaultValue="Input text error"
+                      error
+                      IconComponent={GuideSelectIcon}
+                      inputProps={{ "aria-label": "Select error" }}
+                      renderValue={(value) => (
+                        <span
+                          className="guide_field__select-value"
+                          title={String(value)}
+                        >
+                          {String(value)}
+                        </span>
+                      )}
+                    >
+                      <MenuItem value="Input text error">
+                        Input text error
+                      </MenuItem>
+                      <MenuItem value="Engineer">Engineer</MenuItem>
+                    </GuideSelect>
+                    <FormHelperText>Input text error</FormHelperText>
+                  </FormControl>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -808,6 +1191,112 @@ export default function ComponentGuide() {
                     </GuideSelect>
                   </FormControl>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Textarea · Figma 1689:8145 Error */}
+        <div className="component-guide__section" id="textarea">
+          <h2 className="component-guide__section-tit">Textarea</h2>
+          <p className="component-guide__type-spec">
+            <span><code>multiline</code> · Contact Us Comments</span>
+            <span className="component-guide__type-spec-sep" />
+            <span>에러: <code>error</code> + <code>helperText</code></span>
+          </p>
+          <div className="component-guide__states">
+            <div className="component-guide__state-col">
+              <span className="component-guide__state-label">Default</span>
+              <div className="component-guide__preview-light">
+                <TextField
+                  className="guide_field"
+                  placeholder="Please enter your inquiry details."
+                  multiline
+                  minRows={4}
+                  aria-label="Textarea default"
+                />
+              </div>
+            </div>
+            <div className="component-guide__state-col">
+              {/* Figma 1689:8145 — Textarea Error */}
+              <span className="component-guide__state-label">Error</span>
+              <div className="component-guide__preview-light">
+                <TextField
+                  className="guide_field guide_field--error-gap"
+                  defaultValue="Input text error"
+                  multiline
+                  minRows={4}
+                  error
+                  helperText="Input text error"
+                  aria-label="Textarea error"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Password · Figma 1689:8145 Error */}
+        <div className="component-guide__section" id="password">
+          <h2 className="component-guide__section-tit">Password</h2>
+          <p className="component-guide__type-spec">
+            <span>toggle <code>ico_password_on/off_22.png</code> · Contact Us</span>
+            <span className="component-guide__type-spec-sep" />
+            <span>에러: <code>error</code> + <code>helperText</code></span>
+          </p>
+          <div className="component-guide__states">
+            <div className="component-guide__state-col">
+              <span className="component-guide__state-label">Default</span>
+              <div className="component-guide__preview-light">
+                <TextField
+                  className="guide_field"
+                  type="password"
+                  placeholder="Enter Password"
+                  aria-label="Password default"
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <img
+                            src="/pub/ico/ico_password_off_22.png"
+                            alt=""
+                            width={22}
+                            height={22}
+                            aria-hidden
+                          />
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                />
+              </div>
+            </div>
+            <div className="component-guide__state-col">
+              {/* Figma 1689:8145 — Password Error */}
+              <span className="component-guide__state-label">Error</span>
+              <div className="component-guide__preview-light">
+                <TextField
+                  className="guide_field guide_field--error-gap"
+                  type="password"
+                  defaultValue="Input text error"
+                  error
+                  helperText="Input text error"
+                  aria-label="Password error"
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <img
+                            src="/pub/ico/ico_password_off_22.png"
+                            alt=""
+                            width={22}
+                            height={22}
+                            aria-hidden
+                          />
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -876,14 +1365,28 @@ export default function ComponentGuide() {
         </div>
 
         <div className="component-guide__section" id="banner-02">
-          <h2 className="component-guide__section-tit">common_banner_02</h2>
+          <h2 className="component-guide__section-tit">common_banner_02 — default</h2>
           <p className="component-guide__type-spec">
             <span>Figma 2910:32832 — Product Configurator</span>
             <span className="component-guide__type-spec-sep" />
-            <span>btn-text-30 · icon_link-14</span>
+            <span>패널 링크 · btn-text-30 · panel:hover 아이콘</span>
           </p>
           <div className="component-guide__preview-banner">
             <CommonBanner02 linkHref="#banner-02" />
+          </div>
+        </div>
+
+        <div className="component-guide__section" id="banner-02-expert">
+          <h2 className="component-guide__section-tit">
+            common_banner_02 — expert
+          </h2>
+          <p className="component-guide__type-spec">
+            <span>Figma 3871:113566 — Product contact</span>
+            <span className="component-guide__type-spec-sep" />
+            <span>--expert · btn-line-30 Copy · link 버튼 호버만</span>
+          </p>
+          <div className="component-guide__preview-banner devices-page devices-page--product">
+            <CommonBanner02 variant="expert" linkHref="#banner-02-expert" />
           </div>
         </div>
 
@@ -892,17 +1395,17 @@ export default function ComponentGuide() {
           <p className="component-guide__type-spec">
             <span>Figma 3082:53145 — HUB Video Banner</span>
             <span className="component-guide__type-spec-sep" />
-            <span>YouTube embed · play/pause · btn-text-30 icon_arrow-18</span>
+            <span>정적 이미지 · btn-text-30 icon_arrow-18</span>
           </p>
           <div className="component-guide__preview-banner">
-            <CommonBanner03 youtubeVideoId="WtQN9rcdI-0" linkHref="#banner-03" />
+            <CommonBanner03 linkHref="#banner-03" />
           </div>
         </div>
 
         <div className="component-guide__section" id="banner-04">
           <h2 className="component-guide__section-tit">common_banner_04</h2>
           <p className="component-guide__type-spec">
-            <span>Expert CTA 배너</span>
+            <span>풀폭 다크 CTA (Banner 02 expert와 별도)</span>
             <span className="component-guide__type-spec-sep" />
             <span>btn-lv01--line-solid</span>
           </p>
@@ -911,52 +1414,6 @@ export default function ComponentGuide() {
           </div>
         </div>
       </div>
-
-      <header className="component-guide__top component-guide__block" id="modal">
-        <div className="component-guide__top-inner">
-          <div className="component-guide__brand">
-            <span className="component-guide__num">09</span>
-            <h1 className="component-guide__title">Modal</h1>
-          </div>
-          <div className="component-guide__date">
-            <span>DATE</span>
-            <span className="component-guide__date-sep" aria-hidden="true" />
-            <strong>2026.05.27</strong>
-          </div>
-        </div>
-      </header>
-
-      <div className="component-guide__body">
-        <div className="component-guide__section" id="modal-download-desc">
-          <h2 className="component-guide__section-tit">Download description modal</h2>
-          <p className="component-guide__type-spec">
-            <span>Figma 3082:54197</span>
-            <span className="component-guide__type-spec-sep" />
-            <span>800×700 · dim 60% · 닫기 CSS X 24px</span>
-            <span className="component-guide__type-spec-sep" />
-            <span>트리거: devices_product_downloads__view-desc</span>
-          </p>
-          <div className="component-guide__preview-light component-guide__preview-modal-trigger">
-            <section className="devices_product_downloads" aria-hidden>
-              <button
-                type="button"
-                className="devices_product_downloads__view-desc"
-                onClick={() => setModalOpen(true)}
-              >
-                View Description
-              </button>
-            </section>
-          </div>
-        </div>
-      </div>
-
-      <DevicesProductDownloadDescriptionModal
-        open={modalOpen}
-        title="LV SWGR Smart LV Solution"
-        version="V38.0"
-        description={GUIDE_MODAL_DESCRIPTION}
-        onClose={() => setModalOpen(false)}
-      />
     </section>
   );
 }

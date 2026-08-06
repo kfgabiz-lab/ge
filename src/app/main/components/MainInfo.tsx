@@ -84,9 +84,15 @@ function StatItem({ value, suffix, label, moreTxt, isActive, delay }: StatItemPr
   return (
     <div className="item">
       <h3 className="tit">
-        <strong>
-          {count}
-          {suffix ? <b className="upper">{suffix}</b> : null}
+        <strong className="info_box__count">
+          <span className="info_box__count-ghost" aria-hidden="true">
+            {value}
+            {suffix ? <b className="upper">{suffix}</b> : null}
+          </span>
+          <span className="info_box__count-live">
+            {count}
+            {suffix ? <b className="upper">{suffix}</b> : null}
+          </span>
         </strong>
         <span className="txt">{label}</span>
       </h3>

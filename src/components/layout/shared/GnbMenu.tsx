@@ -1,20 +1,36 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type MouseEvent, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GNB_CLOSE_EVENT } from "@/lib/navigation/gnbCloseEvent";
+import { createThrottledScrollHandler } from "@/lib/createThrottledScrollHandler";
+import { getWindowScrollY, lockPageScroll, unlockPageScroll } from "@/lib/lenisScroll";
+import {
+  GNB_SCROLL_THROTTLE_MS,
+  resolveAtTop,
+  resolveGnbScrollVisibility,
+  type GnbScrollVisibility,
+} from "@/lib/gnbScrollState";
 import {
   getMegaPanelClassName,
   gnbMegaPanelComponents,
   isGnbMegaPanelNavId,
 } from "@/components/layout/shared/gnb-mega";
+import GnbGlobalTrigger, {
+  GnbGlobalTriggerMainContent,
+  GnbGlobalTriggerSubContent,
+} from "@/components/layout/shared/GnbGlobalTrigger";
+import GnbMobileGlobalSelect from "@/components/layout/shared/GnbMobileGlobalSelect";
+import GnbSearchPanel from "@/components/layout/shared/GnbSearchPanel";
+import GnbMobileMenuPanel from "@/components/layout/shared/GnbMobileMenuPanel";
 import { gnbNavItems, isDevicesMegaMenu } from "@/data/gnb";
+import { resolveDevicesMegaStateFromPath } from "@/data/gnb/mega/devices";
 
 import "@/assets/css/components/gnb.css";
 
 const SCROLL_THRESHOLD = 3;
-const MEGA_TRANSITION_MS = 350;
+const MEGA_TRANSITION_MS = 0;
 
 export type GnbMenuVariant = "main" | "markets";
 
@@ -28,15 +44,23 @@ type GnbMenuProps = {
   onRevealHeader?: () => void;
   /** breadcrumb를 header 내부에 렌더 */
   breadcrumb?: ReactNode;
+  /** main GNB에서 breadcrumb_nav(경로) 표시 — 기본 숨김, markets 서브 등에서 사용 */
+  showBreadcrumbNav?: boolean;
   onMegaOpenChange?: (open: boolean) => void;
   onMobileMenuOpenChange?: (open: boolean) => void;
+  onSearchOpenChange?: (open: boolean) => void;
 };
 
-function getDefaultMegaState(navId: string) {
+function getDefaultMegaState(navId: string, pathname: string) {
   const nav = gnbNavItems.find((item) => item.id === navId);
   const menu = nav?.megaMenu;
 
   if (menu && isDevicesMegaMenu(menu)) {
+    const fromPath = resolveDevicesMegaStateFromPath(pathname);
+    if (fromPath) {
+      return fromPath;
+    }
+
     const firstCategory = menu.categories[0];
     const firstDepth3 = firstCategory?.children[0];
 
@@ -58,11 +82,17 @@ function getHeaderClassName(
   isHeaderHidden: boolean,
   hasBreadcrumb: boolean,
   isMegaActive: boolean,
+  isSearchOpen: boolean,
   isMobileMenuOpen: boolean,
   isHeaderRevealed: boolean,
+  showBreadcrumbNav: boolean,
 ) {
   if (variant === "main") {
     const classes = ["main_header"];
+
+    if (showBreadcrumbNav) {
+      classes.push("main_header--breadcrumb-nav");
+    }
 
     if (isAtTop) {
       classes.push("is-top");
@@ -72,6 +102,10 @@ function getHeaderClassName(
 
     if (isMegaActive) {
       classes.push("is-mega-open");
+    }
+
+    if (isSearchOpen) {
+      classes.push("is-search-open");
     }
 
     if (isHeaderRevealed) {
@@ -89,7 +123,7 @@ function getHeaderClassName(
     return classes.join(" ");
   }
 
-  const classes = ["gnb_menu_wrap", "markets"];
+  const classes = ["gnb_menu_wrap"];
 
   if (hasBreadcrumb) {
     classes.push("sub_header");
@@ -105,6 +139,10 @@ function getHeaderClassName(
     classes.push("is-mega-open");
   }
 
+  if (isSearchOpen) {
+    classes.push("is-search-open");
+  }
+
   if (isHeaderRevealed) {
     classes.push("is-gnb-revealed");
   }
@@ -113,6 +151,10 @@ function getHeaderClassName(
     classes.push("is-gnb-hidden");
   } else if (isHeaderHidden) {
     classes.push("is-hidden");
+  }
+
+  if (isMobileMenuOpen) {
+    classes.push("is-mobile-open");
   }
 
   return classes.join(" ");
@@ -126,11 +168,16 @@ export default function GnbMenu({
   isHeaderRevealed: isHeaderRevealedProp,
   onRevealHeader,
   breadcrumb,
+  showBreadcrumbNav = false,
   onMegaOpenChange,
   onMobileMenuOpenChange,
+  onSearchOpenChange,
 }: GnbMenuProps) {
   const pathname = usePathname();
   const isMain = variant === "main";
+  /** 실제 메인(/main)에서만 로고를 h1 — markets 등 MainHeader 재사용 시 div */
+  const logoIsH1 = pathname === "/main";
+  const LogoTag = logoIsH1 ? "h1" : "div";
   const hasBreadcrumb = Boolean(breadcrumb);
   const isScrollControlled =
     isAtTopProp !== undefined && isHeaderHiddenProp !== undefined;
@@ -141,17 +188,19 @@ export default function GnbMenu({
   const [activeNavId, setActiveNavId] = useState<string | null>(null);
   const [activeCategoryId, setActiveCategoryId] = useState("");
   const [activeDepth3Id, setActiveDepth3Id] = useState("");
-  const [megaView, setMegaView] = useState<"category" | "explore-all">(
-    "category",
-  );
-  const lastScrollYRef = useRef(0);
+  const internalAtTopRef = useRef(true);
+  const scrollAnchorYRef = useRef(0);
+  const scrollVisibilityRef = useRef<GnbScrollVisibility>("visible");
+  const scrollModeChangeAtRef = useRef(0);
   const megaOpenScrollYRef = useRef(0);
-  const ignoreMegaScrollCloseUntilRef = useRef(0);
   const [isMegaActive, setIsMegaActive] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isGlobalOpen, setIsGlobalOpen] = useState(false);
   const [holdMegaDim, setHoldMegaDim] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [prevPathname, setPrevPathname] = useState(pathname);
   const [prevMegaActive, setPrevMegaActive] = useState(isMegaActive);
+  const [prevSearchOpen, setPrevSearchOpen] = useState(isSearchOpen);
   const [prevShowMegaPanel, setPrevShowMegaPanel] = useState(false);
 
   const isAtTop = isScrollControlled ? isAtTopProp : internalAtTop;
@@ -165,7 +214,8 @@ export default function GnbMenu({
   const activeNav = gnbNavItems.find((item) => item.id === activeNavId);
   const megaMenu = activeNav?.megaMenu;
   const showMegaPanel = Boolean(activeNavId && megaMenu);
-  const isDimMounted = isMegaActive || holdMegaDim;
+  const isOverlayOpen = isMegaActive || isSearchOpen;
+  const isDimMounted = isOverlayOpen || holdMegaDim;
 
   if (pathname !== prevPathname) {
     setPrevPathname(pathname);
@@ -174,10 +224,12 @@ export default function GnbMenu({
     setActiveNavId(null);
     setActiveCategoryId("");
     setActiveDepth3Id("");
-    setMegaView("category");
     setIsMegaActive(false);
+    setIsSearchOpen(false);
+    setIsGlobalOpen(false);
     setHoldMegaDim(false);
     onMegaOpenChange?.(false);
+    onSearchOpenChange?.(false);
     onMobileMenuOpenChange?.(false);
   }
 
@@ -185,7 +237,16 @@ export default function GnbMenu({
     setPrevMegaActive(isMegaActive);
     if (isMegaActive) {
       setHoldMegaDim(false);
-    } else {
+    } else if (!isSearchOpen) {
+      setHoldMegaDim(true);
+    }
+  }
+
+  if (isSearchOpen !== prevSearchOpen) {
+    setPrevSearchOpen(isSearchOpen);
+    if (isSearchOpen) {
+      setHoldMegaDim(false);
+    } else if (!isMegaActive) {
       setHoldMegaDim(true);
     }
   }
@@ -199,7 +260,7 @@ export default function GnbMenu({
 
   const mobileMenuId = isMain
     ? "main-header-mobile-menu"
-    : "gnb-mobile-menu-markets";
+    : "gnb-mobile-menu-sub";
 
   const openMega = useCallback(
     (navId: string) => {
@@ -212,22 +273,24 @@ export default function GnbMenu({
       }
 
       onRevealHeader?.();
-      onMegaOpenChange?.(true);
-      megaOpenScrollYRef.current = window.scrollY;
-      ignoreMegaScrollCloseUntilRef.current = Date.now() + 400;
+      setIsSearchOpen(false);
+      setIsGlobalOpen(false);
+      onSearchOpenChange?.(false);
 
-      const defaults = getDefaultMegaState(navId);
-      setIsPanelOpen(false);
+      const scrollY = getWindowScrollY();
+      megaOpenScrollYRef.current = scrollY;
+      lockPageScroll(scrollY);
+
+      onMegaOpenChange?.(true);
+
+      const defaults = getDefaultMegaState(navId, pathname);
       setIsMegaActive(true);
       setActiveNavId(navId);
       setActiveCategoryId(defaults.categoryId);
       setActiveDepth3Id(defaults.depth3Id);
-      setMegaView("category");
-      requestAnimationFrame(() => {
-        setIsPanelOpen(true);
-      });
+      setIsPanelOpen(true);
     },
-    [onMegaOpenChange, onRevealHeader],
+    [onMegaOpenChange, onRevealHeader, onSearchOpenChange, pathname],
   );
 
   const closeMega = useCallback(() => {
@@ -237,10 +300,19 @@ export default function GnbMenu({
     setActiveNavId(null);
     setActiveCategoryId("");
     setActiveDepth3Id("");
-    setMegaView("category");
     setIsMegaActive(false);
     onMegaOpenChange?.(false);
   }, [activeNavId, isMegaActive, onMegaOpenChange]);
+
+  const closeSearch = useCallback(() => {
+    if (!isSearchOpen) return;
+    setIsSearchOpen(false);
+  }, [isSearchOpen]);
+
+  const closeGlobal = useCallback(() => {
+    if (!isGlobalOpen) return;
+    setIsGlobalOpen(false);
+  }, [isGlobalOpen]);
 
   const closeAllGnbMenus = useCallback(() => {
     setIsMobileMenuOpen(false);
@@ -248,11 +320,48 @@ export default function GnbMenu({
     setActiveNavId(null);
     setActiveCategoryId("");
     setActiveDepth3Id("");
-    setMegaView("category");
     setIsMegaActive(false);
+    setIsSearchOpen(false);
+    setIsGlobalOpen(false);
     onMegaOpenChange?.(false);
+    onSearchOpenChange?.(false);
     onMobileMenuOpenChange?.(false);
-  }, [onMegaOpenChange, onMobileMenuOpenChange]);
+  }, [onMegaOpenChange, onMobileMenuOpenChange, onSearchOpenChange]);
+
+  const toggleGlobal = useCallback(() => {
+    if (isGlobalOpen) {
+      closeGlobal();
+      return;
+    }
+
+    closeMega();
+    closeSearch();
+    setIsMobileMenuOpen(false);
+    onRevealHeader?.();
+    setIsGlobalOpen(true);
+  }, [
+    closeGlobal,
+    closeMega,
+    closeSearch,
+    isGlobalOpen,
+    onRevealHeader,
+  ]);
+
+  const toggleSearch = useCallback(() => {
+    if (isSearchOpen) {
+      closeSearch();
+      return;
+    }
+
+    closeMega();
+    closeGlobal();
+    setIsMobileMenuOpen(false);
+    onRevealHeader?.();
+    const scrollY = getWindowScrollY();
+    megaOpenScrollYRef.current = scrollY;
+    lockPageScroll(scrollY);
+    setIsSearchOpen(true);
+  }, [closeGlobal, closeMega, closeSearch, isSearchOpen, onRevealHeader]);
 
   const toggleMega = useCallback(
     (navId: string) => {
@@ -265,14 +374,6 @@ export default function GnbMenu({
     [activeNavId, closeMega, openMega],
   );
 
-  const openExploreAll = useCallback(() => {
-    setMegaView("explore-all");
-  }, []);
-
-  const backToCategoryMega = useCallback(() => {
-    setMegaView("category");
-  }, []);
-
   const closeMobileMenu = useCallback(() => {
     closeAllGnbMenus();
   }, [closeAllGnbMenus]);
@@ -281,13 +382,59 @@ export default function GnbMenu({
     closeAllGnbMenus();
   }, [closeAllGnbMenus]);
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen((prev) => !prev);
-  };
+  /** /main 에서만 로고 클릭 → 클라이언트 라우팅 대신 하드 리프레시 */
+  const handleLogoClick = useCallback(
+    (event: MouseEvent<HTMLAnchorElement>) => {
+      handleGnbLinkClick();
+      if (pathname !== "/main") {
+        return;
+      }
+      event.preventDefault();
+      window.location.reload();
+    },
+    [handleGnbLinkClick, pathname],
+  );
+
+  const toggleMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen((prev) => {
+      const next = !prev;
+
+      if (next) {
+        closeMega();
+        closeSearch();
+        closeGlobal();
+        const scrollY = getWindowScrollY();
+        megaOpenScrollYRef.current = scrollY;
+        lockPageScroll(scrollY);
+      }
+
+      return next;
+    });
+  }, [closeGlobal, closeMega, closeSearch]);
 
   useEffect(() => {
     onMegaOpenChange?.(isMegaActive);
   }, [isMegaActive, onMegaOpenChange]);
+
+  useEffect(() => {
+    onSearchOpenChange?.(isSearchOpen);
+  }, [isSearchOpen, onSearchOpenChange]);
+
+  useEffect(() => {
+    if (!isGlobalOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeGlobal();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [closeGlobal, isGlobalOpen]);
 
   useEffect(() => {
     const onGnbClose = () => {
@@ -302,20 +449,15 @@ export default function GnbMenu({
   }, [closeAllGnbMenus]);
 
   useEffect(() => {
-    if (isMegaActive || !holdMegaDim) return;
+    if (isOverlayOpen || !holdMegaDim) return;
 
     const timer = setTimeout(() => setHoldMegaDim(false), MEGA_TRANSITION_MS);
     return () => clearTimeout(timer);
-  }, [isMegaActive, holdMegaDim]);
+  }, [holdMegaDim, isOverlayOpen]);
 
   useEffect(() => {
     if (!showMegaPanel) return;
-
-    const frame = requestAnimationFrame(() => {
-      setIsPanelOpen(true);
-    });
-
-    return () => cancelAnimationFrame(frame);
+    setIsPanelOpen(true);
   }, [showMegaPanel, activeNavId]);
 
   useEffect(() => {
@@ -331,94 +473,116 @@ export default function GnbMenu({
       }
     };
 
-    document.body.style.overflow = "hidden";
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.body.style.overflow = "";
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [closeMobileMenu, isMobileMenuOpen]);
 
+  useLayoutEffect(() => {
+    const shouldLock = isOverlayOpen || isMobileMenuOpen;
+    if (!shouldLock) return;
+
+    const scrollY = megaOpenScrollYRef.current;
+    lockPageScroll(scrollY);
+
+    return () => {
+      unlockPageScroll(scrollY);
+    };
+  }, [isMobileMenuOpen, isOverlayOpen]);
+
   useEffect(() => {
-    if (!isMegaActive) return;
+    if (!isDimMounted) return;
+
+    document.body.classList.add("is-gnb-overlay-open");
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        if (megaView === "explore-all") {
-          backToCategoryMega();
-        } else {
-          closeMega();
-        }
-      }
-    };
+      if (event.key !== "Escape") return;
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [backToCategoryMega, closeMega, isMegaActive, megaView]);
-
-  useEffect(() => {
-    if (!isMegaActive) return;
-
-    const syncScrollAnchor = () => {
-      megaOpenScrollYRef.current = window.scrollY;
-    };
-
-    syncScrollAnchor();
-    const frame = requestAnimationFrame(syncScrollAnchor);
-
-    const handleScroll = () => {
-      if (Date.now() < ignoreMegaScrollCloseUntilRef.current) {
+      if (isSearchOpen) {
+        closeSearch();
         return;
       }
 
-      /* 레이아웃 변화·미세 스크롤 무시 — 실제 페이지 스크롤만 닫기 */
-      if (Math.abs(window.scrollY - megaOpenScrollYRef.current) < 8) {
-        return;
-      }
       closeMega();
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("keydown", handleKeyDown);
+
     return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", handleScroll);
+      document.body.classList.remove("is-gnb-overlay-open");
+      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [closeMega, isMegaActive]);
+  }, [
+    closeMega,
+    closeSearch,
+    isDimMounted,
+    isSearchOpen,
+  ]);
 
   useEffect(() => {
     if (isScrollControlled) return;
 
-    const handleScroll = () => {
+    const updateScrollState = () => {
       const currentScrollY = window.scrollY;
       const threshold = isMain ? 80 : SCROLL_THRESHOLD;
-      const atTop = currentScrollY <= threshold;
 
-      setInternalAtTop(atTop);
-
-      if (isMobileMenuOpen) {
+      if (isMobileMenuOpen || isOverlayOpen) {
+        const atTop = resolveAtTop(
+          currentScrollY,
+          internalAtTopRef.current,
+          threshold,
+        );
+        internalAtTopRef.current = atTop;
+        setInternalAtTop(atTop);
         setInternalHeaderHidden(false);
-        lastScrollYRef.current = currentScrollY;
+        scrollVisibilityRef.current = "visible";
+        scrollAnchorYRef.current = currentScrollY;
         return;
       }
 
-      if (atTop) {
-        setInternalHeaderHidden(false);
-      } else if (currentScrollY > lastScrollYRef.current) {
-        setInternalHeaderHidden(true);
-        closeMega();
-      } else if (currentScrollY < lastScrollYRef.current) {
-        setInternalHeaderHidden(false);
-      }
+      const previousVisibility = scrollVisibilityRef.current;
+      const result = resolveGnbScrollVisibility({
+        currentScrollY,
+        anchorScrollY: scrollAnchorYRef.current,
+        topThreshold: threshold,
+        hideOnScroll: true,
+        currentVisibility: previousVisibility,
+        lastModeChangeAt: scrollModeChangeAtRef.current,
+        wasAtTop: internalAtTopRef.current,
+      });
 
-      lastScrollYRef.current = currentScrollY;
+      scrollAnchorYRef.current = result.anchorScrollY;
+      scrollModeChangeAtRef.current = result.lastModeChangeAt;
+      scrollVisibilityRef.current = result.visibility;
+      internalAtTopRef.current = result.isAtTop;
+      setInternalAtTop(result.isAtTop);
+      setInternalHeaderHidden(result.visibility === "hidden");
+
+      if (result.visibility === "hidden" && previousVisibility !== "hidden") {
+        closeMega();
+      }
     };
 
-    handleScroll();
+    internalAtTopRef.current = resolveAtTop(
+      window.scrollY,
+      internalAtTopRef.current,
+      isMain ? 80 : SCROLL_THRESHOLD,
+    );
+    scrollAnchorYRef.current = window.scrollY;
+    updateScrollState();
+    const handleScroll = createThrottledScrollHandler(
+      updateScrollState,
+      GNB_SCROLL_THROTTLE_MS,
+    );
     window.addEventListener("scroll", handleScroll, { passive: true });
 
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [closeMega, isMain, isMobileMenuOpen, isScrollControlled]);
+    return () => {
+      handleScroll.cancel();
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [closeMega, isMain, isMobileMenuOpen, isOverlayOpen, isScrollControlled]);
 
   const navList = (
     <ul className={isMain ? "main_header__nav-list" : "gnb_nav_list"}>
@@ -470,153 +634,255 @@ export default function GnbMenu({
     </ul>
   );
 
-  const gnbRow = isMain ? (
-    <div className="main_header__gnb-row">
-      <div className="main_header__inner">
-        <h1 className="main_header__logo">
-          <Link href={logoHref} prefetch={false} onClick={handleGnbLinkClick}>
-            <img loading="eager" decoding="async"
-              src="/img/logo_white.png"
-              alt=""
-              className="main_header__logo-img main_header__logo-img--white"
-              aria-hidden
-            />
-            <img loading="eager" decoding="async"
-              src="/img/logo.png"
-              alt="LS ELECTRIC"
-              className="main_header__logo-img main_header__logo-img--dark"
-            />
-          </Link>
-        </h1>
+  const renderGnbRow = (placement: "fixed" | "panel") => {
+    const isPanel = placement === "panel";
 
-        <nav className="main_header__nav" aria-label="주 메뉴">
-          {navList}
-        </nav>
+    if (isMain) {
+      const rowClassName = isPanel
+        ? "main_header__gnb-row gnb_mobile_panel__gnb-row"
+        : "main_header__gnb-row";
 
-        <div className="main_header__actions main_header__actions--desktop">
-          <button type="button" className="main_header__btn-search">
-            <span className="ir">search</span>
-          </button>
-          <button type="button" className="main_header__btn-global">
-            <span className="ir">global</span>
-          </button>
+      return (
+        <div className={rowClassName}>
+          <div className="main_header__inner">
+            {!isPanel ? (
+              <LogoTag className="main_header__logo">
+                <Link href={logoHref} prefetch={false} onClick={handleLogoClick}>
+                  <img loading="eager" decoding="async"
+                    src="/pub/img/logo_white.svg"
+                    alt="LS ELECTRIC"
+                    className="main_header__logo-img main_header__logo-img--white"
+                    aria-hidden
+                  />
+                  <img loading="eager" decoding="async"
+                    src="/pub/img/logo.svg"
+                    alt="LS ELECTRIC"
+                    className="main_header__logo-img main_header__logo-img--dark"
+                  />
+                </Link>
+              </LogoTag>
+            ) : (
+              <div className="gnb_mobile_global-slot">
+                <GnbMobileGlobalSelect />
+              </div>
+            )}
+
+            {!isPanel ? (
+              <>
+                <nav className="main_header__nav" aria-label="주 메뉴">
+                  {navList}
+                </nav>
+
+                <div className="main_header__actions main_header__actions--desktop">
+                  <button
+                    type="button"
+                    className={
+                      isSearchOpen
+                        ? "main_header__btn-search is-close"
+                        : "main_header__btn-search"
+                    }
+                    aria-label={isSearchOpen ? "Close search" : "Open search"}
+                    aria-expanded={isSearchOpen}
+                    aria-controls="gnb-search-panel"
+                    onClick={toggleSearch}
+                  >
+                    <span className="ir">{isSearchOpen ? "close search" : "search"}</span>
+                  </button>
+                  <GnbGlobalTrigger
+                    isOpen={isGlobalOpen}
+                    onToggle={toggleGlobal}
+                    onClose={closeGlobal}
+                    wrapClassName="main_header__global-wrap"
+                    buttonClassName="main_header__btn-global"
+                  >
+                    <GnbGlobalTriggerMainContent />
+                  </GnbGlobalTrigger>
+                </div>
+              </>
+            ) : null}
+
+            <div className="main_header__actions main_header__actions--mobile">
+              {!isPanel ? (
+                <>
+                  <button
+                    type="button"
+                    className={
+                      isSearchOpen
+                        ? "main_header__btn-search is-close"
+                        : "main_header__btn-search"
+                    }
+                    aria-label={isSearchOpen ? "Close search" : "Open search"}
+                    aria-expanded={isSearchOpen}
+                    aria-controls="gnb-search-panel"
+                    onClick={toggleSearch}
+                  >
+                    <span className="ir">{isSearchOpen ? "close search" : "search"}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="btn_menu"
+                    aria-label="메뉴 열기"
+                    aria-expanded={isMobileMenuOpen}
+                    aria-controls={mobileMenuId}
+                    onClick={toggleMobileMenu}
+                  >
+                    <span className="ir">open menu</span>
+                    <span className="icon_menu" aria-hidden="true">
+                      <span />
+                      <span />
+                      <span />
+                    </span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    className={
+                      isSearchOpen
+                        ? "main_header__btn-search is-close"
+                        : "main_header__btn-search"
+                    }
+                    aria-label={isSearchOpen ? "Close search" : "Open search"}
+                    aria-expanded={isSearchOpen}
+                    aria-controls="gnb-search-panel"
+                    onClick={toggleSearch}
+                  >
+                    <span className="ir">{isSearchOpen ? "close search" : "search"}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="gnb_mobile_close"
+                    aria-label="메뉴 닫기"
+                    onClick={closeMobileMenu}
+                  >
+                    <span className="ir">close menu</span>
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
         </div>
+      );
+    }
 
-        <div className="main_header__actions main_header__actions--mobile">
-          <button type="button" className="main_header__btn-search">
-            <span className="ir">search</span>
-          </button>
-          <button
-            type="button"
-            className={
-              isMobileMenuOpen
-                ? "main_header__btn-menu is-active"
-                : "main_header__btn-menu"
-            }
-            aria-label={isMobileMenuOpen ? "메뉴 닫기" : "메뉴 열기"}
-            aria-expanded={isMobileMenuOpen}
-            aria-controls={mobileMenuId}
-            onClick={toggleMobileMenu}
-          >
-            <span className="ir">
-              {isMobileMenuOpen ? "close menu" : "open menu"}
-            </span>
-            <span className="main_header__icon-menu" aria-hidden="true">
-              <span />
-              <span />
-              <span />
-            </span>
-          </button>
-        </div>
-      </div>
-    </div>
-  ) : (
-    <div className="sub_header__gnb-row">
-      <div className="gnb_menu_inner">
-        <h1 className="logo">
-          <Link href={logoHref} prefetch={false} onClick={handleGnbLinkClick}>
-            <img loading="eager" decoding="async" src="/img/logo.png" alt="LS ELECTRIC" />
-          </Link>
-        </h1>
+    const rowClassName = isPanel
+      ? "sub_header__gnb-row gnb_mobile_panel__gnb-row"
+      : "sub_header__gnb-row";
 
-        <nav className="gnb_nav_wrap" aria-label="주 메뉴">
-          {navList}
-        </nav>
-
-        <div className="btn_area btn_area--desktop">
-          <button type="button" className="btn_search">
-            <p className="ir">search</p>
-            <span className="icon_search" />
-          </button>
-          <button type="button" className="btn_global">
-            <p className="ir">global</p>
-            <span className="icon_global" />
-          </button>
-        </div>
-
-        <div className="btn_area btn_area--mobile">
-          <button type="button" className="btn_search">
-            <p className="ir">search</p>
-            <span className="icon_search" />
-          </button>
-          <button
-            type="button"
-            className={isMobileMenuOpen ? "btn_menu is-active" : "btn_menu"}
-            aria-label={isMobileMenuOpen ? "메뉴 닫기" : "메뉴 열기"}
-            aria-expanded={isMobileMenuOpen}
-            aria-controls={mobileMenuId}
-            onClick={toggleMobileMenu}
-          >
-            <p className="ir">{isMobileMenuOpen ? "close menu" : "open menu"}</p>
-            <span className="icon_menu" aria-hidden="true">
-              <span />
-              <span />
-              <span />
-            </span>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
-  const mobileMenu = isMain ? (
-    <>
-      <nav
-        id={mobileMenuId}
-        className={
-          isMobileMenuOpen
-            ? "main_header__mobile-menu is-open"
-            : "main_header__mobile-menu"
-        }
-        aria-label="모바일 메뉴"
-        aria-hidden={!isMobileMenuOpen}
-      >
-        <ul className="main_header__mobile-list">
-          {gnbNavItems.map((item) => (
-            <li key={item.id}>
-              <Link
-                href={item.href}
-                prefetch={false}
-                className="main_header__mobile-link"
-                onClick={handleGnbLinkClick}
-              >
-                {item.label}
+    return (
+      <div className={rowClassName}>
+        <div className="gnb_menu_inner">
+          {!isPanel ? (
+            <div className="logo">
+              <Link href={logoHref} prefetch={false} onClick={handleGnbLinkClick}>
+                <img loading="eager" decoding="async" src="/pub/img/logo.svg" alt="LS ELECTRIC" />
               </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
-      {isMobileMenuOpen ? (
-        <button
-          type="button"
-          className="main_header__mobile-dim"
-          aria-label="메뉴 닫기"
-          onClick={closeMobileMenu}
-        />
-      ) : null}
-    </>
-  ) : (
-    <>
+            </div>
+          ) : (
+            <div className="gnb_mobile_global-slot">
+              <GnbMobileGlobalSelect />
+            </div>
+          )}
+
+          {!isPanel ? (
+            <>
+              <nav className="gnb_nav_wrap" aria-label="주 메뉴">
+                {navList}
+              </nav>
+
+              <div className="btn_area btn_area--desktop">
+                <button
+                  type="button"
+                  className={isSearchOpen ? "btn_search is-close" : "btn_search"}
+                  aria-label={isSearchOpen ? "Close search" : "Open search"}
+                  aria-expanded={isSearchOpen}
+                  aria-controls="gnb-search-panel"
+                  onClick={toggleSearch}
+                >
+                  <p className="ir">{isSearchOpen ? "close search" : "search"}</p>
+                  <span className="icon_search" aria-hidden />
+                </button>
+                <GnbGlobalTrigger
+                  isOpen={isGlobalOpen}
+                  onToggle={toggleGlobal}
+                  onClose={closeGlobal}
+                  wrapClassName="gnb_global_wrap"
+                  buttonClassName="btn_global"
+                >
+                  <GnbGlobalTriggerSubContent />
+                </GnbGlobalTrigger>
+              </div>
+            </>
+          ) : null}
+
+          <div className="btn_area btn_area--mobile">
+            {!isPanel ? (
+              <>
+                <button
+                  type="button"
+                  className={isSearchOpen ? "btn_search is-close" : "btn_search"}
+                  aria-label={isSearchOpen ? "Close search" : "Open search"}
+                  aria-expanded={isSearchOpen}
+                  aria-controls="gnb-search-panel"
+                  onClick={toggleSearch}
+                >
+                  <p className="ir">{isSearchOpen ? "close search" : "search"}</p>
+                  <span className="icon_search" aria-hidden />
+                </button>
+                <button
+                  type="button"
+                  className="btn_menu"
+                  aria-label="메뉴 열기"
+                  aria-expanded={isMobileMenuOpen}
+                  aria-controls={mobileMenuId}
+                  onClick={toggleMobileMenu}
+                >
+                  <p className="ir">open menu</p>
+                  <span className="icon_menu" aria-hidden="true">
+                    <span />
+                    <span />
+                    <span />
+                  </span>
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className={isSearchOpen ? "btn_search is-close" : "btn_search"}
+                  aria-label={isSearchOpen ? "Close search" : "Open search"}
+                  aria-expanded={isSearchOpen}
+                  aria-controls="gnb-search-panel"
+                  onClick={toggleSearch}
+                >
+                  <p className="ir">{isSearchOpen ? "close search" : "search"}</p>
+                  <span className="icon_search" aria-hidden />
+                </button>
+                <button
+                  type="button"
+                  className="gnb_mobile_close"
+                  aria-label="메뉴 닫기"
+                  onClick={closeMobileMenu}
+                >
+                  <p className="ir">close menu</p>
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const gnbMobilePanel = (
+    <div
+      className={
+        isMobileMenuOpen ? "gnb_mobile_shell is-open" : "gnb_mobile_shell"
+      }
+      aria-hidden={!isMobileMenuOpen}
+    >
+      {renderGnbRow("panel")}
       <nav
         id={mobileMenuId}
         className={
@@ -625,25 +891,9 @@ export default function GnbMenu({
         aria-label="모바일 메뉴"
         aria-hidden={!isMobileMenuOpen}
       >
-        <ul className="gnb_mobile_list">
-          {gnbNavItems.map((item) => (
-            <li key={item.id} className="depth_1">
-              <Link href={item.href} prefetch={false} className="link" onClick={handleGnbLinkClick}>
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <GnbMobileMenuPanel isOpen={isMobileMenuOpen} onClose={closeMobileMenu} />
       </nav>
-      {isMobileMenuOpen ? (
-        <button
-          type="button"
-          className="gnb_mobile_dim"
-          aria-label="메뉴 닫기"
-          onClick={closeMobileMenu}
-        />
-      ) : null}
-    </>
+    </div>
   );
 
   let megaPanel: ReactNode = null;
@@ -661,7 +911,7 @@ export default function GnbMenu({
         id={megaMenu.panelId}
         role="region"
         aria-label={`${activeNav?.label ?? ""} menu`}
-        className={getMegaPanelClassName(megaMenu, megaView, isPanelOpen)}
+        className={getMegaPanelClassName(megaMenu, isPanelOpen)}
       >
         {isDevicesMegaMenu(megaMenu) ? (
           <PanelComponent
@@ -669,13 +919,14 @@ export default function GnbMenu({
             activeDepth3Id={activeDepth3Id}
             onCategoryChange={setActiveCategoryId}
             onDepth3Change={setActiveDepth3Id}
-            megaView={megaView}
-            onExploreAllClick={openExploreAll}
-            onExploreAllBack={backToCategoryMega}
             onLinkClick={handleGnbLinkClick}
+            onClose={closeMega}
           />
         ) : (
-          <PanelComponent onItemClick={handleGnbLinkClick} />
+          <PanelComponent
+            onItemClick={handleGnbLinkClick}
+            onClose={closeMega}
+          />
         )}
       </div>
     );
@@ -690,25 +941,47 @@ export default function GnbMenu({
           isHeaderHidden,
           hasBreadcrumb,
           isMegaActive,
+          isSearchOpen,
           isMobileMenuOpen,
           isHeaderRevealed,
+          showBreadcrumbNav,
         )}
       >
-        {gnbRow}
+        {renderGnbRow("fixed")}
 
         {breadcrumb}
 
         {megaPanel}
 
-        {mobileMenu}
+        {gnbMobilePanel}
+
+        {isMobileMenuOpen ? (
+          <button
+            type="button"
+            className="gnb_mobile_dim"
+            aria-label="메뉴 닫기"
+            data-lenis-prevent
+            onWheel={(event) => event.preventDefault()}
+            onTouchMove={(event) => event.preventDefault()}
+            onClick={closeMobileMenu}
+          />
+        ) : null}
       </header>
 
-      {isDimMounted ? (
+      <GnbSearchPanel isOpen={isSearchOpen} onNavigate={closeSearch} />
+
+      {isDimMounted && !isSearchOpen ? (
         <button
           type="button"
-          className={isMegaActive ? "gnb_mega_dim is-open" : "gnb_mega_dim"}
+          className={isOverlayOpen ? "gnb_mega_dim is-open" : "gnb_mega_dim"}
           aria-label="메뉴 닫기"
-          onClick={closeMega}
+          data-lenis-prevent
+          onWheel={(event) => event.preventDefault()}
+          onTouchMove={(event) => event.preventDefault()}
+          onClick={() => {
+            closeMega();
+            closeSearch();
+          }}
         />
       ) : null}
     </>

@@ -8,9 +8,11 @@ type CommonBanner04Props = {
   linkLabel?: string;
   linkExternal?: boolean;
   backgroundSrc?: string;
+  backgroundSrcMo?: string;
 };
 
-const DEFAULT_BACKGROUND_SRC = "/img/banner/bg_banner_03.png";
+const DEFAULT_BACKGROUND_SRC = "/pub/img/banner/bg_banner_03.png";
+const DEFAULT_BACKGROUND_SRC_MO = "/pub/img/banner/bg_banner_03_mo.png";
 const DEFAULT_TITLE = "Consult with an LS ELECTRIC Expert";
 const DEFAULT_DESCRIPTION =
   "Have a general question not related to quotes or technical service? Leave us a message and our team will get back to you.";
@@ -51,6 +53,69 @@ function BannerLink({
   );
 }
 
+function CommonBanner04Body({
+  href,
+  linkExternal,
+  backgroundSrc,
+  backgroundSrcMo,
+  title,
+  description,
+  linkLabel,
+}: {
+  href: string;
+  linkExternal?: boolean;
+  backgroundSrc: string;
+  backgroundSrcMo: string;
+  title: string;
+  description: string;
+  linkLabel: string;
+}) {
+  const content = (
+    <>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        loading="lazy"
+        decoding="async"
+        className="common_banner_04__bg common_banner_04__bg--pc"
+        src={backgroundSrc}
+        alt=""
+        aria-hidden
+      />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        loading="lazy"
+        decoding="async"
+        className="common_banner_04__bg common_banner_04__bg--mo"
+        src={backgroundSrcMo}
+        alt=""
+        aria-hidden
+      />
+      <div className="common_banner_04__dim" aria-hidden="true" />
+      <div className="inner common_banner_04__inner">
+        <h2 className="common_banner_04__tit">{title}</h2>
+        <p className="common_banner_04__desc">{description}</p>
+        <span className="btn-base btn-lv01 btn-lv01--line-solid">{linkLabel}</span>
+      </div>
+    </>
+  );
+
+  const className = "common_banner_04__body";
+
+  if (!href) {
+    return (
+      <a href="" className={className}>
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <BannerLink href={href} linkExternal={linkExternal} className={className}>
+      {content}
+    </BannerLink>
+  );
+}
+
 export default function CommonBanner04({
   title = DEFAULT_TITLE,
   description = DEFAULT_DESCRIPTION,
@@ -58,40 +123,19 @@ export default function CommonBanner04({
   linkLabel = DEFAULT_LINK_LABEL,
   linkExternal,
   backgroundSrc = DEFAULT_BACKGROUND_SRC,
+  backgroundSrcMo = DEFAULT_BACKGROUND_SRC_MO,
 }: CommonBanner04Props) {
-  const cta = (
-    <span className="btn-base btn-lv01 btn-lv01--line-solid">{linkLabel}</span>
-  );
-
   return (
     <section className="common_banner_04">
-      <div className="common_banner_04__body">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          loading="lazy"
-          decoding="async"
-          className="common_banner_04__bg"
-          src={backgroundSrc}
-          alt=""
-          aria-hidden
-        />
-        <div className="common_banner_04__dim" aria-hidden="true" />
-        <div className="inner common_banner_04__inner">
-          <h2 className="common_banner_04__tit">{title}</h2>
-          <p className="common_banner_04__desc">{description}</p>
-          {linkHref ? (
-            <BannerLink
-              href={linkHref}
-              linkExternal={linkExternal}
-              className="common_banner_04__link"
-            >
-              {cta}
-            </BannerLink>
-          ) : (
-            cta
-          )}
-        </div>
-      </div>
+      <CommonBanner04Body
+        href={linkHref}
+        linkExternal={linkExternal}
+        backgroundSrc={backgroundSrc}
+        backgroundSrcMo={backgroundSrcMo}
+        title={title}
+        description={description}
+        linkLabel={linkLabel}
+      />
     </section>
   );
 }

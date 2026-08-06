@@ -32,7 +32,7 @@ npm run dev
 |-----|------|
 | `/` | 페이지 인덱스 |
 | `/guide` | 가이드 허브 |
-| `/guide/components` | 컴포넌트 (Figma 04~09) |
+| `/guide/components` | 컴포넌트 (Figma 04~08) |
 | `/guide/ico` | 아이콘 (`public/ico`) |
 | `/guide/gnb` | **GNB·메가 메뉴** |
 
