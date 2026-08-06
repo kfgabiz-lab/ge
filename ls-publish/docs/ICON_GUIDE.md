@@ -10,7 +10,7 @@
 | **GNB 사용 맥락** | `src/data/gnbGuide.ts` → [GNB_GUIDE.md](./GNB_GUIDE.md) |
 | **허브** | [DESIGN_GUIDE.md](./DESIGN_GUIDE.md) |
 
-**동기화**: `public/ico` 파일 수 = `icoItems.length` (현재 **106**개) · `pageIconItems.length` (**17**개)
+**동기화**: `public/ico` 파일 수 ≈ `icoItems.length` (현재 **112**개) · `pageIconItems.length` (**17**개)
 
 `basePath`는 `/pub`입니다. 앱·CSS·MD 모두 `/pub/ico/...`, `/pub/img/...`로 참조합니다.
 
@@ -98,7 +98,8 @@
 | 파일 | 크기 | 용도 |
 |------|------|------|
 | `ico_right.svg` | 8 | 브레드크럼 구분 chevron |
-| `ico_home.svg` | 13 | 브레드크럼 홈 (mask) |
+| `ico_home.svg` | 13 | 브레드크럼 홈 #888 |
+| `ico_home_222.svg` | 13 | 브레드크럼 홈 hover #222 |
 
 ### UI
 
@@ -108,6 +109,7 @@
 | `ico_calendar.svg` | 20 | 일정·캘린더 |
 | `ico_cl.svg` | 24 | 모달·레이어 닫기 |
 | `ico_close_24.svg` | 24 | GNB 검색 패널 닫기 |
+| `ico_close_mega_24.svg` | 24 | Devices·Markets·Services·Support·Company 메가 패널 닫기 (`gnb_mega__close`, Figma `8793:231518`) |
 | `ico_copy_14.svg` | 14 | Copy Link (라이트) |
 | `ico_copy_white_14.svg` | 14 | Copy Link (다크) |
 | `ico_loading_14.svg` | 14 | Copy Link 로딩 스피너 |
@@ -153,7 +155,11 @@ MUI 연동: `GuideCheckboxIcon`, `guideCheckboxIcons*` — [COMPONENT_GUIDE.md](
 | 파일 | 크기 | 용도 |
 |------|------|------|
 | `ico_search_24.svg` | 24 | 검색 (스크롤·폼·툴바·`/search` Hero) |
-| `ico_search_24_white.svg` | 24 | 검색 (최상단 헤더) |
+| `ico_search_24_white.svg` | 24 | 검색 (PC 최상단 헤더) |
+| `ico_search_24_mo.svg` | 24 | 검색 (모바일 invert · Figma 8793:234602) |
+| `ico_search_24_white_mo.svg` | 24 | 검색 (모바일 is-top · Figma 8793:234601) |
+| `ico_menu_24_mo.svg` | 24 | 햄버거 (모바일 #222 · Figma 8793:234602) |
+| `ico_menu_24_white_mo.svg` | 24 | 햄버거 (모바일 흰 · Figma 8793:234601) |
 | `ico_gnb_search_ai_32.svg` | 32×36 | GNB 검색 패널 AI 마크 (`#gnb-search-panel`) |
 | `ico_global_24.svg` | 24 | 글로벌 리전 트리거 (스크롤 헤더) · 라벨 **America** |
 | `ico_global_24_white.svg` | 24 | 글로벌 리전 트리거 (최상단) · 라벨 **America** |
@@ -217,7 +223,7 @@ Figma [5552:121284](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB
 | `ico_training_products_18.svg` | PRODUCTS COVERED | `iconMuted` |
 | `ico_agenda_dot_8.svg` | Agenda MO timeline | Figma 8007:107681 · `__agenda-dot` |
 
-### Request for Training — Step Bar (`support_service_training_request`)
+### Training Request — Step Bar (`support_service_training_request`)
 
 Figma [5601:125962](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=5601-125962). 데이터: `requestForTrainingSteps` · 컴포넌트: `RequestForTrainingSteps`.
 
@@ -331,10 +337,11 @@ GNB·메가 메뉴·모바일 패널에서 쓰는 아이콘은 `public/ico`에 �
 
 | 구분 | 대표 파일 |
 |------|-----------|
-| 검색 | `ico_search_24` / `_white` · `ico_close_24` |
+| 검색 | `ico_search_24` / `_white` / `_mo` / `_white_mo` · `ico_close_24` · `ico_close_mega_24` |
+| 모바일 메뉴 | `ico_menu_24_mo` / `_white_mo` · close `ico_close_24` (Figma 8793:234601–234603) |
 | 글로벌 | `ico_global_24` / `_white` + 라벨 **America** |
 | 메가 CTA | `ico_link` · `ico_arrow_right_14` · `ico_arrow_right_24_blue` |
-| breadcrumb | `ico_home` · `ico_right` / `_white` · `ico_arrow_right_18` / `_white` / `_gray` |
+| breadcrumb | `ico_home` / `_222`(hover) · `ico_right` / `_white` · `ico_arrow_right_18` / `_white` / `_gray` |
 | 모바일 리스트 | `ico_arrow_right_20_list` (depth1·2) · `ico_arrow_right_18_list` (depth3) · back `ico_arrow_right_14` (180°) |
 
 배치·상태·클래스·모바일 depth 구조는 [GNB_GUIDE.md](./GNB_GUIDE.md)를 참고합니다.

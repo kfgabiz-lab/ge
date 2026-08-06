@@ -1,7 +1,7 @@
 import { GNB_MEGA_PANEL_ID } from "@/data/gnb/panelIds";
 import type { GnbSimpleMegaMenu } from "@/data/gnb/types";
 
-/** Figma 17660:104944 — 3열 × 2행 (열 우선) Markets mega grid */
+/** Figma 8793:231598 — 3열 × 2행 (열 우선) Markets mega grid */
 export const marketsMegaMenu: GnbSimpleMegaMenu = {
   type: "simple",
   panelId: GNB_MEGA_PANEL_ID.markets,
@@ -46,7 +46,7 @@ export const marketsMegaMenu: GnbSimpleMegaMenu = {
       id: "commercial-residential",
       title: "Commercial & Residential",
       description:
-        "Hotels / Retail Stores / Logistics / Commercial / Buildings / Residential",
+        "Hotels / Retail Stores / Logistics / Commercial Buildings / Residential",
       href: "/markets/commercial-residential",
     },
   ],

@@ -18,7 +18,7 @@
 - [Main](#main-main--maincss) · [Markets](#markets-markets--marketscss-globalscss) · [Products & Systems](#products--systems--devices-systemscss) · [Product Detail](#product-detail--devices-product-detailcss)
 - [Company](#company--blog-companyblog--companycss) (Blog · Press · Articles · Events · About · ESG · Careers · Article Detail)
 - [Common](#common--globalscss--maincss) · [Support](#support--connect-portal-supportconnect-portal--supportcss) · [Search](#search--all-results-search--searchcss)
-- [Services](#services--service-center-servicesservice-center--servicescss) (Service Center · Warranty · Engineering Training · Request for Training)
+- [Services](#services--service-center-servicesservice-center--servicescss) (Service Center · Warranty · Engineering Training · Training Request)
 - [공유·레이아웃](#공유레이아웃-패턴-섹션-루트-아님) · [가이드·개발](#가이드개발)
 
 ---
@@ -960,7 +960,7 @@ Figma [5966:63556](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%
 
 ---
 
-## Services — Request for Training (`/services/request-for-training`) — `training.css`
+## Services — Training Request (`/services/request-for-training`) — `training.css`
 
 페이지 래퍼: `.support-page--request-for-training` · `P-FO-SERV-040000T_step_01` · Figma [5601:125956](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=5601-125956)
 
@@ -969,7 +969,7 @@ Figma [5966:63556](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%
 | 1 | `company-about-title` | `RequestForTrainingTitle.tsx` | `request-for-training-title` |
 | 2 | `support_service_training_request` | `RequestForTraining.tsx` | `request-for-training` · 4단계 스텝바 · Step 1 폼 · Error sample 유형당 1개 (Search Keyword · Text Address 2) · [1689:8145](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=1689-8145) · Next 220×52 |
 
-데이터: `requestForTrainingContent.ts` · breadcrumb: Services > Training > Request for Training
+데이터: `requestForTrainingContent.ts` · breadcrumb: Services > Training > Training Request
 
 | 헬퍼 (섹션 루트 아님) | 컴포넌트 | 비고 |
 |----------------------|----------|------|

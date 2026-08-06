@@ -1,7 +1,7 @@
 import { GNB_MEGA_PANEL_ID } from "@/data/gnb/panelIds";
 import type { GnbSimpleMegaMenu } from "@/data/gnb/types";
 
-/** Figma 3670:14792 — Support mega (2 columns) */
+/** Figma 8793:231827 — Support mega (2 columns · Training 열 hidden) */
 export const supportMegaMenu: GnbSimpleMegaMenu = {
   type: "simple",
   panelId: GNB_MEGA_PANEL_ID.support,
@@ -53,7 +53,6 @@ export const supportMegaMenu: GnbSimpleMegaMenu = {
           description: "Information hub for power products",
           href: "https://gics.ls-electric.com/public/knowledgeBasePopup.do",
           external: true,
-          externalIcon: true,
         },
         {
           id: "Knowledge-Base-Automation",
@@ -61,7 +60,6 @@ export const supportMegaMenu: GnbSimpleMegaMenu = {
           description: "Information hub for automation products",
           href: "https://sol.ls-electric.com/us/en/community/blog",
           external: true,
-          externalIcon: true,
         },
         {
           id: "product-match",
@@ -73,7 +71,7 @@ export const supportMegaMenu: GnbSimpleMegaMenu = {
         {
           id: "pre-engineering",
           title: "LS Pre-Engineering",
-          description: "Quotes & drawings for custom products",
+          description: "Quotes & drawings for custom products.",
           href: "https://lspe-x.ls-electric.com/",
           external: true,
         },

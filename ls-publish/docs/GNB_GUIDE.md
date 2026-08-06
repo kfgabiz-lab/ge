@@ -55,7 +55,13 @@ Nav 라벨 **Products & Systems** (`navId: devices`) — 경로 `/products-syste
 | `careers` | `#gnb-mega-panel-careers` | simple · sections | `mega/careers.ts` |
 | `company` | `#gnb-mega-panel-company` | simple · sections (3 columns) | `mega/company.ts` |
 
-**Company mega** (Figma 5683:60839): About Us · Articles · Careers — `grid-template-columns: repeat(3, …)` · Articles → `/company/articles/detail` · Careers Search and Apply → `external: true` + `ico_link.svg`
+**Company mega** (Figma [8793:231732](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=8793-231732)): 패널 `700px` · head `185px` · 3열 `404px` · About Us / Articles / Careers · Search and Apply ([8793:231743](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=8793-231743)) `external`+`ico_link` 우측 정렬 · 닫기 `gnb_mega__close`
+
+**Markets mega** (Figma [8793:231598](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=8793-231598)): 패널 `316px` · head `185px` · 셀 `404×140` · desc `336px`(Power Grid `316`) · hover `#f5f7fa` · 닫기 `top:35`/`right:0` (`ico_close_mega_24`)
+
+**Services mega** (Figma [8793:231658](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=8793-231658)): 패널 `700px` · head `185px` · 2열 `404px` · item pad `34` · desc `336` · Request for Service `external`+`ico_link` · 닫기 `gnb_mega__close`
+
+**Support mega** (Figma [8793:231827](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=8793-231827)): 패널 `700px` · head `185px` · 2열 `404px`(Training hidden) · Resources / Portals & Tools · Portals 전부 `external`+`ico_link` · 닫기 `gnb_mega__close`
 
 패널 ID 상수: `src/data/gnb/panelIds.ts` (`GNB_MEGA_PANEL_ID`)
 
@@ -68,6 +74,8 @@ CSS modifier: `getMegaPanelClassName.ts` — 예) `gnb_mega--devices`, `gnb_mega
 - **depth2**: LV / MV / HV … (`categories`)
 - **depth3**: 제품군 (예: Electronic Motor Protection Relay)
 - **depth4**: 패널 타이틀 + 설명 + product(s) 그리드
+- **닫기**: `gnb_mega__inner > .gnb_mega__close` 절대좌표 (`top: 35px` · `right: 0`, depth4와 무관) · `ico_close_mega_24`
+- **Software** (`depth3AsLinks: true`, Figma `8793:231550`): depth3는 화살표 링크 리스트(`ico_arrow_right_14`) · depth4는 비움
 - 기본 오픈: LV + `empr` (`devicesMegaDefaultCategoryId`, `devicesMegaDefaultDepth3Id`)
 
 ### PC hover 인터랙션 (`GnbMegaPanel.tsx`)
@@ -155,13 +163,15 @@ GNB·메가·모바일 **사용 맥락**: `src/data/gnbGuide.ts` → `gnbGuideIc
 
 | 파일 | 용도 |
 |------|------|
-| `ico_search_24` / `_white` | 검색 버튼 |
+| `ico_search_24` / `_white` / `_mo` / `_white_mo` | 검색 (PC · 모바일 is-top/invert · Figma 8793:234601–234603) |
+| `ico_menu_24_mo` / `_white_mo` | 모바일 햄버거 (`btn_area--mobile` · Figma 8793:234601–234602) |
+| `ico_close_24` | 검색 닫기 · 모바일 메뉴 닫기 (Figma 8793:234603) |
 | `ico_gnb_search_ai_32` | GNB 검색 패널 필드 AI 마크 (Figma 7334:131967 PC · 7334:131884 MO) |
 | `ico_gnb_search_clear_24` | 모바일 GNB 검색 필드 clear 버튼 (Figma 7334:131929) |
-| `ico_close_24` | 검색 닫기 |
+| `ico_close_mega_24` | Devices 메가 패널 닫기 (Figma `8793:231518` · Icon / 24px / Close) |
 | `ico_global_24` / `_white` | 글로벌 리전 트리거 + America 라벨 |
 | `ico_link` | 외부 링크 (`gnb_mega__item-external`, `btn-text-30`) |
-| `ico_arrow_right_14` | Explore All · mobile back (180°) |
+| `ico_arrow_right_14` | Explore All · mobile back (180°) · Software depth3 링크 |
 | `ico_arrow_right_20_list` | 모바일 depth1·2 chevron |
 | `ico_arrow_right_18_list` | 모바일 depth3 chevron |
 | `ico_arrow_right_24_blue` | depth4 타이틀 CTA |
@@ -183,7 +193,7 @@ GNB·메가·모바일 **사용 맥락**: `src/data/gnbGuide.ts` → `gnbGuideIc
 | GNB (Products & Systems · America) | 5683:60868 |
 | Devices LV / EMPR | 2769:34864 |
 | Services | 2769:35379 |
-| Company (3 columns) | 5683:60839 |
+| Company (3 columns) | 8793:231732 |
 | Support | 2769:35780 |
 | Careers | 2769:35857 |
 | Mobile depth1 | 6880:135688 |

@@ -71,8 +71,8 @@ export const icoItems: IcoItem[] = [
     name: "arrow_right",
     size: 14,
     color: "#222",
-    usage: "소형 인라인 화살표",
-    usedIn: "MainVisual (공지 More), gnbGuide (Explore All)",
+    usage: "소형 인라인 화살표 · Software mega depth3 링크",
+    usedIn: "MainVisual (공지 More), gnb.css (.gnb_mega__depth3-btn-arrow), gnbGuide (Explore All)",
   },
   {
     id: "ico_arrow_right_14_2",
@@ -772,9 +772,20 @@ export const icoItems: IcoItem[] = [
     category: "breadcrumb",
     name: "home",
     size: 13,
-    color: "gray",
+    color: "#888",
     usage: "브레드크럼 홈",
-    usedIn: "globals.css (.breadcrumb_home, mask)",
+    usedIn: "gnb.css (.breadcrumb_home)",
+  },
+  {
+    id: "ico_home_222",
+    fileName: "ico_home_222.svg",
+    path: "/pub/ico/ico_home_222.svg",
+    category: "breadcrumb",
+    name: "home",
+    size: 13,
+    color: "#222",
+    usage: "브레드크럼 홈 hover",
+    usedIn: "gnb.css (.sub_header:not(.is-gnb-hidden) .breadcrumb_home:hover)",
   },
 
   // —— Search / Global ——
@@ -887,8 +898,65 @@ export const icoItems: IcoItem[] = [
     name: "search",
     size: 24,
     color: "white",
-    usage: "검색 — 최상단 헤더",
-    usedIn: "gnb.css — 상세: gnbGuide.ts",
+    usage: "검색 — 최상단 헤더 (PC)",
+    usedIn: "gnb.css (.main_header.is-top) — 상세: gnbGuide.ts",
+  },
+  {
+    id: "ico_search_24_white_mo",
+    fileName: "ico_search_24_white_mo.svg",
+    path: "/pub/ico/ico_search_24_white_mo.svg",
+    category: "search",
+    name: "search_mo",
+    size: 24,
+    color: "white",
+    usage: "검색 — 모바일 최상단 (is-top · ≤1200)",
+    usedIn:
+      "gnb.css (.btn_area--mobile · .main_header__actions--mobile) — Figma 8793:234601",
+  },
+  {
+    id: "ico_search_24_mo",
+    fileName: "ico_search_24_mo.svg",
+    path: "/pub/ico/ico_search_24_mo.svg",
+    category: "search",
+    name: "search_mo",
+    size: 24,
+    color: "#222",
+    usage: "검색 — 모바일 invert·패널 (≤1200)",
+    usedIn:
+      "gnb.css (.btn_area--mobile · .main_header__actions--mobile · gnb_mobile_shell) — Figma 8793:234602 / 8793:234603",
+  },
+  {
+    id: "ico_menu_24",
+    fileName: "ico_menu_24.svg",
+    path: "/pub/ico/ico_menu_24.svg",
+    category: "ui",
+    name: "menu",
+    size: 24,
+    color: "#0F1F45",
+    usage: "햄버거 메뉴 — legacy navy",
+    usedIn: "kept for reference; mobile uses ico_menu_24_mo",
+  },
+  {
+    id: "ico_menu_24_mo",
+    fileName: "ico_menu_24_mo.svg",
+    path: "/pub/ico/ico_menu_24_mo.svg",
+    category: "ui",
+    name: "menu_mo",
+    size: 24,
+    color: "#222",
+    usage: "모바일 햄버거 — invert·패널 open",
+    usedIn: "gnb.css (.btn_area--mobile .icon_menu) — Figma 8793:234602",
+  },
+  {
+    id: "ico_menu_24_white_mo",
+    fileName: "ico_menu_24_white_mo.svg",
+    path: "/pub/ico/ico_menu_24_white_mo.svg",
+    category: "ui",
+    name: "menu_mo",
+    size: 24,
+    color: "white",
+    usage: "모바일 햄버거 — 최상단 (is-top · ≤1200)",
+    usedIn: "gnb.css (.btn_area--mobile · .main_header.is-top .icon_menu) — Figma 8793:234601",
   },
   {
     id: "ico_close_24",
@@ -900,6 +968,17 @@ export const icoItems: IcoItem[] = [
     color: "#222",
     usage: "GNB 검색 패널 닫기",
     usedIn: "gnb.css — 상세: gnbGuide.ts",
+  },
+  {
+    id: "ico_close_mega_24",
+    fileName: "ico_close_mega_24.svg",
+    path: "/pub/ico/ico_close_mega_24.svg",
+    category: "search",
+    name: "close_mega",
+    size: 24,
+    color: "#222",
+    usage: "Devices·Markets·Services·Support·Company 메가 패널 닫기 (Figma 8793:231518)",
+    usedIn: "gnb.css (.gnb_mega__close) — 상세: gnbGuide.ts",
   },
   {
     id: "ico_404_home_80",
@@ -1128,7 +1207,7 @@ export const icoItems: IcoItem[] = [
     usedIn: "예비 (푸터 SNS는 /img/footer/ 사용)",
   },
 
-  // —— Request for Training — Step bar ——
+  // —— Training Request — Step bar ——
   {
     id: "ico_request_training_info_24",
     fileName: "ico_request_training_info_24.svg",
@@ -1137,7 +1216,7 @@ export const icoItems: IcoItem[] = [
     name: "request_training_info",
     size: 24,
     color: "#0F1F45",
-    usage: "Request for Training 스텝바 Step 1 — 클립보드 (24px) · 44px 원형 배경은 CSS",
+    usage: "Training Request 스텝바 Step 1 — 클립보드 (24px) · 44px 원형 배경은 CSS",
     usedIn: "RequestForTrainingSteps",
   },
   {
@@ -1148,7 +1227,7 @@ export const icoItems: IcoItem[] = [
     name: "request_training_calendar",
     size: 24,
     color: "#fff",
-    usage: "Request for Training 스텝바 Step 2 — 캘린더 (24px) · 44px 원형 배경은 CSS",
+    usage: "Training Request 스텝바 Step 2 — 캘린더 (24px) · 44px 원형 배경은 CSS",
     usedIn: "RequestForTrainingSteps",
   },
   {
@@ -1159,7 +1238,7 @@ export const icoItems: IcoItem[] = [
     name: "request_training_location",
     size: 24,
     color: "#fff",
-    usage: "Request for Training 스텝바 Step 3 — 위치 (24px) · 44px 원형 배경은 CSS",
+    usage: "Training Request 스텝바 Step 3 — 위치 (24px) · 44px 원형 배경은 CSS",
     usedIn: "RequestForTrainingSteps",
   },
   {
@@ -1170,7 +1249,7 @@ export const icoItems: IcoItem[] = [
     name: "request_training_file",
     size: 24,
     color: "#fff",
-    usage: "Request for Training 스텝바 Step 4 — 문서 (24px) · 44px 원형 배경은 CSS",
+    usage: "Training Request 스텝바 Step 4 — 문서 (24px) · 44px 원형 배경은 CSS",
     usedIn: "RequestForTrainingSteps",
   },
   {
@@ -1181,7 +1260,7 @@ export const icoItems: IcoItem[] = [
     name: "request_training_arrow_active",
     size: 24,
     color: "#fff",
-    usage: "Request for Training 스텝바 — 활성 구간 화살표",
+    usage: "Training Request 스텝바 — 활성 구간 화살표",
     usedIn: "RequestForTrainingSteps",
   },
   {
@@ -1192,7 +1271,7 @@ export const icoItems: IcoItem[] = [
     name: "request_training_arrow",
     size: 24,
     color: "#fff",
-    usage: "Request for Training 스텝바 — 비활성 구간 화살표",
+    usage: "Training Request 스텝바 — 비활성 구간 화살표",
     usedIn: "RequestForTrainingSteps",
   },
   {
@@ -1203,7 +1282,7 @@ export const icoItems: IcoItem[] = [
     name: "request_training_check",
     size: 16,
     color: "#fff",
-    usage: "Request for Training 스텝바 — 완료 Step 체크 (16px) · 44px 원형 `#e60040` CSS",
+    usage: "Training Request 스텝바 — 완료 Step 체크 (16px) · 44px 원형 `#e60040` CSS",
     usedIn: "RequestForTrainingSteps",
   },
   {
@@ -1214,7 +1293,7 @@ export const icoItems: IcoItem[] = [
     name: "request_training_calendar_active",
     size: 24,
     color: "#0F1F45",
-    usage: "Request for Training 스텝바 Step 2 활성 — 캘린더 (24px) · 44px 흰 원형 CSS",
+    usage: "Training Request 스텝바 Step 2 활성 — 캘린더 (24px) · 44px 흰 원형 CSS",
     usedIn: "RequestForTrainingSteps",
   },
   {
@@ -1225,7 +1304,7 @@ export const icoItems: IcoItem[] = [
     name: "request_training_location_active",
     size: 24,
     color: "#0F1F45",
-    usage: "Request for Training 스텝바 Step 3 활성 — 위치 (24px) · 44px 흰 원형 CSS",
+    usage: "Training Request 스텝바 Step 3 활성 — 위치 (24px) · 44px 흰 원형 CSS",
     usedIn: "RequestForTrainingSteps, requestForTrainingContent.ts",
   },
   {
@@ -1236,7 +1315,7 @@ export const icoItems: IcoItem[] = [
     name: "request_training_file_active",
     size: 24,
     color: "#0F1F45",
-    usage: "Request for Training 스텝바 Step 4 활성 — 문서 (24px) · 44px 흰 원형 CSS",
+    usage: "Training Request 스텝바 Step 4 활성 — 문서 (24px) · 44px 흰 원형 CSS",
     usedIn: "RequestForTrainingSteps, requestForTrainingContent.ts",
   },
 ];

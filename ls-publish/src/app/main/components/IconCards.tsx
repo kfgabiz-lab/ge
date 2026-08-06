@@ -53,10 +53,10 @@ const iconCardItems: IconCardItem[] = [
       </>
     ),
   },
-  {
+  { href: "/services/request-for-training",
     image: "/pub/img/main/icon_card_04.svg",
     imageAlt: "Request For Training",
-    title: "Request For Training",
+    title: "Training Request",
     description: (
       <>
         Request certified, hands-on <br/>

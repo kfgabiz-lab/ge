@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type MouseEvent, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GNB_CLOSE_EVENT } from "@/lib/navigation/gnbCloseEvent";
@@ -382,6 +382,19 @@ export default function GnbMenu({
     closeAllGnbMenus();
   }, [closeAllGnbMenus]);
 
+  /** /main 에서만 로고 클릭 → 클라이언트 라우팅 대신 하드 리프레시 */
+  const handleLogoClick = useCallback(
+    (event: MouseEvent<HTMLAnchorElement>) => {
+      handleGnbLinkClick();
+      if (pathname !== "/main") {
+        return;
+      }
+      event.preventDefault();
+      window.location.reload();
+    },
+    [handleGnbLinkClick, pathname],
+  );
+
   const toggleMobileMenu = useCallback(() => {
     setIsMobileMenuOpen((prev) => {
       const next = !prev;
@@ -634,7 +647,7 @@ export default function GnbMenu({
           <div className="main_header__inner">
             {!isPanel ? (
               <LogoTag className="main_header__logo">
-                <Link href={logoHref} prefetch={false} onClick={handleGnbLinkClick}>
+                <Link href={logoHref} prefetch={false} onClick={handleLogoClick}>
                   <img loading="eager" decoding="async"
                     src="/pub/img/logo_white.svg"
                     alt="LS ELECTRIC"
@@ -907,9 +920,13 @@ export default function GnbMenu({
             onCategoryChange={setActiveCategoryId}
             onDepth3Change={setActiveDepth3Id}
             onLinkClick={handleGnbLinkClick}
+            onClose={closeMega}
           />
         ) : (
-          <PanelComponent onItemClick={handleGnbLinkClick} />
+          <PanelComponent
+            onItemClick={handleGnbLinkClick}
+            onClose={closeMega}
+          />
         )}
       </div>
     );

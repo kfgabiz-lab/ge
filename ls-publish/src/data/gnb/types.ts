@@ -24,6 +24,10 @@ export type GnbMegaDepth2 = {
   label: string;
   /** depth2-btn 클릭 시 이동 경로 (미지정 시 첫 depth3 href) */
   href?: string;
+  /**
+   * true면 depth3가 화살표 링크 리스트, depth4는 비움 (Software · Figma 8793:231550)
+   */
+  depth3AsLinks?: boolean;
   children: GnbMegaDepth3[];
 };
 

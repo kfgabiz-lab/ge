@@ -53,12 +53,52 @@ export const gnbGuideIcons: GnbGuideIcon[] = [
       "gnb.css (.main_header__btn-search.is-close, .btn_search.is-close)",
   },
   {
+    id: "ico_close_mega_24",
+    fileName: "ico_close_mega_24.svg",
+    path: "/pub/ico/ico_close_mega_24.svg",
+    size: 24,
+    usage: "Devices·Markets·Services·Support·Company 메가 패널 닫기 (Figma 8793:231518 · Icon / 24px / Close)",
+    usedIn: "gnb.css (.gnb_mega__close) — Devices · Markets · Services · Support · Company",
+  },
+  {
     id: "ico_search_24_white",
     fileName: "ico_search_24_white.svg",
     path: "/pub/ico/ico_search_24_white.svg",
     size: 24,
-    usage: "검색 — 최상단 헤더",
+    usage: "검색 — 최상단 헤더 (PC)",
     usedIn: "gnb.css (.main_header.is-top)",
+  },
+  {
+    id: "ico_search_24_white_mo",
+    fileName: "ico_search_24_white_mo.svg",
+    path: "/pub/ico/ico_search_24_white_mo.svg",
+    size: 24,
+    usage: "검색 — 모바일 is-top · Figma 8793:234601",
+    usedIn: "gnb.css (.btn_area--mobile · .main_header__actions--mobile)",
+  },
+  {
+    id: "ico_search_24_mo",
+    fileName: "ico_search_24_mo.svg",
+    path: "/pub/ico/ico_search_24_mo.svg",
+    size: 24,
+    usage: "검색 — 모바일 invert·Menu open · Figma 8793:234602 / 234603",
+    usedIn: "gnb.css (.btn_area--mobile · gnb_mobile_shell)",
+  },
+  {
+    id: "ico_menu_24_mo",
+    fileName: "ico_menu_24_mo.svg",
+    path: "/pub/ico/ico_menu_24_mo.svg",
+    size: 24,
+    usage: "모바일 햄버거 #222 · Figma 8793:234602",
+    usedIn: "gnb.css (.btn_area--mobile .icon_menu)",
+  },
+  {
+    id: "ico_menu_24_white_mo",
+    fileName: "ico_menu_24_white_mo.svg",
+    path: "/pub/ico/ico_menu_24_white_mo.svg",
+    size: 24,
+    usage: "모바일 햄버거 white · Figma 8793:234601",
+    usedIn: "gnb.css (.btn_area--mobile · .main_header.is-top .icon_menu)",
   },
   {
     id: "ico_global_24",
@@ -89,8 +129,8 @@ export const gnbGuideIcons: GnbGuideIcon[] = [
     fileName: "ico_arrow_right_14.svg",
     path: "/pub/ico/ico_arrow_right_14.svg",
     size: 14,
-    usage: "Explore All Products 등 소형 CTA",
-    usedIn: "gnb.css (.gnb_mega__explore-btn)",
+    usage: "Explore All Products · Software depth3 링크",
+    usedIn: "gnb.css (.gnb_mega__explore-btn, .gnb_mega__depth3-btn-arrow)",
   },
   {
     id: "ico_arrow_right_24_blue",
@@ -136,9 +176,17 @@ export const gnbGuideIcons: GnbGuideIcon[] = [
     id: "ico_home",
     fileName: "ico_home.svg",
     path: "/pub/ico/ico_home.svg",
-    size: 16,
-    usage: "breadcrumb 홈",
+    size: 13,
+    usage: "breadcrumb 홈 #888",
     usedIn: "gnb.css (.sub_breadcrumb)",
+  },
+  {
+    id: "ico_home_222",
+    fileName: "ico_home_222.svg",
+    path: "/pub/ico/ico_home_222.svg",
+    size: 13,
+    usage: "breadcrumb 홈 hover #222",
+    usedIn: "gnb.css (.sub_header:not(.is-gnb-hidden) .breadcrumb_home:hover)",
   },
   {
     id: "ico_right",
@@ -178,7 +226,7 @@ export const gnbGuidePanels: GnbGuidePanel[] = [
     dataFile: "src/data/gnb/mega/devices.ts",
     component: "GnbDevicesMegaPanel / GnbMegaPanel",
     cssModifier: "gnb_mega--devices",
-    figmaNote: "2769:34864 (LV / EMPR 기본)",
+    figmaNote: "2769:34864 (LV / EMPR) · Software links 8793:231550",
   },
   {
     navId: "markets",
@@ -188,7 +236,7 @@ export const gnbGuidePanels: GnbGuidePanel[] = [
     dataFile: "src/data/gnb/mega/markets.ts",
     component: "GnbMarketsMegaPanel",
     cssModifier: "gnb_mega--simple gnb_mega--grid gnb_mega--markets",
-    figmaNote: "17660:104944",
+    figmaNote: "8793:231598",
   },
   {
     navId: "services",
@@ -198,7 +246,7 @@ export const gnbGuidePanels: GnbGuidePanel[] = [
     dataFile: "src/data/gnb/mega/services.ts",
     component: "GnbServicesMegaPanel",
     cssModifier: "gnb_mega--simple gnb_mega--sections gnb_mega--services",
-    figmaNote: "3670:14629",
+    figmaNote: "8793:231658",
   },
   {
     navId: "support",
@@ -208,7 +256,7 @@ export const gnbGuidePanels: GnbGuidePanel[] = [
     dataFile: "src/data/gnb/mega/support.ts",
     component: "GnbSupportMegaPanel",
     cssModifier: "gnb_mega--simple gnb_mega--sections gnb_mega--support",
-    figmaNote: "3670:14792",
+    figmaNote: "8793:231827",
   },
   {
     navId: "careers",
@@ -228,7 +276,7 @@ export const gnbGuidePanels: GnbGuidePanel[] = [
     dataFile: "src/data/gnb/mega/company.ts",
     component: "GnbCompanyMegaPanel",
     cssModifier: "gnb_mega--simple gnb_mega--sections gnb_mega--company",
-    figmaNote: "5683:60839 — 3 columns (About Us · Articles · Careers)",
+    figmaNote: "8793:231732 — 3 columns · Search and Apply (231743) external icon right",
   },
 ];
 
@@ -256,13 +304,20 @@ export const gnbGuideClassRefs = [
   {
     block: "Devices 4depth",
     classes:
-      "gnb_mega__col--depth2, --depth3, --depth4, gnb_mega__depth4-head, gnb_mega__depth4-arrow",
+      "gnb_mega__col--depth2, --depth3, --depth4, gnb_mega__depth4-head, gnb_mega__depth4-arrow, gnb_mega__close",
     file: "GnbMegaPanel.tsx, gnb.css",
   },
   {
-    block: "Simple grid",
-    classes: "gnb_mega__inner--grid, gnb_mega__simple-grid, gnb_mega__simple-item",
-    file: "GnbMarketsMegaPanel.tsx",
+    block: "Devices Software (depth3AsLinks)",
+    classes:
+      "gnb_mega__col--depth3.is-links, gnb_mega__depth3-btn-arrow, gnb_mega__col--depth4.is-empty, gnb_mega__inner > .gnb_mega__close",
+    file: "GnbMegaPanel.tsx, devices.ts (depth3AsLinks) · Figma 8793:231550",
+  },
+  {
+    block: "Simple grid (Markets)",
+    classes:
+      "gnb_mega__inner--grid, gnb_mega__grid, gnb_mega__item, gnb_mega__close",
+    file: "GnbMarketsMegaPanel.tsx · Figma 8793:231598",
   },
   {
     block: "Simple sections",

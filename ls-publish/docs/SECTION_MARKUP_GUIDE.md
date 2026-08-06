@@ -385,7 +385,7 @@ Hero 부제는 `__sub` — desktop 24px / weight **300** / line-height 34px (`ma
 | `company-feed.css` | `company-press-*`, `company-articles-*`, `company-events-*` |
 | `support.css` | `support_*` |
 | `services.css` | `support_service_*` — Service Center · Warranty Policy |
-| `training.css` | `support_service_training_*` — Engineering Training · Request for Training |
+| `training.css` | `support_service_training_*` — Engineering Training · Training Request |
 | `search.css` | `search_*` — `/search` (탭·AI·필터 패널) |
 | `common-404.css` | `common_404_*` — `/404` |
 | `common-privacy-policy.css` | `common_privacy_policy*` — `/privacy-policy` |

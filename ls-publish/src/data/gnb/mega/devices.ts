@@ -1,5 +1,5 @@
 import { GNB_MEGA_PANEL_ID } from "@/data/gnb/panelIds";
-import { acbDescription, microGridMegaDescription, scadaMegaDescription, smartFactoryMegaDescription, xemsMegaDescription } from "@/data/gnb/shared";
+import { acbDescription } from "@/data/gnb/shared";
 import type { GnbDevicesMegaMenu, GnbMegaDepth3 } from "@/data/gnb/types";
  
 /** GNB mega depth3-btn destination */
@@ -846,33 +846,26 @@ export const devicesMegaMenu: GnbDevicesMegaMenu = {
       id: "software",
       label: "Software",
       href: SOFTWARE_HREF,
+      depth3AsLinks: true,
       children: [
         {
           id: "scada-sw",
           label: "SCADA",
-          panelTitle: "SCADA",
-          description: scadaMegaDescription,
           href: softwareProductHrefs.scada,
         },
         {
           id: "xems-sw",
           label: "xEMS",
-          panelTitle: "xEMS",
-          description: xemsMegaDescription,
           href: softwareProductHrefs.xems,
         },
         {
           id: "micro-grid-sw",
           label: "Micro Grid",
-          panelTitle: "Micro Grid",
-          description: microGridMegaDescription,
           href: softwareProductHrefs.microGrid,
         },
         {
           id: "diganosis-system-sw",
-          label: "Smart Factory",
-          panelTitle: "Smart Factory",
-          description: smartFactoryMegaDescription,
+          label: "Diagnosis System",
           href: softwareProductHrefs.smartFactory,
         },
       ],
