@@ -1,0 +1,204 @@
+# BO 로그인 보안성검토 매트릭스
+
+> 작성일: 2026-08-06
+> 대상: bo(관리자 프론트) + bo-api `AuthController`(`/api/v1/auth`) 로그인/인증 플로우 전체
+> 특이사항: BO 로그인은 DB `menu` 테이블의 메뉴 트리에 속하지 않는 **별도 인증 플로우**다. 따라서 표준 매트릭스의 "메뉴" 열 대신 **로그인 플로우 6단계**를 열로 사용한다.
+> 체크리스트 카테고리(A~J)는 `docs/보안성검토/ckecklist.md`와 동일한 분류 체계를 재사용하되, 세부 정의는 인증/토큰/세션 맥락으로 재작성했다. 로그인 플로우 특성상 **B(인증/인가)와 C(민감정보 노출)가 검토 비중의 핵심**이며, 나머지 카테고리는 보조 관점이다.
+> 표기: `PASS`(이상없음) / `FAIL`(이슈발견, 상세는 "발견 이슈" 섹션에) / `-`(미분석) / `N/A`(해당사항 없음)
+
+---
+
+## 매트릭스
+
+| 체크리스트 | ①ID/PW 로그인 | ②TOTP 등록(QR) | ③TOTP 검증 | ④토큰 갱신(Refresh) | ⑤로그아웃 | ⑥클라이언트 인증상태 관리 |
+|---|---|---|---|---|---|---|
+| A. 인젝션 / XSS | ~~FAIL~~ **PASS** | PASS | PASS | PASS | PASS | PASS |
+| B. 인증/인가 (IDOR 포함) | FAIL | FAIL | FAIL | FAIL | FAIL | FAIL |
+| C. 민감정보 노출 | FAIL | FAIL | PASS | FAIL | PASS | FAIL |
+| D. 서버측 요청위조/설정 보안 | FAIL | ~~FAIL~~ **PASS** | ~~FAIL~~ **PASS** | PASS | PASS | ~~FAIL~~ **PASS** |
+| E. 오픈 리다이렉트/CSRF/Clickjacking | ~~FAIL~~ **PASS** | PASS | PASS | FAIL | FAIL | ~~FAIL~~ **PASS** |
+| F. 입력 검증/비즈니스 로직 남용 | FAIL | FAIL | FAIL | FAIL | PASS | PASS |
+| G. 조회/열거(Enumeration) 안전성 | ~~FAIL~~ **PASS** | PASS | FAIL | PASS | PASS | N/A |
+| H. 서드파티/공급망 | FAIL | PASS | PASS | PASS | PASS | FAIL |
+| I. 캐시/가용성 | FAIL | FAIL | PASS | FAIL | PASS | FAIL |
+| J. 개인정보/컴플라이언스 | FAIL | PASS | FAIL | FAIL | FAIL | FAIL |
+
+**집계: 총 60셀 — PASS 28 / FAIL 31 / N/A 1 (미분석 0) — 2026-08-06 수정 반영, 최초 분석 시점 대비 7셀 PASS 전환**
+
+> 판정 근거는 bo(프론트)·bo-api(백엔드) 양측 리뷰 결과를 병합한 것이다(한쪽이라도 FAIL이면 FAIL). 디스패처가 Critical 항목 전건을 소스 직접 Read로 재확인했다.
+> ⚠️ **모드 분기 전제**: `ls.redis-enabled` 값에 따라 인증 방식이 완전히 갈린다(`SecurityConfig.java:58`). `false`(local/developer) = JWT Stateless + tempToken, `true`(dev) = Redis 세션. 아래 이슈에는 어느 모드에 해당하는지 표기했다.
+
+---
+
+## 대상 파일 / 엔드포인트
+
+| # | 플로우 단계 | bo-api 엔드포인트 | bo 프론트 파일 |
+|---|---|---|---|
+| ① | ID/PW 로그인 | `POST /api/v1/auth/login` | `bo/src/app/admin/login/page.tsx`, `bo/src/components/auth/login-form.tsx` |
+| ② | TOTP 등록(QR) | `POST /api/v1/auth/totp/qr`, `POST /api/v1/auth/totp/registrations` | `bo/src/components/auth/totp-setup-form.tsx` |
+| ③ | TOTP 검증 | `POST /api/v1/auth/totp/sessions` | `bo/src/components/auth/totp-verify-form.tsx` |
+| ④ | 토큰 갱신(Refresh) | `POST /api/v1/auth/refresh` | `bo/src/lib/api.ts` (토큰 첨부/자동갱신 인터셉터) |
+| ⑤ | 로그아웃 | `POST /api/v1/auth/logout` | `bo/src/components/auth/auth-provider.tsx`, `bo/src/store/auth-store.ts` |
+| ⑥ | 클라이언트 인증상태 관리 | (해당 없음 — 클라이언트 전용) | `bo/src/store/auth-store.ts`, `bo/src/components/auth/auth-provider.tsx` |
+
+> 각주 1: `bo/src/app/admin/_login/page.tsx`는 `login-form.tsx`를 그대로 노출하는 페이지지만, Next.js App Router 규칙상 언더스코어(`_`) 접두 폴더는 라우팅에서 제외되어 **실제로는 접근 불가능한 죽은 코드**다. 보안 이슈가 아니라 **정리 후보**로만 기록한다(검토 대상에서 제외).
+> 각주 2: bo-api 측 실제 구현 클래스(`AuthService`, JWT 토큰 프로바이더, `SecurityConfig` 등)는 분석 단계에서 `AuthController`로부터 추적하여 확정한다. 현 시점에서는 엔드포인트 6개만 확정 상태.
+
+---
+
+## 카테고리(A~J) 정의 — BO 로그인 맥락
+
+| 분류 | 정의 |
+|---|---|
+| A. 인젝션 / XSS | 로그인 ID·TOTP 코드 등 인증 입력값이 쿼리/로그/에러메시지 조합에 그대로 들어가는지, 로그인 실패 메시지에 입력값이 그대로 반사되어 렌더링되는지(Reflected XSS), TOTP QR(otpauth URI) 생성 시 사용자 제어 문자열이 이스케이프 없이 삽입되는지 |
+| B. 인증/인가 (IDOR 포함) ★핵심 | 비밀번호 검증 로직(해시 알고리즘, 타이밍 안전 비교), **TOTP 단계 우회 가능성**(1차 로그인 토큰만으로 보호 자원 접근 가능한지), TOTP 등록 엔드포인트가 타 계정의 QR/등록을 수행할 수 있는지(IDOR), Refresh 토큰의 소유자 검증·재사용 탐지·회전(rotation) 여부, 로그아웃 후 토큰 무효화 실효성, 인증 관련 엔드포인트의 `permitAll` 범위가 과도한지 |
+| C. 민감정보 노출 ★핵심 | 응답 바디에 password hash·TOTP secret·salt가 포함되는지, **TOTP secret이 QR 발급 응답/클라이언트 상태에 평문으로 남는지**, 토큰(Access/Refresh)의 저장 위치(localStorage vs HttpOnly 쿠키 vs 메모리)와 XSS 노출 위험, JWT 페이로드에 불필요한 개인정보가 담기는지, 인증 실패 로그·콘솔에 자격증명이 찍히는지, `NEXT_PUBLIC_` 환경변수에 인증 관련 시크릿 혼입 여부 |
+| D. 서버측 요청위조/설정 보안 | 인증 엔드포인트에 대한 CORS 허용 출처 범위(`allowCredentials` 조합 포함), 인증 실패 시 스택트레이스/내부 경로 노출, 로그인 페이지에 적용되는 보안 헤더(HSTS, X-Content-Type-Options, X-Frame-Options/frame-ancestors, CSP) 존재 여부 |
+| E. 오픈 리다이렉트/CSRF/Clickjacking | 로그인 성공 후 이동 경로(`redirect`/`returnUrl` 등 쿼리 파라미터)가 검증 없이 `router.push`/`window.location`에 쓰이는지(오픈 리다이렉트), 토큰을 쿠키로 보관한다면 CSRF 방어(SameSite, Origin 검증) 여부, 로그인 화면 iframe 삽입 차단 여부(로그인 Clickjacking) |
+| F. 입력 검증/비즈니스 로직 남용 | **로그인 시도 Rate Limiting / 계정 잠금(브루트포스 방어)**, TOTP 코드 재시도 횟수 제한 및 코드 1회성 소비(replay 방지), TOTP 시간 윈도우(허용 skew) 과도 여부, 서버측 Bean Validation 존재 여부, 비밀번호 정책 강제 지점 |
+| G. 조회/열거(Enumeration) 안전성 | 존재하지 않는 ID와 비밀번호 오류의 **응답 메시지·HTTP 상태·응답 시간 차이로 계정 존재 여부가 식별되는지**(User Enumeration), TOTP 등록 여부가 응답으로 구분되어 정찰 정보를 주는지 |
+| H. 서드파티/공급망 | TOTP 라이브러리·JWT 라이브러리(bo-api `build.gradle`)와 QR 생성/인증 관련 npm 패키지(bo `package.json`)의 알려진 취약점 및 버전 노후화, lockfile 관리 |
+| I. 캐시/가용성 | 로그인 페이지·인증 응답이 캐시되어(브라우저/프록시/Next.js 캐시) 다른 사용자에게 인증 정보가 섞여 나갈 가능성, 인증 응답의 `Cache-Control` 헤더, Refresh 토큰 갱신 실패 시 무한 재시도 루프로 인한 자기 DoS 가능성 |
+| J. 개인정보/컴플라이언스 | 로그인 성공/실패 이력에 저장되는 정보 범위(비밀번호·토큰 평문 저장 금지), 접속 로그의 IP·User-Agent 수집 근거와 보존기간, 관리자 계정 PII 처리 |
+
+---
+
+## 발견 이슈
+
+<!-- 형식: #번호 [파일:라인] 설명 — 카테고리 / 심각도(Critical|Warning|Info). 번호는 문서 전체에서 순차 부여(①~⑥ 단계 순서), 앞으로 이 번호로 항목을 지칭한다. -->
+
+### ① ID/PW 로그인
+
+- ✅ **#1 [bo/src/components/auth/login-form.tsx:57]** 로그인 폼 `defaultValues`에 실제 관리자 비밀번호 `"P@ssw0rd123"`가 하드코딩되어 있다. 이 값은 클라이언트 번들에 그대로 포함되므로, 로그인 페이지에 접근할 수 있는 누구나(비인증 포함) 비밀번호 필드에 자동 입력된 관리자 비밀번호를 획득할 수 있다. — C / **Critical** — ⚠️ **수정 이력 정정(2026-08-06)**: 최초 수정(`password: ""`)이 이후 시점에 코드에서 사라져 있던 것을 `#보안성검토수정`(#13/#48/#49) 작업 중 `security-fix-executor`가 재확인·보고함(원인 불명 — git 이력상 커밋된 적 없는 로컬 변경이었음). **재수정 완료**: `password: ""`로 다시 변경, `git diff`로 실제 반영 확인. bo 개발서버는 Fast Refresh로 자동 반영(별도 재기동 불필요)
+- ✅ **#2 [bo-api/src/main/resources/application.yml:31]** JWT 서명 시크릿 `app.jwt.secret`이 소스에 평문 하드코딩(`bo-backoffice-ge-america-secret-key-256bit-secure-2026`)되어 형상관리에 커밋되어 있다. 환경변수 오버라이드 없이 이 값이 기본으로 사용되며, 시크릿을 아는 사람은 임의 이메일·임의 role의 accessToken을 위조해 전체 인가 체계를 우회할 수 있다. — C / **Critical** — ✅ **수정 완료(2026-08-06)**: `secret: ${JWT_SECRET}`로 환경변수 필수화 + 신규 랜덤 시크릿으로 교체, 재기동 검증 완료
+- ✅ **#3 [bo-api/src/main/java/com/ge/bo/service/AuthService.java:160-165 vs 138-142]** 계정이 존재하고 비밀번호만 틀린 경우 `"비밀번호 N회 실패 하셨습니다. 5회 실패 시 계정 비활성화됩니다."`를, 존재하지 않는 이메일에는 `"ID or password가 일치하지 않습니다."`를 반환한다. 응답 메시지만으로 계정 존재 여부가 100% 식별된다(추가로 비활성 계정은 403 `ACCESS_DENIED`, 승인대기는 403 `PENDING_APPROVAL`로 상태까지 구분됨). 유효 관리자 계정 목록을 열거한 뒤 잠금 임계치 이하로 분산 시도하는 공격이 가능하다. — G / **Critical** — ✅ **수정 완료(2026-08-06)**: 이메일 미존재/비활성/비밀번호오류/잠금 4개 분기 응답을 `401 INVALID_CREDENTIALS` + 동일 메시지로 통일(승인대기 `PENDING_APPROVAL`은 인증 성공 후에만 도달하는 분기라 열거 벡터가 아니므로 유지). 실제 요청으로 응답 동일성 검증 완료
+- ✅ **#4 [bo/next.config.ts:29-37, bo/src/middleware.ts]** 응답 보안 헤더에 `X-Frame-Options` 및 CSP `frame-ancestors`가 없다(nosniff/HSTS/Referrer-Policy/CORP/COOP만 설정). 로그인 화면을 외부 사이트 iframe에 삽입하는 Clickjacking(자격증명 탈취형 UI redressing)을 차단하지 못한다. — E / Warning — ✅ **수정 완료(2026-08-06)**: `next.config.ts` headers() + `middleware.ts` applySecurityHeaders()에 `X-Frame-Options: SAMEORIGIN`, `Content-Security-Policy: frame-ancestors 'self'` 추가(전 경로 적용이라 ②-D/③-D/⑥-D,E 동일 이슈도 함께 해결). fo에도 동일 적용. 재기동 후 응답헤더 확인 완료
+- ✅ **#5 [bo-api/src/main/java/com/ge/bo/dto/LoginRequest.java:10-13, AuthController.java:38]** `LoginRequest`에 Bean Validation 애노테이션이 전혀 없고 컨트롤러에도 `@Valid`가 없다. 서버측 형식·길이 검증이 `AuthService.java:122-127`의 수동 null/blank 체크뿐이라 이메일 형식·최대 길이 제한이 서버에서 강제되지 않는다(계정 잠금 `AuthService.java:153-158`과 reCAPTCHA `AuthService.java:134`는 존재해 브루트포스 자체는 일부 방어됨). — F / Warning — ✅ **수정 완료(2026-08-06)**: `email`(NotBlank/Size(30)/Pattern 영숫자), `password`(NotBlank/Size(4~100)) 검증 추가 + 컨트롤러 `@Valid` 추가. `recaptchaToken`은 기존 전용 에러 처리 유지 위해 미적용. 실제 요청으로 400 검증 확인 완료. (①-F의 reCAPTCHA 테스트키/Rate Limiting 미비 Critical 2건은 미해결로 FAIL 유지)
+- ✅ **#6 [bo-api/src/main/java/com/ge/bo/service/RecaptchaService.java:42]** `String.format(VERIFY_URL, secretKey, token)`으로 사용자 제어 값인 `token`을 URL 인코딩 없이 쿼리스트링에 직접 조합한다. `&`가 포함된 토큰으로 siteverify 요청에 임의 파라미터를 덧붙이는 파라미터 인젝션이 가능하다. — A / **Warning** — 🔄 **교차검증 완료(2026-08-06)**: 세션 에이전트(최초 Info 판정) + `java-security-reviewer`(독립 재분석) 교차검증 결과 Warning으로 정정. `ExternalApiClient`가 Spring `RestClient` 기본 인코딩모드(`TEMPLATE_AND_VALUES`)를 사용해 `&`/`=`를 인코딩하지 않음을 코드로 확인 — 파라미터 인젝션은 실제 성립. 단 SSRF(호스트 고정) 및 CRLF/요청분리(`HttpURLConnection`+`java.net.URI` 계층에서 차단)는 불가 확인. ✅ **수정 완료(2026-08-06)**: 쿼리스트링 → `MultiValueMap` 폼 바디 POST로 전환(#47과 함께 처리). **실제 인젝션 재현 테스트로 검증**: `recaptchaToken="abc&secret=hacked&foo=bar"` 전송 시 로그에 `response=[abc&secret=****&foo=bar]`로 `response` 필드 값 하나에 전체가 온전히 담김(별도 파라미터로 분리 안 됨) 확인
+- **#7 [bo-api/src/main/java/com/ge/bo/entity/LoginLog.java:22-50]** 로그인 이력에 비밀번호·토큰은 저장하지 않아(양호) 이메일/IP/User-Agent/상태/실패사유만 남지만, 해당 로그의 보존기간 설정이나 자동 파기(purge) 로직이 코드베이스에 존재하지 않는다. IP·UA는 개인정보에 해당하므로 보존기간 정의가 필요하다. — J / **Warning** — ⬆️ **재평가(2026-08-06)**: `#보안성상세분석` 3자 교차검증(java-security-reviewer+nextjs-security-reviewer+세션 에이전트) 결과 Info→Warning. 단독 위험은 아니나 #13(접근권한 미제한)의 피해규모를 시간에 비례해 키우는 증폭요인으로 판단
+
+- **#8 [bo/next.config.ts:6 + bo-api/src/main/resources/application-dev.yml:93, application-developer.yml:92, application-local.yml:80]** reCAPTCHA가 **구글 공개 테스트 키 쌍**으로 고정되어 봇 방어가 완전히 무력화되어 있다. 프론트 site key `6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI`와 서버 secret key `6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe`는 구글이 문서에 공개한 자동화 테스트용 키로, **어떤 토큰을 보내도 항상 `success: true`를 반환**한다. 따라서 `AuthService.java:134`의 `recaptchaService.verify()`는 사실상 no-op이다. 더구나 site key는 `.env`가 아니라 `next.config.ts`의 `env` 블록에 하드코딩되어 **모든 프로필 빌드에 동일하게 박히며**(운영 빌드에서 교체될 코드 경로가 없음), secret key는 dev 프로필에도 테스트 키가 들어가 있다. 추가로 SSO 모드(`ls.isApiLogin=true`, dev 기본값)는 `AuthService.java:129-131`의 `return ssoLogin(...)`이 `:134`의 reCAPTCHA 검증보다 **앞서 실행되어 캡차를 아예 건너뛴다.** — F / **Critical**
+- **#9 [bo-api 전 소스(`RateLimit|bucket4j|resilience4j` grep 0건) + AuthService.java:153-158]** 로그인에 **IP 단위 Rate Limiting이 전혀 없다.** 존재하는 방어는 계정별 누적 실패 잠금(기본 5회)뿐이라, 위 reCAPTCHA 무력화와 결합하면 수천 개 계정에 3회씩 대입하는 계정 스프레이(password spraying)가 무제한 가능하다. — F / **Critical**
+- ✅ **#10 [bo-api/src/main/java/com/ge/bo/controller/AdminController.java(@PreAuthorize 0건) + service/AdminService.java:146]** 로그인 자격증명의 생명주기를 관리하는 관리자 API에 **인가 검증이 누락**되어 있다. `SecurityConfig.java:145` 주석은 "관리자 API — @PreAuthorize로 SUPER_ADMIN 제한"이라 명시하지만 `AdminController`에는 `@PreAuthorize`가 **단 한 건도 없어**(다른 11개 컨트롤러는 사용 중이므로 명백한 누락) `.authenticated()`만 적용된다. 즉 **최하위 권한 계정을 포함한 모든 로그인 사용자**가 `POST /api/v1/admins/{id}/reset-password`, `PATCH /api/v1/admins/{id}`(role 변경), `DELETE /api/v1/admins/{id}`를 호출할 수 있다. 여기에 `AdminService.java:146`의 `String tempPassword = "test12345";`가 결합된다 — 비밀번호 초기화가 **전 계정 공통 고정 문자열**을 설정하고 이를 응답 바디로 반환하므로, 임의의 인증 사용자가 SUPER_ADMIN 비밀번호를 알려진 값으로 바꿔 계정을 탈취할 수 있다. `getAdminById`(`:41`)에 있는 `is_system` 보호 필터가 `resetPassword`(`:141`)/`updateAdmin`(`:115`)/`deleteAdmin`(`:177`)에는 적용되지 않아 시스템 계정도 대상이 된다. — B / **Critical** — ✅ **수정 완료(2026-08-06)**: 5중 조치 — ① `AdminController` 클래스 레벨에 저장소 공통 컨벤션 `@PreAuthorize("@securityService.isSystemAdmin(authentication)")` 적용, ② 단 `GET /admins/{id}/sites`만 `isSystemAdmin or isSelf(#id)` 메서드 레벨 예외(전 사용자가 쓰는 `header.tsx:61` SiteSelector 소비처 보존 — `PUT /{id}/sites`에는 예외 미부여), ③ `SecurityService.isSelf()` 신규 추가(`AdminRepository` 주입, `JwtAuthenticationFilter:43`이 principal에 email을 넣으므로 `authentication.getName()`=email 기준 비교), ④ `AdminService.createAdmin`/`updateAdmin`에 `isSystemRole()` 재사용한 시스템 역할 배정 차단(심층방어), ⑤ `resetPassword`의 고정 `"test12345"`를 `createAdmin`과 동일한 `UUID.randomUUID().toString().substring(0,12)`로 교체. 부수로 `SecurityConfig` 주석 2곳(redis/JWT 분기)의 "SUPER_ADMIN 제한"이라는 사실과 다른 서술을 실제 메커니즘(역할명이 아닌 `role.is_system=true` 기준)으로 정정하고, `bo/src/middleware.ts`의 `SYSTEM_ADMIN_PATHS`에 `/admin/settings/users`, `/admin/settings/roles`를 추가해 UI 계층도 정합화. **검증**: bo-api 재기동 후 curl 실검증 — (1) 시스템관리자(`comlbg`/`SYSTEM_ADMIN`, is_system=t) 토큰 → 목록·단건·타인 sites 전부 **200**, (2) 비시스템관리자(`compjj`/`SUPER_ADMIN`, is_system=f) 토큰 → 목록·단건·`reset-password`·`DELETE`·`PUT /{id}/sites` 5건 전부 **403** `{"error":"FORBIDDEN"}`, (3) isSelf 예외 — `compjj` 토큰으로 본인 `GET /admins/23/sites` **200**(사이트 1건 정상 반환), 타인 `GET /admins/1/sites`·`/admins/24/sites` **403**, (4) 시스템역할 배정 차단 — `PATCH /admins/23 {role:"SYSTEM_ADMIN"}` **400 INVALID_ROLE**, `POST /admins {role:"SYSTEM_ADMIN"}` **400**, `role:"OP_ADMIN"` 정상경로는 **200** 회귀 확인, (5) tempPassword 랜덤화 — `reset-password` 2회 호출 결과 `365daa5f-da1` / `ea69121e-d76`로 `test12345`가 아니며 매 호출 상이, (6) bo 재기동(3001) 후 `/bo/admin/settings/users`·`/roles`가 `bo_is_system` 쿠키 없으면 **307 → /admin/dashboard**, 쿠키 있으면 **200**, 비보호 경로(`menus`/`sites`/`dashboard`)는 **200** 회귀 정상
+- **#11 [bo-api/src/main/java/com/ge/bo/config/SecurityConfig.java:133-134, 138-141]** permitAll 범위가 과도하다. `/api/v1/contents-batch/run-all`, `/catalog/run`, `/ssq/run`, `/certi/run` 4개 배치 트리거가 무인증 전면 개방되어 있고(EAI 호출용이라는 주석 외에 IP 화이트리스트·서명·API 키 등 2차 검증이 코드에 없음), `/api/v1/cryptoTest/**`, `/api/v1/redisTest/**`도 무인증이다. — B / Warning
+- **#12 [bo-api/src/main/java/com/ge/bo/service/AuthService.java:153-158 + entity/AdminUser.java:63]** 계정 잠금에 **자동 해제 로직이 없다.** `lockedUntil` 컬럼은 존재하지만 로그인 경로에서 한 번도 읽지 않으며(`AuthService.login` 전체에 `getLockedUntil()` 호출 없음), 실패 5회 시 관리자가 수동 초기화할 때까지 영구 잠금된다. Rate Limiting 부재(위 항목)와 결합하면 **이메일만 아는 공격자가 임의 관리자 계정을 영구 잠글 수 있는 DoS**가 성립한다. — I / Warning
+- ✅ **#13 [bo-api/src/main/java/com/ge/bo/controller/LoginLogController.java, ErrorLogController.java, TransactionLogController.java(전부 @PreAuthorize 0건)]** `/api/v1/login-logs`가 `anyRequest().authenticated()`에만 걸려 있어 **모든 로그인 사용자가 전 관리자의 이메일·IP·User-Agent 접속이력을 조회**할 수 있다. `ErrorLogController`도 동일하며 스택트레이스 포함 상세 조회가 가능하고, `TransactionLogController`도 동일 패턴으로 요청 바디 원문(password류만 마스킹)이 노출된다. 이 저장소의 다른 20여개 관리 컨트롤러는 전부 `@PreAuthorize("@securityService.isSystemAdmin(authentication)")`을 쓰는데 로그 조회 3곳만 이탈. — B, J / **Critical** — ⬆️ **재평가(2026-08-06)**: `#보안성상세분석`(java-security-reviewer + nextjs-security-reviewer + 세션 에이전트 3자 교차검증)에서 Warning→Critical로 상향, TransactionLogController 대상 추가 확인 — ✅ **수정 완료(2026-08-06)**: 3개 컨트롤러 클래스 레벨에 저장소 공통 컨벤션 `@PreAuthorize("@securityService.isSystemAdmin(authentication)")` 적용(`ApiInfoController:28` 등과 동일). 소비처는 `bo/src/app/admin/logs/{access,error,transaction}` 전용 화면 6곳뿐이며 헤더/공통영역 등 예외 소비처 없음을 Grep으로 확인. **검증**: bo-api 재기동 후 curl 3-way 실검증 — (1) 토큰 없음 → 목록 3개 전부 **401**, (2) 비(非)시스템관리자 토큰(`SUPER_ADMIN`, `role.is_system=f`) → 목록·상세 6개 전부 **403** `{"error":"FORBIDDEN"}`, (3) 시스템관리자(`comlbg`/`SYSTEM_ADMIN`) → 목록·상세 6개 전부 **200** 정상 조회
+- **#14 [bo-api/src/main/resources/application-dev.yml:8, 17, 87-88, 115]** JWT 시크릿(위 항목) 외에도 dev 프로필에 운영성 시크릿이 평문 커밋되어 있다: DB 비밀번호 `lsis@2026!@#`(:8), 메일 비밀번호(:17), Connect Portal 암복호화 키/IV(:87-88), Azure Blob SAS 토큰(:115). 4개 프로필 yml 전부 git 추적 대상이다. — C / **Critical**
+- **#15 [bo-api/src/main/java/com/ge/bo/controller/AuthController.java:59-65]** `extractClientIp()`가 `X-Forwarded-For` 헤더를 프록시 홉 검증 없이 무조건 신뢰한다. 클라이언트가 헤더를 위조하면 접속이력의 IP가 오염되어 감사증적 신뢰성이 떨어지고, IP 기반 통제를 도입하더라도 우회된다. — J / Info
+- **#16 [bo-api/build.gradle:13]** `JavaLanguageVersion.of(25)`로 비-LTS 런타임을 강제하고 있다(프로젝트 요구사항은 Java 21). 보안 패치 수명이 짧은 런타임에 고정되어 있다. — H / Info
+- **#17 [bo-api/src/main/java/com/ge/bo/config/SecurityConfig.java:61, 66 + application.yml:25]** (**redis 모드 = dev 한정**) 세션 쿠키 기반으로 동작하면서 CSRF를 비활성화했다. 쿠키 자동 전송 + CSRF 미적용 상태에서 `same-site: lax`에만 의존하는데, lax는 top-level GET만 차단하므로 CORS 화이트리스트에 등록된 오리진 중 하나에서 XSS가 발생하면 상태변경 요청이 그대로 통과한다. — E / Warning
+
+### ② TOTP 등록(QR)
+
+- **#18 [bo-api/src/main/java/com/ge/bo/entity/AdminUser.java:66-67]** TOTP 비밀키가 `@Column(name = "totp_secret", columnDefinition = "TEXT")`로 **평문 그대로 DB에 저장**된다(`TotpService.java:64`에서 `admin.setTotpSecret(secret)`). 컬럼 암호화·해시·KMS 연동이 전혀 없어, DB 덤프나 SQL Injection·백업 유출 시 전 관리자의 2차 인증이 즉시 무력화된다(공격자가 secret으로 유효한 OTP를 무한 생성 가능). 비밀번호는 BCrypt로 보호되는 반면 2FA 시드는 무방비라 2FA가 사실상 방어 계층 역할을 못 한다. — C / **Critical**
+- **#19 [bo-api/src/main/java/com/ge/bo/service/TotpService.java:52-64]** `setup()`이 `@Transactional` 안에서 6자리 코드 검증 **이전에** 새 secret을 생성해 `admin.setTotpSecret(secret)`으로 DB에 선반영한다. `POST /auth/totp/qr`는 tempToken만 있으면 호출 가능하므로, 10분 유효한 tempToken으로 반복 호출해 secret을 무한 재생성·덮어쓸 수 있다. 사용자가 인증앱에 등록을 마치는 도중 secret이 교체되면 등록이 실패하는 경합/방해 상황이 발생한다. 또한 `TotpDto.SetupRequest`(`TotpDto.java:18-20`)에 Bean Validation이 없다. — F / Warning
+- **#20 [bo-api/src/main/java/com/ge/bo/service/TotpService.java:82-86, 124-128]** Javadoc은 `복구코드 10개 (1회성)` 발급을 명시하지만 실제 반환 DTO `TotpDto.VerifyResponse`(`TotpDto.java:68-71`)에는 복구코드 필드 자체가 없고 구현도 없다. 인증기기 분실 시 관리자 자가 복구 수단이 없어 계정 잠김(가용성) 위험이 있다. — I / Info
+
+- **#21 [bo-api/src/main/java/com/ge/bo/service/AuthService.java:438-448]** (**redis 모드**) `startMfa()`가 세션에 `MFA_VERIFIED=false`를 심지만 **이 속성을 읽는 코드가 프로젝트 전체에 없다**(쓰기 1곳, 읽기 0곳). "1차만 통과한 세션"과 "2차까지 완료한 세션"을 구분하려는 의도로 만든 플래그가 죽어 있어, 향후 단계 구분이 필요해질 때 방어선이 존재하지 않는다(현재는 `createLoginSession`(`:492-510`) 이전에 SecurityContext가 비어 있어 실제 우회는 성립하지 않음). — B / Info
+- ✅ **#22 [bo/next.config.ts:25-39, bo/src/middleware.ts:25-40]** ①-E와 동일한 CSP/`X-Frame-Options` 부재가 QR 등록 화면에도 그대로 적용된다. TOTP 시크릿과 QR 코드가 표시되는 화면이 iframe에 삽입될 수 있다. — D / Warning — ✅ **수정 완료(2026-08-06)**: ①-E와 동일 건, 전 경로 헤더 적용으로 함께 해결
+- **#23 [bo/src/components/auth/totp-setup-form.tsx:43-47]** `copySecret()`이 TOTP 시크릿을 클립보드에 복사한 뒤 비우지 않는다(타이머는 아이콘 상태만 되돌림). 등록 완료 후에도 클립보드에 2FA 시드가 잔류해 클립보드 스니핑에 노출된다. — C / Info
+
+### ③ TOTP 검증
+
+- **#24 [bo-api/src/main/java/com/ge/bo/service/TotpService.java:206-233, 252-262]** OTP 검증에 **시도 횟수 제한이 전혀 없다.** `verifyWithJwt()`/`verify()` 어디에도 실패 카운터·잠금·지연이 없고(`AuthService.java:153-158`의 비밀번호 계정잠금은 1차 로그인에만 적용), `POST /api/v1/auth/totp/sessions`는 `SecurityConfig.java:131`에서 `permitAll`이며 reCAPTCHA도 이 단계에는 적용되지 않는다. 결과적으로 비밀번호를 확보한 공격자가 10분짜리 tempToken 하나로 6자리 코드를 **무제한 자동 대입**할 수 있다. 아래 두 요인이 이를 더 악화시킨다.
+  - `verifyTotpCode()`가 `verifier.setAllowedTimePeriodDiscrepancy(2)`(`TotpService.java:256`)로 ±2 주기를 허용해 임의 시점에 유효한 코드가 5개(약 150초 창)나 존재한다 → 1회 시도 성공확률이 권장 설정(±1) 대비 크게 상승.
+  - 검증에 성공한 코드를 소비/기록하지 않아 **같은 코드의 재사용(replay)이 가능**하다. 탈취된 OTP 1개를 유효 창 내에 반복 사용할 수 있다.
+  이 조합으로 2차 인증이 실질적인 방어선 역할을 하지 못한다. — F / **Critical**
+- **#25 [bo-api/src/main/java/com/ge/bo/security/JwtAuthenticationFilter.java:33-46]** 필터가 토큰의 `type`/`purpose` 클레임을 **전혀 확인하지 않는다.** 서명과 만료만 맞으면 종류를 가리지 않고 인증 주체로 승격시키려 시도한다. 현재 TOTP_PENDING·refresh·preview 토큰이 통과하지 못하는 이유는 설계상의 차단이 아니라, 이들 토큰에 `role` 클레임이 없어 `:41`의 `role.startsWith(...)`에서 NPE가 발생하고 `:57` catch에서 401로 떨어지는 **우연한 부작용**이다(`JwtTokenProvider.java:49-56, 61-69, 74-84` — 세 토큰 모두 `role` 없음). 누군가 tempToken에 role을 추가하거나 필터에 null-safe 처리를 넣는 순간 즉시 완전한 2FA 우회로 전환되는 구조 자체가 결함이다. — B / Warning
+- ✅ **#26 [bo/next.config.ts:25-39]** ①-E와 동일한 프레이밍 차단 헤더 부재가 OTP 입력 화면에도 적용된다. — D / Warning — ✅ **수정 완료(2026-08-06)**: ①-E와 동일 건, 전 경로 헤더 적용으로 함께 해결
+- **#27 [bo-api/src/main/java/com/ge/bo/service/TotpService.java:211-213 vs :259]** 미등록 계정은 `TOTP_NOT_ENABLED`, 등록 계정은 `TOTP_CODE_INVALID`로 응답이 구분되어 2FA 등록 여부가 열거된다(유효 tempToken이 선행되어야 하므로 영향은 제한적). — G / Info
+- **#28 [bo-api/src/main/java/com/ge/bo/service/TotpService.java:207-233]** 2차 인증의 성공·실패가 `login_log`에 **전혀 기록되지 않는다.** 1차 로그인 시점에 이미 `SUCCESS`가 찍히므로(`AuthService.java:178`), 접속이력만으로는 "1차 통과 후 2차 실패"와 "완전 로그인"을 구분할 수 없다. 위 F의 TOTP 브루트포스가 실제로 시도되어도 흔적을 추적할 수 없다. — J / Info
+
+### ④ 토큰 갱신(Refresh)
+
+- **#29 [bo-api/src/main/java/com/ge/bo/service/AuthService.java:196-212 + security/JwtTokenProvider.java:49-56, 115-117, 129-137 + controller/AuthController.java:116-122]** **2차 인증(TOTP) 완전 우회.** `refreshWithJwt()`는 `validateToken()`(서명·만료만 검사) → `getEmailFromToken()`(**클레임 타입 검증 없음**) → `generateAccessToken()` 순으로 동작하며, refresh 토큰에는 `type`/`jti` 클레임이 아예 없어 토큰 종류를 구분할 방법 자체가 없다. 결과적으로 **1차 로그인(ID/PW)만 통과해 응답 바디로 받은 tempToken(`type=TOTP_PENDING`, 10분 유효)을 `refreshToken` 쿠키에 넣어 `POST /api/v1/auth/refresh`를 호출하면 정식 accessToken이 발급된다.** `/api/v1/auth/**`는 `permitAll`(`SecurityConfig.java:131`)이고 `@CookieValue`(`AuthController.java:118`)는 클라이언트가 임의 설정 가능하므로(httpOnly는 서버→브라우저 방향 보호일 뿐 curl에는 무의미) 공격 난이도가 사실상 0이다. 같은 이유로 5분짜리 previewToken(`JwtTokenProvider.java:74-84`)도 동일하게 악용된다.
+  - *성립 조건*: `ls.redis-enabled=false` **AND** `ls.totp.enabled=true`. 현재 커밋된 프로필 조합(local/developer는 totp=false, dev는 redis=true)에서는 우연히 비껴가 있으나, **`application.yml:46`의 기본값이 `totp.enabled: true`이고 `ls.redis-enabled`는 미정의(=`@Value` 기본 false)** 이므로 두 키를 명시하지 않은 프로필(예: 신규 prd)을 추가하는 순간 곧바로 발현한다. 우회 대상 코드 경로(`confirmWithJwt`/`verifyWithJwt`)가 실사용 목적으로 완비되어 있어 잠재결함이 아닌 즉시 수정 대상이다. — B / **Critical**
+- **#30 [bo-api/src/main/java/com/ge/bo/service/AuthService.java:194-224]** Refresh 토큰의 **회전(rotation)·재사용 탐지·서버측 저장소가 전무하다.** 토큰을 저장하는 테이블/Redis 키/엔티티가 존재하지 않고(`repository` 패키지에 RefreshToken 관련 리포지토리 없음), `refreshWithJwt`는 새 accessToken만 반환할 뿐 refreshToken을 재발급하지 않는다. 따라서 탈취된 refresh 토큰은 **7일간(`application.yml:33`) 무제한 재사용**되며 탐지도 불가능하다. 소유자 검증도 `sub` 클레임의 자기주장에만 의존해(`:200-202`) 기기 바인딩·세션 ID·IP/UA 대조가 전혀 없다. — B / **Critical**
+- **#31 [bo-api/src/main/java/com/ge/bo/service/AuthService.java:251-261, 263-272]** refreshToken 쿠키가 **`.secure(false)`로 하드코딩**되어 있다(`:255`, 주석에 `// 운영 환경에서는 true로 변경`). 프로필 분기나 프로퍼티 참조가 없어 **어떤 환경에서도 항상 false**다. 세션 쿠키는 dev에서 `secure: true`로 관리되는데(`application-dev.yml:50`) refresh 쿠키만 누락됐다. HTTP 평문 구간에서 7일짜리 refresh 토큰이 탈취될 수 있다. `clearRefreshTokenCookie`(`:263-272`)도 동일하다. *완화 요소*: `httpOnly(true)`, `sameSite("Strict")`, `path("/api/v1/auth")`는 올바르게 설정되어 있다. — E / Warning
+- **#32 [bo-api/src/main/resources/application.yml:32 + JwtTokenProvider.java:41 + AuthService.java:399]** `app.jwt.expiration: 86400`의 주석은 "1시간 (초)"이나 실제 계산은 `jwtExpirationMs * 1000`이므로 액세스 토큰 수명은 **24시간**이다. 반면 응답의 `expiresIn`은 `3600`으로 하드코딩되어 프론트는 1시간으로 인식한다. **프론트가 폐기했다고 믿는 토큰이 서버에서는 23시간 더 유효**하며, 탈취 시 노출 창이 의도의 24배다. — C / Warning
+- **#33 [bo-api/src/main/java/com/ge/bo/config/SecurityConfig.java:131]** `/api/v1/auth/refresh`가 permitAll이며 호출 빈도 제한이 없다. 유효한 refresh 토큰 1개로 accessToken을 무제한 대량 발급받을 수 있고, 매 호출마다 `findByEmail` + `roleRepository.findByCode` DB 조회가 2회 발생한다(`AuthService.java:201, 208`). — F / Warning
+- **#34 [bo/src/lib/api.ts:62-65]** 재시도 요청 `return api(original)`이 **try 블록 안에 있다.** 토큰 갱신은 성공했는데 재시도 요청이 401 이외 사유(500/타임아웃/네트워크 단절/403)로 실패하면 catch가 이를 "refresh 실패"로 오인해 **강제 로그아웃 + 로그인 페이지 이동**을 실행한다. 일시적 백엔드 오류가 관리자 세션 강제 종료로 이어지는 자기 DoS 성격의 결함이다. 동시 다발 401이 모두 실패하면 각 요청이 개별적으로 `/auth/logout` POST와 `window.location.href` 대입을 중복 수행한다(무한 재시도 루프 자체는 `_retry` 플래그로 정상 차단됨). — I / Warning
+- **#35 [bo-api/src/main/java/com/ge/bo/service/AuthService.java:194-224]** 토큰 갱신이 `login_log`에 기록되지 않는다. 24시간 accessToken + 7일 refresh 조합에서 실제 세션 지속 기간을 감사 로그로 재구성할 수 없다. — J / Info
+
+### ⑤ 로그아웃
+
+- **#36 [bo-api/src/main/java/com/ge/bo/service/AuthService.java:240-242, 263-272]** (**JWT 모드**) **로그아웃에 실효성이 없다.** `logoutWithJwt()`가 하는 일은 `Set-Cookie: refreshToken=; Max-Age=0` 헤더 한 줄, 즉 **브라우저에게 쿠키를 버리라고 요청하는 것**이 전부다.
+  - **accessToken 무효화 없음** — 블랙리스트/버전 카운터/`jti` 저장소가 프로젝트에 존재하지 않는다. 로그아웃 후에도 탈취된 액세스 토큰은 **최대 24시간** 그대로 통과한다(`JwtAuthenticationFilter.java:36`은 서명·만료만 확인).
+  - **refreshToken 무효화 없음** — 서버측 저장소가 없으므로 이미 복사된 refresh 토큰은 **7일간 계속 유효**하고, 로그아웃 후에도 `/api/v1/auth/refresh`로 새 accessToken을 계속 발급받을 수 있다.
+  - 인증을 요구하지 않아(`/api/v1/auth/**` permitAll) 미인증 상태로도 200이 반환된다.
+  즉 "로그아웃 API가 존재한다"는 사실만으로는 세션 종료가 보장되지 않는다. — B / **Critical**
+  - *(**redis 모드**는 정상: `AuthService.java:231-233 → :555-562`의 `invalidateLoginSession()`이 `session.invalidate()`로 서버측 세션을 실제 파기한다.)*
+- **#37 [bo/src/store/auth-store.ts:39, 56, 74, 48, 79 + bo-api/AuthService.java:266]** 쿠키에 `Secure` 플래그가 없다. 프론트의 `bo_is_system` 쿠키는 `SameSite=Strict`만 지정하고 `Secure`를 누락했으며, 백엔드의 refresh 쿠키 만료 처리도 `.secure(false)`라 원본 쿠키가 `Secure`로 설정된 환경에서는 속성 불일치로 삭제가 실패할 수 있다. — E / Info
+- **#38 [bo/src/components/layout/header.tsx:161-171 + bo/src/store/use-site-store.ts:57-59]** 로그아웃 시 캐시 소거가 `queryClient.removeQueries({ queryKey: ["menus","nav"] })` **한 종류뿐**이라 이전 관리자가 조회한 나머지 React Query 캐시가 같은 탭에 잔류한다. 또한 `activeSiteId`가 localStorage에 남아 다음 로그인 계정이 이전 사이트 컨텍스트를 승계하며, 이 값은 `X-Site-Id` 헤더로 서버에 전달된다. `header.tsx:65-71`의 "사이트 없음" 강제 로그아웃 경로와 `api.ts:66-72`의 강제 로그아웃 경로도 동일하게 캐시를 비우지 않는다. 계정 전환 시 이전 관리자 데이터(PII 포함)가 화면에 노출될 수 있다. — J / Info
+- **#39 [bo-api/src/main/java/com/ge/bo/service/AuthService.java:231-242]** 로그아웃이 `login_log`에 기록되지 않는다. 로그인만 기록되고 세션 종료 시점 감사가 불가능하다. — J / Info
+
+### ⑥ 클라이언트 인증상태 관리
+
+- **#40 [bo/src/middleware.ts:75-81 + bo/src/store/auth-store.ts:39]** **시스템관리자 전용 경로 보호가 클라이언트가 조작 가능한 쿠키에만 의존한다.** 미들웨어는 `request.cookies.get("bo_is_system")?.value !== "true"`로 접근을 판정하는데, 이 쿠키는 `auth-store.ts:39`에서 `document.cookie`로 기록되는 **non-httpOnly 쿠키**다. 즉 로그인한 일반 관리자가 개발자도구에서 `document.cookie="bo_is_system=true; path=/"` 한 줄로 `/admin/system`, `/admin/database`, `/admin/settings/slug-registry`, `/admin/templates/make`, `/admin/templates/layer`(`:4-10`) 전 경로의 보호를 무력화할 수 있다. 더 심각한 것은 `:58` 주석이 "클라이언트 가드(SystemAdminGuard)가 2차 보호 담당"이라 명시하지만 **`SystemAdminGuard`가 코드베이스에 존재하지 않는다**는 점이다(전체 grep 0건). 유일한 추가 통제인 `sidebar.tsx:144-145`는 메뉴 표시 필터일 뿐 라우트 차단이 아니며, 판정 기준도 미들웨어(`isSystem` 쿠키)와 사이드바(`role === "SYSTEM_ADMIN"`)로 이원화되어 있다. **①-B에서 확인한 대로 서버측 `@PreAuthorize`마저 누락되어 있어, 이 UI 우회가 곧바로 실제 데이터 접근으로 이어진다.** — B / **Critical**
+- **#41 [bo/.env.local:4]** `.gitignore`의 `.env*` 규칙에도 불구하고 `.env.local`이 **git에 추적 중**이다(`git ls-files .env.local` 확인 — 이미 추적된 파일에는 gitignore가 적용되지 않음). 파일 내 `NEXT_PUBLIC_GOOGLE_MAPS_KEY=AIzaSyBkHvBn_MG-VWQd2C8-UA3PJBniWPy5QNk`는 실제 키이며 서버 설정(`bo-api/application-developer.yml:91`)과 동일한 값이 저장소에 커밋되어 있다. 파일 상단 주석의 "git 미추적"이라는 서술은 사실과 다르다. — C / Warning
+- ✅ **#42 [bo/next.config.ts:25-39, bo/src/middleware.ts:25-40]** 두 곳 어디에도 `Content-Security-Policy`와 `X-Frame-Options`(또는 CSP `frame-ancestors`)가 없다. `nosniff`/HSTS/`Referrer-Policy`/CORP/COOP는 설정되어 있으나 **COOP는 프레이밍을 막지 못하므로** 전 관리자 화면에 Clickjacking이 성립한다. — D, E / Warning — ✅ **수정 완료(2026-08-06)**: ①-E와 동일 건, 전 경로 헤더 적용으로 함께 해결
+- **#43 [bo-api/src/main/java/com/ge/bo/config/SecurityConfig.java:128 vs :66-69, 203-222]** 인증상태 강제 수준이 모드별로 크게 다르다. redis 모드는 `sessionFixation().changeSessionId()` + `maximumSessions(1)`로 세션 고정 방어와 동시 세션 1개를 서버가 강제하지만, **JWT 모드(`STATELESS`)는 이 통제가 전부 미적용**이다. 동일 계정으로 발급된 토큰이 몇 개든 모두 유효하고 서버가 세션 수를 알 수 없다. 관리자 백오피스 기준 24시간 액세스 토큰 수명도 과도하다. — B / Warning
+- **#44 [bo/package.json:44]** 프론트엔드 `dependencies`에 PostgreSQL 드라이버 `pg ^8.20.0`이 포함되어 있다. 서버 전용 코드에서만 사용되는지, 클라이언트 번들 경로로 유입될 여지가 없는지 확인이 필요하다. — H / Info
+- **#45 [bo/src/middleware.ts:48, 87]** matcher가 `"/:path*"`로 전 경로에 적용되지만 `Cache-Control: no-store`는 `badRequest()` 응답에만 설정된다. 인증 화면 및 보호 화면 자체의 캐시 정책이 지정되어 있지 않다. — I / Info
+- **#46 [bo/src/store/auth-store.ts:4-10]** 클라이언트 메모리에 `id/name/email/role/isSystem`이 상주한다. 영속 저장이 없다는 점은 양호하나, 화면 표시 목적이 없다면 `email` 등은 최소화 검토가 필요하다. — J / Info
+
+### 추가 발견 (교차검증 과정에서 신규 발견, ① 단계 소속)
+
+- ✅ **#48 [bo-api/src/main/java/com/ge/bo/entity/LoginLog.java:41-42 + service/LoginLogService.java:90-98 + controller/AuthController.java:59-65]** `extractClientIp()`가 `X-Forwarded-For` 헤더를 검증 없이 신뢰하는데, `LoginLog.clientIp` 컬럼(`length=50`)은 `userAgent`(500자)와 달리 **길이 절단 코드가 없다.** 51자 이상의 XFF 헤더를 보내면 INSERT가 실패하고 그 예외는 `log.warn`으로 삼켜진다(`LoginLogService.java:95-98`) — **공격자가 헤더 하나로 자신의 로그인 시도 전체를 접속이력에서 사라지게 만들 수 있다(감사 회피)**. 브루트포스 시도가 화면상 흔적 없이 진행 가능. — F / **Critical** — 🔍 **신규 발견(2026-08-06)**: `#7` `#보안성상세분석` 중 `nextjs-security-reviewer`가 발견 — ✅ **수정 완료(2026-08-06)**: `LoginLogService.saveAsync`에서 `userAgent` 500자 절단과 **동일한 substring 패턴**으로 `clientIp`도 컬럼 길이(50)에 맞춰 절단(신규 유틸 도입 없음). **검증**: 65자 `X-Forwarded-For` 헤더를 실어 `POST /api/v1/auth/login` 호출 후 psql 직접 조회 — `login_log` 신규 행(id=105, `login_email=sectest48`, `status=FAIL`, `fail_reason=USER_NOT_FOUND`)이 **정상 INSERT**되고 `length(client_ip)=50`으로 절단 저장됨을 확인. 즉 긴 XFF로 접속이력을 누락시키는 감사 회피가 더 이상 성립하지 않음
+- ✅ **#49 [bo-api/src/main/java/com/ge/bo/config/SecurityConfig.java]** redis 세션 분기에서 `.exceptionHandling()`이 두 번 호출되어 뒤쪽 설정이 앞쪽을 덮어쓴다. 덮이는 앞쪽 핸들러의 JSON 텍스트가 닫는 `}`가 누락되어 깨진 상태다. 현재는 덮어쓰기 덕에 표면화되지 않지만, 설정 순서가 바뀌는 순간 인증 실패 응답이 파싱 불가한 JSON으로 나가게 된다. — D / Warning — 🔍 **신규 발견(2026-08-06)**: `#7` `#보안성상세분석` 중 `java-security-reviewer`가 발견 — ✅ **수정 완료(2026-08-06)**: redis 분기의 **앞쪽(덮이는) `.exceptionHandling()` 블록을 제거**하고, 실제 적용되던 뒤쪽 핸들러만 남김(동작 변화 없음). **검증**: bo-api 재기동 성공(`Started BoApplication in 9.812 seconds`, 8080 LISTENING) + 에러 응답 전 경로 정상 JSON 확인 — 로그인 실패 `{"error":"INVALID_CREDENTIALS",...}` 401, 미인증 접근 `{"code":"UNAUTHORIZED","message":"인증이 필요합니다."}` 401, 잘못된 토큰 401, `/health` 200. ⚠️ **검증 한계**: 로컬은 `ls.redis-enabled=false`(profile `local`)라 JWT 분기가 동작하므로, 수정한 **redis 분기 자체의 런타임 동작은 미검증**(컴파일·기동 성공까지만 확인). 원래 지적된 "덮이는 죽은 코드 제거"라 동작 변화가 없는 수정임
+- ✅ **#51 [bo-api/src/main/java/com/ge/bo/controller/RoleController.java(@PreAuthorize 0건) + service/RoleService.java:87]** `#10`과 완전히 동일한 인가 누락이 **역할(Role) API에도 존재**한다. `SecurityConfig.java:99/136` 주석이 "역할 API — @PreAuthorize로 SUPER_ADMIN 제한"이라 명시하지만 `RoleController`에는 `@PreAuthorize`가 한 건도 없어 `.authenticated()`만 걸린다. 즉 **최하위 권한 계정을 포함한 모든 로그인 사용자**가 `POST/PATCH/DELETE /api/v1/roles`로 인가 체계의 근간인 역할 정의 자체를 조작할 수 있다. 여기에 `RoleService.createRole`(`:87`)의 `.isSystem(request.isSystem())`이 결합되어 **클라이언트가 요청 바디로 보낸 `is_system` 플래그를 서버가 그대로 신뢰**한다 — 임의의 인증 사용자가 `is_system=true`인 새 역할을 만들 수 있고, 이 플래그는 `SecurityService.isSystemAdmin()`이 시스템관리자 여부를 판정하는 **유일한 기준**이므로 곧바로 최고권한 상승으로 이어진다(`#40`의 `bo_is_system` 쿠키 조작과 결합하면 UI·API 양쪽 통제가 동시에 무력화). — B / **Critical** — 🔍 **신규 발견(2026-08-06)**: `#보안성상세분석`에서 `#10`의 `AdminController` 인가 누락을 추적하던 중 동일 패턴이 `RoleController`에도 있음을 확인 — ✅ **수정 완료(2026-08-06)**: ① `RoleController` 클래스 레벨에 `@PreAuthorize("@securityService.isSystemAdmin(authentication)")` 적용(메서드 레벨 예외 없음), ② `RoleService.createRole`의 `.isSystem(request.isSystem())`을 `.isSystem(false)`로 고정해 신규 역할 생성 API로는 시스템 역할을 만들 수 없게 차단(bo 프론트의 `POST /roles` 호출 2곳 — `settings/roles/[id]`, `system/roles/[id]` — 모두 이 필드를 보내지 않음을 Grep으로 확인, 정상 사용처 없음). ③ 프론트 정합화로 `middleware.ts`의 `SYSTEM_ADMIN_PATHS`에 `/admin/settings/roles` 추가. **검증**: bo-api 재기동 후 curl 실검증 — (1) 시스템관리자 토큰 → `GET /roles`·`/roles/assignable`·`/roles/{id}` 전부 **200**, (2) 비시스템관리자 토큰 → 동일 3건 + `POST /roles` + `DELETE /roles/{id}` 전부 **403**, (3) 무토큰 → **401**, (4) `is_system` 강제 — 시스템관리자 토큰으로 `POST /api/v1/roles`에 `system:true`를 실어 보낸 뒤 psql 직접 조회 결과 신규 role(id=17, code=`SECTEST51`)의 `is_system`이 **`f`**로 저장됨(응답 바디도 `"system":false`). ⚠️ **검증 중 사실 정정**: 요청 바디의 실제 JSON 필드명은 `isSystem`이 아니라 **`system`**이다(Lombok `@Getter`가 `boolean isSystem` → `isSystem()`을 만들고 Jackson이 이를 `system` 프로퍼티로 해석). `isSystem`으로 보내면 `MALFORMED_JSON` 400으로 거부되므로, 원래 취약 경로는 `system:true`였다
+- **#50 [bo-api/src/main/java/com/ge/bo/config/SecurityConfig.java — `expiredSessionStrategy` 블록]** `#49` 수정 작업 중 `security-fix-executor`가 발견. 실제로 닫는 `}`가 누락된 깨진 JSON은 `#49`가 지목했던 앞쪽 `.exceptionHandling()` 블록이 아니라 `sessionManagement`의 `expiredSessionStrategy`(다른 기기 로그인 시 세션 종료 메시지, redis 모드 한정) 쪽이었다. `#49` 승인 범위 밖이라 수정하지 않고 보고만 함. — D / Warning — 🔍 **신규 발견(2026-08-06)**: `#보안성검토수정`(#49) 작업 중 `security-fix-executor`가 발견, 미착수
+- ✅ **#47 [bo-api/src/main/java/com/ge/bo/common/client/ExternalApiClient.java:100, 105, 109, 112]** `RecaptchaService.java:42`가 시크릿키를 쿼리스트링에 실어 만든 URL(`request.getUrl()`)이, 구글 API 호출 실패 시(4xx/5xx/네트워크오류/기타예외 4개 catch 분기 전부) WARN/ERROR 레벨로 **그대로 로그에 남는다**. `application-dev.yml:75-78` 등 로그레벨이 WARN이라 이 로그는 배포 환경에서도 살아있어, 구글 쪽에서 오류 응답 한 번만 나도 reCAPTCHA 시크릿키가 평문으로 로그 파일에 기록된다. — C / **Critical** — 🔍 **신규 발견(2026-08-06)**: `#6` 교차검증 중 `java-security-reviewer`가 `ExternalApiClient` 호출 경로를 추적하다 발견. 세션 에이전트 단독 분석에서는 놓쳤던 항목. ✅ **수정 완료(2026-08-06)**: #6과 동일 수정(시크릿을 URL→폼 바디로 이동)으로 해결 — WARN/ERROR 로그는 `request.getUrl()`만 찍고 body는 안 찍으므로 구조적으로 해결됨. **검증 상세**: `logback-spring.xml` 확인 결과 `local` 프로파일은 `%maskedMsg`(자체 마스킹 컨버터) 적용되지만, **dev 프로파일(JSON+파일 로그)은 `%msg`(마스킹 미적용, "PII 마스킹은 로그 수집 플랫폼에서 처리"라고 주석에 위임)** — 즉 dev 경로는 이 코드베이스 차원의 안전망이 없었으므로 원래 Critical 판정이 타당했음. 수정 후에는 마스킹 여부와 무관하게 시크릿이 URL에 실리지 않아 dev 프로파일에서도 안전함을 로그 직접 확인으로 검증
+
+---
+
+## 공격 체인 (개별 이슈보다 이 조합이 핵심)
+
+아래 세 결함이 동시에 존재해 **한 줄기 체인으로 시스템 전체 장악**이 가능하다.
+
+1. **진입** — 로그인 폼에 하드코딩된 비밀번호(`login-form.tsx:57`)와 무력화된 reCAPTCHA(`next.config.ts:6`) + Rate Limiting 부재로 계정 확보 장벽이 사실상 없다.
+2. ~~**권한 상승** — 낮은 권한 계정 하나만 있으면 `@PreAuthorize` 누락(`AdminController`)으로 `POST /api/v1/admins/{id}/reset-password`를 호출해 SUPER_ADMIN 비밀번호를 알려진 고정값 `test12345`(`AdminService.java:146`)로 초기화할 수 있다.~~ → ✅ **차단됨(2026-08-06, #10·#51)**: `AdminController`/`RoleController` 클래스 레벨 `@PreAuthorize` 적용으로 비시스템관리자 호출은 403, `tempPassword`도 매 호출 랜덤값으로 교체되어 이 고리는 끊겼다(비시스템관리자 토큰으로 `reset-password` 403 실검증).
+3. **2차 인증 우회** — 그 계정으로 1차 로그인 후 받은 tempToken을 `refreshToken` 쿠키로 제출해 `/api/v1/auth/refresh`를 호출하면(`AuthService.java:196-212`) TOTP 없이 정식 accessToken이 발급된다.
+
+여기에 JWT 시크릿 하드코딩(`application.yml:31`)이 겹치면, 소스 접근만으로 위 과정을 건너뛰고 임의 role의 토큰을 직접 위조하는 것도 가능하다.
+
+---
+
+## 검토 결과 양호했던 항목 (근거 확인 완료)
+
+- **비밀번호 해시**: `BCryptPasswordEncoder(12)`(`SecurityConfig.java:167`) + `passwordEncoder.matches()`(`AuthService.java:152`) — 평문/MD5/SHA 미사용, 내부 비교는 상수시간
+- **JWT 라이브러리 사용법**: jjwt 0.12.6의 `verifyWith().parseSignedClaims()`(`JwtTokenProvider.java:139-145`) — `alg:none` 거부 및 알고리즘 혼동 방어 정상, 시크릿 길이도 HS256 최소요건 충족
+- **CORS**: 와일드카드 없는 명시 화이트리스트로 `allowCredentials(true)`와 안전하게 조합(`SecurityConfig.java:173-176`)
+- **TOTP 등록 IDOR 없음**: `SetupRequest`에 식별자 필드 자체가 없고(`TotpDto.java:18-21`) 주체는 토큰/세션에서만 도출(`TotpService.java:280-296`). `getEmailFromTotpPendingToken`은 `type=TOTP_PENDING`을 명시 검증(`JwtTokenProvider.java:104-110`)
+- **otpauth URI 인코딩**: 라이브러리가 label/secret/issuer 전부 `URLEncoder.encode` 처리(라이브러리 소스 직접 확인)
+- **TOTP 코드 비교**: `timeSafeStringComparison()`이 XOR 누적 + 조기 return 없는 전 버킷 순회로 타이밍 사이드채널 차단
+- **Access Token 메모리 전용 보관**: `auth-store.ts:29-36`, localStorage/sessionStorage 저장 grep 0건, zustand `persist` 미사용
+- **AuthProvider 가드**: 미인증 시 `null` 렌더로 보호 화면을 한 프레임도 노출하지 않음(`auth-provider.tsx:56-70`), 루트 레이아웃 경유로 전 페이지 적용
+- **refresh race 방어**: `_retry` 플래그 + 단일비행 `refreshPromise`로 동시 401 중복 갱신/재귀 차단(`lib/api.ts:12, 49-61`)
+- **오픈 리다이렉트 없음**: 로그인/2FA 성공 후 이동 경로가 전부 고정 리터럴, `returnUrl` 계열 파라미터 미사용
+- **자격증명 로그 미기록**: `/api/v1/auth/` 요청 바디가 트랜잭션 로그에서 제외(`TransactionLogFilter.java:39, 53`), `login_log`에 비밀번호·토큰 미저장(`LoginLog.java:20-62`)
+- **스택트레이스 미노출**: 500 응답 바디에 고정 문구만 반환(`GlobalExceptionHandler.java:267-280`)
+
+---
+
+## 검토 한계 (UNPROVEN — 코드 정적분석으로 확정 불가)
+
+- **의존성 CVE 대조**: 버전이 전부 최신 계열이고 lockfile로 고정되어 있음은 확인했으나, `npm audit`/OSV 등 SCA 도구를 실행하지 않았으므로 알려진 취약점 유무를 단정할 수 없다. 별도 SCA 실행 권고.
+- **배포 환경 실제 헤더/캐시 정책**: 프록시·CDN·WAF 계층에서 추가되는 헤더는 코드에 없으므로 배포 구성 확인 필요.
+- **운영(prd) 프로필**: 저장소에 `application-prd.yml`이 없다. `ls.redis-enabled` / `ls.totp.enabled` 조합에 따라 ④-B(2FA 우회)의 발현 여부가 갈리므로 운영 프로필 확정 시 재검토가 반드시 필요하다.
+
+---
+
+## 진행 이력
+
+| 일자 | 내용 |
+|------|------|
+| 2026-08-06 | 매트릭스 최초 작성 (로그인 플로우 6단계 × 10개 카테고리 = 60셀, 전부 미분석) |
+| 2026-08-06 | 60셀 전수 분석 완료. bo-security-reviewer(프론트) + java-security-reviewer(백엔드) 결과를 디스패처가 병합, Critical 전건은 소스 직접 Read로 재확인. 결과: PASS 21 / FAIL 38 / N/A 1, Critical 13건 / Warning 17건 / Info 16건 (총 46건) |
+| 2026-08-06 | 5건 수정 완료 및 재기동 검증: ①-C(로그인폼 비밀번호 하드코딩, JWT secret 하드코딩), ①-G(User Enumeration), ①-E/②-D/③-D/⑥-D,E(X-Frame-Options·CSP frame-ancestors 부재, fo에도 동일 적용), ①-F(LoginRequest Bean Validation 부재). 6셀 FAIL→PASS 전환, 집계 PASS 27 / FAIL 32 / N/A 1 |
+| 2026-08-06 | #6(RecaptchaService 파라미터 인젝션) 세션 에이전트 + java-security-reviewer 교차검증 → Info에서 Warning으로 정정. 교차검증 과정에서 #47(reCAPTCHA 시크릿키 평문 로그 노출, Critical) 신규 발견해 추가. 갱신된 집계: Critical 14건 / Warning 18건 / Info 15건 (총 47건) |
+| 2026-08-06 | #6·#47 수정 완료(쿼리스트링→폼 바디 POST 전환) 및 실제 인젝션 재현 테스트 + `logback-spring.xml` 마스킹 정책 확인으로 검증. ①-A FAIL→PASS 전환. 집계 PASS 28 / FAIL 31 / N/A 1 |
+| 2026-08-06 | `#보안성상세분석 #7` 3자 교차검증(java-security-reviewer+nextjs-security-reviewer+세션 에이전트) 수행. #7 Info→Warning, #13 Warning→Critical(TransactionLogController 대상 추가) 재평가. 신규 발견 #48(clientIp 미절단 감사회피, Critical), #49(SecurityConfig 중복 exceptionHandling, Warning) 추가. `#보안성검토수정`으로 #13·#48·#49 수정 착수 |
+| 2026-08-06 | `#보안성검토수정`(#13·#48·#49) `security-fix-executor` 완료: 실제 curl 3-way(비인증/비시스템관리자/시스템관리자) + psql 직접 조회 + 재기동으로 검증. 과정 중 **#1이 실제로는 미수정 상태(원인 불명, 되돌아감)임을 재발견** → 즉시 재수정 및 git diff로 확인. **#50 신규 발견**(SecurityConfig `expiredSessionStrategy` 깨진 JSON, D/Warning, 미착수). **운영 이슈 확인**: `JWT_SECRET` 환경변수가 영속 저장되지 않아 bo-api 재기동마다 값이 사라짐 — 별도 조치 필요 |
+| 2026-08-06 | #13·#48·#49 수정 완료 및 bo-api 재기동 후 실검증(curl 401/403/200 3-way, psql `login_log` 직접 조회, 에러응답 JSON 확인). **매트릭스 표 셀 변동 없음** — ①-B는 #10·#11, ①-J는 #7·#15, ①-F는 #8·#9가 각각 미해결로 남아 FAIL 유지. ①-D는 해당 카테고리 이슈가 #49뿐이라 PASS 전환 후보이나, 문서상 #49의 단계 소속 표기가 모호(⑥ 섹션 말미에 기재)하여 판단 보류 |
+| 2026-08-06 | `#보안성상세분석`으로 **#51 신규 발견**(RoleController 인가 누락 + `createRole`의 클라이언트 `is_system` 신뢰, B/Critical) 후 `#보안성검토수정`으로 **#10·#51 수정 완료**. 8개 조치(AdminController/RoleController 클래스 레벨 `@PreAuthorize`, `SecurityService.isSelf` 신규, `RoleService.createRole` isSystem 고정, `AdminService` 시스템역할 배정 차단, `resetPassword` 랜덤화, `SecurityConfig` 주석 정정, `middleware.ts` 보호경로 2개 추가). bo-api·bo 각각 재기동 후 curl 실검증(시스템관리자 200 / 비시스템관리자 403 / 무토큰 401 / isSelf 예외 200·403 / 시스템역할 배정 400 / tempPassword 2회 상이 / 미들웨어 307·200) + psql 직접 조회. **매트릭스 표 셀 변동 없음** — ①-B는 **#11(permitAll 과도)** 이, ⑥-B는 **#40(`bo_is_system` 쿠키 조작)·#43** 이 각각 미해결로 남아 FAIL 유지. 단 #40은 서버측 `@PreAuthorize`가 채워지면서 "UI 우회가 곧바로 실제 데이터 접근으로 이어진다"는 결합 위험은 해소됨(쿠키 조작 자체는 여전히 가능) |

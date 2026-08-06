@@ -124,6 +124,18 @@ BE (API): 8080
     - URL을 입력받아 해당 페이지의 성능을 검증: 렌더링시간 / 호출 API 목록 / API별 동작시간 / 이슈 있는 API의 쿼리분석(EXPLAIN ANALYZE) / 무분별한(중복) API 호출 판별 / 잘못된 쿼리(설계 문제) 판별 / Chatty API 판별(개별 API는 속도 이슈 없으나 호출 수가 많아 누적 지연 발생)
     - 진입점: fullstack-performance-profiler (bo-orchestrator/fo-orchestrator 경유 없음, #화면검증과 동일하게 독립 실행)
     - 이슈 발견 시 보고만 하고 종료. 수정 착수는 별도로 #개발/#진행/#수정 승인 후 병목 구간 담당 에이전트(react-pro/fo-fe-builder, spring-boot-engineer/java-pro 등)에게 위임
+ 0-12 : '실행명령어 #보안성검토'
+    - 지정한 대상 범위(메뉴/화면/전체)의 보안 취약점을 메뉴 × 체크리스트 카테고리(A~J) 매트릭스로 점검
+    - 절차: DB 메뉴 조회로 범위 확정 → docs/보안성검토/{대상}-매트릭스.md 생성/갱신 → 메뉴×카테고리 셀 단위 Task 실시간 등록(TaskCreate/TaskUpdate는 서브에이전트에서 호출 불가하므로 메인 세션이 진행상황 로그 파일을 Monitor로 감시하며 갱신) → 메뉴별로 bo-security-reviewer(bo 프론트)/java-security-reviewer(bo-api)/nextjs-security-reviewer(fo)에게 위임 → 매트릭스 PASS/FAIL 갱신
+    - 진입점: security-review-dispatcher (bo-orchestrator/fo-orchestrator 경유 없음, #화면검증/#성능검증과 동일하게 독립 실행)
+    - 이슈 발견 시 보고만 하고 종료. 수정 착수는 별도로 #개발/#진행/#수정 승인 후 담당 에이전트(react-pro/frontend-common-developer/fo-fe-builder, spring-boot-engineer/java-pro 등)에게 위임
+ 0-13 : '실행명령어 #보안성검토수정'
+    - #개발/#진행/#수정과 동일한 승인 토큰. 실행은 세션 에이전트가 아니라 security-fix-executor 서브에이전트가 담당
+    - 절차: 매트릭스 항목 확인 → 현재 코드 재확인 → 소비처 확인 → 구현 → 재기동 → 실제 런타임 테스트로 검증 → 매트릭스에 ✅+근거 기록
+    - 진입점: security-fix-executor
+ 0-14 : '실행명령어 #보안성상세분석'
+    - 승인 불필요(읽기전용). 세션 에이전트가 직접 오케스트레이션: java-security-reviewer + nextjs-security-reviewer를 블라인드 병렬 실행, 세션 에이전트도 독립 분석, 3개 종합해 통합 분석+수정방향 제시
+    - 코드 수정 없음. 실제 수정은 #보안성검토수정 또는 #개발/#진행/#수정 승인 후 진행
 ❌ 명령어 없이 절대 진행 금지! 제시/제안도 금지
 2. ⚠️ 목표설정 - '실행명령어 : #개발', '실행명령어 : #진행', '실행명령어 : #수정'에만 진행한 경우 1번승인이 계속 승인이 아니다. 꼭 개발건이 생기면 허락 받도록!! 필수!!!
 - 아웃풋 가장 상단에 목표제안에 대한 각자의 이해율 그래프로 표시. 사용자와 에이전트가 각각 80%이상 이해 할때 까지 서로 합의점 도출- 
