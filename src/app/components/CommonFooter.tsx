@@ -120,7 +120,7 @@ export default function CommonFooter() {
               </button>
               <p className="warn">
                 and I agree with the terms of use as described in the{" "}
-                <a href="/privacy-policy">Privacy Policy.</a>
+                <a href="">Privacy Policy.</a>
               </p>
             </div>
           </form>
@@ -130,7 +130,7 @@ export default function CommonFooter() {
       <div className="footer_bottom">
         <div className="inner">
           <a href="/" className="footer_logo">
-            <img loading="lazy" decoding="async" src="/pub/img/logo_white.svg" alt="LS ELECTRIC" />
+            <img loading="lazy" decoding="async" src="/img/logo_white.png" alt="LS ELECTRIC" />
           </a>
           <p className="copyright">
             Copyright © LS ELECTRIC Co., Ltd. All Rights Reserved.

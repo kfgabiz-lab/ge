@@ -6,20 +6,20 @@ export const guideFieldLabelSlot = {
 
 /** 컴포넌트 가이드 · Footer 체크박스 (22px) */
 export const guideCheckboxIconsDefault = {
-  uncheckedSrc: "/pub/ico/ico_check.svg",
-  checkedSrc: "/pub/ico/ico_checked.svg",
+  uncheckedSrc: "/ico/ico_check.svg",
+  checkedSrc: "/ico/ico_checked.svg",
 } as const;
 
 /** 제품 상세 Downloads 필터 체크박스 (22px) */
 export const guideCheckboxIconsDownloads = {
-  uncheckedSrc: "/pub/ico/ico_check_block.svg",
-  checkedSrc: "/pub/ico/ico_checked_black.svg",
+  uncheckedSrc: "/ico/ico_check_block.svg",
+  checkedSrc: "/ico/ico_checked_black.svg",
 } as const;
 
-/** 공용 PNG 체크박스 (22px, Figma Check 2030:31397/31398) */
+/** Contact Us 동의 체크박스 (22px, Figma Check 2030:31397/31398) */
 export const guideCheckboxIconsContactConsent = {
-  uncheckedSrc: "/pub/ico/ico_checkbox_off_22.png",
-  checkedSrc: "/pub/ico/ico_checkbox_on_22.png",
+  uncheckedSrc: "/ico/ico_checkbox_off_22.png",
+  checkedSrc: "/ico/ico_checkbox_on_22.png",
 } as const;
 
 export function GuideSelectIcon({ className }: SvgIconProps) {

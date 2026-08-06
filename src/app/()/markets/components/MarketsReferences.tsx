@@ -1,39 +1,21 @@
-"use client";
+import Link from "next/link";
+import { references } from "../data/marketsContent";
 
-import { useState } from "react";
-import { references, type ReferenceItem } from "../data/marketsContent";
-import MarketsReferencesModal from "./MarketsReferencesModal";
-
-type MarketsReferencesProps = {
-  items?: ReferenceItem[];
-};
-
-export default function MarketsReferences({
-  items = references,
-}: MarketsReferencesProps) {
-  const [activeItem, setActiveItem] = useState<ReferenceItem | null>(null);
-
+export default function MarketsReferences() {
   return (
     <section className="markets_references">
       <div className="inner">
         <div className="markets_references__head">
           <h2 className="section_tit">References</h2>
           <p className="section_desc">
-            Trusted by leading organizations across the globe see how we deliver results.
+            Global excellence in technical infrastructure implementation.
           </p>
         </div>
         <div className="markets_references__list">
-          {items.map((item) => (
-            <button
-              type="button"
-              key={item.id}
-              className="item"
-              aria-haspopup="dialog"
-              aria-expanded={activeItem?.id === item.id}
-              onClick={() => setActiveItem(item)}
-            >
+          {references.map((item) => (
+            <button key={item.id} className="item">
               <div className="img_area">
-                <img loading="lazy" decoding="async" src={item.image} alt="" />
+                <img loading="lazy" decoding="async" src={item.image} alt={item.title} />
               </div>
               <div className="txt_area">
                 <h3 className="tit">{item.title}</h3>
@@ -50,14 +32,6 @@ export default function MarketsReferences({
           ))}
         </div>
       </div>
-
-      <MarketsReferencesModal
-        open={Boolean(activeItem)}
-        item={activeItem}
-        items={items}
-        onClose={() => setActiveItem(null)}
-        onActiveItemChange={setActiveItem}
-      />
     </section>
   );
 }

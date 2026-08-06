@@ -10,7 +10,9 @@ export default function MarketsFaq({ items = faqItems }: MarketsFaqProps) {
     <CommonFaq
       description={
         <>
-         Learn how LS ELECTRIC's tailored power and automation solutions are engineered to solve your specific market challenges and accelerate your critical business objectives
+          Find quick answers to common questions about installation,
+          troubleshooting, and maintenance. <br /> Our expert engineering team has
+          curated these responses to help you optimize product performance.
         </>
       }
       items={items}

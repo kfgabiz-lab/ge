@@ -4,7 +4,6 @@ import GuideRelated from "@/components/guide/GuideRelated";
 import GnbGuidePreview from "@/components/guide/GnbGuidePreview";
 import {
   gnbGuideClassRefs,
-  gnbGuideGlobal,
   gnbGuideIcons,
   gnbGuidePanels,
 } from "@/data/gnbGuide";
@@ -59,11 +58,10 @@ export default function GnbGuide() {
         <div className="guide-doc__rules">
           <pre className="gnb-guide__tree">
 {`GnbMenu.tsx (variant: main | markets)
-  └── gnbNavItems (src/data/gnb/navItems.ts) — Products & Systems · Markets · …
+  └── gnbNavItems (src/data/gnb/navItems.ts)
         └── megaMenu per nav
               ├── devices  → GnbDevicesMegaPanel / GnbMegaPanel (4depth)
-              └── simple   → grid (Markets) | sections (Services, Support, Company, …)
-  └── GnbGlobalTrigger → #${gnbGuideGlobal.menuId} (active: ${gnbGuideGlobal.triggerLabel})`}
+              └── simple   → grid (Markets) | sections (Services, Support, …)`}
           </pre>
           <ul>
             <li>
@@ -74,13 +72,8 @@ export default function GnbGuide() {
               CSS modifier: <code>getMegaPanelClassName.ts</code>
             </li>
             <li>
-              글로벌 리전: <code>{gnbGuideGlobal.dataFile}</code> · 활성{" "}
-              <strong>{gnbGuideGlobal.triggerLabel}</strong> · Figma{" "}
-              {gnbGuideGlobal.figmaNote}
-            </li>
-            <li>
               Explore All: <code>src/data/gnbExploreAllProducts.ts</code> ·{" "}
-              <code>/products-systems/explore-all</code>
+              <code>gnb_mega--explore-all</code>
             </li>
           </ul>
         </div>

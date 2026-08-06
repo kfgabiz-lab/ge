@@ -1,9 +1,16 @@
-import MainLayoutShell from "./MainLayoutShell";
+import MainHeader from "@/components/layout/main/MainHeader";
+import MainFooter from "@/components/layout/main/MainFooter";
 
 export default function MainLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <MainLayoutShell>{children}</MainLayoutShell>;
+  return (
+    <>
+      <MainHeader />
+      {children}
+      <MainFooter />
+    </>
+  );
 }

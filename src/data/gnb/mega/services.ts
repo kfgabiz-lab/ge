@@ -1,7 +1,6 @@
 import { GNB_MEGA_PANEL_ID } from "@/data/gnb/panelIds";
 import type { GnbSimpleMegaMenu } from "@/data/gnb/types";
 
-/** Figma 3670:14629 — Services mega (2 columns) */
 export const servicesMegaMenu: GnbSimpleMegaMenu = {
   type: "simple",
   panelId: GNB_MEGA_PANEL_ID.services,
@@ -12,22 +11,22 @@ export const servicesMegaMenu: GnbSimpleMegaMenu = {
       label: "LS ELECTRIC Services",
       items: [
         {
-          id: "Service-center",
-          title: "Service Center",
-          description: "General service info & requests.",
-          href: "/services/service-center",
+          id: "service",
+          title: "Service",
+          description: "High-reliability vacuum arc interruption.",
+          href: "",
         },
         {
           id: "warranty-policy",
           title: "Warranty Policy",
-          description: "Product warranty terms & extensions.",
-          href: "/services/warranty-policy",
+          description: "Critical short-circuit protection for MV grids.",
+          href: "",
         },
         {
           id: "request-for-service",
           title: "Request for Service",
-          description: "Submit a service request online.",
-          href: "https://gics.ls-electric.com/loginForm.do?lang=ko",
+          description: "Critical short-circuit protection for MV grids.",
+          href: "",
           external: true,
         },
       ],
@@ -39,26 +38,20 @@ export const servicesMegaMenu: GnbSimpleMegaMenu = {
         {
           id: "sales-training",
           title: "Sales Training",
-          description: "Training for Product configuration and order placement",
-          href: "/services/sales-training",
+          description: "Critical short-circuit protection for MV grids.",
+          href: "",
         },
         {
           id: "engineering-training",
           title: "Engineering Training",
-          description: "Training for engineering works",
-          href: "/services/engineering-training",
+          description: "Critical short-circuit protection for MV grids.",
+          href: "",
         },
         {
           id: "service-training",
           title: "Service Training",
-          description: "Training for field serivces",
-          href: "/services/service-training",
-        },
-        {
-          id: "request-for-training",
-          title: "Training Request",
-          description: "Submit a request for custom training",
-          href: "/services/request-for-training",
+          description: "Critical short-circuit protection for MV grids.",
+          href: "",
         },
       ],
     },

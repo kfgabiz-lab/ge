@@ -1,13 +1,27 @@
 "use client";
 
-import { useDownloadCenterFilter } from "./DownloadCenterFilterProvider";
+import { useState } from "react";
+import {
+  downloadCenterActiveFilterDefaults,
+  type DownloadActiveFilterChip,
+} from "@/data/support/downloadCenterContent";
 
 export default function DownloadCenterActiveFilters() {
-  const { activeChips, toggleFilter, clearAll } = useDownloadCenterFilter();
+  const [filters, setFilters] = useState<DownloadActiveFilterChip[]>(
+    downloadCenterActiveFilterDefaults,
+  );
 
-  if (activeChips.length === 0) {
+  if (filters.length === 0) {
     return null;
   }
+
+  const removeFilter = (id: string) => {
+    setFilters((current) => current.filter((chip) => chip.id !== id));
+  };
+
+  const clearAll = () => {
+    setFilters([]);
+  };
 
   return (
     <div
@@ -16,21 +30,26 @@ export default function DownloadCenterActiveFilters() {
       aria-label="Active filters"
     >
       <ul className="support_download_active-filters__chips">
-        {activeChips.map((chip) => (
+        {filters.map((chip) => (
           <li key={chip.id}>
-            <button
-              type="button"
-              className="support_download_active-filters__chip"
-              aria-label={`Remove ${chip.group} ${chip.value} filter`}
-              onClick={() => toggleFilter(chip.id, false)}
-            >
+            <span className="support_download_active-filters__chip">
               <span className="support_download_active-filters__chip-text">
                 {chip.group} : {chip.value}
               </span>
-              <span className="support_download_active-filters__chip-icon" aria-hidden="true">
-                <img src="/pub/ico/ico_clear_12.svg" alt="" width={12} height={12} />
-              </span>
-            </button>
+              <button
+                type="button"
+                className="support_download_active-filters__chip-remove"
+                aria-label={`Remove ${chip.group} ${chip.value} filter`}
+                onClick={() => removeFilter(chip.id)}
+              >
+                <img
+                  src="/ico/ico_clear_12.svg"
+                  alt=""
+                  width={12}
+                  height={12}
+                />
+              </button>
+            </span>
           </li>
         ))}
       </ul>
@@ -41,7 +60,7 @@ export default function DownloadCenterActiveFilters() {
         onClick={clearAll}
       >
         <span className="support_download_active-filters__clear-icon" aria-hidden>
-          <img src="/pub/ico/ico_clear_12.svg" alt="" width={12} height={12} />
+          <img src="/ico/ico_clear_12.svg" alt="" width={12} height={12} />
         </span>
       </button>
     </div>

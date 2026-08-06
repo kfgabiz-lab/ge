@@ -1,43 +1,21 @@
 "use client";
 
 import { InputAdornment, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
-import {
-  downloadCenterPage,
-} from "@/data/support/downloadCenterContent";
+import { useState } from "react";
+import { downloadCenterPage } from "@/data/support/downloadCenterContent";
 
-type DownloadCenterSearchProps = {
-  initialQuery?: string;
-};
-
-export default function DownloadCenterSearch({
-  initialQuery = "",
-}: DownloadCenterSearchProps) {
-  const [query, setQuery] = useState(initialQuery);
-  const [isMobile, setIsMobile] = useState(false);
+export default function DownloadCenterSearch() {
+  const [query, setQuery] = useState("");
   const hasQuery = query.length > 0;
-  const { popularTagsMobile } = downloadCenterPage;
-
-  useEffect(() => {
-    const media = window.matchMedia("(max-width: 780px)");
-    const update = () => setIsMobile(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, []);
-
-  const placeholder = isMobile
-    ? downloadCenterPage.searchPlaceholderMobile
-    : downloadCenterPage.searchPlaceholder;
 
   return (
     <section className="support_download_search" id="support-download-search">
-      <div className="inner support_download_search__inner">
+      <div className="inner">
         <TextField
           className={`guide_field guide_field--search support_download_search__field${
             hasQuery ? " support_download_search__field--filled" : ""
           }`}
-          placeholder={placeholder}
+          placeholder={downloadCenterPage.searchPlaceholder}
           aria-label={downloadCenterPage.searchPlaceholder}
           value={query}
           onChange={(event) => setQuery(event.target.value)}
@@ -57,7 +35,7 @@ export default function DownloadCenterSearch({
                     >
                       <span className="support_download_search__clear-icon" aria-hidden>
                         <img
-                          src="/pub/ico/ico_clear_12.svg"
+                          src="/ico/ico_clear_12.svg"
                           alt=""
                           width={12}
                           height={12}
@@ -67,22 +45,14 @@ export default function DownloadCenterSearch({
                   ) : null}
                   <button
                     type="button"
-                    className="guide_field__search-icon-button support_download_search__search-btn"
+                    className="guide_field__search-icon-button"
                     aria-label="Search"
                   >
                     <img
-                      src="/pub/ico/ico_search_24.svg"
+                      src="/ico/ico_search_24.svg"
                       alt=""
-                      className="support_download_search__search-icon support_download_search__search-icon--pc"
                       width={26}
                       height={26}
-                    />
-                    <img
-                      src="/pub/ico/ico_search_24.svg"
-                      alt=""
-                      className="support_download_search__search-icon support_download_search__search-icon--mo"
-                      width={20}
-                      height={20}
                     />
                   </button>
                 </InputAdornment>
@@ -92,29 +62,11 @@ export default function DownloadCenterSearch({
         />
 
         <div className="support_download_search__popular">
-          <span className="support_download_search__popular-label support_download_search__popular-label--pc">
+          <span className="support_download_search__popular-label">
             {downloadCenterPage.popularSearchLabel}
           </span>
-          <span className="support_download_search__popular-label support_download_search__popular-label--mo">
-            {downloadCenterPage.popularSearchLabelMobile}
-          </span>
-
-          <ul className="support_download_search__tags support_download_search__tags--pc">
+          <ul className="support_download_search__tags">
             {downloadCenterPage.popularTags.map((tag) => (
-              <li key={tag}>
-                <button
-                  type="button"
-                  className="support_download_search__tag"
-                  onClick={() => setQuery(tag)}
-                >
-                  {tag}
-                </button>
-              </li>
-            ))}
-          </ul>
-
-          <ul className="support_download_search__tags support_download_search__tags-row support_download_search__tags--mo">
-            {[...popularTagsMobile.row1, ...popularTagsMobile.row2].map((tag) => (
               <li key={tag}>
                 <button
                   type="button"

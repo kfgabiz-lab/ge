@@ -35,6 +35,7 @@ const DESKTOP_SLIDES_PER_VIEW = 2;
 const DESKTOP_SLIDES_PER_GROUP = 2;
 
 const MOBILE_SLIDES_PER_VIEW = 1;
+
 const MOBILE_SLIDES_PER_GROUP = 1;
 
 
@@ -196,16 +197,44 @@ export default function CompanyEventsFeatured({ items }: CompanyEventsFeaturedPr
         <div className="company-events-featured__swiper-area">
 
           <Swiper
+
             key={`company-events-featured-${isDesktop ? "desktop" : "mobile"}`}
+
             className="company-events-featured__swiper"
-            direction="horizontal"
-            slidesPerView={isDesktop ? DESKTOP_SLIDES_PER_VIEW : MOBILE_SLIDES_PER_VIEW}
-            slidesPerGroup={isDesktop ? DESKTOP_SLIDES_PER_GROUP : MOBILE_SLIDES_PER_GROUP}
-            spaceBetween={isDesktop ? 24 : 14}
+
+            slidesPerView={DESKTOP_SLIDES_PER_VIEW}
+
+            slidesPerGroup={DESKTOP_SLIDES_PER_GROUP}
+
+            spaceBetween={24}
 
             speed={500}
 
             watchOverflow
+
+            breakpoints={{
+
+              0: {
+
+                slidesPerView: MOBILE_SLIDES_PER_VIEW,
+
+                slidesPerGroup: MOBILE_SLIDES_PER_GROUP,
+
+                spaceBetween: 20,
+
+              },
+
+              781: {
+
+                slidesPerView: DESKTOP_SLIDES_PER_VIEW,
+
+                slidesPerGroup: DESKTOP_SLIDES_PER_GROUP,
+
+                spaceBetween: 24,
+
+              },
+
+            }}
 
             onSwiper={(swiper) => {
 

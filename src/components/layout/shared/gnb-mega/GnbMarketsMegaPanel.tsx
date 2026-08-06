@@ -4,7 +4,7 @@ import GnbMegaItemLink from "@/components/layout/shared/gnb-mega/GnbMegaItemLink
 import type { GnbMegaSimplePanelStateProps } from "@/components/layout/shared/gnb-mega/types";
 import { marketsMegaMenu } from "@/data/gnb/mega/markets";
 
-/** Figma 17660:104944 — #gnb-mega-panel-markets */
+/** Figma 2741:10579 — #gnb-mega-panel-markets */
 export default function GnbMarketsMegaPanel({
   onItemClick,
 }: GnbMegaSimplePanelStateProps) {

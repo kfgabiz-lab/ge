@@ -7,7 +7,6 @@ import {
   getGoogleMapsApiKey,
   loadGoogleMaps,
 } from "@/lib/googleMaps/loadGoogleMaps";
-import WhereToBuyMapPlaceholder from "./WhereToBuyMapPlaceholder";
 
 type WhereToBuyMapProps = {
   locations: WhereToBuyLocation[];
@@ -21,31 +20,12 @@ const mapFillStyle = {
   minHeight: "inherit",
 } as const;
 
-const MOBILE_MAP_MAX_WIDTH = 780;
-
-function useMobileMapPlaceholder() {
-  const [usePlaceholder, setUsePlaceholder] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia(`(max-width: ${MOBILE_MAP_MAX_WIDTH}px)`);
-    const sync = () => setUsePlaceholder(mediaQuery.matches);
-
-    sync();
-    mediaQuery.addEventListener("change", sync);
-
-    return () => mediaQuery.removeEventListener("change", sync);
-  }, []);
-
-  return usePlaceholder;
-}
-
 export default function WhereToBuyMap({
   locations,
   activeLocation,
   onLocationSelect,
 }: WhereToBuyMapProps) {
   const apiKey = getGoogleMapsApiKey();
-  const usePlaceholder = useMobileMapPlaceholder();
   const mapCanvasRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
@@ -53,7 +33,7 @@ export default function WhereToBuyMap({
   const [mapError, setMapError] = useState(false);
 
   useEffect(() => {
-    if (usePlaceholder || !apiKey || !mapCanvasRef.current) {
+    if (!apiKey || !mapCanvasRef.current) {
       return;
     }
 
@@ -97,13 +77,9 @@ export default function WhereToBuyMap({
     return () => {
       cancelled = true;
     };
-  }, [apiKey, locations, usePlaceholder]);
+  }, [apiKey, locations]);
 
   useEffect(() => {
-    if (usePlaceholder) {
-      return;
-    }
-
     const map = mapRef.current;
     if (!mapReady || !map || !window.google?.maps) {
       return;
@@ -142,15 +118,7 @@ export default function WhereToBuyMap({
 
     map.panTo({ lat: activeLocation.lat, lng: activeLocation.lng });
     map.setZoom(whereToBuyPage.mapActiveZoom);
-  }, [activeLocation, locations, mapReady, onLocationSelect, usePlaceholder]);
-
-  if (usePlaceholder) {
-    return (
-      <WhereToBuyMapPlaceholder
-        ariaLabel={`Map showing distributor locations near ${activeLocation.name}`}
-      />
-    );
-  }
+  }, [activeLocation, locations, mapReady, onLocationSelect]);
 
   if (!apiKey || mapError) {
     return (
@@ -163,14 +131,11 @@ export default function WhereToBuyMap({
   }
 
   return (
-    <div className="support_where_to_buy_map" style={mapFillStyle}>
-      <div
-        ref={mapCanvasRef}
-        className="support_where_to_buy_map__canvas"
-        style={mapFillStyle}
-        role="application"
-        aria-label={`Map showing distributor locations near ${activeLocation.name}`}
-      />
-    </div>
+    <div
+      ref={mapCanvasRef}
+      style={mapFillStyle}
+      role="application"
+      aria-label={`Map showing distributor locations near ${activeLocation.name}`}
+    />
   );
 }

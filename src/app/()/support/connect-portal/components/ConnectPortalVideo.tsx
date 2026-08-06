@@ -14,27 +14,20 @@ export default function ConnectPortalVideo() {
           <DevicesProductVideoPlayer
             youtubeVideoId={video.youtubeVideoId}
             title={video.title}
+            poster={video.poster}
+            autoplayInView
           />
         </div>
 
         <div className="support_connect_video__content">
-          <div className="support_connect_video__text">
-            <h2 className="support_connect_video__tit">
-              <span className="support_connect_video__tit-set support_connect_video__tit-set--pc">
-                {video.headingLines.map((line) => (
-                  <span key={line} className="support_connect_video__tit-line">
-                    {line}
-                  </span>
-                ))}
+          <h2 className="support_connect_video__tit">
+            {video.headingLines.map((line) => (
+              <span key={line} className="support_connect_video__tit-line">
+                {line}
               </span>
-              {"mobileHeadingLine" in video && (
-                <span className="support_connect_video__tit-set support_connect_video__tit-set--mo">
-                  {video.mobileHeadingLine}
-                </span>
-              )}
-            </h2>
-            <p className="support_connect_video__desc">{video.text}</p>
-          </div>
+            ))}
+          </h2>
+          <p className="support_connect_video__desc">{video.text}</p>
           <Link
             href={video.ctaHref}
             className="btn-base btn-lv01 btn-lv01--solid support_connect_video__cta"

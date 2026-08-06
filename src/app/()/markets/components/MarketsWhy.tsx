@@ -13,19 +13,19 @@ export default function MarketsWhy({
     <section className="markets_why">
       <div className="markets_why__bg" aria-hidden="true">
         <div className="img_area">
-          <img loading="lazy" decoding="async" src="/pub/img/markets/bg_why_market.jpg" alt="" />
+          <img loading="lazy" decoding="async" src="/img/main/bg_section_main_info.jpg" alt="" />
         </div>
       </div>
       <div className="inner">
         <div className="markets_why__head">
           <h2 className="section_tit">Why LS ELECTRIC?</h2>
-          {/* <p className="section_desc">{description}</p> */}
+          <p className="section_desc">{description}</p>
         </div>
         <div className="markets_why__list">
           {items.map((item) => (
             <div key={item.id} className="markets_why__item">
               <div className="icon_area">
-                <img loading="lazy" decoding="async" src={item.icon} alt="" />
+                <img loading="lazy" decoding="async" src={item.icon} alt="" aria-hidden="true" />
               </div>
               <h3 className="tit">{item.title}</h3>
               <p className="txt">{item.description}</p>

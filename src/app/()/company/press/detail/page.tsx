@@ -4,12 +4,12 @@ import { articleDetailClass } from "@/app/()/company/articleDetailClass";
 import CompanyArticleDetail from "@/app/()/company/components/CompanyArticleDetail";
 import {
   pressDetailBullets,
-  pressDetailDate,
   pressDetailHero,
   pressDetailPager,
   pressDetailParagraphs,
-  pressDetailTitle,
+  pressDetailYoutube,
 } from "@/app/()/company/data/pressDetailContent";
+import DevicesProductVideoPlayer from "@/components/video/DevicesProductVideoPlayer";
 import "@/assets/css/company.css";
 
 export default function CompanyPressDetailPage() {
@@ -17,9 +17,22 @@ export default function CompanyPressDetailPage() {
     <CompanyArticleDetail
       variant="press"
       pageId="Page_company_press_detail"
-      title={pressDetailTitle}
-      date={pressDetailDate}
+      title={
+        <>
+          LS ELECTRIC Showcases Capabilities in &ldquo;Energy Highway&rdquo; Business
+          <br />
+          Built on Unrivaled HVDC
+        </>
+      }
+      date="Dec 9, 2025"
       heroImage={pressDetailHero}
+      afterHero={
+        <DevicesProductVideoPlayer
+          youtubeVideoId={pressDetailYoutube.videoId}
+          title={pressDetailYoutube.title}
+          poster={pressDetailYoutube.poster}
+        />
+      }
       pagerAriaLabel="Press post navigation"
       prev={pressDetailPager.prev}
       next={pressDetailPager.next}

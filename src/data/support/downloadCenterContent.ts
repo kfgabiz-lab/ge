@@ -1,32 +1,12 @@
-import {
-  productDownloadFile,
-  type ProductDownloadItem,
-} from "@/app/()/products-systems/data/productDetailContent";
-import { emptyStateIconSrc } from "@/data/commonAssets";
+import type { ProductDownloadItem } from "@/app/()/devices-systems/data/productDetailContent";
 
 export const downloadCenterPage = {
   title: "Download Center",
   description:
     "You can download manuals and various files related to LS ELECTRIC products.",
-  searchPlaceholder: "Find products, solutions, or resources for your business",
-  searchPlaceholderMobile: "Find products, solutions, or...",
-  popularSearchLabel: "Popular Keywords :",
-  popularSearchLabelMobile: "Popular Keywords :",
-  filterByLabel: "Filter by",
-  sortByLabel: "Sort by",
-  applyLabel: "Apply",
-  mobileSortDefault: "Document Type",
-  mobileSortOptions: [
-    "Document Type",
-    "Most Recent",
-    "A to Z",
-    "Z to A",
-  ] as const,
+  searchPlaceholder: "Search for products, solutions, or documentation",
+  popularSearchLabel: "Popular Search :",
   popularTags: ["MCCB", "AC Drives", "VCB", "PLC", "How to size a contactor for motor control?"],
-  popularTagsMobile: {
-    row1: ["MCCB", "AC Drives", "VCB", "PLC"],
-    row2: ["How to size a contactor for motor control?"],
-  },
   totalResults: 2658,
   pageSize: 10,
 } as const;
@@ -41,8 +21,7 @@ export type DownloadFilterOption = {
 export type DownloadCategoryOption = DownloadFilterOption & {
   hasArrow?: boolean;
   defaultExpanded?: boolean;
-  /** Recursive subcategory tree (Figma 7922:118142 — up to 3 levels). */
-  nested?: DownloadCategoryOption[];
+  nested?: DownloadFilterOption[];
 };
 
 /** Figma 3670:31451 — active filter chips above results list */
@@ -52,13 +31,10 @@ export type DownloadActiveFilterChip = {
   value: string;
 };
 
-/** Figma 6561:73639 — Download Center / No Data search field */
-export const downloadCenterNoDataSearchQuery = "XYZ" as const;
-
-/** Figma 5565:128770 — Download Center / No Data empty state */
+/** Figma 3670:31496 — Download Center / No Data */
 export const downloadCenterEmptyContent = {
   title: "We could not find any results",
-  iconSrc: emptyStateIconSrc,
+  iconSrc: "/img/support/download-center/empty_icon.png",
   tips: [
     "Ensure all search terms are spelled correctly.",
     "Narrow your results by using more specific keywords. (e.g. 'ACS 600 manual')",
@@ -70,7 +46,7 @@ export const downloadCenterEmptyContent = {
     linkLabel: "Contact Us",
     after: " page.",
   },
-  contactHref: "/support/contact-us",
+  contactHref: "",
 } as const;
 
 export const downloadCenterActiveFilterDefaults: DownloadActiveFilterChip[] = [
@@ -84,81 +60,48 @@ export const downloadCenterActiveFilterDefaults: DownloadActiveFilterChip[] = [
   { id: "filter-type-manuals", group: "Types", value: "Manuals" },
 ];
 
-/** Figma 7922:118142 — Download Center PC Product Category tree */
 export const downloadProductCategories: DownloadCategoryOption[] = [
   {
-    id: "lv-products",
-    label: "LV Products and Systems",
+    id: "lv-motor",
+    label: "LV Motor Control",
+    count: 100,
+    hasArrow: true,
+    nested: [
+      { id: "magnetic-contactor", label: "Magnetic Contactors", count: 42 },
+      { id: "manual-motor-starter", label: "Manual Motor Starters", count: 18 },
+      { id: "empr", label: "EMPR / Overload Relays", count: 28 },
+      { id: "soft-starter", label: "Soft Starters", count: 12 },
+    ],
+  },
+  {
+    id: "lv-auto",
+    label: "LV Automation",
+    count: 100,
+    hasArrow: true,
+    nested: [
+      { id: "plc", label: "PLC (XGT / XGB)", count: 46 },
+      { id: "hmi", label: "HMI (XGT Panel)", count: 22 },
+      { id: "ac-drives", label: "AC Drives", count: 24 },
+      { id: "servo-motion", label: "Servo & Motion", count: 8 },
+    ],
+  },
+  {
+    id: "lv-pd",
+    label: "LV Power Distribution",
     count: 100,
     hasArrow: true,
     defaultExpanded: true,
     nested: [
-      {
-        id: "acb-pcb",
-        label: "Air Circuit Breaker / Power Circuit Breaker",
-        count: 60,
-      },
-      {
-        id: "mccb",
-        label: "Molded Case Circuit Breaker",
-        count: 60,
-        hasArrow: true,
-        defaultExpanded: true,
-        nested: [
-          {
-            id: "mccb-susol-ul",
-            label: "Susol UL MCCB",
-            count: 30,
-            defaultChecked: true,
-          },
-          {
-            id: "mccb-susol-smart",
-            label: "Susol UL Smart MCCB",
-            count: 10,
-          },
-          {
-            id: "mccb-susol-1kv",
-            label: "Susol UL MCCB(up to 1000V)",
-            count: 20,
-          },
-        ],
-      },
-      { id: "mcb", label: "Miniature Circuit Breaker", count: 100 },
-      {
-        id: "spd",
-        label: "Surge Protective Device",
-        count: 60,
-        hasArrow: true,
-      },
-      { id: "ul67", label: "UL67 Panelboard", count: 100 },
-      { id: "rpp", label: "Remote Power Panel", count: 100 },
-      { id: "ul891", label: "UL891 Switchboard", count: 100 },
-      { id: "ul1558", label: "UL1558 Switchgear", count: 100 },
-      { id: "ehouse", label: "E House", count: 100 },
-      {
-        id: "contactor",
-        label: "Magnetic Contactor",
-        count: 60,
-        hasArrow: true,
-      },
-      { id: "vfd", label: "Variable Fequency Drive", count: 100 },
+      { id: "mccb", label: "MCCB", count: 352 },
+      { id: "mcb-rccb", label: "MCB / RCCB", count: 120 },
+      { id: "acb", label: "ACB", count: 88 },
+      { id: "metering", label: "Metering & Power Monitoring", count: 40 },
     ],
   },
-  {
-    id: "mv-products",
-    label: "MV Products and Systems",
-    count: 100,
-    hasArrow: true,
-  },
-  { id: "hv-systems", label: "HV Systems", count: 100, hasArrow: true },
-  { id: "dc-products", label: "DC Products", count: 352, hasArrow: true },
-  {
-    id: "industrial-auto",
-    label: "Industrial Automation and Control",
-    count: 100,
-    hasArrow: true,
-  },
-  { id: "software-cat", label: "Software", count: 30, hasArrow: true },
+  { id: "mv-pd", label: "MV Power Distribution", count: 352 },
+  { id: "dc-device", label: "DC Device", count: 100 },
+  { id: "hv-system", label: "HV System", count: 30 },
+  { id: "software-cat", label: "Software", count: 0 },
 ];
 
 export const downloadDocumentTypes: DownloadFilterOption[] = [
@@ -172,8 +115,8 @@ export const downloadDocumentTypes: DownloadFilterOption[] = [
 ];
 
 /**
- * Figma 5841:132466 — Download Center / List (Accordion).
- * 버전 드롭다운은 `versions`가 있는 항목에만 노출된다.
+ * Figma 3670:30532 — Download Center / List (Accordion).
+ * 버전 드롭다운은 `versions`가 있는 항목에만 노출된다 (Figma 디자인 기준).
  */
 const downloadVersions = ["V38.0", "V37.0", "V36.0"];
 
@@ -182,63 +125,53 @@ export const downloadCenterItems: ProductDownloadItem[] = [
     id: "dl-1",
     type: "Catalog",
     title: "LV SWGR Smart LV Solution",
-    date: "Dec 9, 2025",
+    date: "Dec 08, 2025",
     version: "V38.0",
     versions: downloadVersions,
     files: [
-      productDownloadFile({ name: "MC-800a, 630a, 500a.pdf", size: "12.09MB", url: "https://www.ls-electric.com/download/MC-800a%2C%20630a%2C%20500a.pdf" }),
-      productDownloadFile({ name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB", url: "https://www.ls-electric.com/download/Metasol%20MS_MC-800a_500-800A_3P_2D%20CAD.pdf" }),
+      { name: "MC-800a, 630a, 500a.pdf", size: "12.09MB" },
+      { name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB" },
     ],
   },
   {
     id: "dl-2",
-    type: "Catalog",
-    title: "LV SWGR Smart LV Solution",
-    date: "Dec 9, 2025",
+    type: "Manual",
+    title: "EMPR [UL SPD]USPE Series Manual",
+    date: "Dec 08, 2025",
     version: "V38.0",
-    files: [
-      productDownloadFile({ name: "MC-800a, 630a, 500a.pdf", size: "12.09MB", url: "https://www.ls-electric.com/download/MC-800a%2C%20630a%2C%20500a.pdf" }),
-      productDownloadFile({ name: "Metasol MS_MC-800a_500-800A_3P_2D CAD.pdf", size: "5.23MB", url: "https://www.ls-electric.com/download/Metasol%20MS_MC-800a_500-800A_3P_2D%20CAD.pdf" }),
-    ],
+    versions: downloadVersions,
+    files: [{ name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB" }],
   },
   {
     id: "dl-3",
     type: "Manual",
-    title: "EMPR [UL SPD]USPE Series Manual",
-    date: "Dec 9, 2025",
-    version: "V38.0",
-    versions: downloadVersions,
-    files: [productDownloadFile({ name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB", url: "https://www.ls-electric.com/download/%5BHVDC_and_FACTS%5D_EN_C84602-02-201905.pdf" })],
-  },
-  {
-    id: "dl-4",
-    type: "Manual",
     title: "Cast Resin Transformer [Transformer]_Catalog_IEEE_EN_202110",
-    date: "Dec 9, 2025",
+    date: "Dec 08, 2025",
     version: "V38.0",
     versions: downloadVersions,
     files: [
-      productDownloadFile({ name: "LS_Solution_Overview_EN_CZZZ02-04-202603", size: "", url: "https://www.ls-electric.com/download/LS_Solution_Overview_EN_CZZZ02-04-202603" }),
-      productDownloadFile({ name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB", url: "https://www.ls-electric.com/download/%5BHVDC_and_FACTS%5D_EN_C84602-02-201905.pdf" }),
+      { name: "LS_Solution_Overview_EN_CZZZ02-04-202603", size: "" },
+      { name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB" },
+    ],
+  },
+  {
+    id: "dl-4",
+    type: "Catalog",
+    title: "UL Susol VCB [Susol UL VCB]_User_Manual_UCGT-05/15/27/38kV",
+    date: "Dec 07, 2025",
+    version: "V38.0",
+    versions: downloadVersions,
+    files: [
+      { name: "LS_Solution_Overview_EN_CZZZ02-04-202603", size: "" },
+      { name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB" },
     ],
   },
   {
     id: "dl-5",
     type: "Catalog",
-    title: "UL Susol VCB [Susol UL VCB]_User_Manual_UCGT-05/15/27/38kV",
-    date: "Dec 9, 2025",
-    version: "V38.0",
-    files: [
-      productDownloadFile({ name: "LS_Solution_Overview_EN_CZZZ02-04-202603", size: "", url: "https://www.ls-electric.com/download/LS_Solution_Overview_EN_CZZZ02-04-202603" }),
-      productDownloadFile({ name: "[HVDC_and_FACTS]_EN_C84602-02-201905.pdf", size: "4.62MB", url: "https://www.ls-electric.com/download/%5BHVDC_and_FACTS%5D_EN_C84602-02-201905.pdf" }),
-    ],
-  },
-  {
-    id: "dl-6",
-    type: "Catalog",
     title: "LV SWGR [UL LV Panelboard] IOM Manual",
-    date: "Dec 9, 2025",
+    date: "Dec 06, 2025",
     version: "V38.0",
-    files: [productDownloadFile({ name: "MC-800a, 630a, 500a.pdf", size: "12.09MB", url: "https://www.ls-electric.com/download/MC-800a%2C%20630a%2C%20500a.pdf" })],
+    files: [{ name: "MC-800a, 630a, 500a.pdf", size: "12.09MB" }],
   },
 ];

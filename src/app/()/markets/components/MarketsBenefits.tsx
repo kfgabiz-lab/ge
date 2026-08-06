@@ -16,7 +16,7 @@ type MarketsBenefitsProps = {
 
 export default function MarketsBenefits({
   items = benefits,
-  sectionDesc = "Engineered to the highest standards delivering operational certainty at every scale.",
+  sectionDesc = "Tailored electrical infrastructure solutions for every architectural requirement.",
 }: MarketsBenefitsProps) {
   return (
     <section className="markets_benefits">

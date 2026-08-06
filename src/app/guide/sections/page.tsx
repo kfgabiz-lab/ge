@@ -5,9 +5,6 @@ import "@/assets/css/devices-systems.css";
 import "@/assets/css/devices-product-detail.css";
 import "@/assets/css/company.css";
 import "@/assets/css/support.css";
-import "@/assets/css/services.css";
-import "@/assets/css/training.css";
-import "@/assets/css/search.css";
 
 export default function SectionGuidePage() {
   return (
