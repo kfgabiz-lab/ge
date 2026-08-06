@@ -1,7 +1,8 @@
 import { GNB_MEGA_PANEL_ID } from "@/data/gnb/panelIds";
+import { GNB_MEGA_SECTION_DESC } from "@/data/gnb/shared";
 import type { GnbSimpleMegaMenu } from "@/data/gnb/types";
 
-/** Figma 3670:14792 — Support mega (2 columns) */
+/** Figma 2769:35780 — Support mega menu */
 export const supportMegaMenu: GnbSimpleMegaMenu = {
   type: "simple",
   panelId: GNB_MEGA_PANEL_ID.support,
@@ -14,31 +15,31 @@ export const supportMegaMenu: GnbSimpleMegaMenu = {
         {
           id: "connect-portal",
           title: "Connect Portal",
-          description: "Portal for product configurators and orders",
+          description: "High-reliability vacuum arc interruption.",
           href: "/support/connect-portal",
         },
         {
           id: "download-center",
           title: "Download Center",
-          description: "Download documents and resources.",
+          description: GNB_MEGA_SECTION_DESC,
           href: "/support/download-center",
         },
         {
           id: "tech-hub",
           title: "Tech Hub",
-          description: "Video tutorials for our products.",
+          description: GNB_MEGA_SECTION_DESC,
           href: "/support/tech-hub",
         },
         {
           id: "where-to-buy",
           title: "Where to Buy",
-          description: "Find locations of our distributors.",
+          description: GNB_MEGA_SECTION_DESC,
           href: "/support/where-to-buy",
         },
         {
           id: "contact-us",
           title: "Contact Us",
-          description: "Reach out to us via contact form.",
+          description: GNB_MEGA_SECTION_DESC,
           href: "/support/contact-us",
         },
       ],
@@ -48,42 +49,42 @@ export const supportMegaMenu: GnbSimpleMegaMenu = {
       label: "Portals & Tools",
       items: [
         {
-          id: "Knowledge-Base-Power",
-          title: "Knowledge Base (Power)",
-          description: "Information hub for power products",
-          href: "https://gics.ls-electric.com/public/knowledgeBasePopup.do",
+          id: "product-finder",
+          title: "Product Finder",
+          description: GNB_MEGA_SECTION_DESC,
+          href: "",
           external: true,
-          externalIcon: true,
-        },
-        {
-          id: "Knowledge-Base-Automation",
-          title: "Knowledge Base (Automation)",
-          description: "Information hub for automation products",
-          href: "https://sol.ls-electric.com/us/en/community/blog",
-          external: true,
-          externalIcon: true,
         },
         {
           id: "product-match",
           title: "Product Match Guide",
-          description: "Find LS ELECTRIC product crossover",
-          href: "https://pmg.ls-electric.com/",
+          description: GNB_MEGA_SECTION_DESC,
+          href: "",
           external: true,
         },
         {
           id: "pre-engineering",
           title: "LS Pre-Engineering",
-          description: "Quotes & drawings for custom products",
-          href: "https://lspe-x.ls-electric.com/",
+          description: GNB_MEGA_SECTION_DESC,
+          href: "",
           external: true,
         },
         {
           id: "request-service",
           title: "Request for Service",
-          description: "Submit a support request online.",
-          href: "https://gics.ls-electric.com/loginForm.do?lang=ko",
+          description: GNB_MEGA_SECTION_DESC,
+          href: "",
           external: true,
         },
+      ],
+    },
+    {
+      id: "training",
+      label: "Training",
+      items: [
+        { id: "sales-training", title: "Sales Training", href: "" },
+        { id: "engineering-training", title: "Engineering Training", href: "" },
+        { id: "service-training", title: "Service Training", href: "" },
       ],
     },
   ],

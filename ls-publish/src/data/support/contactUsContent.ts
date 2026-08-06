@@ -1,72 +1,18 @@
 export const contactUsPage = {
   title: "Contact Us",
   description: "Talk to a specialist. Get answers that move your business forward.",
-  viewResponseCtaLabel: "View Response",
+  bannerImage: "/img/devices/product/banner_configurator_bg.png",
 } as const;
 
-export const contactUsViewResponseModal = {
-  title: "View Response",
-  heading: "Check your inquiry.",
+export const contactUsBanner = {
+  title: "Request Technical Support",
   description: [
-    "Please enter the inquiry number and password.",
-    "You can find your receipt number in the confirmation email",
+    "For technical issues or development-related inquiries regarding our products, please submit a request.",
+    "Our technical team will review your case and respond promptly.",
   ],
-  inquiryNumberLabel: "Inquiry Number",
-  passwordLabel: "Password",
-  confirmLabel: "Confirm",
-  fieldError: "Input text error",
+  ctaLabel: "Go to G-ICS",
+  ctaHref: "https://www.ls-electric.com/",
 } as const;
-
-export const contactUsViewResponseDetailSample = {
-  inquiryType: "Quotation Request",
-  submittedAt: "2026-06-19  16:25",
-  respondedAt: "2026-06-22  11:23",
-  productTrail: [
-    "Inquiry products",
-    "LV Devices and Systems",
-    "Magnetic Contactor",
-    "Metasol MS",
-  ],
-  inquiryBody: [
-    "Please send a quotation for the Metasol MS magnetic contactor.",
-    "Model / capacity:",
-    "Coil voltage:",
-    "Quantity:",
-    "Kindly include unit price, MOQ, and lead time.",
-  ],
-  responseBody: [
-    "Dear Customer,",
-    "Thank you for your interest in the Metasol MS magnetic contactor. Please find our proposal based on the standard specification below.",
-    "Model: Metasol MS-18 (AC-3, 7.5 kW / 18 A)",
-    "Coil voltage: AC 220 V, 50/60 Hz",
-    "Unit price: Quoted upon spec confirmation",
-    "MOQ: 50 units",
-    "Lead time: Approx. 3–4 weeks after order",
-    "",
-    "Since the model, coil voltage, and quantity were not specified, the above reflects our most common configuration. Please confirm these details and we will issue a formal quotation with exact pricing.",
-    "A product catalog is attached for your reference. Feel free to reply here with any questions.",
-    "Best regards,",
-    "Sales Team",
-  ],
-  pendingTitle: "Your inquiry is being reviewed",
-  pendingDescription:
-    "We've received your inquiry and our team is preparing a response. Thank you for your patience. We'll notify you by email once a reply is ready.",
-} as const;
-
-export const contactUsModalsHub = {
-  title: "Contact Us — Modals",
-  description: "Internal preview buttons for Contact Us modal states.",
-  buttons: [
-    { id: "privacy-policy", label: "Privacy Policy" },
-    { id: "view-response-default", label: "View Response — Default" },
-    { id: "view-response-error", label: "View Response — Error" },
-    { id: "view-response-answered", label: "View Response — Answered" },
-    { id: "view-response-pending", label: "View Response — Pending" },
-  ],
-} as const;
-
-export type ContactUsModalsHubModalId =
-  (typeof contactUsModalsHub.buttons)[number]["id"];
 
 export const contactUsInquiryTypes = [
   { id: "product-information", label: "Product Information" },
@@ -97,40 +43,62 @@ export const contactUsConsentItems = [
     id: "personal-info",
     label: "Consent to Collection and Use of Personal Information",
     defaultChecked: false,
-    required: true,
     termsLabel: "View Full Terms",
     termsHref: "",
   },
   {
     id: "newsletter",
     label:
-      "Consent to receive marketing and technical information, industry news from LS ELECTRIC in accordance with LS ELECTRIC's Privacy Policy.",
+      "Consent to collect and use personal information to receive newsletters",
     defaultChecked: true,
     termsLabel: "View Full Terms",
     termsHref: "",
   },
 ] as const;
 
-export { privacyPolicyModal as contactUsPrivacyPolicyModal } from "@/data/privacyPolicyContent";
+export const contactUsPrivacyPolicyModal = {
+  title: "Privacy Policy",
+  confirmLabel: "Confirm",
+  sections: [
+    {
+      heading: "General Provisions",
+      paragraphs: [
+        `This Privacy Policy explains how LS Electric America collects and uses your personal information in connection with its websites, applications, products, services, events, and experiences (collectively referred to as the “LS Offerings”). LS Electric America Inc. (hereinafter referred to as the “Company”) complies with U.S. federal and state privacy laws, including the applicable data protection laws and related regulations. To safeguard the personal information of data subjects and address related concerns promptly and effectively, the Company has established and published this Privacy Policy on its website (https://connect.ls-electric.com/). The Company’s Privacy Policy may be amended in response to changes in laws, government policies, or internal regulations. In such cases, the Company will promptly notify users of the changes and ensure that they can easily access the updated information.`,
+        "The Company’s Privacy Policy includes the following sections:",
+      ],
+      listItems: [
+        "WHAT INFORMATION DO WE COLLECT?",
+        "WHO DO WE SHARE YOUR INFORMATION WITH ?",
+        "HOW DO WE USE YOUR INFORMATION ?",
+      ],
+      outro:
+        "information in connection with its websites, applications, products, services, events, and experiences (collectively referred to as the “LS Offerings”). LS Electric America Inc. (hereinafter referred to as the “Company”) complies with U.S. federal and state privacy laws, including the applicable data protection laws and related regulations. To safeguard the personal information of data subjects and address related concerns promptly and effectively, the Company has",
+    },
+  ],
+} as const;
 
 export const contactUsFormCopy = {
   inquiryType: "Inquiry Type",
   productCategory: "Product Category",
-  inquiryDetails: "Comments",
+  inquirySubject: "Inquiry Subject",
+  inquirySubjectPlaceholder: "Enter Subject",
+  inquiryDetails: "Inquiry Details",
   inquiryDetailsPlaceholder: "Please enter your inquiry details.",
-  email: "Email Address",
+  email: "Email",
   firstName: "First Name",
   lastName: "Last Name",
   companyName: "Company Name",
+  addressSearch: "Enter company name or address",
+  addressSearchPlaceholder: "Keword Search",
+  address2: "Address 2",
+  address2Placeholder: "Address 2",
   country: "Country",
-  countryPlaceholder: "Select country",
-  countryPlaceholderMobile: "",
+  countryPlaceholder: "Select a Country",
+  stateRegion: "State/Region",
+  zipCode: "Zip Code",
   password: "Password",
   passwordPlaceholder: "Enter Password",
   confirmPassword: "Confirm Password",
   confirmPasswordPlaceholder: "Enter Password Confirm",
-  /** Figma 1689:8145 — Textfield Error sample */
-  fieldError: "Input text error",
   sendLabel: "Send",
-  sendLabelMobile: "LIST",
 } as const;

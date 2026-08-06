@@ -203,6 +203,7 @@ export default function HistoryReloadOnNavigate() {
 
       event.preventDefault();
       event.stopImmediatePropagation();
+      dispatchGnbClose();
       window.location.href = targetUrl.href;
     };
 

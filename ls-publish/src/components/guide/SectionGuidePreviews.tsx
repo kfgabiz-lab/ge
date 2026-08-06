@@ -6,7 +6,6 @@ import {
   blogDetailHero,
   blogDetailPager,
   blogDetailParagraphs,
-  blogDetailTags,
   blogDetailTailParagraphs,
 } from "@/app/()/company/data/blogDetailContent";
 import {
@@ -17,24 +16,14 @@ import {
 } from "@/app/()/company/data/eventsDetailContent";
 import {
   pressDetailBullets,
-  pressDetailDate,
   pressDetailHero,
   pressDetailPager,
   pressDetailParagraphs,
-  pressDetailTitle,
+  pressDetailYoutube,
 } from "@/app/()/company/data/pressDetailContent";
-import {
-  mediaArticleDetailBullets,
-  mediaArticleDetailContentImage,
-  mediaArticleDetailHero,
-  mediaArticleDetailPager,
-  mediaArticleDetailParagraphs,
-  mediaArticleDetailTags,
-  mediaArticleDetailTailParagraphs,
-} from "@/app/()/company/data/mediaArticleDetailContent";
+import DevicesProductVideoPlayer from "@/components/video/DevicesProductVideoPlayer";
 import { pressFeatured } from "@/app/()/company/data/pressListContent";
 import CompanyPressEmpty from "@/app/()/company/components/CompanyPressEmpty";
-import CompanyBlogEmpty from "@/app/()/company/components/CompanyBlogEmpty";
 import CompanyPressFeatured from "@/app/()/company/components/CompanyPressFeatured";
 import CompanyEventsCalendar from "@/app/()/company/components/CompanyEventsCalendar";
 import CompanyEventsFeatured from "@/app/()/company/components/CompanyEventsFeatured";
@@ -44,102 +33,58 @@ import {
   eventsFeaturedItems,
   eventsPastItems,
 } from "@/app/()/company/data/eventsListContent";
-import CompanyAmericaPage, {
-  type AmericaPreviewSection,
-} from "@/app/()/company/components/CompanyAmericaPage";
-import CompanyLsElectricPage, {
-  type LsElectricPreviewSection,
-} from "@/app/()/company/components/CompanyLsElectricPage";
-import CompanyAffiliateAmericaPage, {
-  type AffiliateAmericaPreviewSection,
-} from "@/app/()/company/components/CompanyAffiliateAmericaPage";
-import CompanyCareersPage, {
-  type CareersPreviewSection,
-} from "@/app/()/company/components/CompanyCareersPage";
-import CompanyEsgPage, {
-  type EsgPreviewSection,
-} from "@/app/()/company/components/CompanyEsgPage";
-import { americaCareersBanner } from "@/app/()/company/data/americaContent";
 import CompanyPressListSection from "@/app/()/company/components/CompanyPressListSection";
 import CompanyPressTitle from "@/app/()/company/components/CompanyPressTitle";
 import CommonBanner01 from "@/components/banners/CommonBanner01";
 import CommonBanner02 from "@/components/banners/CommonBanner02";
 import CommonBanner03Link from "@/components/banners/CommonBanner03Link";
 import CommonBanner04 from "@/components/banners/CommonBanner04";
-import NotFoundHelpfulLinks from "@/components/common/not-found/NotFoundHelpfulLinks";
-import NotFoundSearch from "@/components/common/not-found/NotFoundSearch";
-import NotFoundTitle from "@/components/common/not-found/NotFoundTitle";
-import PrivacyPolicyBody from "@/app/()/privacy-policy/components/PrivacyPolicyBody";
-import PrivacyPolicyTitle from "@/app/()/privacy-policy/components/PrivacyPolicyTitle";
-import CookiePreferencesModal from "@/components/modals/CookiePreferencesModal";
-import CookieSettingsModal from "@/components/modals/CookieSettingsModal";
 import HighlightNewsSection from "@/components/content/HighlightNewsSection";
 import CommonFaq from "@/components/faq/CommonFaq";
 import SectionGuideBlock from "@/components/guide/SectionGuideBlock";
-import "@/assets/css/common-404.css";
-import "@/assets/css/common-privacy-policy.css";
 import { mainHighlightNewsItems } from "@/data/highlightNews";
 import IconCards from "@/app/main/components/IconCards";
 import MainCards from "@/app/main/components/MainCards";
 import MainInfo from "@/app/main/components/MainInfo";
 import MainProducts from "@/app/main/components/MainProducts";
 import MainVisual from "@/app/main/components/MainVisual";
-import MainImagePopup from "@/app/main/components/MainImagePopup";
 import WhatWeDoSwiper from "@/app/main/components/WhatWeDoSwiper";
-import DevicesCategoryList from "@/app/()/products-systems/components/DevicesCategoryList";
-import DevicesHelp from "@/app/()/products-systems/components/DevicesHelp";
-import DevicesHero from "@/app/()/products-systems/components/DevicesHero";
-import DevicesMarkets from "@/app/()/products-systems/components/DevicesMarkets";
-import DevicesHvdcHero from "@/app/()/products-systems/components/product/DevicesHvdcHero";
-import DevicesHvdcOverview from "@/app/()/products-systems/components/product/DevicesHvdcOverview";
-import DevicesMicroGridHighlights from "@/app/()/products-systems/components/product/DevicesMicroGridHighlights";
-import DevicesProductApplications from "@/app/()/products-systems/components/product/DevicesProductApplications";
-import DevicesProductDownloads from "@/app/()/products-systems/components/product/DevicesProductDownloads";
-import DevicesProductHero from "@/app/()/products-systems/components/product/DevicesProductHero";
-import DevicesProductLineup from "@/app/()/products-systems/components/product/DevicesProductLineup";
-import DevicesProductOtherProducts from "@/app/()/products-systems/components/product/DevicesProductOtherProducts";
-import DevicesProductVideo from "@/app/()/products-systems/components/product/DevicesProductVideo";
-import DevicesProductWhy from "@/app/()/products-systems/components/product/DevicesProductWhy";
-import DevicesSoftwareHighlights from "@/app/()/products-systems/components/product/DevicesSoftwareHighlights";
-import DevicesXemsEnergySolutions from "@/app/()/products-systems/components/product/DevicesXemsEnergySolutions";
-import DevicesProductFeaturesSection from "@/components/content/DevicesProductFeaturesSection";
+import DevicesCategoryList from "@/app/()/devices-systems/components/DevicesCategoryList";
+import DevicesHelp from "@/app/()/devices-systems/components/DevicesHelp";
+import DevicesHero from "@/app/()/devices-systems/components/DevicesHero";
+import DevicesMarkets from "@/app/()/devices-systems/components/DevicesMarkets";
+import DevicesHvdcHero from "@/app/()/devices-systems/components/product/DevicesHvdcHero";
+import DevicesHvdcOverview from "@/app/()/devices-systems/components/product/DevicesHvdcOverview";
+import DevicesProductApplications from "@/app/()/devices-systems/components/product/DevicesProductApplications";
+import DevicesProductBenefits from "@/app/()/devices-systems/components/product/DevicesProductBenefits";
+import DevicesProductDownloads from "@/app/()/devices-systems/components/product/DevicesProductDownloads";
+import DevicesProductHero from "@/app/()/devices-systems/components/product/DevicesProductHero";
+import DevicesProductKeyFeatures from "@/app/()/devices-systems/components/product/DevicesProductKeyFeatures";
+import DevicesProductLineup from "@/app/()/devices-systems/components/product/DevicesProductLineup";
+import DevicesProductOtherProducts from "@/app/()/devices-systems/components/product/DevicesProductOtherProducts";
+import DevicesProductVideo from "@/app/()/devices-systems/components/product/DevicesProductVideo";
+import DevicesProductWhy from "@/app/()/devices-systems/components/product/DevicesProductWhy";
 import {
   hvdcApplicationsSection,
   hvdcBenefitsSection,
-  hvdcOtherProducts,
-  hvdcOtherProductsTitle,
   hvdcWhySection,
-} from "@/app/()/products-systems/data/hvdcContent";
-import { smartFactoryWhySection } from "@/app/()/products-systems/data/smartFactoryContent";
+} from "@/app/()/devices-systems/data/hvdcContent";
 import {
   lvAutomationIntro,
   lvAutomationProducts,
-} from "@/app/()/products-systems/data/lvAutomationContent";
-import {
-  h100PlusDetail,
-  metasolMsDetail,
-  susolUlSmartMccbDetail,
-} from "@/app/()/products-systems/data/productDetailContent";
+} from "@/app/()/devices-systems/data/lvAutomationContent";
+import { metasolMsDetail } from "@/app/()/devices-systems/data/productDetailContent";
 import MarketsBenefits from "@/app/()/markets/components/MarketsBenefits";
 import MarketsExplore from "@/app/()/markets/components/MarketsExplore";
-import MarketsFaq from "@/app/()/markets/components/MarketsFaq";
 import MarketsHero from "@/app/()/markets/components/MarketsHero";
-import MarketsSolutionsPanel from "@/app/()/markets/components/MarketsSolutionsPanel";
-import { commercialSolutionsPanel } from "@/app/()/markets/data/marketsCommercialSolutionsPanel";
-import { oilGasMiningSolutionsPanel } from "@/app/()/markets/data/marketsOilGasMiningSolutionsPanel";
-import { publicInfrastructureSolutionsPanel } from "@/app/()/markets/data/marketsPublicInfrastructureSolutionsPanel";
 import MarketsIntro from "@/app/()/markets/components/MarketsIntro";
 import MarketsProducts from "@/app/()/markets/components/MarketsProducts";
 import MarketsReferences from "@/app/()/markets/components/MarketsReferences";
-import MarketsReferencesModalPreview from "@/app/()/markets/components/MarketsReferencesModalPreview";
-import MarketsSmartGrid from "@/app/()/markets/components/MarketsSmartGrid";
 import MarketsSolutions from "@/app/()/markets/components/MarketsSolutions";
 import MarketsStats from "@/app/()/markets/components/MarketsStats";
-import MarketsSustainability from "@/app/()/markets/components/MarketsSustainability";
 import MarketsWhy from "@/app/()/markets/components/MarketsWhy";
 import {
   dataCenterBenefits,
-  dataCenterFaqItems,
   dataCenterHero,
   dataCenterIntro,
   dataCenterProducts,
@@ -147,75 +92,22 @@ import {
   dataCenterWhyDescription,
   dataCenterWhyItems,
 } from "@/app/()/markets/data/marketsDataCenterContent";
-import { marketsHighlightNewsItems } from "@/app/()/markets/data/marketsHighlights";
 import { faqItems } from "@/app/()/markets/data/marketsContent";
-import {
-  powerGridIndustryTabs,
-  powerGridSmartGridOperation,
-  powerGridSmartGridUseCases,
-  powerGridSustainabilityCards,
-} from "@/app/()/markets/data/marketsPowerGridContent";
 import ConnectPortalDetail from "@/app/()/support/connect-portal/components/ConnectPortalDetail";
 import ConnectPortalFeatures from "@/app/()/support/connect-portal/components/ConnectPortalFeatures";
 import ConnectPortalTitle from "@/app/()/support/connect-portal/components/ConnectPortalTitle";
 import ConnectPortalVideo from "@/app/()/support/connect-portal/components/ConnectPortalVideo";
 import DownloadCenterSearch from "@/app/()/support/download-center/components/DownloadCenterSearch";
-import EngineeringTrainingCurriculum from "@/app/()/services/engineering-training/components/EngineeringTrainingCurriculum";
-import SalesTrainingCurriculum from "@/app/()/services/sales-training/components/SalesTrainingCurriculum";
-import SalesTrainingTitle from "@/app/()/services/sales-training/components/SalesTrainingTitle";
-import ServiceTrainingCurriculum from "@/app/()/services/service-training/components/ServiceTrainingCurriculum";
-import ServiceTrainingTitle from "@/app/()/services/service-training/components/ServiceTrainingTitle";
-import ServiceCenterBanner from "@/app/()/services/service-center/components/ServiceCenterBanner";
-import ServiceCenterCards from "@/app/()/services/service-center/components/ServiceCenterCards";
-import ServiceCenterFlow from "@/app/()/services/service-center/components/ServiceCenterFlow";
-import ServiceCenterGics from "@/app/()/services/service-center/components/ServiceCenterGics";
-import ServiceCenterOffering from "@/app/()/services/service-center/components/ServiceCenterOffering";
-import ServiceCenterTitle from "@/app/()/services/service-center/components/ServiceCenterTitle";
-import WarrantyPolicyApply from "@/app/()/services/warranty-policy/components/WarrantyPolicyApply";
-import WarrantyPolicyBanner from "@/app/()/services/warranty-policy/components/WarrantyPolicyBanner";
-import WarrantyPolicyCoverage from "@/app/()/services/warranty-policy/components/WarrantyPolicyCoverage";
-import WarrantyPolicyExtension from "@/app/()/services/warranty-policy/components/WarrantyPolicyExtension";
-import WarrantyPolicyTitle from "@/app/()/services/warranty-policy/components/WarrantyPolicyTitle";
-import {
-  serviceCenterFaqDescriptionLines,
-  serviceCenterFaqItems,
-} from "@/data/services/serviceCenterContent";
-import EngineeringTrainingDetailHero from "@/app/()/services/engineering-training/components/EngineeringTrainingDetailHero";
-import EngineeringTrainingDetailSchedule from "@/app/()/services/engineering-training/components/EngineeringTrainingDetailSchedule";
-import EngineeringTrainingSessionDetail from "@/app/()/services/engineering-training/components/EngineeringTrainingSessionDetail";
-import EngineeringTrainingTitle from "@/app/()/services/engineering-training/components/EngineeringTrainingTitle";
-import RequestForTraining from "@/app/()/services/request-for-training/components/RequestForTraining";
-import RequestForTrainingStep1Form from "@/app/()/services/request-for-training/components/RequestForTrainingStep1Form";
-import RequestForTrainingStep2Form from "@/app/()/services/request-for-training/components/RequestForTrainingStep2Form";
-import RequestForTrainingStep3Form from "@/app/()/services/request-for-training/components/RequestForTrainingStep3Form";
-import RequestForTrainingStep4Form from "@/app/()/services/request-for-training/components/RequestForTrainingStep4Form";
-import RequestForTrainingTitle from "@/app/()/services/request-for-training/components/RequestForTrainingTitle";
-import { requestForTrainingNavCopy, requestForTrainingRoutes } from "@/data/services/requestForTrainingContent";
-import { getEngineeringTrainingDetail } from "@/data/services/engineeringTrainingDetailContent";
-import { getEngineeringTrainingSessionDetail } from "@/data/services/engineeringTrainingSessionDetailContent";
-import SearchAllHero from "@/app/()/search/components/SearchAllHero";
-import SearchAllTabContent from "@/app/()/search/components/SearchAllTabContent";
-import SearchDocumentsPanel from "@/app/()/search/components/SearchDocumentsPanel";
-import SearchMediaPanel from "@/app/()/search/components/SearchMediaPanel";
-import SearchPagesPanel from "@/app/()/search/components/SearchPagesPanel";
-import SearchProductsPanel from "@/app/()/search/components/SearchProductsPanel";
-import { Suspense } from "react";
 import TechHubSearch from "@/app/()/support/tech-hub/components/TechHubSearch";
 import TechHubTitle from "@/app/()/support/tech-hub/components/TechHubTitle";
+import ContactUsBanner from "@/app/()/support/contact-us/components/ContactUsBanner";
 import ContactUsForm from "@/app/()/support/contact-us/components/ContactUsForm";
-import ContactUsModalsHubPage from "@/app/()/support/contact-us/components/ContactUsModalsHubPage";
 import ContactUsTermsModalPreview from "@/app/()/support/contact-us/components/ContactUsTermsModalPreview";
 import ContactUsTitle from "@/app/()/support/contact-us/components/ContactUsTitle";
-import ContactUsViewResponseDetailAnsweredPreview from "@/app/()/support/contact-us/components/ContactUsViewResponseDetailAnsweredPreview";
-import ContactUsViewResponseDetailPendingPreview from "@/app/()/support/contact-us/components/ContactUsViewResponseDetailPendingPreview";
-import ContactUsViewResponseModalErrorPreview from "@/app/()/support/contact-us/components/ContactUsViewResponseModalErrorPreview";
-import ContactUsViewResponseModalPreview from "@/app/()/support/contact-us/components/ContactUsViewResponseModalPreview";
 import TechHubContents from "@/app/()/support/tech-hub/components/TechHubContents";
-import { TechHubFilterProvider } from "@/app/()/support/tech-hub/components/TechHubFilterProvider";
 import TechHubView from "@/app/()/support/tech-hub/components/TechHubView";
-import WhereToBuyBanner from "@/app/()/support/where-to-buy/components/WhereToBuyBanner";
 import WhereToBuyContents from "@/app/()/support/where-to-buy/components/WhereToBuyContents";
-import WhereToBuyControls from "@/app/()/support/where-to-buy/components/WhereToBuyControls";
+import WhereToBuySearch from "@/app/()/support/where-to-buy/components/WhereToBuySearch";
 import WhereToBuyTitle from "@/app/()/support/where-to-buy/components/WhereToBuyTitle";
 import { connectPortalPage } from "@/data/support/connectPortalContent";
 import { getSectionGuideEntry } from "@/data/sectionGuide";
@@ -231,9 +123,6 @@ function block(id: string) {
 export function MainSectionPreviews() {
   return (
     <>
-      <SectionGuideBlock entry={block("main_image_popup")}>
-        <MainImagePopup embedded open />
-      </SectionGuideBlock>
       <SectionGuideBlock entry={block("main_visual")}>
         <MainVisual />
       </SectionGuideBlock>
@@ -261,11 +150,13 @@ export function MarketsSectionPreviews() {
     <>
       <SectionGuideBlock entry={block("markets_hero")}>
         <MarketsHero
-          variant="key-visual"
           subtitle={dataCenterHero.subtitle}
           title={dataCenterHero.title}
           heroImage={dataCenterHero.heroImage}
         />
+      </SectionGuideBlock>
+      <SectionGuideBlock entry={block("markets_stats")}>
+        <MarketsStats items={dataCenterStats} />
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("markets_intro")}>
         <MarketsIntro
@@ -273,48 +164,14 @@ export function MarketsSectionPreviews() {
           text={dataCenterIntro.text}
         />
       </SectionGuideBlock>
-      <SectionGuideBlock entry={block("markets_stats")}>
-        <MarketsStats items={dataCenterStats} />
-      </SectionGuideBlock>
       <SectionGuideBlock entry={block("markets_explore")}>
         <MarketsExplore />
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("markets_references")}>
         <MarketsReferences />
       </SectionGuideBlock>
-      <SectionGuideBlock entry={block("markets_references_modal")}>
-        <MarketsReferencesModalPreview />
-      </SectionGuideBlock>
       <SectionGuideBlock entry={block("markets_benefits")}>
         <MarketsBenefits items={dataCenterBenefits} />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("markets_solutions_panel")}>
-        <MarketsSolutionsPanel {...commercialSolutionsPanel} />
-      </SectionGuideBlock>
-      <SectionGuideBlock
-        entry={{
-          ...block("markets_solutions_panel"),
-          label: "Solutions Panel (grouped · public-infrastructure)",
-        }}
-      >
-        <MarketsSolutionsPanel {...publicInfrastructureSolutionsPanel} />
-      </SectionGuideBlock>
-      <SectionGuideBlock
-        entry={{
-          ...block("markets_solutions_panel"),
-          label: "Solutions Panel (stacked · oil-gas-mining)",
-        }}
-      >
-        <MarketsSolutionsPanel {...oilGasMiningSolutionsPanel} />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("markets_sustainability")}>
-        <MarketsSustainability cards={powerGridSustainabilityCards} />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("markets_smart_grid")}>
-        <MarketsSmartGrid
-          useCases={powerGridSmartGridUseCases}
-          operationItems={powerGridSmartGridOperation}
-        />
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("markets_solutions")}>
         <MarketsSolutions />
@@ -326,21 +183,7 @@ export function MarketsSectionPreviews() {
         />
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("markets_products")}>
-        <MarketsProducts items={dataCenterProducts} badgesType2Only />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("markets_banner_01")}>
-        <CommonBanner01 />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("markets_highlight_news")}>
-        <HighlightNewsSection
-          variant="markets"
-          title="Highlights"
-          items={marketsHighlightNewsItems}
-          sectionId="guide-markets-highlights"
-        />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("markets_faq")}>
-        <MarketsFaq items={dataCenterFaqItems} />
+        <MarketsProducts items={dataCenterProducts} />
       </SectionGuideBlock>
     </>
   );
@@ -375,34 +218,17 @@ export function ProductSectionPreviews() {
       <SectionGuideBlock entry={block("devices_product_hero")}>
         <DevicesProductHero product={metasolMsDetail} />
       </SectionGuideBlock>
+      <SectionGuideBlock entry={block("devices_hvdc_hero")}>
+        <DevicesHvdcHero />
+      </SectionGuideBlock>
+      <SectionGuideBlock entry={block("devices_hvdc_overview")}>
+        <DevicesHvdcOverview />
+      </SectionGuideBlock>
       <SectionGuideBlock entry={block("devices_product_features")}>
-        <DevicesProductFeaturesSection
-          title="Key Features"
-          items={metasolMsDetail.keyFeatures}
-        />
+        <DevicesProductKeyFeatures items={metasolMsDetail.keyFeatures} />
       </SectionGuideBlock>
-      <SectionGuideBlock entry={block("common_banner_02_expert")}>
-        <CommonBanner02
-          variant="expert"
-          linkHref={metasolMsDetail.expertBannerHref}
-          linkExternal={metasolMsDetail.expertBannerExternal}
-          contactEmail={metasolMsDetail.expertContactEmail}
-          backgroundSrc={metasolMsDetail.configuratorBannerBg}
-        />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("devices_product_lineup_type1")}>
-        <DevicesProductLineup
-          table="susol-frame"
-          configuratorHref={susolUlSmartMccbDetail.configuratorHref}
-          configuratorExternal={susolUlSmartMccbDetail.configuratorExternal}
-        />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("devices_product_lineup_type2")}>
-        <DevicesProductLineup
-          table="h100-plus"
-          configuratorHref={h100PlusDetail.configuratorHref}
-          configuratorExternal={h100PlusDetail.configuratorExternal}
-        />
+      <SectionGuideBlock entry={block("devices_product_lineup")}>
+        <DevicesProductLineup items={metasolMsDetail.lineup} />
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("devices_product_downloads")}>
         <DevicesProductDownloads items={metasolMsDetail.downloads} />
@@ -411,22 +237,12 @@ export function ProductSectionPreviews() {
         <DevicesProductVideo youtubeVideoId={metasolMsDetail.youtubeVideoId} />
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("devices_product_other")}>
-        <DevicesProductOtherProducts
-          title={hvdcOtherProductsTitle}
-          items={hvdcOtherProducts}
-        />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("devices_software_hero")}>
-        <DevicesHvdcHero />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("devices_software_overview")}>
-        <DevicesHvdcOverview />
+        <DevicesProductOtherProducts items={metasolMsDetail.otherProducts} />
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("devices_product_benefits")}>
-        <DevicesProductFeaturesSection
-          variant="list"
-          sectionId="product-benefits"
+        <DevicesProductBenefits
           title={hvdcBenefitsSection.title}
+          subtitle={hvdcBenefitsSection.subtitle}
           items={hvdcBenefitsSection.items}
         />
       </SectionGuideBlock>
@@ -443,19 +259,6 @@ export function ProductSectionPreviews() {
           blocks={hvdcWhySection.blocks}
         />
       </SectionGuideBlock>
-      <SectionGuideBlock entry={block("devices_product_why_image_only")}>
-        <DevicesSoftwareHighlights
-          title={smartFactoryWhySection.title}
-          description={smartFactoryWhySection.description}
-          blocks={smartFactoryWhySection.blocks}
-        />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("devices_xems_energy_solutions")}>
-        <DevicesXemsEnergySolutions />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("devices_micro_grid_why")}>
-        <DevicesMicroGridHighlights />
-      </SectionGuideBlock>
     </>
   );
 }
@@ -467,7 +270,10 @@ export function CommonSectionPreviews() {
         <CommonBanner01 />
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("common_banner_02")}>
-        <CommonBanner02 linkHref="#configurator" />
+        <CommonBanner02
+          linkHref={metasolMsDetail.configuratorHref}
+          backgroundSrc={metasolMsDetail.configuratorBannerBg}
+        />
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("common_banner_03")}>
         <CommonBanner03Link
@@ -476,40 +282,17 @@ export function CommonSectionPreviews() {
               title: "Contact Us",
               description:
                 "Connect with our experts to find the right solution for your business.",
-              href: "/support/contact-us",
             },
             {
               title: "Where to buy",
               description:
                 "Find authorized retailers and partners to purchase our products.",
-              href: "/support/where-to-buy",
             },
           ]}
         />
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("common_banner_04")}>
         <CommonBanner04 />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("common_404_title")}>
-        <NotFoundTitle />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("common_404_search")}>
-        <NotFoundSearch />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("common_404_links")}>
-        <NotFoundHelpfulLinks />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("common_privacy_policy_title")}>
-        <PrivacyPolicyTitle />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("common_privacy_policy")}>
-        <PrivacyPolicyBody />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("cookie_settings_modal")}>
-        <CookieSettingsModal open embedded />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("cookie_preferences_modal")}>
-        <CookiePreferencesModal open embedded />
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("common_faq")}>
         <CommonFaq items={faqItems.slice(0, 3)} defaultOpenIndex={0} />
@@ -532,7 +315,7 @@ const guideBlogFeatured = {
   description:
     "Power interruptions drain an estimated $150 billion annually from the U.S. economy, and many of these costly losses start with a fault that lasts less than a second.",
   date: "Jan 23, 2026",
-  image: "/pub/img/company/blog/hero_01.png",
+  image: "/img/company/blog/hero_01.png",
   tags: ["#MCCB", "#Switches", "#Panel Control"],
 };
 
@@ -541,141 +324,10 @@ const guidePressFeatured = {
   description:
     "Stated at the annual general meeting of shareholders held on the 26th at LS Tower in Anyang.",
   date: "Apr 20, 2026",
-  image: "/pub/img/company/press/hero.png",
+  image: "/img/company/press/hero.png",
 };
 
-const companyAmericaPreviewBlocks: Array<{
-  entryId: string;
-  section: AmericaPreviewSection;
-}> = [
-  { entryId: "company_america_title", section: "title" },
-  { entryId: "company_america_intro", section: "intro" },
-  { entryId: "company_america_shaping", section: "shaping" },
-  { entryId: "company_america_business", section: "business" },
-  { entryId: "company_america_careers_banner", section: "careers-banner" },
-  { entryId: "company_america_operate", section: "operate" },
-  { entryId: "company_america_leaders", section: "leaders" },
-  { entryId: "company_america_mission", section: "mission" },
-  { entryId: "company_america_follow", section: "follow" },
-];
-
-export function CompanyAmericaSectionPreviews() {
-  return (
-    <>
-      {companyAmericaPreviewBlocks.map(({ entryId, section }) => (
-        <SectionGuideBlock key={entryId} entry={block(entryId)}>
-          {section === "careers-banner" ? (
-            <CommonBanner04
-              title={americaCareersBanner.title}
-              description={americaCareersBanner.description}
-              linkHref={americaCareersBanner.ctaHref}
-              linkLabel={americaCareersBanner.ctaLabel}
-              backgroundSrc={americaCareersBanner.bgImage}
-              backgroundSrcMo={americaCareersBanner.bgImageMo}
-            />
-          ) : (
-            <CompanyAmericaPage previewSection={section} />
-          )}
-        </SectionGuideBlock>
-      ))}
-    </>
-  );
-}
-
-const companyLsElectricPreviewBlocks: Array<{
-  entryId: string;
-  section: LsElectricPreviewSection;
-}> = [
-  { entryId: "company_ls_electric_title", section: "title" },
-  { entryId: "company_ls_electric_intro", section: "intro" },
-  { entryId: "company_ls_electric_highlights", section: "highlights" },
-  { entryId: "company_ls_electric_business", section: "business" },
-  { entryId: "company_ls_electric_global", section: "global" },
-  { entryId: "company_ls_electric_ptt", section: "ptt" },
-  { entryId: "company_ls_electric_rnd", section: "rnd" },
-  { entryId: "company_ls_electric_history", section: "history" },
-  { entryId: "company_ls_electric_mission", section: "mission" },
-];
-
-export function CompanyLsElectricSectionPreviews() {
-  return (
-    <>
-      {companyLsElectricPreviewBlocks.map(({ entryId, section }) => (
-        <SectionGuideBlock key={entryId} entry={block(entryId)}>
-          <CompanyLsElectricPage previewSection={section} />
-        </SectionGuideBlock>
-      ))}
-    </>
-  );
-}
-
-const companyAffiliatePreviewBlocks: {
-  entryId: string;
-  section: AffiliateAmericaPreviewSection;
-}[] = [
-  { entryId: "company_affiliate_title", section: "title" },
-  { entryId: "company_affiliate_intro", section: "intro" },
-  { entryId: "company_affiliate_list", section: "list" },
-];
-
-export function CompanyAffiliateAmericaSectionPreviews() {
-  return (
-    <>
-      {companyAffiliatePreviewBlocks.map(({ entryId, section }) => (
-        <SectionGuideBlock key={entryId} entry={block(entryId)}>
-          <CompanyAffiliateAmericaPage previewSection={section} />
-        </SectionGuideBlock>
-      ))}
-    </>
-  );
-}
-
-const companyEsgPreviewBlocks: {
-  entryId: string;
-  section: EsgPreviewSection;
-}[] = [
-  { entryId: "company_esg_title", section: "title" },
-  { entryId: "company_esg_intro", section: "intro" },
-  { entryId: "company_esg_vision", section: "vision" },
-  { entryId: "company_esg_climate", section: "climate" },
-  { entryId: "company_esg_policies", section: "policies" },
-];
-
-export function CompanyEsgSectionPreviews() {
-  return (
-    <>
-      {companyEsgPreviewBlocks.map(({ entryId, section }) => (
-        <SectionGuideBlock key={entryId} entry={block(entryId)}>
-          <CompanyEsgPage previewSection={section} />
-        </SectionGuideBlock>
-      ))}
-    </>
-  );
-}
-
-const companyCareersPreviewBlocks: {
-  entryId: string;
-  section: CareersPreviewSection;
-}[] = [
-  { entryId: "company_careers_title", section: "title" },
-  { entryId: "company_careers_jobs", section: "jobs" },
-  { entryId: "company_careers_linkedin", section: "linkedin" },
-];
-
-export function CompanyCareersSectionPreviews() {
-  return (
-    <>
-      {companyCareersPreviewBlocks.map(({ entryId, section }) => (
-        <SectionGuideBlock key={entryId} entry={block(entryId)}>
-          <CompanyCareersPage previewSection={section} />
-        </SectionGuideBlock>
-      ))}
-    </>
-  );
-}
-
 export function CompanyBlogSectionPreviews() {
-
   return (
     <>
       <SectionGuideBlock entry={block("company_blog_title")}>
@@ -691,25 +343,23 @@ export function CompanyBlogSectionPreviews() {
       <SectionGuideBlock entry={block("company_blog_top")}>
         <section className="company-blog-top">
           <img
-            src="/pub/img/company/blog/hero_bg_blog.png"
+            src="/img/company/blog/hero_bg_blog.png"
             alt=""
             className="company-blog-top__bg"
           />
           <div className="inner">
             <div className="company-blog-featured__card">
-              <Link href="/company/blog/detail" className="company-blog-featured__image">
+              <div className="company-blog-featured__image">
                 <img src={guideBlogFeatured.image} alt={guideBlogFeatured.title} />
-              </Link>
+              </div>
               <div className="company-blog-featured__content">
-                <Link href="/company/blog/detail" className="company-blog-featured__text">
-                  <p className="company-blog-featured__category">{guideBlogFeatured.category}</p>
-                  <h2 className="company-blog-featured__title">{guideBlogFeatured.title}</h2>
-                  <p className="company-blog-featured__desc">{guideBlogFeatured.description}</p>
-                  <p className="company-blog-featured__date">{guideBlogFeatured.date}</p>
-                </Link>
+                <p className="company-blog-featured__category">{guideBlogFeatured.category}</p>
+                <h2 className="company-blog-featured__title">{guideBlogFeatured.title}</h2>
+                <p className="company-blog-featured__desc">{guideBlogFeatured.description}</p>
+                <p className="company-blog-featured__date">{guideBlogFeatured.date}</p>
                 <div className="company-blog-featured__tags">
                   {guideBlogFeatured.tags.map((tag) => (
-                    <a key={tag} href="#" className="company-blog-featured__tag">
+                    <a key={tag} href="/company/blog/detail" className="company-blog-featured__tag">
                       {tag}
                     </a>
                   ))}
@@ -727,39 +377,18 @@ export function CompanyBlogSectionPreviews() {
                 <div className="company-blog-list__content-wrap">
                   <div className="company-blog-list__link">
                     <div className="company-blog-list__image">
-                      <img src="/pub/img/company/blog/list_01.jpg" alt="" />
+                      <img src="/img/company/blog/list_01.jpg" alt="" />
                     </div>
                     <div className="company-blog-list__content">
-                      <Link href="/company/blog/detail" className="company-blog-list__content-link">
-                        <p className="company-blog__category">{guideBlogFeatured.category}</p>
-                        <h3 className="company-blog-list__title">{guideBlogFeatured.title}</h3>
-                        <p className="company-blog-list__desc">{guideBlogFeatured.description}</p>
-                        <p className="company-blog__date">{guideBlogFeatured.date}</p>
-                      </Link>
-                      <div className="company-blog-list__tags-row">
-                        <div className="company-blog__tags">
-                          {guideBlogFeatured.tags.map((tag) => (
-                            <a key={tag} href="#" className="company-blog__tag">
-                              {tag}
-                            </a>
-                          ))}
-                        </div>
-                      </div>
+                      <p className="company-blog__category">{guideBlogFeatured.category}</p>
+                      <h3 className="company-blog-list__title">{guideBlogFeatured.title}</h3>
+                      <p className="company-blog-list__desc">{guideBlogFeatured.description}</p>
+                      <p className="company-blog__date">{guideBlogFeatured.date}</p>
                     </div>
                   </div>
                 </div>
               </li>
             </ul>
-          </div>
-        </section>
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("company_blog_empty")}>
-        <section className="company-blog-list company-blog-list--no-data">
-          <div className="inner">
-            <div className="company-blog-list__body">
-              <CompanyBlogEmpty />
-            </div>
-            <div className="company-blog-list__divider" aria-hidden="true" />
           </div>
         </section>
       </SectionGuideBlock>
@@ -792,23 +421,21 @@ export function CompanyArticleDetailSectionPreviews() {
               ))}
             </ul>
           </div>
-          <div className={articleDetailClass("tags")}>
-            <div className="company-blog__tags">
-              {blogDetailTags.map((tag) => (
-                <div key={tag} className="company-blog__tag">
-                  {tag}
-                </div>
-              ))}
-            </div>
-          </div>
         </CompanyArticleDetail>
         <CompanyArticleDetail
           embedded
           variant="press"
           pageId="guide_company_press_detail"
-          title={pressDetailTitle}
-          date={pressDetailDate}
+          title="LS ELECTRIC Showcases Capabilities in Energy Highway Business"
+          date="Dec 9, 2025"
           heroImage={pressDetailHero}
+          afterHero={
+            <DevicesProductVideoPlayer
+              youtubeVideoId={pressDetailYoutube.videoId}
+              title={pressDetailYoutube.title}
+              poster={pressDetailYoutube.poster}
+            />
+          }
           pagerAriaLabel="Press post navigation"
           prev={pressDetailPager.prev}
           next={pressDetailPager.next}
@@ -820,9 +447,7 @@ export function CompanyArticleDetailSectionPreviews() {
                 <li key={item}>{item}</li>
               ))}
             </ul>
-            {pressDetailParagraphs.slice(0, 2).map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
+            <p>{pressDetailParagraphs[0]}</p>
           </div>
         </CompanyArticleDetail>
         <CompanyArticleDetail
@@ -843,44 +468,6 @@ export function CompanyArticleDetailSectionPreviews() {
                 <li key={item}>{item}</li>
               ))}
             </ul>
-          </div>
-        </CompanyArticleDetail>
-        <CompanyArticleDetail
-          embedded
-          variant="media"
-          pageId="guide_company_articles_detail"
-          title="LS ELECTRIC to shake up the industry in the era of a Supercycle"
-          date="Dec 9, 2025"
-          heroImage={mediaArticleDetailHero}
-          pagerAriaLabel="Media article navigation"
-          prev={mediaArticleDetailPager.prev}
-          next={mediaArticleDetailPager.next}
-          listHref="/company/articles"
-        >
-          <div className={articleDetailClass("body")}>
-            <p>{mediaArticleDetailParagraphs[0]}</p>
-            <p className={articleDetailClass("body-title")}>{mediaArticleDetailParagraphs[1]}</p>
-            <p>{mediaArticleDetailParagraphs[2]}</p>
-            <ul className={articleDetailClass("list")}>
-              {mediaArticleDetailBullets.slice(0, 2).map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-          <img
-            src={mediaArticleDetailContentImage.src}
-            alt={mediaArticleDetailContentImage.alt}
-            className={articleDetailClass("content-img")}
-          />
-          <p className={articleDetailClass("tail-text")}>{mediaArticleDetailTailParagraphs[0]}</p>
-          <div className={articleDetailClass("tags")}>
-            <div className="company-blog__tags">
-              {mediaArticleDetailTags.slice(0, 3).map((tag) => (
-                <div key={tag} className="company-blog__tag">
-                  {tag}
-                </div>
-              ))}
-            </div>
           </div>
         </CompanyArticleDetail>
       </div>
@@ -932,7 +519,7 @@ export function CompanyPressSectionPreviews() {
               id: "guide-press-01",
               title: pressFeatured.title,
               date: pressFeatured.date,
-              image: "/pub/img/company/press/list_01.png",
+              image: "/img/company/press/list_01.png",
             },
           ]}
           totalPages={1}
@@ -980,184 +567,6 @@ export function SupportConnectSectionPreviews() {
   );
 }
 
-export function ServicesServiceCenterSectionPreviews() {
-  return (
-    <>
-      <SectionGuideBlock entry={block("support_service_center_title")}>
-        <ServiceCenterTitle />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_service_cards")}>
-        <ServiceCenterCards />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_service_banner")}>
-        <ServiceCenterBanner />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_service_offering")}>
-        <ServiceCenterOffering />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_service_flow")}>
-        <ServiceCenterFlow />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_service_gics")}>
-        <ServiceCenterGics />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_service_center_faq")}>
-        <CommonFaq
-          sectionId="service-center-faq"
-          description={
-            <>
-              {serviceCenterFaqDescriptionLines[0]}
-              <br />
-              {serviceCenterFaqDescriptionLines[1]}
-            </>
-          }
-          items={serviceCenterFaqItems}
-          defaultOpenIndex={-1}
-        />
-      </SectionGuideBlock>
-    </>
-  );
-}
-
-export function ServicesWarrantyPolicySectionPreviews() {
-  return (
-    <>
-      <SectionGuideBlock entry={block("support_service_warranty_title")}>
-        <WarrantyPolicyTitle />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_service_warranty_coverage")}>
-        <WarrantyPolicyCoverage />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_service_warranty_banner")}>
-        <WarrantyPolicyBanner />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_service_warranty_extension")}>
-        <WarrantyPolicyExtension />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_service_warranty_apply")}>
-        <WarrantyPolicyApply />
-      </SectionGuideBlock>
-    </>
-  );
-}
-
-export function ServicesEngineeringTrainingSectionPreviews() {
-  return (
-    <>
-      <SectionGuideBlock entry={block("support_service_training_title")}>
-        <EngineeringTrainingTitle />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_service_training_curriculum")}>
-        <EngineeringTrainingCurriculum />
-      </SectionGuideBlock>
-    </>
-  );
-}
-
-export function ServicesServiceTrainingSectionPreviews() {
-  return (
-    <>
-      <SectionGuideBlock entry={block("support_service_training_title_service")}>
-        <ServiceTrainingTitle />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_service_training_curriculum_service")}>
-        <ServiceTrainingCurriculum />
-      </SectionGuideBlock>
-    </>
-  );
-}
-
-export function ServicesSalesTrainingSectionPreviews() {
-  return (
-    <>
-      <SectionGuideBlock entry={block("support_service_training_title_sales")}>
-        <SalesTrainingTitle />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_service_training_curriculum_sales")}>
-        <SalesTrainingCurriculum />
-      </SectionGuideBlock>
-    </>
-  );
-}
-
-const engineeringTrainingDetailPreview = getEngineeringTrainingDetail("breaker-training");
-const engineeringTrainingSessionPreview = getEngineeringTrainingSessionDetail(
-  "breaker-training",
-  "jul-14-2026",
-);
-
-export function ServicesEngineeringTrainingDetailSectionPreviews() {
-  if (!engineeringTrainingDetailPreview) {
-    return null;
-  }
-
-  return (
-    <>
-      <SectionGuideBlock entry={block("support_service_training_detail_hero")}>
-        <EngineeringTrainingDetailHero detail={engineeringTrainingDetailPreview} />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_service_training_detail_schedule")}>
-        <EngineeringTrainingDetailSchedule detail={engineeringTrainingDetailPreview} />
-      </SectionGuideBlock>
-    </>
-  );
-}
-
-export function ServicesEngineeringTrainingSessionSectionPreviews() {
-  if (!engineeringTrainingSessionPreview) {
-    return null;
-  }
-
-  return (
-    <SectionGuideBlock entry={block("support_service_training_session_detail")}>
-      <EngineeringTrainingSessionDetail session={engineeringTrainingSessionPreview} />
-    </SectionGuideBlock>
-  );
-}
-
-export function ServicesRequestForTrainingSectionPreviews() {
-  return (
-    <>
-      <SectionGuideBlock entry={block("support_service_training_request_title")}>
-        <RequestForTrainingTitle />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_service_training_request")}>
-        <RequestForTraining currentStep={1} nextHref={requestForTrainingRoutes.step2}>
-          <RequestForTrainingStep1Form />
-        </RequestForTraining>
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_service_training_request_step_02")}>
-        <RequestForTraining currentStep={2} previousHref={requestForTrainingRoutes.step1} nextHref={requestForTrainingRoutes.step3}>
-          <RequestForTrainingStep2Form />
-        </RequestForTraining>
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_service_training_request_step_03")}>
-        <RequestForTraining currentStep={3} previousHref={requestForTrainingRoutes.step2} nextHref={requestForTrainingRoutes.step4}>
-          <RequestForTrainingStep3Form />
-        </RequestForTraining>
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_service_training_request_step_04")}>
-        <RequestForTraining
-          currentStep={4}
-          previousHref={requestForTrainingRoutes.step3}
-          submitLabel={requestForTrainingNavCopy.submitLabel}
-        >
-          <RequestForTrainingStep4Form variant="power" />
-        </RequestForTraining>
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_service_training_request_step_04_type_01")}>
-        <RequestForTraining
-          currentStep={4}
-          previousHref={requestForTrainingRoutes.step3}
-          submitLabel={requestForTrainingNavCopy.submitLabel}
-        >
-          <RequestForTrainingStep4Form variant="automation" />
-        </RequestForTraining>
-      </SectionGuideBlock>
-    </>
-  );
-}
-
 export function SupportDownloadSectionPreviews() {
   return (
     <SectionGuideBlock entry={block("support_download_search")}>
@@ -1168,7 +577,7 @@ export function SupportDownloadSectionPreviews() {
 
 export function SupportTechHubSectionPreviews() {
   return (
-    <TechHubFilterProvider>
+    <>
       <SectionGuideBlock entry={block("support_tech_hub_title")}>
         <TechHubTitle />
       </SectionGuideBlock>
@@ -1178,7 +587,7 @@ export function SupportTechHubSectionPreviews() {
       <SectionGuideBlock entry={block("support_tech_hub_contents")}>
         <TechHubContents />
       </SectionGuideBlock>
-    </TechHubFilterProvider>
+    </>
   );
 }
 
@@ -1188,26 +597,14 @@ export function SupportContactUsSectionPreviews() {
       <SectionGuideBlock entry={block("support_contact_title")}>
         <ContactUsTitle />
       </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_contact_view_response_modal")}>
-        <ContactUsViewResponseModalPreview />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_contact_view_response_modal_error")}>
-        <ContactUsViewResponseModalErrorPreview />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_contact_view_response_detail_modal")}>
-        <ContactUsViewResponseDetailAnsweredPreview />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_contact_view_response_detail_modal_pending")}>
-        <ContactUsViewResponseDetailPendingPreview />
+      <SectionGuideBlock entry={block("support_contact_banner")}>
+        <ContactUsBanner />
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("support_contact_form")}>
         <ContactUsForm />
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("support_contact_terms_modal")}>
         <ContactUsTermsModalPreview />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_contact_modals_hub")}>
-        <ContactUsModalsHubPage />
       </SectionGuideBlock>
     </>
   );
@@ -1220,15 +617,10 @@ export function SupportWhereToBuySectionPreviews() {
         <WhereToBuyTitle />
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("support_where_to_buy_search")}>
-        <section className="support_where_to_buy_contents">
-          <WhereToBuyControls />
-        </section>
+        <WhereToBuySearch />
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("support_where_to_buy_contents")}>
         <WhereToBuyContents />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("support_where_to_buy_banner")}>
-        <WhereToBuyBanner />
       </SectionGuideBlock>
     </>
   );
@@ -1239,33 +631,6 @@ export function SupportTechHubViewSectionPreviews() {
     <SectionGuideBlock entry={block("support_tech_hub_view")}>
       <TechHubView />
     </SectionGuideBlock>
-  );
-}
-
-export function SearchSectionPreviews() {
-  return (
-    <>
-      <SectionGuideBlock entry={block("search_all_hero")}>
-        <Suspense fallback={null}>
-          <SearchAllHero />
-        </Suspense>
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("search_all")}>
-        <SearchAllTabContent />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("search_products")}>
-        <SearchProductsPanel />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("search_documents")}>
-        <SearchDocumentsPanel />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("search_media")}>
-        <SearchMediaPanel />
-      </SectionGuideBlock>
-      <SectionGuideBlock entry={block("search_pages")}>
-        <SearchPagesPanel />
-      </SectionGuideBlock>
-    </>
   );
 }
 

@@ -1,3 +1,4 @@
+import { careersMegaMenu } from "@/data/gnb/mega/careers";
 import { companyMegaMenu } from "@/data/gnb/mega/company";
 import { devicesMegaMenu } from "@/data/gnb/mega/devices";
 import { marketsMegaMenu } from "@/data/gnb/mega/markets";
@@ -8,8 +9,8 @@ import type { GnbNavItem } from "@/data/gnb/types";
 export const gnbNavItems: GnbNavItem[] = [
   {
     id: "devices",
-    label: "Products & Systems",
-    href: "/products-systems/motor-control",
+    label: "Devices & Systems",
+    href: "/devices-systems/motor-control",
     megaMenu: devicesMegaMenu,
   },
   {
@@ -29,6 +30,12 @@ export const gnbNavItems: GnbNavItem[] = [
     label: "Support",
     href: "",
     megaMenu: supportMegaMenu,
+  },
+  {
+    id: "careers",
+    label: "Careers",
+    href: "",
+    megaMenu: careersMegaMenu,
   },
   {
     id: "company",

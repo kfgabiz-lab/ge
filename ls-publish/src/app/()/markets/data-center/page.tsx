@@ -15,7 +15,6 @@ import {
   dataCenterHero,
   dataCenterIntro,
   dataCenterProducts,
-  dataCenterReferences,
   dataCenterStats,
   dataCenterWhyDescription,
   dataCenterWhyItems,
@@ -27,7 +26,6 @@ export default function MarketsDataCenterPage() {
   return (
     <main className="markets-page markets-page--data-center" id="Page_markets_data_center">
       <MarketsHero
-        variant="key-visual"
         subtitle={dataCenterHero.subtitle}
         title={dataCenterHero.title}
         heroImage={dataCenterHero.heroImage}
@@ -37,11 +35,11 @@ export default function MarketsDataCenterPage() {
         text={dataCenterIntro.text}
       />
       <MarketsStats items={dataCenterStats} />
-      <MarketsReferences items={dataCenterReferences} />
+      <MarketsReferences />
       <MarketsBenefits items={dataCenterBenefits} />
       <MarketsSolutions />
       <MarketsWhy items={dataCenterWhyItems} description={dataCenterWhyDescription} />
-      <MarketsProducts items={dataCenterProducts} badgesType2Only />
+      <MarketsProducts items={dataCenterProducts} />
       <CommonBanner01 />
       <HighlightNewsSection
         variant="markets"

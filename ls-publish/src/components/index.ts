@@ -26,16 +26,9 @@ export { default as BtnFlat } from "./ui/BtnFlat";
 export { default as BtnArrow } from "./ui/BtnArrow";
 export { default as FaqItem } from "./ui/FaqItem";
 export { default as HighlightNewsSection } from "./content/HighlightNewsSection";
-export { default as DevicesProductFeaturesSection } from "./content/DevicesProductFeaturesSection";
 export type {
   HighlightNewsSectionProps,
 } from "./content/HighlightNewsSection";
-export type {
-  DevicesProductFeatureDescItem,
-  DevicesProductFeatureItem,
-  DevicesProductFeatureListItem,
-  DevicesProductFeaturesSectionProps,
-} from "./content/DevicesProductFeaturesSection";
 export type {
   HighlightNewsItem,
   HighlightNewsVariant,

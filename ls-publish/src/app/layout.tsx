@@ -1,30 +1,16 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 
 import HistoryReloadOnNavigate from "@/components/layout/HistoryReloadOnNavigate";
-import LenisScrollProvider from "@/components/layout/LenisScrollProvider";
-import ScrollToTopButton from "@/components/layout/ScrollToTopButton";
 import ScrollToTopOnNavigate from "@/components/layout/ScrollToTopOnNavigate";
 import "../assets/css/reset.css";
 import "../assets/css/fonts.css";
 import "../assets/css/globals.css";
 import "../assets/css/components/product-award-badge.css";
 
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-};
-
 export const metadata: Metadata = {
   title: "LS ELECTRIC | Smart Energy Global Leader",
   description:
     "LS ELECTRIC is starting a new chapter to bring smart energy to light everywhere around the world. We deliver safe, clean energy and innovative solutions for a sustainable future.",
-  // iOS Safari auto-links / inflates number-like table text
-  formatDetection: {
-    telephone: false,
-    date: false,
-    address: false,
-    email: false,
-  },
   openGraph: {
     title: "LS ELECTRIC | Smart Energy Global Leader",
     description:
@@ -60,12 +46,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <LenisScrollProvider>
-          {children}
-          <HistoryReloadOnNavigate />
-          <ScrollToTopOnNavigate />
-          <ScrollToTopButton />
-        </LenisScrollProvider>
+        {children}
+        <HistoryReloadOnNavigate />
+        <ScrollToTopOnNavigate />
       </body>
     </html>
   );

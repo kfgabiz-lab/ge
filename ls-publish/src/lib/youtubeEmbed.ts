@@ -5,22 +5,23 @@ const YOUTUBE_EMBED_ORIGINS = [
 
 export function getYoutubeEmbedSrc(
   videoId: string,
-  options?: { autoplay?: boolean; origin?: string },
+  options?: { autoplay?: boolean },
 ) {
   const params = new URLSearchParams({
     autoplay: options?.autoplay ? "1" : "0",
-    controls: "1",
+    mute: "1",
+    controls: "0",
+    disablekb: "1",
+    fs: "0",
+    iv_load_policy: "3",
+    modestbranding: "1",
     playsinline: "1",
     rel: "0",
     enablejsapi: "1",
   });
 
-  if (options?.autoplay) {
-    params.set("mute", "1");
-  }
-
-  if (options?.origin) {
-    params.set("origin", options.origin);
+  if (typeof window !== "undefined") {
+    params.set("origin", window.location.origin);
   }
 
   return `https://www.youtube-nocookie.com/embed/${videoId}?${params.toString()}`;
@@ -128,5 +129,3 @@ export function parseYoutubeMessage(data: unknown) {
 }
 
 export const YOUTUBE_PLAYER_ENDED = 0;
-export const YOUTUBE_PLAYER_PLAYING = 1;
-export const YOUTUBE_PLAYER_PAUSED = 2;

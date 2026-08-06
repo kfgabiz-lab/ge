@@ -6,15 +6,10 @@ import {
   MenuItem,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
 import { GuideSelectIcon } from "@/components/form/GuideFieldIcons";
-import { guideSearchFieldMobileSlotProps } from "@/components/form/guideFieldMobileProps";
 import GuideSelect from "@/components/form/GuideSelect";
 
 export default function CompanyPressListToolbar() {
-  const [query, setQuery] = useState("");
-  const hasQuery = query.length > 0;
-
   return (
     <div className="company-press-list__toolbar">
       <FormControl className="guide_field guide_field--w200">
@@ -61,37 +56,13 @@ export default function CompanyPressListToolbar() {
       </FormControl>
 
       <TextField
-        className={`guide_field guide_field--search${
-          hasQuery ? " guide_field--search-filled" : ""
-        }`}
+        className="guide_field guide_field--search"
         placeholder="Search"
         aria-label="Search press"
-        value={query}
-        onChange={(event) => setQuery(event.target.value)}
         slotProps={{
-          ...guideSearchFieldMobileSlotProps,
           input: {
             endAdornment: (
               <InputAdornment position="end" className="guide_field__search-adorn">
-                {hasQuery ? (
-                  <button
-                    type="button"
-                    className="guide_field__search-clear"
-                    aria-label="Clear search"
-                    onClick={() => setQuery("")}
-                  >
-                    <span className="guide_field__search-clear-icon" aria-hidden>
-                      <img
-                        loading="lazy"
-                        decoding="async"
-                        src="/pub/ico/ico_clear_12_black.svg"
-                        alt=""
-                        width={10}
-                        height={10}
-                      />
-                    </span>
-                  </button>
-                ) : null}
                 <button
                   type="button"
                   className="guide_field__search-icon-button"
@@ -100,7 +71,7 @@ export default function CompanyPressListToolbar() {
                   <img
                     loading="lazy"
                     decoding="async"
-                    src="/pub/ico/ico_search_24.svg"
+                    src="/ico/ico_search_24.svg"
                     alt=""
                     width={18}
                     height={18}

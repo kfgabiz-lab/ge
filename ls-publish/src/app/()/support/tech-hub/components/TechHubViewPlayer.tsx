@@ -5,15 +5,22 @@ import DevicesProductVideoPlayer from "@/components/video/DevicesProductVideoPla
 type TechHubViewPlayerProps = {
   youtubeVideoId: string;
   title: string;
+  poster: string;
 };
 
 export default function TechHubViewPlayer({
   youtubeVideoId,
   title,
+  poster,
 }: TechHubViewPlayerProps) {
   return (
     <div className="support_tech_hub_view__player">
-      <DevicesProductVideoPlayer youtubeVideoId={youtubeVideoId} title={title} />
+      <DevicesProductVideoPlayer
+        youtubeVideoId={youtubeVideoId}
+        title={title}
+        poster={poster}
+        autoplayInView
+      />
     </div>
   );
 }

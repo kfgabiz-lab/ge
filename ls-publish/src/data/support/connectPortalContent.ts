@@ -1,4 +1,4 @@
-export const CONNECT_PORTAL_EXTERNAL_URL = "https://connect.ls-electric.com/";
+export const CONNECT_PORTAL_EXTERNAL_URL = "#";
 
 export const connectPortalPage = {
   title: "Connect Portal",
@@ -6,11 +6,10 @@ export const connectPortalPage = {
     "An all-in-one eSales platform for product discovery, ordering, shipping, and customer inquiries.",
   video: {
     /** Figma 3670:31186 — LS ELECTRIC MCCB Line Introduction (ENG) */
-    youtubeVideoId: "73F6r_x5J2Y",
-    poster: "/pub/img/support/connect-portal/hero-video.jpg",
+    youtubeVideoId: "WtQN9rcdI-0",
+    poster: "/img/support/connect-portal/hero-video.jpg",
     title: "Connect Portal — Main Page Overview",
     headingLines: ["Your next order", "starts here."],
-    mobileHeadingLine: "Your next order starts here.",
     text: "Connect Portal is available to all LS ELECTRIC America customers. Search products, place orders, track shipments, and manage quotes — all from one place.",
     ctaLabel: "Go to Connect Portal",
     ctaHref: CONNECT_PORTAL_EXTERNAL_URL,
@@ -21,40 +20,32 @@ export const connectPortalPage = {
       "procurement team needs",
       "all in one streamlined portal.",
     ],
-    mobileTitleLines: [
-      "Everything your",
-      "procurement team needs all in one streamlined portal.",
-    ],
     text: "Connect Portal simplifies your purchasing experience with easy access to product search, online ordering, shipment tracking, and project quote management - all from one convenient platform",
-  },
-  featuresBg: {
-    pc: "/pub/img/support/connect-portal/bg_section_support.jpg",
-    mobile: "/pub/img/main/bg_section_main_info_mo.png",
   },
   featureCards: [
     {
       id: "online-ordering",
       title: "Online Ordering",
       description: "Place purchase orders 24/7",
-      icon: "/pub/img/support/connect-portal/icon-online-ordering.svg",
+      icon: "/img/support/connect-portal/icon-online-ordering.png",
     },
     {
       id: "project-quotation",
       title: "Project Quotation",
       description: "RFQ submission, tracking & communication",
-      icon: "/pub/img/support/connect-portal/icon-project-quote.svg",
+      icon: "/img/support/connect-portal/icon-project-quote.png",
     },
     {
       id: "unified-search",
       title: "Unified Search",
       description: "Products, docs & info — all in one place",
-      icon: "/pub/img/support/connect-portal/icon-unified-search.svg",
+      icon: "/img/support/connect-portal/icon-unified-search.png",
     },
     {
       id: "order-tracking",
       title: "Order Tracking",
       description: "View orders, status & delivery dates instantly",
-      icon: "/pub/img/support/connect-portal/icon-order-tracking.svg",
+      icon: "/img/support/connect-portal/icon-order-tracking.png",
     },
   ],
   detailSections: [
@@ -71,7 +62,7 @@ export const connectPortalPage = {
         "Unified keyword search across products and documents",
         "Spec-based product configurator — view item codes & pricing instantly",
       ],
-      image: "/pub/img/support/connect-portal/detail-search.webp",
+      image: "/img/support/connect-portal/detail-search.png",
       imageAlt: "Global search interface in Connect Portal",
       reverse: false,
     },
@@ -87,7 +78,7 @@ export const connectPortalPage = {
         "Submit purchase orders directly through the portal",
         "Shipping confirmation and carrier tracking number accessible in the portal",
       ],
-      image: "/pub/img/support/connect-portal/detail-order-flow.webp",
+      image: "/img/support/connect-portal/detail-order-flow.png",
       imageAlt: "Order status flow in Connect Portal",
       reverse: true,
     },
@@ -100,7 +91,7 @@ export const connectPortalPage = {
         "Submit RFQs with project details, specifications, and supporting file attachments",
         "Track RFQ progress in real time — from submission to quote complete",
       ],
-      image: "/pub/img/support/connect-portal/detail-quotes.webp",
+      image: "/img/support/connect-portal/detail-quotes.png",
       imageAlt: "Project quote management in Connect Portal",
       reverse: false,
     },

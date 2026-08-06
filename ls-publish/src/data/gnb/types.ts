@@ -9,21 +9,16 @@ export type GnbMegaProduct = {
 export type GnbMegaDepth3 = {
   id: string;
   label: string;
-  /** depth4 패널 타이틀 (product 없는 링크 전용 항목은 생략) */
-  panelTitle?: string;
-  /** depth4 설명 (product 없는 링크 전용 항목은 생략) */
-  description?: string;
+  panelTitle: string;
+  description: string[];
   href: string;
   products?: GnbMegaProduct[];
-  /** 단일 제품 또는 제품 목록 (gnb_product 데이터 호환) */
-  product?: GnbMegaProduct | GnbMegaProduct[];
+  product?: GnbMegaProduct;
 };
 
 export type GnbMegaDepth2 = {
   id: string;
   label: string;
-  /** depth2-btn 클릭 시 이동 경로 (미지정 시 첫 depth3 href) */
-  href?: string;
   children: GnbMegaDepth3[];
 };
 
@@ -32,13 +27,8 @@ export type GnbSimpleMegaItem = {
   title: string;
   description?: string;
   descriptionLines?: string[];
-  href?: string;
+  href: string;
   external?: boolean;
-  /** 모바일 depth2 외부 링크 아이콘 (미지정 시 external과 동일) */
-  externalIcon?: boolean;
-  /** 모바일 depth2에서 설명 숨김 */
-  hideMobileDescription?: boolean;
-  disabled?: boolean;
 };
 
 export type GnbSimpleMegaSection = {

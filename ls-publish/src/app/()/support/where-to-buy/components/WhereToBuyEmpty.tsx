@@ -8,7 +8,7 @@ export default function WhereToBuyEmpty() {
     <div className="support_where_to_buy_empty">
       <div className="support_where_to_buy_empty__head">
         <div className="support_where_to_buy_empty__icon" aria-hidden>
-          <img src={iconSrc} alt="" width={110} height={110} />
+          <img src={iconSrc} alt="" width={148} height={148} />
         </div>
         <p className="support_where_to_buy_empty__title">{title}</p>
       </div>

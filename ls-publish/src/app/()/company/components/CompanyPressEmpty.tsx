@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { emptyStateIconSrc } from "@/data/commonAssets";
 
 type CompanyPressEmptyProps = {
   viewAllHref?: string;
@@ -11,7 +10,7 @@ export default function CompanyPressEmpty({
   return (
     <div className="company-press-list__empty">
       <div className="company-press-list__empty-icon" aria-hidden="true">
-        <img src={emptyStateIconSrc} alt="" />
+        <img src="/img/company/press/empty_icon.png" alt="" />
       </div>
       <div className="company-press-list__empty-text">
         <p className="company-press-list__empty-title">There are no results</p>

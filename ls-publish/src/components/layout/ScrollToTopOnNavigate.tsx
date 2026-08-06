@@ -1,46 +1,36 @@
 "use client";
 
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { scrollWindowTo } from "@/lib/lenisScroll";
+import { isMainPath } from "@/lib/navigation/crossSectionNav";
 
 function scrollToTop() {
-  scrollWindowTo(0, { immediate: true });
-}
-
-function scrollToTopUnlessHash() {
-  if (window.location.hash) {
-    return;
-  }
-
-  scrollToTop();
-  requestAnimationFrame(scrollToTop);
+  window.scrollTo(0, 0);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
 }
 
 export default function ScrollToTopOnNavigate() {
   const pathname = usePathname();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
+    if (!isMainPath(pathname)) {
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "auto";
+      }
+      return;
+    }
+
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
     }
-
-    scrollToTopUnlessHash();
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
-    const onPageShow = (event: PageTransitionEvent) => {
-      if (event.persisted) {
-        scrollToTopUnlessHash();
-      }
-    };
-
-    window.addEventListener("pageshow", onPageShow);
-    return () => window.removeEventListener("pageshow", onPageShow);
-  }, []);
-
-  useLayoutEffect(() => {
-    scrollToTopUnlessHash();
+    if (!isMainPath(pathname) || window.location.hash) {
+      return;
+    }
+    scrollToTop();
   }, [pathname]);
 
   return null;

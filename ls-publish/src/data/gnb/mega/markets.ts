@@ -1,7 +1,7 @@
 import { GNB_MEGA_PANEL_ID } from "@/data/gnb/panelIds";
 import type { GnbSimpleMegaMenu } from "@/data/gnb/types";
 
-/** Figma 17660:104944 — 3열 × 2행 (열 우선) Markets mega grid */
+/** Figma 2741:10579 — 3열 × 2행 그리드 */
 export const marketsMegaMenu: GnbSimpleMegaMenu = {
   type: "simple",
   panelId: GNB_MEGA_PANEL_ID.markets,
@@ -10,43 +10,55 @@ export const marketsMegaMenu: GnbSimpleMegaMenu = {
     {
       id: "data-center",
       title: "Data Center",
-      description:
-        "Hyperscale / Colocation / Edge Computing / Telecom",
+      descriptionLines: [
+        "Hyperscale / Colocation / Edge Computing /",
+        "Telecom",
+      ],
       href: "/markets/data-center",
     },
     {
       id: "public-infrastructure",
       title: "Public Infrastructure",
-      description:
-        "Federal, State, and Municipal Government / Airports / Water and Wastewater / Healthcare",
-      href: "/markets/public-infrastructure",
-    },
-    {
-      id: "power-grid",
-      title: "Power Grid",
-      description:
-        "Power Generation, Transmission and Distribution / Microgrids / BESS / Utilities / Renewables",
-      href: "/markets/power-grid",
-    },
-    {
-      id: "industrial",
-      title: "Industrial",
-      description:
-        "Automotive / Semiconductor / Machinery / Food & Beverage",
-      href: "/markets/industrial",
+      descriptionLines: [
+        "Federal, State, and Municipal Government / Airports / ",
+        "Water and Wastewater / Healthcare",
+      ],
+      href: "/markets/commercial-residential",
     },
     {
       id: "oil-gas-mining",
       title: "Oil & Gas, Mining Industries",
-      description:
-        "Petroleum, Chemical Refineries / Metals & Mining / Marine",
-      href: "/markets/oil-gas-mining",
+      descriptionLines: [
+        "Petroleum, Chemical Refineries / Metals & Mining / ",
+        "Marine",
+      ],
+      href: "/markets/commercial-residential",
+    },
+    {
+      id: "power-grid",
+      title: "Power Grid",
+      descriptionLines: [
+        "Power Generation, Transmission and Distribution / ",
+        "Microgrids / BESS / Utilities / Renewables",
+      ],
+      href: "/markets/commercial-residential",
+    },
+    {
+      id: "industrial",
+      title: "Industrial",
+      descriptionLines: [
+        "Automotive / Semiconductor / Machinery /",
+        "Food & Beverage",
+      ],
+      href: "/markets/commercial-residential",
     },
     {
       id: "commercial-residential",
       title: "Commercial & Residential",
-      description:
-        "Hotels / Retail Stores / Logistics / Commercial / Buildings / Residential",
+      descriptionLines: [
+        "Hotels / Retail Stores / Logistics /",
+        "Commercial Buildings / Residential",
+      ],
       href: "/markets/commercial-residential",
     },
   ],

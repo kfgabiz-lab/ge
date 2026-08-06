@@ -34,7 +34,7 @@ export default function CompanyEventsCalendar({ months }: CompanyEventsCalendarP
 
                 <span className="company-events-calendar__month-icon" aria-hidden="true">
 
-                  <img src="/pub/ico/ico_calendar.svg" alt="" />
+                  <img src="/ico/ico_calendar.svg" alt="" />
 
                 </span>
 

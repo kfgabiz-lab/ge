@@ -14,48 +14,15 @@ export const gnbGuideIcons: GnbGuideIcon[] = [
   {
     id: "ico_search_24",
     fileName: "ico_search_24.svg",
-    path: "/pub/ico/ico_search_24.svg",
+    path: "/ico/ico_search_24.svg",
     size: 24,
     usage: "검색 — 스크롤·반전 헤더",
     usedIn: "gnb.css (.gnb_util-btn--search), ComponentGuide Search",
   },
   {
-    id: "ico_gnb_search_ai_32",
-    fileName: "ico_gnb_search_ai_32.svg",
-    path: "/pub/ico/ico_gnb_search_ai_32.svg",
-    size: 32,
-    usage: "GNB 검색 패널 AI 마크 (필드리드)",
-    usedIn: "GnbSearchPanel (.gnb_search__mark)",
-  },
-  {
-    id: "ico_clear_12_black",
-    fileName: "ico_clear_12_black.svg",
-    path: "/pub/ico/ico_clear_12_black.svg",
-    size: 12,
-    usage: "PC GNB 검색어 초기화",
-    usedIn: "GnbSearchPanel (.gnb_search__clear-icon-pc)",
-  },
-  {
-    id: "ico_gnb_search_clear_24",
-    fileName: "ico_gnb_search_clear_24.svg",
-    path: "/pub/ico/ico_gnb_search_clear_24.svg",
-    size: 24,
-    usage: "모바일 GNB 검색어 초기화 (Figma 7334:131929)",
-    usedIn: "GnbSearchPanel (.gnb_search__clear-icon-mo)",
-  },
-  {
-    id: "ico_close_24",
-    fileName: "ico_close_24.svg",
-    path: "/pub/ico/ico_close_24.svg",
-    size: 24,
-    usage: "GNB search 닫기",
-    usedIn:
-      "gnb.css (.main_header__btn-search.is-close, .btn_search.is-close)",
-  },
-  {
     id: "ico_search_24_white",
     fileName: "ico_search_24_white.svg",
-    path: "/pub/ico/ico_search_24_white.svg",
+    path: "/ico/ico_search_24_white.svg",
     size: 24,
     usage: "검색 — 최상단 헤더",
     usedIn: "gnb.css (.main_header.is-top)",
@@ -63,23 +30,23 @@ export const gnbGuideIcons: GnbGuideIcon[] = [
   {
     id: "ico_global_24",
     fileName: "ico_global_24.svg",
-    path: "/pub/ico/ico_global_24.svg",
+    path: "/ico/ico_global_24.svg",
     size: 24,
-    usage: "글로벌 리전 트리거 — 스크롤·반전 · 라벨 America",
-    usedIn: "gnb.css (.icon_global), GnbGlobalTriggerSubContent",
+    usage: "글로벌(언어) — 스크롤·반전",
+    usedIn: "gnb.css (.gnb_util-btn--global)",
   },
   {
     id: "ico_global_24_white",
     fileName: "ico_global_24_white.svg",
-    path: "/pub/ico/ico_global_24_white.svg",
+    path: "/ico/ico_global_24_white.svg",
     size: 24,
-    usage: "글로벌 리전 트리거 — 최상단 · 라벨 America",
-    usedIn: "gnb.css (.main_header.is-top .icon_global)",
+    usage: "글로벌(언어) — 최상단",
+    usedIn: "gnb.css (.main_header.is-top)",
   },
   {
     id: "ico_link",
     fileName: "ico_link.svg",
-    path: "/pub/ico/ico_link.svg",
+    path: "/ico/ico_link.svg",
     size: 14,
     usage: "외부 링크 (btn-text-30)",
     usedIn: "gnb_mega__simple-item-link, GnbMegaItemLink",
@@ -87,7 +54,7 @@ export const gnbGuideIcons: GnbGuideIcon[] = [
   {
     id: "ico_arrow_right_14",
     fileName: "ico_arrow_right_14.svg",
-    path: "/pub/ico/ico_arrow_right_14.svg",
+    path: "/ico/ico_arrow_right_14.svg",
     size: 14,
     usage: "Explore All Products 등 소형 CTA",
     usedIn: "gnb.css (.gnb_mega__explore-btn)",
@@ -95,39 +62,23 @@ export const gnbGuideIcons: GnbGuideIcon[] = [
   {
     id: "ico_arrow_right_24_blue",
     fileName: "ico_arrow_right_24_blue.svg",
-    path: "/pub/ico/ico_arrow_right_24_blue.svg",
+    path: "/ico/ico_arrow_right_24_blue.svg",
     size: 24,
     usage: "depth4 패널 타이틀 Arrow · Hover",
     usedIn: "gnb_mega__depth4-arrow-icon",
   },
   {
-    id: "ico_arrow_right_20_list",
-    fileName: "ico_arrow_right_20_list.svg",
-    path: "/pub/ico/ico_arrow_right_20_list.svg",
-    size: 20,
-    usage: "모바일 GNB depth1·depth2 리스트 chevron",
-    usedIn: "gnb.css (.gnb_mobile_list__arrow), GnbMobileDepth1Menu, GnbMobileDepth2Menu",
-  },
-  {
-    id: "ico_arrow_right_18_list",
-    fileName: "ico_arrow_right_18_list.svg",
-    path: "/pub/ico/ico_arrow_right_18_list.svg",
-    size: 18,
-    usage: "모바일 GNB depth3 리스트 chevron",
-    usedIn: "gnb.css (.gnb_mobile_list__arrow--18), GnbMobileDepth3Menu",
-  },
-  {
     id: "ico_arrow_right_18",
     fileName: "ico_arrow_right_18.svg",
-    path: "/pub/ico/ico_arrow_right_18.svg",
+    path: "/ico/ico_arrow_right_18.svg",
     size: 18,
     usage: "breadcrumb 외부 링크",
-    usedIn: "sub_breadcrumb .icon_external",
+    usedIn: "markets_breadcrumb .icon_external",
   },
   {
     id: "ico_arrow_right_18_white",
     fileName: "ico_arrow_right_18_white.svg",
-    path: "/pub/ico/ico_arrow_right_18_white.svg",
+    path: "/ico/ico_arrow_right_18_white.svg",
     size: 18,
     usage: "breadcrumb (다크/반전)",
     usedIn: "gnb.css (is-top, is-invert)",
@@ -135,23 +86,23 @@ export const gnbGuideIcons: GnbGuideIcon[] = [
   {
     id: "ico_home",
     fileName: "ico_home.svg",
-    path: "/pub/ico/ico_home.svg",
+    path: "/ico/ico_home.svg",
     size: 16,
     usage: "breadcrumb 홈",
-    usedIn: "gnb.css (.sub_breadcrumb)",
+    usedIn: "gnb.css (.markets_breadcrumb)",
   },
   {
     id: "ico_right",
     fileName: "ico_right.svg",
-    path: "/pub/ico/ico_right.svg",
+    path: "/ico/ico_right.svg",
     size: 10,
     usage: "breadcrumb 구분 chevron",
-    usedIn: "gnb.css (.sub_breadcrumb)",
+    usedIn: "gnb.css (.markets_breadcrumb)",
   },
   {
     id: "ico_right_white",
     fileName: "ico_right_white.svg",
-    path: "/pub/ico/ico_right_white.svg",
+    path: "/ico/ico_right_white.svg",
     size: 10,
     usage: "breadcrumb chevron (반전)",
     usedIn: "gnb.css (.is-top breadcrumb)",
@@ -172,7 +123,7 @@ export type GnbGuidePanel = {
 export const gnbGuidePanels: GnbGuidePanel[] = [
   {
     navId: "devices",
-    label: "Products & Systems",
+    label: "Devices & Systems",
     panelId: GNB_MEGA_PANEL_ID.devices,
     menuType: "devices (4depth)",
     dataFile: "src/data/gnb/mega/devices.ts",
@@ -188,7 +139,6 @@ export const gnbGuidePanels: GnbGuidePanel[] = [
     dataFile: "src/data/gnb/mega/markets.ts",
     component: "GnbMarketsMegaPanel",
     cssModifier: "gnb_mega--simple gnb_mega--grid gnb_mega--markets",
-    figmaNote: "17660:104944",
   },
   {
     navId: "services",
@@ -198,7 +148,7 @@ export const gnbGuidePanels: GnbGuidePanel[] = [
     dataFile: "src/data/gnb/mega/services.ts",
     component: "GnbServicesMegaPanel",
     cssModifier: "gnb_mega--simple gnb_mega--sections gnb_mega--services",
-    figmaNote: "3670:14629",
+    figmaNote: "2769:35379",
   },
   {
     navId: "support",
@@ -207,8 +157,8 @@ export const gnbGuidePanels: GnbGuidePanel[] = [
     menuType: "simple · sections",
     dataFile: "src/data/gnb/mega/support.ts",
     component: "GnbSupportMegaPanel",
-    cssModifier: "gnb_mega--simple gnb_mega--sections gnb_mega--support",
-    figmaNote: "3670:14792",
+    cssModifier: "gnb_mega--simple gnb_mega--sections",
+    figmaNote: "2769:35780",
   },
   {
     navId: "careers",
@@ -228,19 +178,9 @@ export const gnbGuidePanels: GnbGuidePanel[] = [
     dataFile: "src/data/gnb/mega/company.ts",
     component: "GnbCompanyMegaPanel",
     cssModifier: "gnb_mega--simple gnb_mega--sections gnb_mega--company",
-    figmaNote: "5683:60839 — 3 columns (About Us · Articles · Careers)",
+    figmaNote: "2769:35523",
   },
 ];
-
-/** 글로벌 리전 메뉴 — Figma 5683:60868 */
-export const gnbGuideGlobal = {
-  menuId: "gnb-global-menu",
-  dataFile: "src/data/gnb/gnbGlobalContent.ts",
-  components: "GnbGlobalTrigger.tsx, GnbGlobalMenu.tsx",
-  activeRegionId: "america",
-  triggerLabel: "America",
-  figmaNote: "5683:60868",
-} as const;
 
 export const gnbGuideClassRefs = [
   {
@@ -271,26 +211,8 @@ export const gnbGuideClassRefs = [
     file: "GnbServicesMegaPanel.tsx 등",
   },
   {
-    block: "Global region",
-    classes:
-      "gnb_global_wrap, gnb_global_label, gnb_global_menu, gnb_global_menu__item",
-    file: "GnbGlobalTrigger.tsx, GnbGlobalMenu.tsx, gnbGlobalContent.ts",
-  },
-  {
     block: "Explore All",
-    classes: "devices_explore, gnb_mega__explore",
-    file: "explore-all/page.tsx, gnbExploreAllProducts.ts",
-  },
-  {
-    block: "Mobile panel",
-    classes:
-      "gnb_mobile_shell, gnb_mobile_menu, gnb_mobile_list, gnb_mobile_depth2, gnb_mobile_depth4, gnb_mobile_back, gnb_mobile_explore",
-    file: "GnbMobileMenuPanel.tsx, mobileNavItems.ts, gnb.css",
-  },
-  {
-    block: "Search overlay",
-    classes:
-      "gnb_search.is-open, gnb_search_dim, main_header.is-search-open, gnb_search__clear-icon-pc, gnb_search__clear-icon-mo",
-    file: "GnbSearchPanel.tsx, GnbMenu.tsx, gnb.css · Figma 7334:131856",
+    classes: "gnb_mega--explore-all, gnbExploreAllProducts.ts",
+    file: "GnbMegaExploreAll.tsx",
   },
 ] as const;

@@ -18,7 +18,7 @@ export default function CompanyPressFeatured({
   return (
     <section className="company-press-featured">
       <div className="inner">
-        <Link href={href} className="company-press-featured__card">
+        <div className="company-press-featured__card">
           <div className="company-press-featured__image">
             <img src={image} alt={title} />
           </div>
@@ -28,14 +28,14 @@ export default function CompanyPressFeatured({
               <p className="company-press-featured__desc">{description}</p>
               <p className="company-press-featured__date">{date}</p>
             </div>
-            <span className="btn-text-30 company-press-featured__link">
+            <Link href={href} className="btn-text-30 company-press-featured__link">
               Explore
               <span className="btn-text-30__icon" aria-hidden="true">
                 <span className="icon_arrow-14" />
               </span>
-            </span>
+            </Link>
           </div>
-        </Link>
+        </div>
       </div>
     </section>
   );
