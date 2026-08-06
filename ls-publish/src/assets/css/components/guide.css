@@ -37,7 +37,7 @@ main.guide-hub .guide-hub__header {
 main.guide-hub .guide-hub__header h1 {
   font-size: 28px;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -2%;
   margin-bottom: 8px;
 }
 main.guide-hub .guide-hub__header p {
@@ -108,7 +108,7 @@ section.gnb-guide {
 .guide-doc__header h1 {
   font-size: 28px;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -2%;
   margin-bottom: 8px;
 }
 
@@ -242,7 +242,7 @@ section.ico-guide .ico-guide-header {
 section.ico-guide .ico-guide-header h1 {
   font-size: 28px;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -2%;
   margin-bottom: 8px;
 }
 section.ico-guide .ico-guide-header p {
@@ -439,7 +439,7 @@ section.component-guide .component-guide__title {
   font-weight: 700;
   line-height: 1.1;
   color: #fff;
-  letter-spacing: -0.02em;
+  letter-spacing: -2%;
 }
 section.component-guide .component-guide__date {
   display: flex;
@@ -460,7 +460,7 @@ section.component-guide .component-guide__date-sep {
 section.component-guide .component-guide__body {
   max-width: 1640px;
   margin: 0 auto;
-  padding: 80px 140px 120px;
+  padding: 75px 140px 120px;
 }
 section.component-guide .component-guide__section {
   margin-bottom: 120px;
@@ -527,19 +527,34 @@ section.component-guide .component-guide__preview-light {
   border-radius: 4px;
 }
 
+section.component-guide .component-guide__check-error {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+section.component-guide .component-guide__check-error-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
 section.component-guide .component-guide__preview-light--pagination {
   padding: 40px 24px;
 }
 section.component-guide .component-guide__rolling-demo {
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 30px; /* Figma Rolling_50px — line → nav */
   width: 100%;
   max-width: 1440px;
 }
 section.component-guide .component-guide__rolling-line {
   position: relative;
   flex: 1;
+  min-width: 0;
   height: 50px;
 }
 section.component-guide .component-guide__rolling-track {
@@ -548,17 +563,106 @@ section.component-guide .component-guide__rolling-track {
   right: 0;
   top: 50%;
   height: 1px;
-  background: var(--color-border-light);
+  background: var(--color-border-light); /* Figma line 1569:26321 — #e8e8e8 */
   transform: translateY(-50%);
 }
 section.component-guide .component-guide__rolling-fill {
   position: absolute;
   left: 0;
   top: 50%;
-  width: 33.33%;
   height: 2px;
-  background: var(--color-accent);
+  background: var(--color-text-light); /* Figma line 1569:26321 — #888 */
   transform: translateY(-50%);
+}
+/* Guide-only forced hover (Figma Rolling_50px Hover) */
+section.component-guide .swiper_type_01_btn.is-hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+section.component-guide .swiper_type_01_btn.is-hover .swiper_type_01_icon {
+  filter: brightness(0) invert(1);
+}
+section.component-guide .component-guide__rolling-states {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 24px 40px;
+  margin-top: 48px;
+}
+section.component-guide .component-guide__rolling-states .component-guide__state-col {
+  align-items: center;
+  gap: 12px;
+}
+section.component-guide .component-guide__rolling-pagination {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 48px;
+  padding: 20px 24px;
+  background: #222;
+}
+section.component-guide .component-guide__rolling-pagination-nums {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+section.component-guide .component-guide__rolling-pagination-num {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
+  opacity: 0.4;
+}
+section.component-guide .component-guide__rolling-pagination-num.is-active {
+  opacity: 1;
+}
+section.component-guide .component-guide__rolling-pagination-active {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+section.component-guide .component-guide__rolling-pagination-bar {
+  position: relative;
+  width: 110px;
+  height: 2px;
+  overflow: hidden;
+}
+section.component-guide .component-guide__rolling-pagination-bar::before {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: #fff;
+  opacity: 0.15;
+}
+section.component-guide .component-guide__rolling-pagination-bar-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  height: 2px;
+  background: #fff;
+}
+section.component-guide .component-guide__rolling-pagination-pause {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+section.component-guide .component-guide__rolling-pagination-pause-icon {
+  display: block;
+  width: 14px;
+  height: 14px;
+  background:
+    linear-gradient(#fff, #fff) left center / 3px 14px no-repeat,
+    linear-gradient(#fff, #fff) right center / 3px 14px no-repeat;
 }
 section.component-guide .component-guide__toc {
   display: flex;
@@ -601,17 +705,7 @@ section.component-guide .component-guide__preview-modal-trigger {
 }
 
 /* Component guide — responsive zoom */
-/* Responsive zoom (legacy) */
-@media (max-width: 1440px) and (min-width: 1024px) {
-  main:not(.component-guide-page) {
-    zoom: 0.7;
-  }
-}
-@media (max-width: 1023px) and (min-width: 780px) {
-  main:not(.component-guide-page) {
-    zoom: 0.5;
-  }
-}
+
 
 /* Section guide */
 /* Section guide — /guide/sections */
@@ -688,7 +782,7 @@ section.section-guide .section-guide__category-head {
 section.section-guide .section-guide__category-head h2 {
   font-size: 22px;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -2%;
   margin-bottom: 8px;
 }
 section.section-guide .section-guide__category-head p {
@@ -777,6 +871,19 @@ section.section-guide .section-guide__article-detail-stack {
   gap: 48px;
 }
 
+section.section-guide .section-guide__variant-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+section.section-guide .section-guide__variant-label {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
 section.section-guide .section-guide__note,
 section.section-guide .section-guide__registry-only {
   margin: 12px 0 0;
@@ -786,6 +893,7 @@ section.section-guide .section-guide__registry-only {
 }
 section.section-guide .section-guide__preview {
   overflow-x: auto;
+  isolation: isolate;
 }
 section.section-guide .section-guide__preview > section,
 section.section-guide .section-guide__preview > div {
@@ -808,6 +916,135 @@ section.section-guide
   .common_banner_02__link:hover
   .btn-text-30__icon {
   background: var(--color-accent);
+}
+
+/* Services — Service Center offering: full-bleed absolute layout → guide grid */
+@media (min-width: 781px) {
+  section.section-guide
+    .section-guide__scope.support-page--service-center
+    section.support_service_offering {
+    overflow: hidden;
+  }
+
+  section.section-guide
+    .section-guide__scope.support-page--service-center
+    section.support_service_offering
+    .support_service_offering__body {
+    position: relative;
+    left: auto;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1440px;
+    padding: 0 24px;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 363px);
+    gap: 40px 24px;
+    align-items: start;
+  }
+
+  section.section-guide
+    .section-guide__scope.support-page--service-center
+    section.support_service_offering
+    .support_service_offering__carousel {
+    width: 100%;
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+
+  section.section-guide
+    .section-guide__scope.support-page--service-center
+    section.support_service_offering
+    .support_service_offering__panel {
+    grid-column: 2;
+    grid-row: 1;
+    padding-top: 0;
+    width: auto;
+  }
+
+  section.section-guide
+    .section-guide__scope.support-page--service-center
+    section.support_service_offering
+    .support_service_offering__preview {
+    position: relative;
+    top: auto;
+    left: auto;
+    grid-column: 2;
+    grid-row: 2;
+    width: 100%;
+    max-width: 363px;
+    height: 200px;
+    overflow: hidden;
+  }
+
+  section.section-guide
+    .section-guide__scope.support-page--service-center
+    section.support_service_offering
+    .support_service_offering__preview-slide,
+  section.section-guide
+    .section-guide__scope.support-page--service-center
+    section.support_service_offering
+    .support_service_offering__slide {
+    height: 200px;
+  }
+
+  section.section-guide
+    .section-guide__scope.support-page--service-center
+    section.support_service_offering
+    .swiper_type_01_controls {
+    position: relative;
+    bottom: auto;
+    margin-top: 24px;
+  }
+}
+
+/* Services — Warranty Policy: guide preview layout */
+@media (min-width: 781px) {
+  section.section-guide .section-guide__scope.support-page--warranty-policy .inner {
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  section.section-guide
+    .section-guide__scope.support-page--warranty-policy
+    section.support_service_warranty_banner {
+    padding: 60px 0;
+  }
+
+  section.section-guide
+    .section-guide__scope.support-page--warranty-policy
+    section.support_service_warranty_extension,
+  section.section-guide
+    .section-guide__scope.support-page--warranty-policy
+    section.support_service_warranty_apply {
+    padding-bottom: 60px;
+  }
+
+  section.section-guide
+    .section-guide__scope.support-page--warranty-policy
+    .support_service_warranty_cards__list {
+    flex-wrap: wrap;
+  }
+
+  section.section-guide
+    .section-guide__scope.support-page--warranty-policy
+    .support_service_warranty_cards__item {
+    flex: 1 1 calc(50% - 12px);
+    min-width: 220px;
+  }
+
+  section.section-guide
+    .section-guide__scope.support-page--warranty-policy
+    .support_service_warranty_extension__panels {
+    flex-wrap: wrap;
+  }
+
+  section.section-guide
+    .section-guide__scope.support-page--warranty-policy
+    .support_service_warranty_panel {
+    flex: 1 1 320px;
+  }
 }
 
 /* GNB guide */

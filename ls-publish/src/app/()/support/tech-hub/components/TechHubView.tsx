@@ -11,10 +11,12 @@ export default function TechHubView() {
       <div className="inner">
         <header className="support_tech_hub_view__head">
           <div className="support_tech_hub_view__head-main">
-            <span className="support_tech_hub_view__chapter">
-              {detail.chapter}
-            </span>
-            <h1 className="support_tech_hub_view__title">{detail.title}</h1>
+            <div className="support_tech_hub_view__title-group">
+              <span className="support_tech_hub_view__chapter">
+                {detail.chapter}
+              </span>
+              <h1 className="support_tech_hub_view__title">{detail.title}</h1>
+            </div>
             <p className="support_tech_hub_view__date">{detail.date}</p>
           </div>
           <hr className="support_tech_hub_view__divider" />
@@ -25,7 +27,6 @@ export default function TechHubView() {
             <TechHubViewPlayer
               youtubeVideoId={detail.youtubeVideoId}
               title={detail.title}
-              poster={detail.poster}
             />
           </div>
 

@@ -2,14 +2,15 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import GnbMobileMenuPanel from "@/components/layout/shared/GnbMobileMenuPanel";
+import { getWindowScrollY, lockPageScroll, unlockPageScroll } from "@/lib/lenisScroll";
 import "@/assets/css/components/gnb.css";
 
 const gnbNavItems = [
-  { label: "Devices & Systems", href: "/devices-systems/motor-control" },
+  { label: "Products & Systems", href: "/products-systems/motor-control" },
   { label: "Markets", href: "/markets/commercial-residential" },
   { label: "Services", href: "" },
   { label: "Support", href: "" },
-  { label: "Careers", href: "" },
   { label: "Company", href: "" },
 ];
 
@@ -54,11 +55,12 @@ export default function MegaMenu() {
       }
     };
 
-    document.body.style.overflow = "hidden";
+    const scrollY = getWindowScrollY();
+    lockPageScroll(scrollY);
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.body.style.overflow = "";
+      unlockPageScroll(scrollY);
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [closeMobileMenu, isMobileMenuOpen]);
@@ -96,11 +98,11 @@ export default function MegaMenu() {
   return (
     <header className={getHeaderClassName(isAtTop, isHeaderHidden)}>
       <div className="gnb_menu_inner">
-        <h1 className="logo">
+        <div className="logo">
           <Link href="/">
-            <img loading="eager" decoding="async" src="/img/logo_white.png" alt="LS ELECTRIC" />
+            <img loading="eager" decoding="async" src="/pub/img/logo_white.svg" alt="LS ELECTRIC" />
           </Link>
-        </h1>
+        </div>
 
         <nav className="gnb_nav_wrap" aria-label="주 메뉴">
           <ul className="gnb_nav_list">
@@ -156,15 +158,7 @@ export default function MegaMenu() {
         aria-label="모바일 메뉴"
         aria-hidden={!isMobileMenuOpen}
       >
-        <ul className="gnb_mobile_list">
-          {gnbNavItems.map((item) => (
-            <li key={item.label} className="depth_1">
-              <a href={item.href} className="link" onClick={closeMobileMenu}>
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
+        <GnbMobileMenuPanel isOpen={isMobileMenuOpen} onClose={closeMobileMenu} />
       </nav>
 
       {isMobileMenuOpen && (

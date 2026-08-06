@@ -1,29 +1,70 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import GnbMenu from "@/components/layout/shared/GnbMenu";
 import HeaderBreadcrumb from "@/components/layout/shared/HeaderBreadcrumb";
+import { getWindowScrollY } from "@/lib/lenisScroll";
 import { useHeaderScroll } from "@/components/layout/shared/useHeaderScroll";
-export default function MainHeader() {
-  const [isMegaOpen, setIsMegaOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const { isAtTop, isGnbHidden, isHeaderRevealed, revealHeader } =
+const MAIN_TOP_THRESHOLD = 80;
+
+type MainHeaderProps = {
+  showBreadcrumbNav?: boolean;
+};
+
+export default function MainHeader({ showBreadcrumbNav = false }: MainHeaderProps) {
+  const [isMegaOpen, setIsMegaOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [frozenWrapAtTop, setFrozenWrapAtTop] = useState<boolean | null>(null);
+
+  const { isAtTop, isGnbHidden: scrollGnbHidden, isHeaderRevealed, revealHeader } =
     useHeaderScroll({
-      topThreshold: 80,
-      hideGnbOnScroll: !isMobileMenuOpen && !isMegaOpen,
+      topThreshold: MAIN_TOP_THRESHOLD,
+      hideGnbOnScroll: !isMobileMenuOpen && !isMegaOpen && !isSearchOpen,
     });
+
+  const isGnbHidden = scrollGnbHidden && !isSearchOpen && !isMegaOpen;
+  const resolvedIsAtTop =
+    frozenWrapAtTop !== null ? frozenWrapAtTop : isAtTop;
+
+  const handleMegaOpenChange = useCallback((open: boolean) => {
+    if (open) {
+      setFrozenWrapAtTop(
+        (prev) => prev ?? getWindowScrollY() <= MAIN_TOP_THRESHOLD,
+      );
+    } else if (!isSearchOpen) {
+      requestAnimationFrame(() => {
+        setFrozenWrapAtTop(null);
+      });
+    }
+    setIsMegaOpen(open);
+  }, [isSearchOpen]);
+
+  const handleSearchOpenChange = useCallback((open: boolean) => {
+    if (open) {
+      setFrozenWrapAtTop(
+        (prev) => prev ?? getWindowScrollY() <= MAIN_TOP_THRESHOLD,
+      );
+    } else if (!isMegaOpen) {
+      requestAnimationFrame(() => {
+        setFrozenWrapAtTop(null);
+      });
+    }
+    setIsSearchOpen(open);
+  }, [isMegaOpen]);
 
   const wrapClassName = useMemo(
     () =>
       [
         "main_header-wrap",
-        isAtTop && "is-at-top",
+        resolvedIsAtTop && "is-at-top",
         isGnbHidden && "is-gnb-hidden",
+        isSearchOpen && "is-search-open",
       ]
         .filter(Boolean)
         .join(" "),
-    [isAtTop, isGnbHidden],
+    [resolvedIsAtTop, isGnbHidden, isSearchOpen],
   );
 
   return (
@@ -31,12 +72,14 @@ export default function MainHeader() {
       <GnbMenu
         variant="main"
         logoHref="/main"
-        isAtTop={isAtTop}
+        showBreadcrumbNav={showBreadcrumbNav}
+        isAtTop={resolvedIsAtTop}
         isHeaderHidden={isGnbHidden}
         isHeaderRevealed={isHeaderRevealed}
         onRevealHeader={revealHeader}
         breadcrumb={<HeaderBreadcrumb />}
-        onMegaOpenChange={setIsMegaOpen}
+        onMegaOpenChange={handleMegaOpenChange}
+        onSearchOpenChange={handleSearchOpenChange}
         onMobileMenuOpenChange={setIsMobileMenuOpen}
       />
     </div>

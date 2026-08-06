@@ -1,5 +1,7 @@
+import Link from "next/link";
+
 type IconCardItem = {
-  href: string;
+  href?: string;
   image: string;
   imageAlt: string;
   title: string;
@@ -8,8 +10,8 @@ type IconCardItem = {
 
 const iconCardItems: IconCardItem[] = [
   {
-    href: "",
-    image: "/img/main/icon_card_01.png",
+    href: "/support/connect-portal",
+    image: "/pub/img/main/icon_card_01.svg",
     imageAlt: "Connect Portal",
     title: "Connect Portal",
     description: (
@@ -22,8 +24,8 @@ const iconCardItems: IconCardItem[] = [
     ),
   },
   {
-    href: "",
-    image: "/img/main/icon_card_02.png",
+    href: "/support/tech-hub",
+    image: "/pub/img/main/icon_card_02.svg",
     imageAlt: "Tech Hub",
     title: "Tech Hub",
     description: (
@@ -37,8 +39,8 @@ const iconCardItems: IconCardItem[] = [
     ),
   },
   {
-    href: "",
-    image: "/img/main/icon_card_03.png",
+    href: "/support/download-center",
+    image: "/pub/img/main/icon_card_03.svg",
     imageAlt: "Download Center",
     title: "Download Center",
     description: (
@@ -52,18 +54,15 @@ const iconCardItems: IconCardItem[] = [
     ),
   },
   {
-    href: "",
-    image: "/img/main/icon_card_04.png",
-    imageAlt: "Training",
-    title: "Training",
+    image: "/pub/img/main/icon_card_04.svg",
+    imageAlt: "Request For Training",
+    title: "Request For Training",
     description: (
       <>
-        Get certified with in-person
-        <br />
-        training led by LS ELECTRIC
-        <br />
-        product experts
-      </>
+        Request certified, hands-on <br/>
+        training by LS ELECTRIC experts <br/>
+        for each product
+           </>
     ),
   },
 ];
@@ -74,17 +73,33 @@ export default function IconCards() {
       <div className="inner">
         <h2 className="section_tit">Explore More</h2>
         <div className="items">
-          {iconCardItems.map((item) => (
-            <a key={item.title} href={item.href} className="item">
-              <div className="img_area">
-                <img loading="lazy" decoding="async" src={item.image} alt={item.imageAlt} />
+          {iconCardItems.map((item) => {
+            const content = (
+              <>
+                <div className="img_area">
+                  <img loading="lazy" decoding="async" src={item.image} alt={item.imageAlt} />
+                </div>
+                <div className="txt_area">
+                  <h3 className="tit">{item.title}</h3>
+                  <p className="txt">{item.description}</p>
+                </div>
+              </>
+            );
+
+            if (item.href) {
+              return (
+                <Link key={item.title} href={item.href} className="item">
+                  {content}
+                </Link>
+              );
+            }
+
+            return (
+              <div key={item.title} className="item">
+                {content}
               </div>
-              <div className="txt_area">
-                <h3 className="tit">{item.title}</h3>
-                <p className="txt">{item.description}</p>
-              </div>
-            </a>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

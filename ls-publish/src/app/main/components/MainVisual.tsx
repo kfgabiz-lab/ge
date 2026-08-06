@@ -14,9 +14,15 @@ export default function MainVisual() {
           <a href="" className="item">
             <div className="tit_area">
               <p className="tit">
-              <img loading="eager" decoding="async" src="/ico/ico_bell_20.svg" alt="" aria-hidden="true" />
-              Exhibition
-                </p>
+                <img
+                  loading="eager"
+                  decoding="async"
+                  src="/pub/ico/ico_bell_20.svg"
+                  alt=""
+                  aria-hidden="true"
+                />
+                Exhibition
+              </p>
               <p className="txt">
                 Triple iF Design 2026 3 Wins in Smart Device &amp; Energy
                 Platform Design

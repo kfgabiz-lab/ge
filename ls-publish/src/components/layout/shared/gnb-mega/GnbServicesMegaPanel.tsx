@@ -5,6 +5,7 @@ import type { GnbMegaSimplePanelStateProps } from "@/components/layout/shared/gn
 import type { GnbSimpleMegaSection } from "@/data/gnb";
 import { servicesMegaMenu } from "@/data/gnb/mega/services";
 
+/** Figma 3670:14629 — #gnb-mega-panel-services */
 export default function GnbServicesMegaPanel({
   onItemClick,
 }: GnbMegaSimplePanelStateProps) {

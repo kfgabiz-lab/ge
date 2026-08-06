@@ -4,6 +4,11 @@ import GuidePageHeader from "@/components/guide/GuidePageHeader";
 import GuideRelated from "@/components/guide/GuideRelated";
 import {
   CommonSectionPreviews,
+  CompanyAmericaSectionPreviews,
+  CompanyAffiliateAmericaSectionPreviews,
+  CompanyCareersSectionPreviews,
+  CompanyEsgSectionPreviews,
+  CompanyLsElectricSectionPreviews,
   CompanyArticleDetailSectionPreviews,
   CompanyBlogSectionPreviews,
   CompanyEventsSectionPreviews,
@@ -18,6 +23,15 @@ import {
   SupportTechHubSectionPreviews,
   SupportTechHubViewSectionPreviews,
   SupportWhereToBuySectionPreviews,
+  ServicesServiceCenterSectionPreviews,
+  ServicesWarrantyPolicySectionPreviews,
+  ServicesEngineeringTrainingSectionPreviews,
+  ServicesServiceTrainingSectionPreviews,
+  ServicesSalesTrainingSectionPreviews,
+  ServicesEngineeringTrainingDetailSectionPreviews,
+  ServicesEngineeringTrainingSessionSectionPreviews,
+  ServicesRequestForTrainingSectionPreviews,
+  SearchSectionPreviews,
 } from "@/components/guide/SectionGuidePreviews";
 import {
   sectionGuideCategories,
@@ -29,6 +43,11 @@ const previewByCategory = {
   markets: MarketsSectionPreviews,
   devices: DevicesSectionPreviews,
   product: ProductSectionPreviews,
+  "company-america": CompanyAmericaSectionPreviews,
+  "company-ls-electric": CompanyLsElectricSectionPreviews,
+  "company-affiliate-america": CompanyAffiliateAmericaSectionPreviews,
+  "company-careers": CompanyCareersSectionPreviews,
+  "company-esg": CompanyEsgSectionPreviews,
   "company-blog": CompanyBlogSectionPreviews,
   "company-press": CompanyPressSectionPreviews,
   "company-events": CompanyEventsSectionPreviews,
@@ -40,6 +59,15 @@ const previewByCategory = {
   "support-contact-us": SupportContactUsSectionPreviews,
   "support-where-to-buy": SupportWhereToBuySectionPreviews,
   "support-tech-hub-view": SupportTechHubViewSectionPreviews,
+  "services-service-center": ServicesServiceCenterSectionPreviews,
+  "services-warranty-policy": ServicesWarrantyPolicySectionPreviews,
+  "services-engineering-training": ServicesEngineeringTrainingSectionPreviews,
+  "services-service-training": ServicesServiceTrainingSectionPreviews,
+  "services-sales-training": ServicesSalesTrainingSectionPreviews,
+  "services-engineering-training-detail": ServicesEngineeringTrainingDetailSectionPreviews,
+  "services-engineering-training-session": ServicesEngineeringTrainingSessionSectionPreviews,
+  "services-request-for-training": ServicesRequestForTrainingSectionPreviews,
+  search: SearchSectionPreviews,
 } as const;
 
 export default function SectionGuide() {
@@ -81,6 +109,27 @@ export default function SectionGuide() {
           <li>
             공통 타이포: <code>.section_tit</code>, <code>.section_desc</code>,{" "}
             <code>.inner</code> (<code>globals.css</code>)
+          </li>
+        </ul>
+        <h3>타이포그래피</h3>
+        <p>
+          상세: <code>docs/SECTION_MARKUP_GUIDE.md</code> § 타이포그래피
+        </p>
+        <ul>
+          <li>
+            페이지 h1 <code>__heading</code>: 70px / <strong>line-height 80px</strong> / weight
+            800 — <code>line-height: 1</code> 금지
+          </li>
+          <li>
+            페이지 <code>__desc</code>: 18px / line-height 28px / weight <strong>400</strong> /
+            #666 — weight 300 금지
+          </li>
+          <li>
+            섹션 h2 <code>.section_tit</code>: 50px / 62px · <code>.section_desc</code>: 18px /
+            28px
+          </li>
+          <li>
+            Hero 부제 <code>__sub</code>만 weight 300 (예: <code>markets_hero__sub</code>)
           </li>
         </ul>
       </div>

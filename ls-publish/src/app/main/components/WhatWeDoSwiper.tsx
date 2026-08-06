@@ -10,31 +10,29 @@ import "swiper/css";
 import "swiper/css/effect-fade";
 
 const AUTOPLAY_DELAY_MS = 4000;
+const WHAT_WE_DO_EXPLORE_HREF = "/company/ls-electric-america";
 
 const whatWeDoSlides = [
   {
-    id: "automation",
-    href: "",
-    img: "/img/main/whit_we_do_1.jpg",
-    alt: "Automation",
-    tit: "Automation",
-    txt: "LS ELECTRIC offers various automation solutions from unit devices to process control in order to effectively operate in industrial environments. Its major products include, among others, PLC that effectively controls devices, an AC drive that converts motor speed, servo that meticulously controls the devices, and HMI that provide real-time monitoring of devices.",
+    id: "lv-mv-power",
+    img: "/pub/img/main/what_we_do_01.jpg",
+    alt: "LV & MV Power Solutions",
+    tit: "LV & MV Power Solutions",
+    txt: "We provide complete low and medium voltage power distribution solutions—from transformers and switchgear to switchboards, panelboards, and DC power systems. Built for mission critical applications like data centers, manufacturing, and commercial infrastructure, our solutions deliver the reliability, efficiency, and scalability North American operations demand.",
   },
   {
-    id: "energy",
-    href: "",
-    img: "/img/main/whit_we_do_1.jpg",
-    alt: "Energy Solutions",
-    tit: "Energy Solutions",
-    txt: "We deliver reliable power infrastructure and smart grid technologies that support sustainable energy transitions across global markets.",
+    id: "grid-utility",
+    img: "/pub/img/main/what_we_do_02.jpg",
+    alt: "Grid & Utility Infrastructure",
+    tit: "Grid & Utility Infrastructure",
+    txt: "LS ELECTRIC supports utilities, renewable developers, and large industrial projects with high voltage transmission and grid infrastructure solutions. Our portfolio—from ultra high voltage disconnect switches to power transformers—is designed to strengthen grid resilience, improve efficiency, and support the transition to cleaner, more reliable energy systems across North America.",
   },
   {
-    id: "mobility",
-    href: "",
-    img: "/img/main/whit_we_do_1.jpg",
-    alt: "Mobility & EV",
-    tit: "Mobility & EV",
-    txt: "Advanced charging and power components for electric mobility, enabling efficient and safe energy use in next-generation transportation.",
+    id: "automation-control",
+    img: "/pub/img/main/what_we_do_03.jpg",
+    alt: "Automation & Industrial Control",
+    tit: "Automation & Industrial Control",
+    txt: "We deliver advanced automation and motor control solutions including VFDs, PLCs, HMIs, and integrated control systems. Designed for North American industry, our technologies help manufacturers and operators boost productivity, reduce downtime, and drive smarter, data driven decision making.",
   },
 ];
 
@@ -77,7 +75,7 @@ export default function WhatWeDoSwiper() {
 
   return (
     <section className="what_we_do__inner">
-      <h2 className="tit_area">What We Do</h2>
+      <h2 className="tit_area">What we do</h2>
 
       <div
         className="swiper_type_01_area"
@@ -90,7 +88,7 @@ export default function WhatWeDoSwiper() {
           effect="fade"
           fadeEffect={{ crossFade: true }}
           slidesPerView={1}
-          speed={300}
+          speed={0}
           loop
           observer
           observeParents
@@ -101,13 +99,13 @@ export default function WhatWeDoSwiper() {
         >
           {whatWeDoSlides.map((slide, index) => (
             <SwiperSlide key={slide.id}>
-              <Link href={slide.href} className="sl">
-                <div className="btn-text-30 link_more">
+              <div className="sl">
+                <Link href={WHAT_WE_DO_EXPLORE_HREF} className="btn-text-30 link_more">
                   Explore
                   <span className="btn-text-30__icon">
                     <span className="icon_arrow-14" aria-hidden="true" />
                   </span>
-                </div>
+                </Link>
                 <div className="img_area">
                   <img
                     src={slide.img}
@@ -121,7 +119,7 @@ export default function WhatWeDoSwiper() {
                   <h3 className="tit">{slide.tit}</h3>
                   <p className="txt">{slide.txt}</p>
                 </div>
-              </Link>
+              </div>
             </SwiperSlide>
           ))}
         </Swiper>

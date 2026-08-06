@@ -1,4 +1,4 @@
-import SubHeader from "@/components/layout/markets/SubHeader";
+import MarketsGroupHeader from "@/components/layout/markets/MarketsGroupHeader";
 import SubFooter from "@/components/layout/markets/SubFooter";
 
 export default function MarketsGroupLayout({
@@ -8,7 +8,7 @@ export default function MarketsGroupLayout({
 }>) {
   return (
     <>
-      <SubHeader />
+      <MarketsGroupHeader />
       {children}
       <SubFooter />
     </>

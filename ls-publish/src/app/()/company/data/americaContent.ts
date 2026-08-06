@@ -1,0 +1,428 @@
+const IMG = "/pub/img/company/america";
+
+export type AmericaStatItem = {
+  value: string;
+  label: string;
+  desc: string;
+};
+
+export type AmericaShapingHighlight = {
+  title: string;
+  desc: string;
+};
+
+export type AmericaShapingBlock = {
+  id: string;
+  image: string;
+  /** 있으면 img 대신 자동재생 영상 */
+  video?: string;
+  titleLines: string[];
+  location: string;
+  highlights: AmericaShapingHighlight[];
+};
+
+export type AmericaBusinessItem = {
+  id: string;
+  image: string;
+  title: string;
+  description: string;
+  imagePosition: "left" | "right";
+};
+
+export type AmericaLocationContact = {
+  type: "address" | "phone" | "website";
+  text: string;
+  href?: string;
+};
+
+export type AmericaLocationItem = {
+  id: string;
+  badge: string;
+  name: string;
+  role: string;
+  contacts: AmericaLocationContact[];
+};
+
+export type AmericaLocationGroup = {
+  id: string;
+  title: string;
+  rows: AmericaLocationItem[][];
+};
+
+export type AmericaLeaderItem = {
+  id: string;
+  image: string;
+  /** 모바일 전용 초상 (없으면 image 사용) */
+  imageMobile?: string;
+  role: string;
+  name: string;
+  /** 피처드 카드 서명 이미지 */
+  signature?: string;
+};
+
+export type AmericaSocialLink = {
+  id: string;
+  label: string;
+  href: string;
+  icon: string;
+};
+
+export const americaPageTitle = {
+  title: "LS ELECTRIC America",
+  description:
+    "Empowering North American industries with reliable power and automation technologies.",
+};
+
+export const americaIntro = {
+  heroImage: `${IMG}/hero.jpg`,
+  headlineLines: ["Delivering Power and Automation Solutions Across the United States"],
+  paragraphs: [
+    "LS ELECTRIC America is the North American subsidiary of LS ELECTRIC, delivering power and automation solutions across the region.",
+    "We provide electrical systems, automation products, and field services across the full lifecycle—from design and installation to maintenance and optimization—helping reduce downtime and ensure reliable operations.",
+    "Entering the U.S. market with UL certification across its entire product lineup—the first in Asia—LS ELECTRIC America combines global engineering expertise with local execution, supported by its headquarters in Chicago, a sales office in Los Angeles, and six affiliates across North America.",
+  ],
+  stats: [
+    {
+      value: "UL-Certified",
+      label: "Reliability and compliance",
+      desc: "As the first and only Asian provider of a full UL-certified switchgear line-up",
+    },
+    {
+      value: "World 6th",
+      label: "Largest testing capacity lab",
+      desc: "Largest-scale testing infrastructure for power systems",
+    },
+    {
+      value: "1,000+",
+      label: "Projects",
+      desc: "Power infrastructure experience",
+    },
+  ] satisfies AmericaStatItem[],
+};
+
+export const americaShaping = {
+  title: "Shaping What's Next",
+  locationIcon: "/pub/ico/ico_map_16_white.svg",
+  blocks: [
+    {
+      id: "bastrop",
+      image: `${IMG}/shaping-bastrop.jpg`,
+      video: `${IMG}/bastrop.webm`,
+      titleLines: [
+        "Built in Texas. Proven across America.",
+        "Empowering tomorrow's energy",
+        "infrastructure.",
+      ],
+      location: "LS ELECTRIC America Bastrop Center",
+      highlights: [
+        {
+          title: "State-of-the-Art Facility",
+          desc: "495,000 ft² of precision engineering",
+        },
+        {
+          title: "Grid-Scale Manufacturing",
+          desc: "Domestically producing transformers, switchgear, and power systems",
+        },
+        {
+          title: "Mission-Critical Support",
+          desc: "Supporting U.S. Power Infrastructure such as Semiconductor, Data Center, EV and Renewable industries.",
+        },
+        {
+          title: "24/7 Service",
+          desc: "Pre & After-Sales Services, On-site Project Management and Training across the U.S.",
+        },
+      ],
+    },
+    {
+      id: "utah",
+      image: `${IMG}/shaping-utah.jpg`,
+      video: `${IMG}/utah.webm`,
+      titleLines: [
+        "Securing the Supply Chain:",
+        "Our Expanding U.S. Footprint",
+      ],
+      location: "LS ELECTRIC Utah Inc.",
+      highlights: [
+        {
+          title: "Western United States Hub",
+          desc: "Dedicated regional manufacturing of heavy-duty distribution systems and custom engineering",
+        },
+        {
+          title: "On-Demand Capacity",
+          desc: "Drastically reducing lead times and strengthening local supply resilience for U.S. power markets",
+        },
+        {
+          title: "Custom Engineering",
+          desc: "Tailored system integration designed to accelerate massive infrastructure expansion across North America",
+        },
+        {
+          title: "Market Responsiveness",
+          desc: "Enhancing delivery speed and responsiveness for North American customers",
+        },
+      ],
+    },
+  ] satisfies AmericaShapingBlock[],
+};
+
+export const americaBusiness = {
+  title: "Core Business Areas",
+  description:
+    "Practical solutions that power infrastructure, manufacturing, and energy systems.",
+  items: [
+    {
+      id: "lv-mv",
+      image: `${IMG}/business-01.jpg`,
+      title: "LV & MV Power Solutions",
+      description:
+        "We provide complete low and medium voltage power distribution solutions—from transformers and switchgear to switchboards, panelboards, and DC power systems. Built for mission critical applications like data centers, manufacturing, and commercial infrastructure, our solutions deliver the reliability, efficiency, and scalability North American operations demand.",
+      imagePosition: "left",
+    },
+    {
+      id: "grid",
+      image: `${IMG}/business-02.jpg`,
+      title: "Grid & Utility Infrastructure",
+      description:
+        "LS ELECTRIC supports utilities, renewable developers, and large industrial projects with high voltage transmission and grid infrastructure solutions. Our portfolio—from ultra high voltage disconnect switches to power transformers—is designed to strengthen grid resilience, improve efficiency, and support the transition to cleaner, more reliable energy systems across North America.",
+      imagePosition: "right",
+    },
+    {
+      id: "automation",
+      image: `${IMG}/business-03.jpg`,
+      title: "Automation & Industrial Control",
+      description:
+        "We deliver advanced automation and motor control solutions including VFDs, PLCs, HMIs, and integrated control systems. Designed for North American industry, our technologies help manufacturers and operators boost productivity, reduce downtime, and drive smarter, data driven decision making.",
+      imagePosition: "left",
+    },
+  ] satisfies AmericaBusinessItem[],
+};
+
+export const americaCareersBanner = {
+  /** Figma 5876:29880 (MO) · PC banner-bg.png */
+  bgImage: `${IMG}/banner-bg.png`,
+  bgImageMo: `${IMG}/banner-bg-mo.png`,
+  title: "Imagineers Dedicated to the Future of Smart Energy",
+  description: "Join LS ELECTRIC and drive the energy transition in North America.",
+  ctaLabel: "Explore Careers",
+  ctaHref: "/company/careers",
+};
+
+export const americaOperate = {
+  title: "Where We Operate",
+  description:
+    "Expanding our footprint across the United States. LS ELECTRIC connects operational hubs and project sites through a strong network, delivering reliable performance wherever we operate.",
+  mapImage: `${IMG}/map.svg`,
+  contactIcons: {
+    map: "/pub/ico/ico_map_16.svg",
+    phone: "/pub/ico/ico_phone_16.svg",
+    website: `${IMG}/ico_website_16.svg`,
+  },
+  locationGroups: [
+    {
+      id: "head-office",
+      title: "Head Office",
+      rows: [
+        [
+          {
+            id: "head-office",
+            badge: "Head Office",
+            name: "LS ELECTRIC America Inc.",
+            role: "Sales, Warehouse",
+            contacts: [
+              { type: "address", text: "625 Heathrow Dr, Lincolnshire, IL 60069" },
+              { type: "phone", text: "224-352-2265" },
+            ],
+          },
+        ],
+      ],
+    },
+    {
+      id: "office",
+      title: "Office",
+      rows: [
+        [
+          {
+            id: "bastrop",
+            badge: "Office",
+            name: "LS ELECTRIC America Bastrop Center",
+            role: "Service, Training / Manufacturing",
+            contacts: [
+              { type: "address", text: "409 Technology Dr, Bastrop, TX 78602" },
+              { type: "phone", text: "800-891-2941" },
+            ],
+          },
+          {
+            id: "western",
+            badge: "Office",
+            name: "LS ELECTRIC America Western Office",
+            role: "Sales, Warehouse",
+            contacts: [
+              {
+                type: "address",
+                text: "9647 Santa Fe Springs Rd, Santa Fe Springs, CA 90670",
+              },
+              { type: "phone", text: "949-333-3140" },
+            ],
+          },
+        ],
+        [
+          {
+            id: "atlanta",
+            badge: "Office",
+            name: "LS ELECTRIC America Atlanta Office",
+            role: "Sales",
+            contacts: [
+              { type: "address", text: "3176 Main St. Suite 201, Duluth, GA 30096" },
+              { type: "phone", text: "512-230-3873" },
+            ],
+          },
+          {
+            id: "dallas",
+            badge: "Office",
+            name: "LS ELECTRIC America Dallas Office",
+            role: "Sales",
+            contacts: [{ type: "address", text: "320 Decker Dr, Irving, TX 75062" }],
+          },
+        ],
+      ],
+    },
+    {
+      id: "affiliate",
+      title: "Affiliate",
+      rows: [
+        [
+          {
+            id: "utah",
+            badge: "Affiliate",
+            name: "LS ELECTRIC Utah Inc.",
+            role: "Sales, Manufacturing",
+            contacts: [
+              { type: "address", text: "655 E 4930 N, Enoch, UT 84721" },
+              { type: "phone", text: "435-865-0125" },
+              {
+                type: "website",
+                text: "https://mcmeng2.com/",
+                href: "https://mcmeng2.com/",
+              },
+            ],
+          },
+          {
+            id: "energy-solutions",
+            badge: "Affiliate",
+            name: "LS Energy Solutions",
+            role: "Service, Engineering",
+            contacts: [
+              {
+                type: "address",
+                text: "9201 Forsyth Park Dr., Charlotte, NC 28273",
+              },
+              { type: "phone", text: "980-221-0654" },
+              {
+                type: "website",
+                text: "https://www.ls-es.com/",
+                href: "https://www.ls-es.com/",
+              },
+            ],
+          },
+        ],
+      ],
+    },
+  ] satisfies AmericaLocationGroup[],
+};
+
+export const americaLeaders = {
+  title: "Meet Our Leaders",
+  description:
+    "Connecting accomplished executives and business leaders who shape industries and create lasting value.",
+  /** Figma — 상단 우측 피처드 (2열 폭) */
+  featured: {
+    id: "charlie-lee",
+    image: `${IMG}/leader-featured.png`,
+    imageMobile: `${IMG}/leader-featured-mo.png`,
+    signature: `${IMG}/leader-signature.svg`,
+    name: "ChungHee (Charlie) Lee",
+    role: "CEO & President of LS Electric America and\nLS Electric Utah",
+  } satisfies AmericaLeaderItem,
+  items: [
+    {
+      id: "youn-seob-lim",
+      image: `${IMG}/leader-01.png`,
+      name: "Youn Seob Lim",
+      role: "Head of Grid Business Division & President of LS Energy Solutions",
+    },
+    {
+      id: "jaekyun-kim",
+      image: `${IMG}/leader-02.png`,
+      name: "JaeKyun (J.K.) Kim",
+      role: "Head of Power System Division",
+    },
+    {
+      id: "sean-cho",
+      image: `${IMG}/leader-03.png`,
+      name: "Sean Seungheon Cho",
+      role: "Head of Business Support Division",
+    },
+    {
+      id: "edward-lee",
+      image: `${IMG}/leader-04.png`,
+      name: "Edward Lee",
+      role: "Head of Solution Business Department",
+    },
+    {
+      id: "steve-lee",
+      image: `${IMG}/leader-05.png`,
+      name: "Steve Lee",
+      role: "Head of Engineering & Technology Center",
+    },
+    {
+      id: "yongmo-jeong",
+      image: `${IMG}/leader-06.png`,
+      name: "Yongmo Jeong",
+      role: "Head of Operation Center, Bastrop Campus TX",
+    },
+    {
+      id: "andrew-urda",
+      image: `${IMG}/leader-07.png`,
+      name: "Andrew Urda",
+      role: "Head of Marketing",
+    },
+    {
+      id: "mike-ellisor",
+      image: `${IMG}/leader-08.png`,
+      name: "Mike Ellisor",
+      role: "Head of Power Solution Sales Team",
+    },
+  ] satisfies AmericaLeaderItem[],
+};
+
+export { companyMission as americaMission } from "./companyMissionContent";
+
+export const americaFollow = {
+  title:
+    "Follow us for the latest updates, insights,and innovations from LS ELECTRIC.",
+  links: [
+    {
+      id: "instagram",
+      label: "INSTAGRAM",
+      href: "https://www.instagram.com/lselectric_official",
+      icon: `${IMG}/follow-insta.svg`,
+    },
+    // {
+    //   id: "facebook",
+    //   label: "FACEBOOK",
+    //   href: "https://www.facebook.com/lselectricofficial",
+    //   icon: `${IMG}/follow-facebook.svg`,
+    // },
+    {
+      id: "linkedin",
+      label: "LINKEDIN",
+      href: "https://www.linkedin.com/company/lselectricamerica/jobs/",
+      icon: `${IMG}/follow-linkedin.svg`,
+    },
+    {
+      id: "youtube",
+      label: "YOUTUBE",
+      href: "https://www.youtube.com/channel/UCS4SwwqhnNK4072O8BDZtLg",
+      icon: `${IMG}/follow-youtube.svg`,
+    },
+  ] satisfies AmericaSocialLink[],
+};

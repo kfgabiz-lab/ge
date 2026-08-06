@@ -3,8 +3,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { articleDetailClass } from "@/app/()/company/articleDetailClass";
+import DevicesProductVideoPlayer from "@/components/video/DevicesProductVideoPlayer";
 
-export type CompanyArticleDetailVariant = "blog" | "press" | "events";
+export type CompanyArticleDetailVariant = "blog" | "press" | "events" | "media";
 
 export type CompanyArticleDetailPagerLink = {
   href: string;
@@ -12,8 +13,6 @@ export type CompanyArticleDetailPagerLink = {
 };
 
 export type CompanyArticleDetailEventsMeta = {
-  country: string;
-  events: string;
   venue: string;
   dates: string;
 };
@@ -21,7 +20,8 @@ export type CompanyArticleDetailEventsMeta = {
 type CompanyArticleDetailBaseProps = {
   pageId: string;
   title: ReactNode;
-  heroImage: { src: string; alt: string };
+  heroImage?: { src: string; alt: string };
+  heroVideo?: { youtubeVideoId: string; title: string };
   pagerAriaLabel: string;
   prev: CompanyArticleDetailPagerLink;
   next: CompanyArticleDetailPagerLink;
@@ -32,10 +32,19 @@ type CompanyArticleDetailBaseProps = {
   embedded?: boolean;
 };
 
-type CompanyArticleDetailBlogPressProps = CompanyArticleDetailBaseProps & {
-  variant: "blog" | "press";
+type CompanyArticleDetailBlogMediaProps = CompanyArticleDetailBaseProps & {
+  variant: "blog" | "media";
   date: string;
   category?: string;
+  detailMeta?: never;
+  eventsMeta?: never;
+};
+
+type CompanyArticleDetailPressProps = CompanyArticleDetailBaseProps & {
+  variant: "press";
+  date?: string;
+  detailMeta?: CompanyArticleDetailEventsMeta;
+  category?: never;
   eventsMeta?: never;
 };
 
@@ -43,11 +52,13 @@ type CompanyArticleDetailEventsProps = CompanyArticleDetailBaseProps & {
   variant: "events";
   eventsMeta: CompanyArticleDetailEventsMeta;
   date?: never;
+  detailMeta?: never;
   category?: never;
 };
 
 export type CompanyArticleDetailProps =
-  | CompanyArticleDetailBlogPressProps
+  | CompanyArticleDetailBlogMediaProps
+  | CompanyArticleDetailPressProps
   | CompanyArticleDetailEventsProps;
 
 export { articleDetailClass } from "@/app/()/company/articleDetailClass";
@@ -61,12 +72,23 @@ function EventsMetaItem({ label, value }: { label: string; value: string }) {
   );
 }
 
+function DetailMetaRow({ venue, dates }: CompanyArticleDetailEventsMeta) {
+  return (
+    <div className={articleDetailClass("meta")}>
+      <EventsMetaItem label="Venue" value={venue} />
+      <span className={articleDetailClass("meta-sep")} aria-hidden="true" />
+      <EventsMetaItem label="Dates" value={dates} />
+    </div>
+  );
+}
+
 export default function CompanyArticleDetail(props: CompanyArticleDetailProps) {
   const {
     variant,
     pageId,
     title,
     heroImage,
+    heroVideo,
     pagerAriaLabel,
     prev,
     next,
@@ -81,7 +103,9 @@ export default function CompanyArticleDetail(props: CompanyArticleDetailProps) {
       ? "company-page--blog-detail"
       : variant === "press"
         ? "company-page--press-detail"
-        : "company-page--events-detail";
+        : variant === "media"
+          ? "company-page--articles-detail"
+          : "company-page--events-detail";
 
   const section = (
     <section
@@ -95,26 +119,28 @@ export default function CompanyArticleDetail(props: CompanyArticleDetailProps) {
           ) : null}
           <h1 className={articleDetailClass("title")}>{title}</h1>
           {variant === "events" ? (
-            <div className={articleDetailClass("meta")}>
-              <EventsMetaItem label="Country" value={props.eventsMeta.country} />
-              <span className={articleDetailClass("meta-sep")} aria-hidden="true" />
-              <EventsMetaItem label="Events" value={props.eventsMeta.events} />
-              <span className={articleDetailClass("meta-sep")} aria-hidden="true" />
-              <EventsMetaItem label="Venue" value={props.eventsMeta.venue} />
-              <span className={articleDetailClass("meta-sep")} aria-hidden="true" />
-              <EventsMetaItem label="Dates" value={props.eventsMeta.dates} />
-            </div>
-          ) : (
+            <DetailMetaRow {...props.eventsMeta} />
+          ) : variant === "press" && props.detailMeta ? (
+            <DetailMetaRow {...props.detailMeta} />
+          ) : props.date ? (
             <p className={articleDetailClass("date")}>{props.date}</p>
-          )}
+          ) : null}
         </header>
 
-        <article className={articleDetailClass("article")}>
-          <img
-            src={heroImage.src}
-            alt={heroImage.alt}
-            className={articleDetailClass("hero-img")}
-          />
+        <article className="company-article-detail__article tiptap ProseMirror">
+          {heroImage ? (
+            <img
+              src={heroImage.src}
+              alt={heroImage.alt}
+              className={articleDetailClass("hero-img")}
+            />
+          ) : null}
+          {heroVideo ? (
+            <DevicesProductVideoPlayer
+              youtubeVideoId={heroVideo.youtubeVideoId}
+              title={heroVideo.title}
+            />
+          ) : null}
           {afterHero}
           {children}
         </article>
@@ -125,28 +151,36 @@ export default function CompanyArticleDetail(props: CompanyArticleDetailProps) {
             className={`${articleDetailClass("pager-item")} ${articleDetailClass("pager-item", "prev")}`}
           >
             <span className={articleDetailClass("pager-dir")}>
-              <span className={articleDetailClass("pager-label")}>PREV</span>
-              <img
-                src="/ico/ico_up_16.svg"
-                alt=""
-                aria-hidden="true"
-                className={`${articleDetailClass("pager-chev")} ${articleDetailClass("pager-chev", "up")}`}
-              />
+              <span className={articleDetailClass("pager-leading")}>
+                <span className={articleDetailClass("pager-label")}>PREV</span>
+                <img
+                  src="/pub/ico/ico_arrow_pager_14.svg"
+                  alt=""
+                  aria-hidden="true"
+                  width={14}
+                  height={14}
+                  className={`${articleDetailClass("pager-chev")} ${articleDetailClass("pager-chev", "up")}`}
+                />
+              </span>
+              <span className={articleDetailClass("pager-sep")} aria-hidden="true" />
             </span>
-            <span className={articleDetailClass("pager-sep")} aria-hidden="true" />
             <span className={articleDetailClass("pager-title")}>{prev.title}</span>
           </Link>
           <Link href={next.href} className={articleDetailClass("pager-item")}>
             <span className={articleDetailClass("pager-dir")}>
-              <span className={articleDetailClass("pager-label")}>NEXT</span>
-              <img
-                src="/ico/ico_up_16.svg"
-                alt=""
-                aria-hidden="true"
-                className={`${articleDetailClass("pager-chev")} ${articleDetailClass("pager-chev", "down")}`}
-              />
+              <span className={articleDetailClass("pager-leading")}>
+                <span className={articleDetailClass("pager-label")}>NEXT</span>
+                <img
+                  src="/pub/ico/ico_arrow_pager_14.svg"
+                  alt=""
+                  aria-hidden="true"
+                  width={14}
+                  height={14}
+                  className={`${articleDetailClass("pager-chev")} ${articleDetailClass("pager-chev", "down")}`}
+                />
+              </span>
+              <span className={articleDetailClass("pager-sep")} aria-hidden="true" />
             </span>
-            <span className={articleDetailClass("pager-sep")} aria-hidden="true" />
             <span className={articleDetailClass("pager-title")}>{next.title}</span>
           </Link>
         </nav>
@@ -161,7 +195,11 @@ export default function CompanyArticleDetail(props: CompanyArticleDetailProps) {
   );
 
   if (embedded) {
-    return section;
+    return (
+      <div className={`company-page ${pageModifier}`} id={pageId}>
+        {section}
+      </div>
+    );
   }
 
   return (

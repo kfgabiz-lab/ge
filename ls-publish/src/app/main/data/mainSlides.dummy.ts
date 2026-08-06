@@ -17,7 +17,7 @@ export const mainSlidesDummy: MainSlide[] = [
   {
     id: "slide-2",
     type: "image",
-    src: "/img/main_sample.png",
+    src: "/pub/img/main_sample.png",
     alt: "LS ELECTRIC main visual",
     title: "Clean Energy Solutions",
     description: "Sustainable power infrastructure for a greener future.",
@@ -37,7 +37,7 @@ export const mainSlidesDummy: MainSlide[] = [
   {
     id: "slide-4",
     type: "image",
-    src: "/img/main_sample.png",
+    src: "/pub/img/main_sample.png",
     alt: "Smart factory and automation",
     title: "Smart Factory & Automation",
     description: "Digital transformation for next-generation manufacturing.",

@@ -15,9 +15,9 @@ import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import "swiper/css/effect-fade";
 import { isMainPath } from "@/lib/navigation/crossSectionNav";
+import { useMediaQuery } from "@/components/layout/shared/useMediaQuery";
 import {
   getYoutubeEmbedSrc,
-  getYoutubePosterSrc,
   isYoutubeEmbedOrigin,
   isYoutubeMessageFromIframe,
   parseYoutubeMessage,
@@ -40,7 +40,7 @@ type VideoSource = {
 type SlideContent = {
   subtit: string;
   titLines: string[];
-  link: {
+  link?: {
     href: string;
     label: string;
   };
@@ -71,35 +71,34 @@ type MainSlide = SlideContent &
 
 const mainSlides: MainSlide[] = [
   {
-    id: "slide-1",
-    type: "youtube",
-    youtubeId: "JkbrdaEio2k",
-    alt: "『 The Guardian's Power 』LS AI 광고 영상",
-    subtit: "with Reliable Energy & Automation Solutions",
-    titLines: ["Powering the World,", "Lightening the Future"],
-    link: { href: "/main", label: "Explore" },
-  },
-  {
-    id: "slide-2",
-    type: "image",
-    src: "/img/main_sample.png",
-    alt: "Clean Energy Solutions",
-    subtit: "Sustainable Power Infrastructure",
-    titLines: ["Clean Energy", "for a Greener Future"],
+    id: "slide-video-1",
+    type: "video",
+    sources: [{ src: "/pub/img/main_001.webm", type: "video/webm" }],
+    alt: "Powering Industries Across North America",
+    subtit: "With a Strong North American Presence",
+    titLines: ["Powering Industries", "Across North America"],
     link: { href: "", label: "Explore" },
   },
   {
-    id: "slide-3",
-    type: "youtube",
-    youtubeId: "1xeeefxlxKg",
-    alt: "Smart Factory & Automation",
-    subtit: "Digital Transformation",
-    titLines: ["Smart Factory", "& Automation"],
-    link: { href: "", label: "Explore" },
+    id: "slide-video-2",
+    type: "video",
+    sources: [{ src: "/pub/img/main_002.webm", type: "video/webm" }],
+    alt: "Built for Performance, Ready to Deliver",
+    subtit: "With Integrated Manufacturing & Supply Capabilities",
+    titLines: ["Built for Performance,", "Ready to Deliver"],
+  },
+  {
+    id: "slide-video-3",
+    type: "video",
+    sources: [{ src: "/pub/img/main_003.webm", type: "video/webm" }],
+    alt: "Engineering Reliability, Delivering Confidence",
+    subtit: "With Trusted Engineering & Service Expertise",
+    titLines: ["Engineering Reliability,", "Delivering Confidence"],
   },
 ];
 
 const LAST_SLIDE_INDEX = mainSlides.length - 1;
+const MAIN_VISUAL_MOBILE_MQ = "(max-width: 780px)";
 
 function getVideoProgress(video: HTMLVideoElement) {
   const { duration, currentTime } = video;
@@ -115,6 +114,7 @@ function isMediaSlide(
 
 export default function VideoSwiper() {
   const pathname = usePathname();
+  const isMobileVisual = useMediaQuery(MAIN_VISUAL_MOBILE_MQ);
   const prevPathnameRef = useRef<string | null>(null);
   const [swiperKey, setSwiperKey] = useState(0);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -148,6 +148,7 @@ export default function VideoSwiper() {
 
   const activeSlide = mainSlides[activeIndex];
   const isActiveVideo = isMediaSlide(activeSlide);
+  const showPlaybackControl = isMobileVisual || isActiveVideo;
 
   const setProgress = useCallback((value: number) => {
     autoplayProgressRef.current = value;
@@ -410,6 +411,7 @@ export default function VideoSwiper() {
 
         const slide = mainSlides[swiper.realIndex];
         if (slide?.type !== "image") return;
+        if (!isVideoPlayingRef.current) return;
 
         const elapsed = Date.now() - progressStartRef.current;
         const progress = Math.min(
@@ -524,9 +526,11 @@ export default function VideoSwiper() {
         return;
       }
 
-      isVideoPlayingRef.current = false;
-      setIsVideoPlaying(false);
-      startImageProgressTimer(0);
+      if (slide?.type === "image") {
+        isVideoPlayingRef.current = true;
+        setIsVideoPlaying(true);
+        startImageProgressTimer(0);
+      }
     },
     [
       clearProgressTimer,
@@ -692,6 +696,22 @@ export default function VideoSwiper() {
 
     const index = swiper.realIndex;
     const slide = mainSlides[index];
+    if (!slide) return;
+
+    if (slide.type === "image") {
+      if (isVideoPlayingRef.current) {
+        clearProgressTimer();
+        isVideoPlayingRef.current = false;
+        setIsVideoPlaying(false);
+        return;
+      }
+
+      isVideoPlayingRef.current = true;
+      setIsVideoPlaying(true);
+      startImageProgressTimer(autoplayProgressRef.current);
+      return;
+    }
+
     if (!isMediaSlide(slide)) return;
 
     if (slide.type === "video") {
@@ -762,42 +782,29 @@ export default function VideoSwiper() {
           <SwiperSlide key={slide.id}>
             <div className="video-slide">
               {slide.type === "youtube" ? (
-                isClient && activeIndex === index ? (
-                  <>
-                    <iframe
-                      ref={(el) => {
-                        youtubeIframeRefs.current[index] = el;
-                      }}
-                      key={slide.youtubeId}
-                      className="video-slide__media video-slide__youtube-iframe is-active"
-                      src={getYoutubeEmbedSrc(slide.youtubeId)}
-                      title={slide.alt ?? slide.titLines.join(" ")}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      referrerPolicy="strict-origin-when-cross-origin"
-                      allowFullScreen
-                      onLoad={(event) =>
-                        handleYoutubeIframeLoad(index, event.currentTarget)
-                      }
-                    />
-                    <div
-                      className="video-slide__youtube-mask video-slide__youtube-mask--top"
-                      aria-hidden="true"
-                    />
-                    <div
-                      className="video-slide__youtube-mask video-slide__youtube-mask--bottom"
-                      aria-hidden="true"
-                    />
-                  </>
-                ) : (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    loading={index === 0 ? "eager" : "lazy"}
-                    decoding="async"
-                    className="video-slide__media video-slide__poster"
-                    src={getYoutubePosterSrc(slide.youtubeId)}
-                    alt={slide.alt ?? slide.titLines.join(" ")}
+                isClient ? (
+                  <iframe
+                    ref={(el) => {
+                      youtubeIframeRefs.current[index] = el;
+                    }}
+                    key={slide.youtubeId}
+                    className={
+                      activeIndex === index
+                        ? "video-slide__media video-slide__youtube-iframe is-active"
+                        : "video-slide__media video-slide__youtube-iframe"
+                    }
+                    src={getYoutubeEmbedSrc(slide.youtubeId, {
+                      origin: window.location.origin,
+                    })}
+                    title={slide.alt ?? slide.titLines.join(" ")}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                    onLoad={(event) =>
+                      handleYoutubeIframeLoad(index, event.currentTarget)
+                    }
                   />
-                )
+                ) : null
               ) : slide.type === "video" ? (
                 <video
                   ref={(el) => {
@@ -824,7 +831,6 @@ export default function VideoSwiper() {
                   alt={slide.alt ?? slide.titLines.join(" ")}
                   fill
                   sizes="100vw"
-                  priority={index === 0}
                 />
               )}
               <div className="sl_dim" aria-hidden="true" />
@@ -838,12 +844,22 @@ export default function VideoSwiper() {
                     </span>
                   ))}
                 </h2>
-                <a
-                  href={slide.link.href}
-                  className="btn-base btn-lv01 btn-lv01--line-solid"
-                >
-                  {slide.link.label}
-                </a>
+                {slide.link ? (
+                  <a
+                    href={slide.link.href}
+                    className="btn-base btn-lv01 btn-lv01--line-solid"
+                  >
+                    {slide.link.label}
+                  </a>
+                ) : (
+                  <span
+                    className="btn-base btn-lv01 btn-lv01--line-solid"
+                    aria-hidden="true"
+                    style={{ visibility: "hidden", pointerEvents: "none" }}
+                  >
+                    Explore
+                  </span>
+                )}
               </div>
             </div>
           </SwiperSlide>
@@ -851,7 +867,13 @@ export default function VideoSwiper() {
       </Swiper>
 
       <div className="video-pagination" aria-label="슬라이드 페이지네이션">
-        <div className="video-pagination__numbers">
+        <div
+          className={
+            isMobileVisual
+              ? "video-pagination__numbers video-pagination__numbers--mobile"
+              : "video-pagination__numbers"
+          }
+        >
           {mainSlides.map((slide, index) => (
             <button
               key={slide.id}
@@ -884,11 +906,11 @@ export default function VideoSwiper() {
             style={{ width: `${autoplayProgress}%` }}
           />
         </div>
-        {isActiveVideo ? (
+        {showPlaybackControl ? (
           <button
             type="button"
             className="video-pagination__control"
-            aria-label={isVideoPlaying ? "영상 정지" : "영상 재생"}
+            aria-label={isVideoPlaying ? "슬라이드 정지" : "슬라이드 재생"}
             aria-pressed={isVideoPlaying}
             onClick={toggleVideoPlayback}
           >

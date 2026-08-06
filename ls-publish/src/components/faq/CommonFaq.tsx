@@ -12,6 +12,7 @@ type CommonFaqProps = {
   title?: string;
   description?: ReactNode;
   items: CommonFaqEntry[];
+  sectionId?: string;
   /** 초기에 펼칠 패널 인덱스. -1이면 모두 접힘 */
   defaultOpenIndex?: number;
 };
@@ -31,6 +32,7 @@ export default function CommonFaq({
   title = "FAQ",
   description,
   items,
+  sectionId,
   defaultOpenIndex = 0,
 }: CommonFaqProps) {
   const [expandedIndices, setExpandedIndices] = useState<Set<number>>(() =>
@@ -50,7 +52,7 @@ export default function CommonFaq({
   }, []);
 
   return (
-    <section className="common_faq">
+    <section className="common_faq" id={sectionId}>
       <div className="common_faq__bg" aria-hidden="true" />
       <div className="inner">
         <div className="common_faq__head">

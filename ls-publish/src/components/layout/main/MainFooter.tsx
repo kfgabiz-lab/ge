@@ -2,67 +2,56 @@
 
 import {
   Checkbox,
-  FormControl,
+  ClickAwayListener,
   FormControlLabel,
   FormGroup,
-  InputLabel,
-  MenuItem,
   TextField,
 } from "@mui/material";
 import Link from "next/link";
-import { useState } from "react";
-import GuideSelect from "@/components/form/GuideSelect";
+import { useCallback, useEffect, useState } from "react";
+import CookiePreferencesModal from "@/components/modals/CookiePreferencesModal";
+import CookieSettingsModal from "@/components/modals/CookieSettingsModal";
+import { footerAffiliateOptions } from "@/data/footerAffiliateOptions";
 import "@/assets/css/components/MainFooter.css";
 
-const occupationOptions = [
-  "Engineer",
-  "Manager",
-  "Executive",
-  "Consultant",
-  "Other",
-];
-
-const productOptions = ["Power Solution", "Automation Solution"];
+const interestOptions = [
+  { value: "LV & MV Power Solutions", defaultChecked: false },
+  { value: "Grid & Utility Infrastructure", defaultChecked: true },
+  { value: "Automation & Industrial Control", defaultChecked: true },
+] as const;
 
 const legalLinks = [
-  { label: "Privacy Policy", href: "" },
-  { label: "Terms of Use", href: "" },
-  { label: "Cookie Policy", href: "" },
-  { label: "Change Your Cookie Setting", href: "" },
-];
-
-const affiliateOptions = [
-  { value: "lse-global", label: "LS ELECTRIC Global" },
-  { value: "lse-america", label: "LS ELECTRIC America" },
-  { value: "lse-europe", label: "LS ELECTRIC Europe" },
-  { value: "lse-asia", label: "LS ELECTRIC Asia" },
-];
+  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "Termes of service", href: "" },
+  { label: "General Terms of Purchase", href: "" },
+  { label: "Change Your Cookie Setting", opensCookieModal: true },
+] as const;
 
 const snsLinks = [
   {
     label: "LinkedIn",
-    href: "https://www.linkedin.com/company/lselectric",
+    href: "https://www.linkedin.com/company/lselectricamerica/jobs/",
     className: "link_linkedin",
-    icon: "/img/footer/ico_linkedin_40.svg",
+    icon: "/pub/img/footer/ico_linkedin_40.svg",
   },
   {
     label: "Instagram",
     href: "https://www.instagram.com/lselectric_official",
     className: "link_insta",
-    icon: "/img/footer/ico_insta_40.svg",
+    icon: "/pub/img/footer/ico_insta_40.svg",
   },
   {
     label: "YouTube",
     href: "https://www.youtube.com/channel/UCS4SwwqhnNK4072O8BDZtLg",
     className: "link_youtube",
-    icon: "/img/footer/ico_youtube_40.svg",
+    icon: "/pub/img/footer/ico_youtube_40.svg",
   },
-  {
-    label: "Facebook",
-    href: "https://www.facebook.com/lselectricofficial",
-    className: "link_facebook",
-    icon: "/img/footer/ico_face_40.svg",
-  },
+  // {
+  //   label: "Facebook",
+  //   href: "https://www.facebook.com/lselectricofficial",
+  //   className: "link_facebook",
+  //   icon: "/pub/img/footer/ico_face_40.svg",
+  // },
 ] as const;
 
 type MainFooterProps = {
@@ -84,12 +73,10 @@ function FooterSelectIcon({
 
 function FooterCheckboxIcon({ checked = false }: { checked?: boolean }) {
   return (
-    <img loading="lazy" decoding="async"
-      src={checked ? "/ico/ico_checked.svg" : "/ico/ico_check.svg"}
-      alt=""
-      width={22}
-      height={22}
-      className="main_footer__checkbox-icon"
+    <span
+      className={`main_footer__checkbox-icon${
+        checked ? " main_footer__checkbox-icon--checked" : ""
+      }`}
       aria-hidden
     />
   );
@@ -97,18 +84,55 @@ function FooterCheckboxIcon({ checked = false }: { checked?: boolean }) {
 
 export default function MainFooter({ logoHref = "/main" }: MainFooterProps) {
   const [email, setEmail] = useState("");
-  const [occupation, setOccupation] = useState("");
-  const [products, setProducts] = useState<string[]>([]);
-  const [affiliate, setAffiliate] = useState("");
+  const [interests, setInterests] = useState<string[]>(() =>
+    interestOptions
+      .filter((option) => option.defaultChecked)
+      .map((option) => option.value),
+  );
+  const [affiliateOpen, setAffiliateOpen] = useState(false);
+  const [cookieSettingsOpen, setCookieSettingsOpen] = useState(false);
+  const [cookiePreferencesOpen, setCookiePreferencesOpen] = useState(false);
 
-  const handleProductChange = (value: string, checked: boolean) => {
-    setProducts((prev) =>
+  const closeAffiliateMenu = useCallback(() => {
+    setAffiliateOpen(false);
+  }, []);
+
+  const toggleAffiliateMenu = useCallback(() => {
+    setAffiliateOpen((prev) => !prev);
+  }, []);
+
+  useEffect(() => {
+    if (!affiliateOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeAffiliateMenu();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [affiliateOpen, closeAffiliateMenu]);
+
+  const handleInterestChange = (value: string, checked: boolean) => {
+    setInterests((prev) =>
       checked ? [...prev, value] : prev.filter((item) => item !== value),
     );
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+  };
+
+  const handleAffiliateSelect = (value: string) => {
+    const option = footerAffiliateOptions.find((item) => item.value === value);
+    if (option?.href) {
+      window.open(option.href, "_blank", "noopener,noreferrer");
+    }
+    closeAffiliateMenu();
   };
 
   return (
@@ -129,61 +153,39 @@ export default function MainFooter({ logoHref = "/main" }: MainFooterProps) {
         <div className="main_footer__form">
           <form action="" onSubmit={handleSubmit}>
             <div className="main_footer__fields">
-              <TextField
-                className="main_footer__field"
-                label="Email Address"
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-              />
+              <div className="main_footer__field-group">
+                <label htmlFor="main-footer-email" className="main_footer__field-label">
+                  Email
+                </label>
+                <TextField
+                  id="main-footer-email"
+                  className="main_footer__field"
+                  type="email"
+                  placeholder="Email address"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                />
+              </div>
 
-              <FormControl className="main_footer__field">
-                <InputLabel id="main-footer-occupation-label">
-                  Occupation
-                </InputLabel>
-                <GuideSelect
-                  labelId="main-footer-occupation-label"
-                  label="Occupation"
-                  value={occupation}
-                  onChange={(event) =>
-                    setOccupation(String(event.target.value))
-                  }
-                  IconComponent={FooterSelectIcon}
-                  MenuProps={{
-                    slotProps: {
-                      paper: { className: "main_footer__select-menu" },
-                    },
-                  }}
-                >
-                  {occupationOptions.map((option) => (
-                    <MenuItem key={option} value={option}>
-                      {option}
-                    </MenuItem>
-                  ))}
-                </GuideSelect>
-              </FormControl>
-
-              <div className="main_footer__products">
-                <h3 className="main_footer__products-tit">
-                  Product(s) of Interest
-                </h3>
-                <FormGroup row className="main_footer__product-checks">
-                  {productOptions.map((option) => (
+              <div className="main_footer__interests">
+                <h3 className="main_footer__interests-tit">Areas of Interest</h3>
+                <FormGroup row className="main_footer__interest-checks">
+                  {interestOptions.map((option) => (
                     <FormControlLabel
-                      key={option}
+                      key={option.value}
                       control={
                         <Checkbox
                           className="main_footer__checkbox"
-                          checked={products.includes(option)}
+                          checked={interests.includes(option.value)}
                           icon={<FooterCheckboxIcon />}
                           checkedIcon={<FooterCheckboxIcon checked />}
                           onChange={(event) =>
-                            handleProductChange(option, event.target.checked)
+                            handleInterestChange(option.value, event.target.checked)
                           }
                         />
                       }
-                      label={option}
-                      className="main_footer__product-check"
+                      label={option.value}
+                      className="main_footer__interest-check"
                     />
                   ))}
                 </FormGroup>
@@ -196,7 +198,9 @@ export default function MainFooter({ logoHref = "/main" }: MainFooterProps) {
               </button>
               <p className="main_footer__agree">
                 and I agree with the terms of use as described in the{" "}
-                <a href="">Privacy Policy.</a>
+                <Link href="/privacy-policy" className="main_footer__agree-link">
+                  Privacy Policy.
+                </Link>
               </p>
             </div>
           </form>
@@ -207,38 +211,61 @@ export default function MainFooter({ logoHref = "/main" }: MainFooterProps) {
         <div className="main_footer_02__inner">
           <div className="main_footer_02__left">
             <Link href={logoHref} className="main_footer_02__logo">
-              <img loading="lazy" decoding="async" src="/img/logo_white.png" alt="LS ELECTRIC" />
+              <img loading="lazy" decoding="async" src="/pub/img/logo_white.svg" alt="LS ELECTRIC" />
             </Link>
             <p className="main_footer_02__copyright">
               © 2024 LS ELECTRIC Co., Ltd. All Rights Reserved.
             </p>
-            <FormControl className="main_footer_02__affiliate">
-              <GuideSelect
-                displayEmpty
-                value={affiliate}
-                onChange={(event) =>
-                  setAffiliate(String(event.target.value))
-                }
-                IconComponent={FooterSelectIcon}
-                renderValue={(selected) =>
-                  selected
-                    ? affiliateOptions.find((item) => item.value === selected)
-                        ?.label
-                    : "LSE Affiliated & Subsidiaries"
-                }
-                MenuProps={{
-                  slotProps: {
-                    paper: { className: "main_footer__select-menu" },
-                  },
-                }}
-              >
-                {affiliateOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </GuideSelect>
-            </FormControl>
+            <div className="main_footer_02__affiliate">
+              <ClickAwayListener onClickAway={closeAffiliateMenu}>
+                <div className="main_footer_02__affiliate-inner">
+                  <button
+                    type="button"
+                    className="main_footer_02__affiliate-trigger"
+                    aria-haspopup="listbox"
+                    aria-expanded={affiliateOpen}
+                    aria-controls="main-footer-affiliate-listbox"
+                    onClick={toggleAffiliateMenu}
+                  >
+                  LS ELECTRIC Affiliated  &amp; Subsidiaries
+                    
+                    <FooterSelectIcon className="main_footer_02__affiliate-trigger__icon" />
+                  </button>
+                  {affiliateOpen ? (
+                    <div
+                      className="main_footer__select-menu main_footer__select-menu--affiliate"
+                      style={
+                        {
+                          "--main-footer-affiliate-option-count":
+                            footerAffiliateOptions.length,
+                        } as React.CSSProperties
+                      }
+                    >
+                      <ul
+                        id="main-footer-affiliate-listbox"
+                        className="main_footer__select-menu-list"
+                        role="listbox"
+                        aria-label="Affiliated and subsidiaries"
+                      >
+                        {footerAffiliateOptions.map((option) => (
+                          <li key={option.value} role="none">
+                            <button
+                              type="button"
+                              role="option"
+                              aria-selected={false}
+                              className="main_footer__select-menu__option"
+                              onClick={() => handleAffiliateSelect(option.value)}
+                            >
+                              {option.label}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
+                </div>
+              </ClickAwayListener>
+            </div>
           </div>
 
           <div className="main_footer_02__right">
@@ -248,9 +275,19 @@ export default function MainFooter({ logoHref = "/main" }: MainFooterProps) {
             >
               {legalLinks.map((item, index) => (
                 <span key={item.label} className="main_footer_02__legal-item">
-                  <Link href={item.href} className="main_footer_02__legal-link">
-                    {item.label}
-                  </Link>
+                  {"opensCookieModal" in item ? (
+                    <button
+                      type="button"
+                      className="main_footer_02__legal-link"
+                      onClick={() => setCookieSettingsOpen(true)}
+                    >
+                      {item.label}
+                    </button>
+                  ) : (
+                    <Link href={item.href} className="main_footer_02__legal-link">
+                      {item.label}
+                    </Link>
+                  )}
                   {index < legalLinks.length - 1 ? (
                     <span
                       className="main_footer_02__legal-sep"
@@ -280,6 +317,18 @@ export default function MainFooter({ logoHref = "/main" }: MainFooterProps) {
           </div>
         </div>
       </div>
+      <CookieSettingsModal
+        open={cookieSettingsOpen}
+        onClose={() => setCookieSettingsOpen(false)}
+        onSettings={() => {
+          setCookieSettingsOpen(false);
+          setCookiePreferencesOpen(true);
+        }}
+      />
+      <CookiePreferencesModal
+        open={cookiePreferencesOpen}
+        onClose={() => setCookiePreferencesOpen(false)}
+      />
     </footer>
   );
 }

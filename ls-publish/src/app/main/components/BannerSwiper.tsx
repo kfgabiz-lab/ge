@@ -17,25 +17,25 @@ const bannerSlides = [
   {
     id: "banner-1",
     href: "",
-    img: "/img/main/img_main_banner_01.png",
+    img: "/pub/img/main/img_main_banner_01.png",
     alt: "banner_1",
     tit: "Triple iF Design 2026",
-    txt: "3 Wins in Smart Device & Energy Platform Design",
+    txt: "3 Wins in Smart Device & Energy Platform...",
   },
   {
     id: "banner-2",
     href: "",
-    img: "/img/main/img_main_banner_02.png",
+    img: "/pub/img/main/img_main_banner_02.png",
     alt: "banner_2",
     tit: "Smart Energy Innovation",
     txt: "Leading the future of power and automation solutions",
   },{
     id: "banner-3",
     href: "",
-    img: "/img/main/img_main_banner_01.png",
+    img: "/pub/img/main/img_main_banner_01.png",
     alt: "banner_1",
     tit: "Triple iF Design 2026",
-    txt: "3 Wins in Smart Device & Energy Platform Design",
+    txt: "3 Wins in Smart Device & Energy Platform...",
   },
 ];
 
@@ -100,12 +100,14 @@ export default function BannerSwiper() {
                     className="sl_img"
                     fill
                     sizes="120px"
-                    priority={index === 0}
                   />
                 </div>
                 <div className="txt_area">
-                  <p className="tit">{slide.tit}</p>
-                  <p className="txt">{slide.txt}</p>
+                  <div className="txt_area__copy">
+                    <p className="tit">{slide.tit}</p>
+                    <p className="txt">{slide.txt}</p>
+                  </div>
+                  <span className="txt_area__arrow" aria-hidden="true" />
                 </div>
               </Link>
             </div>

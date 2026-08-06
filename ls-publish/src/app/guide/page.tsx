@@ -9,7 +9,7 @@ const guideCards = [
     title: "Component Guide",
     description:
       "Button, Check, Textfield, Pagination, Banner, Modal — docs/COMPONENT_GUIDE.md",
-    meta: "Figma 04~09",
+    meta: "Figma 04~08",
   },
   {
     href: "/guide/ico",
