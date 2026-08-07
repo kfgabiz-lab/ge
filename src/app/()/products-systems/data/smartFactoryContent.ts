@@ -11,7 +11,7 @@ import type { HvdcApplication, HvdcWhyBlock } from "./hvdcContent";
 const smartFactoryImg = (file: string) => `/pub/img/devices-systems/smart-factory/${file}`;
 
 export const smartFactoryHero = {
-  title: "Smart Factory",
+  title: "Diagnosis System",
   description:
     "LS ELECTRIC Diagnosis is a condition monitoring and diagnostic solution for power equipment. It monitors, diagnoses, and predicts potential failures caused by major component defects, natural aging, or unexpected system conditions during operation. The solution helps improve power supply reliability and support stable equipment operation.",
 };
@@ -221,7 +221,7 @@ export const smartFactoryOtherProducts: ProductOtherItem[] = [
 
 export const smartFactoryFaqItems = [
   {
-    question: "What is LS ELECTRIC Diagnosis and how does it support Smart Factory operations?",
+    question: "What is LS ELECTRIC Diagnosis and how does it support Diagnosis System operations?",
     answer:
       "LS ELECTRIC Diagnosis is a condition monitoring and diagnostic solution that detects abnormalities and predicts potential equipment failures in real time, helping improve power supply reliability across industrial facilities.",
   },
