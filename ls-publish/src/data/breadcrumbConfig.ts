@@ -223,7 +223,7 @@ const configs: Record<string, BreadcrumbConfig> = {
       { label: "Products & Systems", href: "/products-systems/motor-control" },
       { label: "Software", href: SOFTWARE_HREF },
     ],
-    current: "Smart Factory",
+    current: "Diagnosis System",
   },
   "/company/ls-electric-america": {
     crumbs: [{ label: "Company" }],
