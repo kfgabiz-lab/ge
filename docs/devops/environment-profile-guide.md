@@ -173,7 +173,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://10.153.11.120:5432/postgres
     username: lsedbadmin
-    password: lsis@2026!@#
+    password: ${DB_PASSWORD:}
   jpa:
     show-sql: true
     hibernate:
@@ -210,7 +210,7 @@ logging:
 > |---|---|---|
 > | DB Host | localhost:5432 | 10.153.11.120:5432 |
 > | DB명 | `bo` | `postgres` |
-> | DB 계정 | `postgres` / `1234` | `lsedbadmin` / `lsis@2026!@#` |
+> | DB 계정 | `postgres` / `1234` | `lsedbadmin` / (환경변수 `DB_PASSWORD`) |
 > | CORS | localhost | localhost (동일) |
 > | ddl-auto | update | update (동일) |
 > | 로그 수준 | DEBUG | DEBUG (동일) |
@@ -231,7 +231,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://10.153.11.120:5432/postgres
     username: lsedbadmin
-    password: lsis@2026!@#
+    password: ${DB_PASSWORD:}
   jpa:
     show-sql: false
     hibernate:
