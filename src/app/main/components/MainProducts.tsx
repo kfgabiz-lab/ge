@@ -6,6 +6,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { A11y } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import SwiperBarControls from "@/components/swiper/SwiperBarControls";
+/* 260810 start */
+import ProductAwardBadge from "@/components/product/ProductAwardBadge";
+import { getProductBadgeType } from "@/lib/productBadge";
+/* 260810 end */
 import { useMediaQuery } from "@/components/layout/shared/useMediaQuery";
 import TabButton from "@/components/ui/TabButton";
 import { motorControlProducts } from "@/app/()/products-systems/data/motorControlContent";
@@ -19,6 +23,10 @@ type ProductItem = {
   image: string;
   imageAlt: string;
   title: string;
+  /* 260810 start */
+  badge?: boolean;
+  badges?: 1 | 2;
+  /* 260810 end */
 };
 
 const tabs: { id: TabId; label: string }[] = [
@@ -36,6 +44,10 @@ function mapDevicesGridSlice(start: number, end: number, idPrefix: string): Prod
       image: item.image,
       imageAlt: title,
       title,
+      /* 260810 start */
+      badge: item.badge,
+      badges: item.badges,
+      /* 260810 end */
     };
   });
 }
@@ -224,18 +236,30 @@ function ProductsSwiperPer4({ products }: ProductsSwiperPer4Props) {
           onBreakpoint={handleSlideChange}
           onResize={handleSlideChange}
         >
-          {products.map((product) => (
-            <SwiperSlide key={product.id}>
-              <Link href={product.href} className="sl">
-                <div className="img_area">
-                  <img loading="lazy" decoding="async" src={product.image} alt={product.imageAlt} />
-                </div>
-                <div className="txt_area">
-                  <h3 className="tit_product">{product.title}</h3>
-                </div>
-              </Link>
-            </SwiperSlide>
-          ))}
+          {products.map((product) => {
+            /* 260810 start */
+            const badgeType = getProductBadgeType(product);
+            /* 260810 end */
+
+            return (
+              <SwiperSlide key={product.id}>
+                <Link
+                  href={product.href}
+                  className={badgeType ? `sl ${badgeType}` : "sl"}
+                >
+                  <div className="img_area">
+                    {/* 260810 start */}
+                    {badgeType ? <ProductAwardBadge /> : null}
+                    {/* 260810 end */}
+                    <img loading="lazy" decoding="async" src={product.image} alt={product.imageAlt} />
+                  </div>
+                  <div className="txt_area">
+                    <h3 className="tit_product">{product.title}</h3>
+                  </div>
+                </Link>
+              </SwiperSlide>
+            );
+          })}
         </Swiper>
 
         <SwiperBarControls

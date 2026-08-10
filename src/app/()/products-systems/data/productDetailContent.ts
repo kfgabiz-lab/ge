@@ -105,6 +105,59 @@ export type ProductOtherItem = {
 export const metasolMsOtherProductsSubtitle =
   "Metasol Contactor & Overload Relay";
 
+/* 260810 start */
+/** Figma 7954:155130 — P-FO-PROD-030000P Other Products (shared) */
+export const prod030000OtherProducts: ProductOtherItem[] = [
+  {
+    id: "prod-030000-op-1",
+    href: "/products-systems/motor-control/metasol-ms",
+    image: "/pub/img/devices-systems/products/other/product_other_metasol_ms.png",
+    title: "Metasol MS",
+    subtitle: metasolMsOtherProductsSubtitle,
+  },
+  {
+    id: "prod-030000-op-2",
+    href: "/products-systems/motor-control/susol-ul-smart-mccb",
+    image: "/pub/img/devices-systems/products/other/product_other_mcb.png",
+    title: "Miniature circuit breaker",
+    subtitle: metasolMsOtherProductsSubtitle,
+  },
+  {
+    id: "prod-030000-op-3",
+    href: "",
+    image: "/pub/img/devices-systems/products/other/product_other_metasol_mms.png",
+    title: "Metasol MMS",
+    subtitle: metasolMsOtherProductsSubtitle,
+  },
+  {
+    id: "prod-030000-op-4",
+    href: "/products-systems/motor-control/susol-ul-smart-mccb",
+    image: "/pub/img/devices-systems/products/other/product_other_susol_ul_mccb.png",
+    title: "Susol UL MCCB",
+    subtitle: metasolMsOtherProductsSubtitle,
+  },
+  {
+    id: "prod-030000-op-5",
+    href: "",
+    image: "/pub/img/devices-systems/products/other/product_other_metasol_ms.png",
+    title: "Magnetic Contactor",
+    subtitle: metasolMsOtherProductsSubtitle,
+  },
+  {
+    id: "prod-030000-op-6",
+    href: "",
+    image: "/pub/img/devices-systems/products/other/product_other_metasol_ms.png",
+    title: "Overload Relay",
+    subtitle: metasolMsOtherProductsSubtitle,
+  },
+];
+
+/** Figma 7954:155910 — P-FO-PROD-030000P hero IF 뱃지·캡션 (shared) */
+export const prod030000HeroAward = true;
+export const prod030000HeroAwardCaption =
+  "Winner of the iF Design Award Germany's premier design prize";
+/* 260810 end */
+
 /** devices_product_lineup · type1(MCCB) · type2(VFD frame) */
 export type ProductLineupVariant = "type1" | "type2";
 
@@ -132,6 +185,12 @@ export type ProductDetail = {
   expertBannerHref?: string;
   expertBannerExternal?: boolean;
   expertContactEmail?: string;
+  /* 260810 start */
+  /** Figma 7954:155910 — hero 이미지 IF 뱃지 */
+  heroAward?: boolean;
+  /** hero 이미지 하단 수상 설명 */
+  heroAwardCaption?: string;
+  /* 260810 end */
 };
 
 /** Figma 6843:64936 — H100 Plus Key Features */
@@ -379,7 +438,11 @@ export const metasolMsDetail: ProductDetail = {
   configuratorBannerBg: "/pub/img/devices/product/banner_configurator_bg.png",
   expertBannerHref: "/support/contact-us",
   expertContactEmail: "automation_support.us@lselectricamerica.com",
-  otherProducts: [],
+  /* 260810 start */
+  otherProducts: prod030000OtherProducts,
+  heroAward: prod030000HeroAward,
+  heroAwardCaption: prod030000HeroAwardCaption,
+  /* 260810 end */
 };
 
 export const metasolMsFaqItems = [
@@ -428,7 +491,11 @@ export const h100PlusDetail: ProductDetail = {
   configuratorBannerBg: "/pub/img/devices/product/banner_configurator_bg.png",
   expertBannerHref: "/support/contact-us",
   expertContactEmail: "automation_support.us@lselectricamerica.com",
-  otherProducts: [],
+  /* 260810 start */
+  otherProducts: prod030000OtherProducts,
+  heroAward: prod030000HeroAward,
+  heroAwardCaption: prod030000HeroAwardCaption,
+  /* 260810 end */
 };
 
 export const h100PlusFaqItems = metasolMsFaqItems;
@@ -603,7 +670,11 @@ export const susolUlSmartMccbDetail: ProductDetail = {
   configuratorBannerBg: "/pub/img/devices/product/banner_configurator_bg.png",
   expertBannerHref: "/support/contact-us",
   expertContactEmail: "automation_support.us@lselectricamerica.com",
-  otherProducts: [],
+  /* 260810 start */
+  otherProducts: prod030000OtherProducts,
+  heroAward: prod030000HeroAward,
+  heroAwardCaption: prod030000HeroAwardCaption,
+  /* 260810 end */
 };
 
 export const susolUlSmartMccbFaqItems = metasolMsFaqItems;
@@ -629,31 +700,27 @@ export const productDetailNavItems = [
   { id: "product-help", label: "Help" },
 ] as const;
 
-/** Figma 6788:8339 — Metasol MS (no Other Products) */
+/* 260810 start */
+/** Figma 7954:155130 — P-FO-PROD-030000P (metasol-ms · h100_plus · susol) */
 export const metasolMsNavItems = [
   { id: "product-key-feature", label: "Key Features" },
   { id: "product-lineup", label: "Lineup" },
   { id: "product-downloads", label: "Downloads" },
   { id: "product-video", label: "Video" },
+  { id: "product-other", label: "Other Products" },
   { id: "product-markets", label: "Markets" },
   { id: "product-help", label: "Help" },
 ] as const;
 
-/** Figma 6843:64936 — H100 Plus (no Other Products) */
-export const h100PlusNavItems = [
-  { id: "product-key-feature", label: "Key Features" },
-  { id: "product-lineup", label: "Lineup" },
-  { id: "product-downloads", label: "Downloads" },
-  { id: "product-video", label: "Video" },
-  { id: "product-markets", label: "Markets" },
-  { id: "product-help", label: "Help" },
-] as const;
+export const h100PlusNavItems = metasolMsNavItems;
 
-/** Figma 6788:7460 — Susol UL ACB (no Video / Other Products) */
+/** Susol UL ACB — no Video */
 export const susolUlSmartMccbNavItems = [
   { id: "product-key-feature", label: "Key Features" },
   { id: "product-lineup", label: "Lineup" },
   { id: "product-downloads", label: "Downloads" },
+  { id: "product-other", label: "Other Products" },
   { id: "product-markets", label: "Markets" },
   { id: "product-help", label: "Help" },
 ] as const;
+/* 260810 end */

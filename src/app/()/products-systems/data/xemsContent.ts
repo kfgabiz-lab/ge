@@ -229,7 +229,6 @@ export const xemsOtherProducts: ProductOtherItem[] = [
     image: "/pub/img/devices-systems/products/other/product_other_metasol_mms.png",
     title: "Metasol MMS",
     subtitle: XEMS_OTHER_PRODUCT_SUBTITLE,
-    badges: 2,
   },
   {
     id: "xems-op-4",

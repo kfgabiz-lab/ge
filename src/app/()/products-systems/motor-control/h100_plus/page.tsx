@@ -10,6 +10,9 @@ import DevicesProductHero from "../../components/product/DevicesProductHero";
 import DevicesProductFeaturesSection from "@/components/content/DevicesProductFeaturesSection";
 import DevicesProductLineup from "../../components/product/DevicesProductLineup";
 import DevicesProductNavScope from "../../components/product/DevicesProductNavScope";
+/* 260810 start */
+import DevicesProductOtherProducts from "../../components/product/DevicesProductOtherProducts";
+/* 260810 end */
 import DevicesProductVideo from "../../components/product/DevicesProductVideo";
 import { motorControlHighlights } from "../../data/motorControlContent";
 import {
@@ -22,7 +25,7 @@ import "@/assets/css/devices-product-detail.css";
 
 export default function H100PlusProductPage() {
   return (
-    <main className="devices-page devices-page--product" id="Page_devices_h100_plus">
+    <main className="devices-page devices-page--product" id="P-FO-PROD-030000P">
       <DevicesProductHero product={h100PlusDetail} />
       <DevicesProductNavScope navItems={h100PlusNavItems}>
         <DevicesProductFeaturesSection
@@ -44,6 +47,9 @@ export default function H100PlusProductPage() {
         <DevicesProductDownloads items={h100PlusDetail.downloads} />
         <CommonBanner03 />
         <DevicesProductVideo youtubeVideoId={h100PlusDetail.youtubeVideoId} />
+        {/* 260810 start */}
+        <DevicesProductOtherProducts items={h100PlusDetail.otherProducts} />
+        {/* 260810 end */}
         <div id="product-markets">
           <DevicesMarkets />
         </div>

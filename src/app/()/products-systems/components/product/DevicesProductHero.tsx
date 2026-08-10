@@ -1,23 +1,52 @@
 import Link from "next/link";
 import type { ProductDetail } from "../../data/productDetailContent";
 import ProductSectionScrollLink from "./ProductSectionScrollLink";
+/* 260810 start */
+import ProductAwardBadge from "@/components/product/ProductAwardBadge";
+/* 260810 end */
 
 type DevicesProductHeroProps = {
   product: ProductDetail;
 };
 
 export default function DevicesProductHero({ product }: DevicesProductHeroProps) {
+  /* 260810 start */
+  const showAward = Boolean(product.heroAward);
+  /* 260810 end */
+
   return (
     <section className="devices_product_hero" id="product-top">
       <div className="inner devices_product_hero__inner">
-        <div className="devices_product_hero__visual">
-          <img
-            loading="eager"
-            decoding="async"
-            src={product.image}
-            alt={product.series}
-            className="devices_product_hero__img"
-          />
+        <div
+          className={
+            showAward
+              ? "devices_product_hero__visual devices_product_hero__visual--award"
+              : "devices_product_hero__visual"
+          }
+        >
+          {/* 260810 start */}
+          <div
+            className={
+              showAward
+                ? "devices_product_hero__img-wrap type2"
+                : "devices_product_hero__img-wrap"
+            }
+          >
+            {showAward ? <ProductAwardBadge /> : null}
+            <img
+              loading="eager"
+              decoding="async"
+              src={product.image}
+              alt={product.series}
+              className="devices_product_hero__img"
+            />
+          </div>
+          {product.heroAwardCaption ? (
+            <p className="devices_product_hero__award-caption">
+              {product.heroAwardCaption}
+            </p>
+          ) : null}
+          {/* 260810 end */}
         </div>
         <div className="devices_product_hero__content">
           {/* <div className="devices_product_hero__meta">

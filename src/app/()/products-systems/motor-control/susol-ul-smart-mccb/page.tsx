@@ -10,6 +10,9 @@ import DevicesProductHero from "../../components/product/DevicesProductHero";
 import DevicesProductFeaturesSection from "@/components/content/DevicesProductFeaturesSection";
 import DevicesProductLineup from "../../components/product/DevicesProductLineup";
 import DevicesProductNavScope from "../../components/product/DevicesProductNavScope";
+/* 260810 start */
+import DevicesProductOtherProducts from "../../components/product/DevicesProductOtherProducts";
+/* 260810 end */
 import { motorControlHighlights } from "../../data/motorControlContent";
 import {
   susolUlSmartMccbDetail,
@@ -23,7 +26,7 @@ export default function SusolUlSmartMccbProductPage() {
   return (
     <main
       className="devices-page devices-page--product"
-      id="Page_devices_susol_ul_smart_mccb"
+      id="P-FO-PROD-030000P"
     >
       <DevicesProductHero product={susolUlSmartMccbDetail} />
       <DevicesProductNavScope navItems={susolUlSmartMccbNavItems}>
@@ -45,6 +48,9 @@ export default function SusolUlSmartMccbProductPage() {
         />
         <DevicesProductDownloads items={susolUlSmartMccbDetail.downloads} />
         <CommonBanner03 />
+        {/* 260810 start */}
+        <DevicesProductOtherProducts items={susolUlSmartMccbDetail.otherProducts} />
+        {/* 260810 end */}
         <div id="product-markets">
           <DevicesMarkets />
         </div>
