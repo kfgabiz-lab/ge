@@ -512,7 +512,7 @@ section.devices_product_hero .devices_product_hero__btns .icon_download {
     border-bottom: 1px solid #e8e8e8;
   }
 
-  /* 2026-08-10 수정 시작 */
+  /* 260810 start */
   /* product_etc row-image(th>img)는 flex 금지 — 열 붕괴/이미지 찌그러짐 (아래 product_etc 규칙 사용) */
   section.devices_product_lineup
     .devices_product_lineup__grid--type1
@@ -544,7 +544,7 @@ section.devices_product_hero .devices_product_hero__btns .icon_download {
     width: 136px;
     height: 136px;
   }
-  /* 2026-08-10 수정 끝 */
+  /* 260810 end */
 
   section.devices_product_lineup .devices_product_lineup__grid--type1 table tbody th p {
     margin: 0;
@@ -3071,7 +3071,7 @@ section.devices_product_lineup .devices_product_lineup__footer .btn-lv02--solid{
     border-bottom: 1px solid #e8e8e8;
   }
 
-  /* 2026-08-10 수정 시작 */
+  /* 260810 start */
   section.devices_product_lineup
     .devices_product_lineup__grid--type1
     table:not(:has(tbody th[rowspan])):not(:has(tbody th > img))
@@ -3099,7 +3099,7 @@ section.devices_product_lineup .devices_product_lineup__footer .btn-lv02--solid{
     height: 88px;
     object-fit: contain;
   }
-  /* 2026-08-10 수정 끝 */
+  /* 260810 end */
 
 
 
@@ -3335,6 +3335,9 @@ section.devices_product_lineup .devices_product_lineup__footer .btn-lv02--solid{
 
   section.devices_software_hero .devices_software_hero__title {
     margin: 0 0 10px;
+    /* 260810 start */
+    font-family: var(--font-jaka);
+    /* 260810 end */
     font-size: 36px;
     font-weight: 800;
     line-height: 46px;
@@ -3390,6 +3393,9 @@ section.devices_product_lineup .devices_product_lineup__footer .btn-lv02--solid{
   }
 
   section.devices_software_overview .devices_software_overview__title {
+    /* 260810 start */
+    font-family: var(--font-jaka);
+    /* 260810 end */
     font-size: 30px;
     font-weight: 700;
     line-height: 40px;
@@ -4993,7 +4999,7 @@ section.devices_product_lineup
 }
 
 /* ========== A. row-image (Susol ACB / MCCB) ========== */
-/* 2026-08-10 수정 시작 */
+/* 260810 start */
 /*
   th에 display:flex 쓰면 열 폭이 붕괴됨.
   또 product_etc 공통 overflow:hidden + 168px(패딩 포함)이면
@@ -5028,7 +5034,7 @@ section.devices_product_lineup
   box-sizing: border-box;
   overflow: visible;
 }
-/* 2026-08-10 수정 끝 */
+/* 260810 end */
 
 section.devices_product_lineup
   [data-slugkey="product_etc.line_up"]
@@ -5049,7 +5055,7 @@ section.devices_product_lineup
   background: #f5f7fa;
 }
 
-/* 2026-08-10 수정 시작 */
+/* 260810 start */
 section.devices_product_lineup
   [data-slugkey="product_etc.line_up"]
   table:has(tbody th > img):not(:has(tbody th[rowspan]))
@@ -5095,7 +5101,7 @@ section.devices_product_lineup
   margin: 0 auto 12px;
   object-fit: contain;
 }
-/* 2026-08-10 수정 끝 */
+/* 260810 end */
 
 section.devices_product_lineup
   [data-slugkey="product_etc.line_up"]
@@ -6065,7 +6071,7 @@ section.devices_product_lineup
     min-height: 160px;
   }
 
-  /* 2026-08-10 수정 시작 */
+  /* 260810 start */
   /* row-image 첫 열 — 모바일 이미지 100px + padding 여유 */
   section.devices_product_lineup
     [data-slugkey="product_etc.line_up"]
@@ -6098,7 +6104,7 @@ section.devices_product_lineup
     padding: 16px 12px;
     overflow: visible;
   }
-  /* 2026-08-10 수정 끝 */
+  /* 260810 end */
 
   section.devices_product_lineup
     [data-slugkey="product_etc.line_up"]
@@ -6147,7 +6153,7 @@ section.devices_product_lineup
     padding: 16px 8px;
   }
 
-  /* 2026-08-10 수정 시작 */
+  /* 260810 start */
   section.devices_product_lineup
     [data-slugkey="product_etc.line_up"]
     table:has(tbody th > img)
@@ -6165,7 +6171,7 @@ section.devices_product_lineup
     height: 100px;
     margin: 0 auto 8px;
   }
-  /* 2026-08-10 수정 끝 */
+  /* 260810 end */
 
   section.devices_product_lineup
     [data-slugkey="product_etc.line_up"]
