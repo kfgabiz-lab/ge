@@ -238,7 +238,7 @@ key-visual 6페이지 공통: `MainHeader` + breadcrumb · hero sticky scroll-ov
 | `devices_product_lineup` | `DevicesProductLineup.tsx` | `product-lineup` · 하드코딩 테이블 스타일 `devices-product-detail.css` 공용 · `table="susol-frame"` / `metasol-ms` / `h100-plus` / `product-template` · `items` / `frameLineup` · `__footer` |
 | `devices_product_downloads` | `DevicesProductDownloads.tsx` | `product-downloads` — list Figma 7922:118486 · Copy Link: `DevicesProductDownloadsCopyLink` (loading 1s → `Link copied!` toast 1s · `file.url`) |
 | `devices_product_video` | `DevicesProductVideo.tsx` | `product-video` |
-| `devices_product_other` | `DevicesProductOtherProducts.tsx` | `product-other` · Figma 4713:26185 · 50px 제목 · 카드 288px · IF 뱃지 type2(50px)만 · 슬라이드 4개 이하 시 `swiper_type_01_controls` 미표시 |
+| `devices_product_other` | `DevicesProductOtherProducts.tsx` | `product-other` · Figma 4713:26185 · 50px 제목 · 카드 288px · IF 뱃지 없음 · 슬라이드 4개 이하 시 `swiper_type_01_controls` 미표시 |
 | `devices_software_hero` | `DevicesHvdcHero.tsx` 등 4종 | `product-top` · SCADA · xEMS · Micro Grid · Smart Factory 공통 |
 | `devices_software_overview` | `DevicesHvdcOverview.tsx` 등 4종 | `product-overview` · SCADA(img) · 나머지(background) 공통 |
 | `devices_product_applications` | `DevicesProductApplications.tsx` | `product-applications` · PC 3열 · 이미지 1:1 · Figma 6584:96117 |

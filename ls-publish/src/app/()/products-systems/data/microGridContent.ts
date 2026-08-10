@@ -185,7 +185,6 @@ export const microGridOtherProducts: ProductOtherItem[] = [
     image: "/pub/img/devices-systems/products/other/product_other_metasol_mms.png",
     title: "Metasol MMS",
     subtitle: MICRO_GRID_OTHER_PRODUCT_SUBTITLE,
-    badges: 2,
   },
   {
     id: "micro-grid-op-4",

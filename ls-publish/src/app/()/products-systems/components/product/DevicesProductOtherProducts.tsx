@@ -6,9 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { A11y } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import SwiperBarControls from "@/components/swiper/SwiperBarControls";
-import ProductAwardBadge from "@/components/product/ProductAwardBadge";
 import { useMediaQuery } from "@/components/layout/shared/useMediaQuery";
-import { getProductBadgeType } from "@/lib/productBadge";
 import type { ProductOtherItem } from "../../data/productDetailContent";
 import "swiper/css";
 
@@ -186,20 +184,16 @@ export default function DevicesProductOtherProducts({
               onResize={handleSlideChange}
             >
               {items.map((item) => {
-                const badgeType = getProductBadgeType(item);
-
                 return (
                   <SwiperSlide key={item.id} className="devices_product_other__slide">
                     <Link
                       href={item.href}
-                      className={
-                        badgeType
-                          ? `devices_product_other__card ${badgeType}`
-                          : "devices_product_other__card"
-                      }
+                      className="devices_product_other__card"
                     >
                       <div className="devices_product_other__img-wrap">
-                        {badgeType ? <ProductAwardBadge /> : null}
+                        {/* 260810 start */}
+                        {/* Other / Relevant Products 뱃지 제거 */}
+                        {/* 260810 end */}
                         <div className="devices_product_other__img-area">
                           <img loading="lazy" decoding="async" src={item.image} alt={item.title} />
                         </div>
@@ -208,11 +202,9 @@ export default function DevicesProductOtherProducts({
                         <h3 className="devices_product_other__tit">
                           {item.title}
                         </h3>
-                        {item.subtitle ? (
-                          <p className="devices_product_other__sub">
-                            {item.subtitle}
-                          </p>
-                        ) : null}
+                        {/* 260810 start */}
+                        {/* devices_product_other__sub 삭제 */}
+                        {/* 260810 end */}
                       </div>
                     </Link>
                   </SwiperSlide>

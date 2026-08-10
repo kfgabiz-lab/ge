@@ -194,7 +194,6 @@ export const smartFactoryOtherProducts: ProductOtherItem[] = [
     image: "/pub/img/devices-systems/products/other/product_other_metasol_mms.png",
     title: "Metasol MMS",
     subtitle: SMART_FACTORY_OTHER_PRODUCT_SUBTITLE,
-    badges: 2,
   },
   {
     id: "smart-factory-op-4",

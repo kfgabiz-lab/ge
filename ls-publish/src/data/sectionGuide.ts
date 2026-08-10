@@ -73,7 +73,7 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "Discover Our Products",
         component: "MainProducts.tsx",
         cssFile: "main.css",
-        note: "devices_products__grid · New Arrivals 1~8 · Best Sellers 9~16 · .txt·product_award_badge 없음",
+        note: "devices_products__grid · New Arrivals 1~8 · Best Sellers 9~16 · product_award_badge 50×50 (Magnetic Contactor)",
       },
       {
         id: "icon_cards",
