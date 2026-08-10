@@ -340,7 +340,9 @@ export const americaLeaders = {
     imageMobile: `${IMG}/leader-featured-mo.png`,
     signature: `${IMG}/leader-signature.svg`,
     name: "ChungHee (Charlie) Lee",
-    role: "CEO & President of LS Electric America and\nLS Electric Utah",
+    /* 260810 start */
+    role: "CEO & President of LS ELECTRIC America and\nLS ELECTRIC Utah",
+    /* 260810 end */
   } satisfies AmericaLeaderItem,
   items: [
     {

@@ -596,6 +596,9 @@ section.main_notic .txt:before {
       right: -790px; */
     }
     .tit_area {
+      /* 260810 start */
+      font-family: var(--font-jaka);
+      /* 260810 end */
       font-size: 42px;
       font-weight: 500;
       line-height: 54px;
@@ -1968,6 +1971,9 @@ section.main_notic .txt:before {
  
 
     .tit_area {
+      /* 260810 start */
+      font-family: var(--font-jaka);
+      /* 260810 end */
       font-size: 28px;
       font-weight: 500;
       line-height: 38px;

@@ -10,6 +10,9 @@ import DevicesProductHero from "../../components/product/DevicesProductHero";
 import DevicesProductFeaturesSection from "@/components/content/DevicesProductFeaturesSection";
 import DevicesProductLineup from "../../components/product/DevicesProductLineup";
 import DevicesProductNavScope from "../../components/product/DevicesProductNavScope";
+/* 260810 start */
+import DevicesProductOtherProducts from "../../components/product/DevicesProductOtherProducts";
+/* 260810 end */
 import DevicesProductVideo from "../../components/product/DevicesProductVideo";
 import { motorControlHighlights } from "../../data/motorControlContent";
 import {
@@ -22,7 +25,7 @@ import "@/assets/css/devices-product-detail.css";
 
 export default function MetasolMsProductPage() {
   return (
-    <main className="devices-page devices-page--product" id="Page_devices_metasol_ms">
+    <main className="devices-page devices-page--product" id="P-FO-PROD-030000P">
       <DevicesProductHero product={metasolMsDetail} />
       <DevicesProductNavScope navItems={metasolMsNavItems}>
         <DevicesProductFeaturesSection
@@ -44,6 +47,9 @@ export default function MetasolMsProductPage() {
         <DevicesProductDownloads items={metasolMsDetail.downloads} />
         <CommonBanner03 />
         <DevicesProductVideo youtubeVideoId={metasolMsDetail.youtubeVideoId} />
+        {/* 260810 start */}
+        <DevicesProductOtherProducts items={metasolMsDetail.otherProducts} />
+        {/* 260810 end */}
         <div id="product-markets">
           <DevicesMarkets />
         </div>
