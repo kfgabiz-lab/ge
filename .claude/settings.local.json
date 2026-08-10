@@ -166,7 +166,8 @@
       "mcp__playwright__browser_find",
       "mcp__playwright__browser_resize",
       "Bash(break)",
-      "Bash(findstr \"LISTENING\")"
+      "Bash(findstr \"LISTENING\")",
+      "mcp__context7__query-docs"
     ]
   },
   "enableAllProjectMcpServers": true,
