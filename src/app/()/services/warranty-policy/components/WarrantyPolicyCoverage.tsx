@@ -1,4 +1,5 @@
 import WarrantyFeatureCards from "./WarrantyFeatureCards";
+import WarrantyPolicyDocuments from "./WarrantyPolicyDocuments";
 import WarrantyTableScroll from "./WarrantyTableScroll";
 import { warrantyPolicyPage } from "@/data/services/warrantyPolicyContent";
 
@@ -75,6 +76,10 @@ export default function WarrantyPolicyCoverage() {
               </tbody>
             </table>
           </WarrantyTableScroll>
+
+          {/* 260811 start */}
+          <WarrantyPolicyDocuments />
+          {/* 260811 end */}
 
           <div className="support_service_warranty_notes">
             <h3 className="support_service_warranty_notes__tit">

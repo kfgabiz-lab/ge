@@ -174,6 +174,9 @@ import ServiceCenterTitle from "@/app/()/services/service-center/components/Serv
 import WarrantyPolicyApply from "@/app/()/services/warranty-policy/components/WarrantyPolicyApply";
 import WarrantyPolicyBanner from "@/app/()/services/warranty-policy/components/WarrantyPolicyBanner";
 import WarrantyPolicyCoverage from "@/app/()/services/warranty-policy/components/WarrantyPolicyCoverage";
+/* 260811 start */
+import WarrantyPolicyDocuments from "@/app/()/services/warranty-policy/components/WarrantyPolicyDocuments";
+/* 260811 end */
 import WarrantyPolicyExtension from "@/app/()/services/warranty-policy/components/WarrantyPolicyExtension";
 import WarrantyPolicyTitle from "@/app/()/services/warranty-policy/components/WarrantyPolicyTitle";
 import {
@@ -1028,6 +1031,11 @@ export function ServicesWarrantyPolicySectionPreviews() {
       <SectionGuideBlock entry={block("support_service_warranty_coverage")}>
         <WarrantyPolicyCoverage />
       </SectionGuideBlock>
+      {/* 260811 start */}
+      <SectionGuideBlock entry={block("support_service_warranty_documents")}>
+        <WarrantyPolicyDocuments />
+      </SectionGuideBlock>
+      {/* 260811 end */}
       <SectionGuideBlock entry={block("support_service_warranty_banner")}>
         <WarrantyPolicyBanner />
       </SectionGuideBlock>

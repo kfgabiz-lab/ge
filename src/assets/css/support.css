@@ -2828,7 +2828,9 @@ section.support_connect_features  .support_connect_features__bg-img--pc{
     height: 38px;
     font-size: 15px;
     line-height: 23px;
-    border-radius: 4px;
+    /* 260811 start */
+    border-radius: 20px;
+    /* 260811 end */
   }
 
   section.support_download_contents.devices_product_downloads--center
@@ -3203,7 +3205,9 @@ section.support_download_contents.devices_product_downloads--center.devices_prod
     height: 38px;
     font-size: 15px;
     line-height: 23px;
-    border-radius: 4px;
+    /* 260811 start */
+    border-radius: 20px;
+    /* 260811 end */
   }
 
   section.support_tech_hub_contents.devices_product_downloads--tech-hub
