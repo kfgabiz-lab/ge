@@ -1351,8 +1351,19 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "WarrantyPolicyCoverage.tsx",
         cssFile: "services.css",
         anchorId: "warranty-coverage",
-        note: "cards · 3col table · 모바일 WarrantyTableScroll + ico_swipe_70 (Figma 6880:144915) · 태블릿 cards 2열",
+        note: "cards · 3col table · documents(table-wrap 직후) · notes · 모바일 WarrantyTableScroll + ico_swipe_70 (Figma 6880:144915) · 태블릿 cards 2열",
       },
+      /* 260811 start */
+      {
+        id: "support_service_warranty_documents",
+        rootClass: "support_service_warranty_documents",
+        label: "Warranty Policy — Documents",
+        component: "WarrantyPolicyDocuments.tsx",
+        cssFile: "services.css",
+        anchorId: "warranty-documents",
+        note: "Coverage 내부 헬퍼 · table-wrap 직후 · Notes 직전 · 2 PDF cards · btn-lv03--line · PC Figma 9033:92295 · MO Figma 9033:92247",
+      },
+      /* 260811 end */
       {
         id: "support_service_warranty_banner",
         rootClass: "support_service_warranty_banner",

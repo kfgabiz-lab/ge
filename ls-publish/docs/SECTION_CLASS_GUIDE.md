@@ -823,7 +823,9 @@ Figma [5966:63556](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%
 | 순서 | 클래스 | 컴포넌트 | id · 비고 |
 |------|--------|----------|-----------|
 | 1 | `company-about-title` | `WarrantyPolicyTitle.tsx` | 공통 타이틀 |
-| 2 | `support_service_warranty_coverage` | `WarrantyPolicyCoverage.tsx` | `warranty-coverage` |
+<!-- 260811 start -->
+| 2 | `support_service_warranty_coverage` | `WarrantyPolicyCoverage.tsx` | `warranty-coverage` · 내부 `support_service_warranty_documents` (테이블 직후) |
+<!-- 260811 end -->
 | 3 | `support_service_warranty_banner` | `WarrantyPolicyBanner.tsx` | `warranty-support` |
 | 4 | `support_service_warranty_extension` | `WarrantyPolicyExtension.tsx` | `warranty-extension` |
 | 5 | `support_service_warranty_apply` | `WarrantyPolicyApply.tsx` | `warranty-apply` |
@@ -833,6 +835,9 @@ Figma [5966:63556](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%
 | 헬퍼 (섹션 루트 아님) | 컴포넌트 | 비고 |
 |----------------------|----------|------|
 | `support_service_warranty_cards` | `WarrantyFeatureCards.tsx` | coverage · extension 카드 그리드 |
+<!-- 260811 start -->
+| `support_service_warranty_documents` | `WarrantyPolicyDocuments.tsx` | Coverage 내부 · table-wrap 직후 · Notes 직전 · PC [9033:92295](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=9033-92295) · MO [9033:92247](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=9033-92247) · `btn-lv03--line` |
+<!-- 260811 end -->
 | `support_service_warranty_bullets` | Coverage · Extension 내부 | 불릿 리스트 |
 | `support_service_warranty_table` | Coverage · Apply | `--3col` · `--2col` |
 | `WarrantyTableScroll` | Coverage · Apply | 모바일 가로 스크롤 · Coverage swipe overlay · Apply `stickyFirstCol` |
@@ -843,8 +848,10 @@ Figma [5966:63556](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%
 
 | 구간 | 비고 |
 |------|------|
-| PC `min-width: 781px` | 카드 4열 · 테이블 풀폭 · 배너 PC 이미지 |
-| 모바일 `max-width: 780px` | 카드 1열 · Coverage `WarrantyTableScroll` + `ico_swipe_70` (Figma [6880:144915](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=6880-144915)) · Apply sticky 1열 + edge shadow (Figma [6880:144576](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=6880-144576)) · 배너 `banner-bg-mo.jpg` |
+<!-- 260811 start -->
+| PC `min-width: 781px` | 카드 4열 · 테이블 풀폭 · 배너 PC 이미지 · documents 2열 |
+| 모바일 `max-width: 780px` | 카드 1열 · Coverage `WarrantyTableScroll` + `ico_swipe_70` (Figma [6880:144915](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=6880-144915)) · documents 1열 스택 (Figma [9033:92247](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=9033-92247)) · Apply sticky 1열 + edge shadow (Figma [6880:144576](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%94%94%EC%9E%90%EC%9D%B8?node-id=6880-144576)) · 배너 `banner-bg-mo.jpg` |
+<!-- 260811 end -->
 | 태블릿 `640–1200px` | `support_service_warranty_cards` 2열 (PC/모바일 규칙 이후 선언) |
 
 ---
