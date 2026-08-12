@@ -11,16 +11,22 @@ import SearchPageList from "./SearchPageList";
 import SearchPagesPanel from "./SearchPagesPanel";
 import SearchProductsPanel from "./SearchProductsPanel";
 import {
+  /* 260812 start */
   searchAllAiSummaryHtml,
+  searchAllAiSummaryShortHtml,
+  /* 260812 end */
   searchAllDocuments,
   searchAllMedia,
-  searchAllPage,
   searchAllPages,
   searchAllProducts,
   searchAllTabs,
   searchSectionExploreLinks,
   type SearchTabId,
 } from "@/data/search/searchAllContent";
+/* 260812 start */
+import SearchAllAi from "./SearchAllAi";
+import { useSearchAllAiLoading } from "./SearchAllAiLoadingProvider";
+/* 260812 end */
 
 function SearchSectionHead({
   title,
@@ -55,7 +61,9 @@ export default function SearchAllTabContent({
   initialTab = "all",
 }: SearchAllTabContentProps) {
   const [activeTab, setActiveTab] = useState<SearchTabId>(initialTab);
-  const [aiExpanded, setAiExpanded] = useState(false);
+  /* 260812 start */
+  const { isAiLoading } = useSearchAllAiLoading();
+  /* 260812 end */
   const isAllTab = activeTab === "all";
 
   return (
@@ -85,50 +93,18 @@ export default function SearchAllTabContent({
         {activeTab === "media" ? <SearchMediaPanel /> : null}
         {activeTab === "pages" ? <SearchPagesPanel /> : null}
 
+        {/* 260812 start */}
         {isAllTab ? (
-          <div className={aiExpanded ? "search_all__ai is-expanded" : "search_all__ai"}>
-            <div className="search_all__ai-content">
-              <div className="search_all__ai-head">
-                <img
-                  className="search_all__ai-badge"
-                  src="/pub/img/search/search_all_ai_badge.png"
-                  alt=""
-                  width={58}
-                  height={58}
-                  decoding="async"
-                  aria-hidden
-                />
-                <h2 className="search_all__ai-tit">{searchAllPage.aiTitle}</h2>
-                <p className="search_all__ai-note">{searchAllPage.aiDisclaimer}</p>
-              </div>
-              <div className="search_all__ai-body">
-                <ul className="search_all__ai-list">
-                  <li>
-                    <div
-                      className="search_all__ai-list-text"
-                      dangerouslySetInnerHTML={{
-                        __html: searchAllAiSummaryHtml,
-                      }}
-                    />
-                  </li>
-                </ul>
-              </div>
-            </div>
-            {!aiExpanded ? <div className="search_all__ai-fade" aria-hidden /> : null}
-            <div className="search_all__ai-more">
-              <span className="search_all__ai-more-line" aria-hidden />
-              <button
-                type="button"
-                className="search_all__ai-more-btn"
-                aria-expanded={aiExpanded}
-                onClick={() => setAiExpanded((prev) => !prev)}
-              >
-                Read more
-                <span className="search_all__ai-more-icon" aria-hidden />
-              </button>
-            </div>
-          </div>
+          <>
+            <SearchAllAi
+              html={searchAllAiSummaryHtml}
+              loading={isAiLoading}
+            />
+            <SearchAllAi html={searchAllAiSummaryShortHtml} />
+            <SearchAllAi loading />
+          </>
         ) : null}
+        {/* 260812 end */}
 
         {isAllTab ? (
           <div className="search_all__section">

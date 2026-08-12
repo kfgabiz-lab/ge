@@ -74,6 +74,9 @@ Figma [LSEA 디자인](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_
 | `#banner` | Banner (08) |
 | `#banner-01` ~ `#banner-04` | `common_banner_01` ~ `04` |
 | `#banner-02-expert` | `common_banner_02` `variant="expert"` |
+<!-- 260812 start -->
+| `#banner-02-arrow` | `common_banner_02` `linkIcon="arrow"` (`--arrow`) |
+<!-- 260812 end -->
 
 ---
 
@@ -255,7 +258,10 @@ Hero Clear: 30px + `ico_clear_12_black` (Figma `6571:102541`). All 탭 카드 �
 |------|----------|------|
 | `#banner-01` | `CommonBanner01` | `btn-lv01--line-solid` |
 | `#banner-02` | `CommonBanner02` | default · `btn-text-30` |
-| `#banner-02-expert` | `CommonBanner02` `variant="expert"` | Copy + CTA |
+<!-- 260812 start -->
+| `#banner-02-expert` | `CommonBanner02` `variant="expert"` | email+Copy · CTA `mailto` |
+| `#banner-02-arrow` | `CommonBanner02` `linkIcon="arrow"` | contact 없음 · `icon_arrow-14` · CTA `linkHref` |
+<!-- 260812 end -->
 | `#banner-03` | `CommonBanner03` | HUB 이미지 |
 | `#banner-04` | `CommonBanner04` | 풀폭 다크 CTA |
 

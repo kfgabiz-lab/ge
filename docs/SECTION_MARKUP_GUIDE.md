@@ -228,6 +228,9 @@ Hero 부제는 `__sub` — desktop 24px / weight **300** / line-height 34px (`ma
 - **Hero** — `search_all_hero` · `guide_field--search` 80px (치수는 `search.css` 스코프, [COMPONENT_GUIDE.md](./COMPONENT_GUIDE.md) `#search-80`)
 - **탭** — `search_all__tabs` / `search_all__tab.is-active` · All·Products·Documents·Media·Pages
 - **All 탭** — `search_all` · AI 요약 · 섹션별 Product/Documents/Media/Pages + `btn-text-30` Explore
+  <!-- 260812 start -->
+  - AI 상태: default(`is-clamped` · Read more) · short(버튼 없음) · expanded(`is-expanded`) · `--skeleton`(Figma 9145:160214)
+  <!-- 260812 end -->
 - **개별 탭 패널** — `search_products` · `search_documents` · `search_media` · `search_pages`
   - 루트에 `devices_product_downloads` 병기 → `DevicesProductDownloadsFilter*` 재사용 (`devices-product-detail.css`)
   - Products/Documents: `SearchTabActiveFilters` active chips

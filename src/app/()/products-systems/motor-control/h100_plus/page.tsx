@@ -32,6 +32,7 @@ export default function H100PlusProductPage() {
           title="Key Features"
           items={h100PlusDetail.keyFeatures}
         />
+        {/* 260812 start */}
         <CommonBanner02
           variant="expert"
           linkHref={h100PlusDetail.expertBannerHref}
@@ -39,6 +40,15 @@ export default function H100PlusProductPage() {
           contactEmail={h100PlusDetail.expertContactEmail}
           backgroundSrc={h100PlusDetail.configuratorBannerBg}
         />
+        <CommonBanner02
+          variant="expert"
+          linkIcon="arrow"
+          linkHref={h100PlusDetail.expertBannerHref}
+          linkExternal={h100PlusDetail.expertBannerExternal}
+          contactEmail={h100PlusDetail.expertContactEmail}
+          backgroundSrc={h100PlusDetail.configuratorBannerBg}
+        />
+        {/* 260812 end */}
         <DevicesProductLineup
           table="h100-plus"
           configuratorHref={h100PlusDetail.configuratorHref}

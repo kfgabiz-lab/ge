@@ -105,7 +105,10 @@ export const icoItems: IcoItem[] = [
     size: 14,
     color: "white",
     usage: "소형 화살표 (다크 배경)",
-    usedIn: "globals.css (common_banner), company.css (press/events CTA)",
+    /* 260812 start */
+    usedIn:
+      "globals.css (common_banner_02--arrow · icon_arrow-14), company.css (press/events CTA)",
+    /* 260812 end */
   },
   {
     id: "ico_arrow_right_18",

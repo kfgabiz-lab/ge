@@ -798,10 +798,13 @@ section.support_connect_features  .support_connect_features__bg-img--pc{
   section.support_download_search
     .support_download_search__field
     .MuiOutlinedInput-input::placeholder {
+    /* 260812 start */
     font-size: 18px;
     line-height: 28px;
     letter-spacing: 0;
-    color: rgb(0 0 0 / 25%);
+    color: #888;
+    opacity: 1;
+    /* 260812 end */
   }
 
   section.support_download_search .support_download_search__adorn {
@@ -1628,9 +1631,12 @@ section.support_connect_features  .support_connect_features__bg-img--pc{
   section.support_tech_hub_search
     .support_tech_hub_search__field
     .MuiOutlinedInput-input::placeholder {
+    /* 260812 start */
     font-size: 18px;
     line-height: 28px;
-    color: rgb(0 0 0 / 25%);
+    color: #888;
+    opacity: 1;
+    /* 260812 end */
   }
 
   section.support_tech_hub_search .support_tech_hub_search__adorn {
@@ -3448,17 +3454,45 @@ section.support_download_contents.devices_product_downloads--center.devices_prod
     min-width: 0;
   }
 
-  section.support_tech_hub_view .support_tech_hub_view__series-meta .support_tech_hub_view__chapter {
+  /* 260812 start */
+  /* Figma 9145:162721 — title only */
+  section.support_tech_hub_view .support_tech_hub_view__series-meta--title {
+    justify-content: center;
+  }
+
+  /* Figma 9145:162793 — chapter tag only · 썸네일 옆 왼쪽 상단 */
+  section.support_tech_hub_view .support_tech_hub_view__series-meta--chapter {
+    align-self: flex-start;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-top: 3px;
+  }
+
+  section.support_tech_hub_view
+    .support_tech_hub_view__series-meta--chapter
+    .support_tech_hub_view__chapter {
     display: inline-flex;
     align-self: flex-start;
-    margin-bottom: 0;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 2px 8px;
+    border: 1px solid rgb(15 31 69 / 60%);
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
+    color: #0f1f45;
+    background: #fff;
   }
+  /* 260812 end */
 
   section.support_tech_hub_view .support_tech_hub_view__series-tit {
     font-size: 15px;
     font-weight: 500;
     line-height: 23px;
     color: #222;
+    word-break: break-word;
   }
 
   section.support_tech_hub_view .support_tech_hub_view__series-tit-line {
@@ -3467,6 +3501,7 @@ section.support_download_contents.devices_product_downloads--center.devices_prod
 
   section.support_tech_hub_view
     .support_tech_hub_view__series-item--active
+    .support_tech_hub_view__series-meta--title
     .support_tech_hub_view__series-tit {
     text-decoration: underline;
     text-underline-position: from-font;
@@ -3668,15 +3703,27 @@ section.support_download_contents.devices_product_downloads--center.devices_prod
     display: flex;
     flex: 1 0 0;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     align-items: flex-start;
     min-width: 0;
     width: 174px;
     max-width: 174px;
   }
 
+  /* 260812 start */
+  section.support_tech_hub_view .support_tech_hub_view__series-meta--title {
+    justify-content: center;
+  }
+
+  section.support_tech_hub_view .support_tech_hub_view__series-meta--chapter {
+    align-self: flex-start;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-top: 3px;
+  }
+
   section.support_tech_hub_view
-    .support_tech_hub_view__series-meta
+    .support_tech_hub_view__series-meta--chapter
     .support_tech_hub_view__chapter {
     display: inline-flex;
     align-self: flex-start;
@@ -3690,6 +3737,7 @@ section.support_download_contents.devices_product_downloads--center.devices_prod
     color: #0f1f45;
     background: #fff;
   }
+  /* 260812 end */
 
   section.support_tech_hub_view .support_tech_hub_view__series-tit {
     width: 100%;
@@ -3707,6 +3755,7 @@ section.support_download_contents.devices_product_downloads--center.devices_prod
 
   section.support_tech_hub_view
     .support_tech_hub_view__series-item--active
+    .support_tech_hub_view__series-meta--title
     .support_tech_hub_view__series-tit {
     text-decoration: underline;
     text-decoration-thickness: 1px;
@@ -3819,10 +3868,13 @@ body section.support_where_to_buy_search .guide_field--search .guide_field__sear
   section.support_where_to_buy_search
     .support_where_to_buy_search__field
     .MuiOutlinedInput-input::placeholder {
+    /* 260812 start */
     font-size: 24px;
     line-height: 34px;
     letter-spacing: -0.01em;
-    color: rgb(0 0 0 / 25%);
+    color: #888;
+    opacity: 1;
+    /* 260812 end */
   }
 
   section.support_where_to_buy_search .support_where_to_buy_search__adorn {

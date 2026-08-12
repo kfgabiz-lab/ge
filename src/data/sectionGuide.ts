@@ -300,8 +300,10 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         label: "Expert Banner (Banner 02)",
         component: "CommonBanner02.tsx",
         cssFile: "devices-product-detail.css",
-        modifiers: ["--expert"],
-        note: "variant=expert · Key Features 아래 · email + btn-line-30 Copy + Send an Inquiry",
+        /* 260812 start */
+        modifiers: ["--expert", "--arrow"],
+        note: "variant=expert · link: email+Copy+CTA mailto · arrow: contact 없음+CTA linkHref",
+        /* 260812 end */
       },
       {
         id: "devices_product_lineup_type1",
@@ -1612,8 +1614,47 @@ export const sectionGuideCategories: readonly SectionGuideCategory[] = [
         component: "SearchAllTabContent.tsx",
         cssFile: "search.css",
         anchorId: "search-all",
-        note: "All 탭 · 탭 UI · AI HTML 요약 `.search_all__ai-list-text` (h1~h3·중첩 ul) · Figma 7334:108163 · badge PNG · CSS gradient 보더 · 섹션별 미리보기 · Pages Figma 4701:83902 · btn-text-30 Explore · tablet 600~780px Product/Media 2열",
+        /* 260812 start */
+        note: "All 탭 · 탭 UI · AI HTML 요약 `.search_all__ai-list-text` · 검색 시 `--skeleton` · Figma 7334:108163 · badge PNG · CSS gradient 보더 · 섹션별 미리보기 · Pages Figma 4701:83902 · btn-text-30 Explore · tablet 600~780px Product/Media 2열",
+        /* 260812 end */
       },
+      /* 260812 start */
+      {
+        id: "search_all__ai",
+        rootClass: "search_all__ai",
+        label: "AI — default (Read more)",
+        component: "SearchAllAi.tsx",
+        cssFile: "search.css",
+        modifiers: [".is-clamped"],
+        note: "min 198 · max 460 · 460 초과 시 Read more · Figma 7334:108163",
+      },
+      {
+        id: "search_all__ai_short",
+        rootClass: "search_all__ai",
+        label: "AI — short (no Read more)",
+        component: "SearchAllAi.tsx",
+        cssFile: "search.css",
+        note: "짧은 요약 · Read more 없음 · min-height 198px",
+      },
+      {
+        id: "search_all__ai_expanded",
+        rootClass: "search_all__ai",
+        label: "AI — expanded (Read less)",
+        component: "SearchAllAi.tsx",
+        cssFile: "search.css",
+        modifiers: [".is-expanded"],
+        note: "펼침 · Read less · max-height 없음",
+      },
+      {
+        id: "search_all__ai_skeleton",
+        rootClass: "search_all__ai",
+        label: "AI — skeleton (loading)",
+        component: "SearchAllAi.tsx",
+        cssFile: "search.css",
+        modifiers: ["--skeleton"],
+        note: "검색 로딩 · h 460 · Read more 없음 · Figma 9145:160214",
+      },
+      /* 260812 end */
       {
         id: "search_products",
         rootClass: "search_products",

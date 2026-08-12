@@ -7,10 +7,16 @@ import {
   buildSearchAllHref,
   searchAllPage,
 } from "@/data/search/searchAllContent";
+/* 260812 start */
+import { useSearchAllAiLoading } from "./SearchAllAiLoadingProvider";
+/* 260812 end */
 
 export default function SearchAllHero() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  /* 260812 start */
+  const { startAiLoading } = useSearchAllAiLoading();
+  /* 260812 end */
   const qParam = searchParams.get("q");
   const initialQuery =
     qParam !== null ? qParam : searchAllPage.defaultQuery;
@@ -38,6 +44,11 @@ export default function SearchAllHero() {
 
   const navigateToQuery = (nextQuery: string) => {
     setQuery(nextQuery);
+    /* 260812 start */
+    if (nextQuery.trim()) {
+      startAiLoading();
+    }
+    /* 260812 end */
     router.push(buildSearchAllHref(nextQuery));
   };
 

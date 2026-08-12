@@ -96,20 +96,33 @@ export default function CompanyBlogPage({
                               <img src={item.image} alt={item.title} />
                             </Link>
                           </div>
-                          <div className="company-blog-list__content">
+                          <div
+                            className={
+                              item.tags.length > 0
+                                ? "company-blog-list__content"
+                                : "company-blog-list__content company-blog-list__content--no-tags"
+                            }
+                          >
                             <Link href="/company/blog/detail" className="company-blog-list__content-link">
                               <p className="company-blog__category">{item.category}</p>
                               <h3 className="company-blog-list__title">{item.title}</h3>
                               <p className="company-blog-list__desc">{item.description}</p>
                               <p className="company-blog__date">{item.date}</p>
                             </Link>
-                            <div className="company-blog-list__tags-row">
-                              <div className="company-blog__tags">
-                                {item.tags.map((tag, tagIndex) => (
-                                  <BlogTag key={`${item.id}-${tag}-${tagIndex}`} label={tag} />
-                                ))}
+                            {/* 260812 start */}
+                            {item.tags.length > 0 ? (
+                              <div className="company-blog-list__tags-row">
+                                <div className="company-blog__tags">
+                                  {item.tags.map((tag, tagIndex) => (
+                                    <BlogTag
+                                      key={`${item.id}-${tag}-${tagIndex}`}
+                                      label={tag}
+                                    />
+                                  ))}
+                                </div>
                               </div>
-                            </div>
+                            ) : null}
+                            {/* 260812 end */}
                           </div>
                         </div>
                       </div>

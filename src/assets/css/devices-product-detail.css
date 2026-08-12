@@ -10,7 +10,6 @@
 #product-benefits,
 #product-why,
 #product-key-feature,
-#product-lineup,
 #product-downloads,
 #product-video,
 #product-other,
@@ -30,6 +29,17 @@
 #product-help {
   scroll-margin-top: 50px;
 }
+
+/* 260812 start */
+/* Lineup — native hash · h2.section_tit ↔ .devices_product_nav__list top */
+#product-lineup {
+  scroll-margin-top: 0;
+}
+
+section.devices_product_lineup .section_tit {
+  scroll-margin-top: 250px;
+}
+/* 260812 end */
 
 section.devices_product_hero .devices_product_hero__btns .icon_download {
   display: block;
@@ -448,6 +458,13 @@ section.devices_product_hero .devices_product_hero__btns .icon_download {
     z-index: 10;
   }
 
+  /* 260812 start */
+  /* expert(link) + arrow 타입 연속 배치 시 중간 여백 */
+  .devices-page--product section.common_banner_02 + section.common_banner_02 {
+    margin-top: 40px;
+  }
+  /* 260812 end */
+
   /* Figma 3871:113566 — expert banner (product page) */
   .devices-page--product section.common_banner_02.common_banner_02--expert
     .common_banner_02__body {
@@ -465,6 +482,22 @@ section.devices_product_hero .devices_product_hero__btns .icon_download {
     gap: 30px;
     min-width: 0;
   }
+
+  /* 260812 start */
+  /* contact 없을 때 text 세로 중앙 */
+  .devices-page--product section.common_banner_02.common_banner_02--expert
+    .common_banner_02__body:not(:has(.common_banner_02__contact)) {
+    align-items: center;
+  }
+
+  .devices-page--product section.common_banner_02.common_banner_02--expert
+    .common_banner_02__content:not(:has(.common_banner_02__contact))
+    .common_banner_02__text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  /* 260812 end */
 
   .devices-page--product section.common_banner_02.common_banner_02--expert
     .common_banner_02__contact {
@@ -507,15 +540,40 @@ section.devices_product_hero .devices_product_hero__btns .icon_download {
     filter: brightness(0) invert(1);
   }
 
+  /* 260812 start */
+  /* Figma 9120:126428 — expert + arrow CTA */
+  .devices-page--product
+    section.common_banner_02.common_banner_02--arrow
+    .common_banner_02__link
+    .icon_arrow-14 {
+    background: url("/pub/ico/ico_arrow_right_14_white.svg") center / contain
+      no-repeat;
+    filter: none;
+  }
+
+  .devices-page--product
+    section.common_banner_02.common_banner_02--arrow
+    .common_banner_02__link:hover
+    .icon_arrow-14 {
+    filter: none;
+  }
+  /* 260812 end */
+
   /* Lineup */
   section.devices_product_lineup {
     padding-bottom: 150px;
     background: #fff;
   }
 
-  section.devices_product_lineup .section_tit {
+  /* 260812 start */
+  section.devices_product_lineup .devices_product_lineup__head {
     margin-bottom: 40px;
   }
+
+  section.devices_product_lineup .devices_product_lineup__head .section_tit {
+    margin-bottom: 0;
+  }
+  /* 260812 end */
 
   section.devices_product_lineup .devices_product_lineup__grids {
     display: flex;
@@ -2949,8 +3007,17 @@ section.devices_product_lineup .devices_product_lineup__footer .btn-lv02--solid{
     padding-bottom: 70px;
   }
 
-  section.devices_product_lineup .section_tit {
+  /* 260812 start */
+  section.devices_product_lineup .devices_product_lineup__head {
     margin-bottom: 30px;
+  }
+
+  section.devices_product_lineup .devices_product_lineup__head .section_tit {
+    margin-bottom: 0;
+  }
+  /* 260812 end */
+
+  section.devices_product_lineup .section_tit {
     font-family: var(--font-display, "Plus Jakarta Sans", sans-serif);
     font-size: 30px;
     font-weight: 700;

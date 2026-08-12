@@ -80,6 +80,14 @@ export type SearchPageItem = {
 };
 
 /** AI summary HTML — rendered inside `.search_all__ai-list-text` */
+/* 260812 start */
+export const searchAllAiSummaryShortHtml = `
+<h2>Overview</h2>
+<p><strong>MCCB</strong> appears in the provided materials as <strong>Molded Case Circuit Breaker</strong>.</p>
+<p>The document states that the <strong>relay and measurement functions for line protection</strong> have been upgraded.</p>
+`;
+/* 260812 end */
+
 export const searchAllAiSummaryHtml = `
 <h1>MCCB</h1>
 <h2>Overview</h2>

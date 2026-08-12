@@ -234,7 +234,9 @@ key-visual 6페이지 공통: `MainHeader` + breadcrumb · hero sticky scroll-ov
 |--------|----------|-----------|
 | `devices_product_hero` | `DevicesProductHero.tsx` | `product-top` |
 | `devices_product_features` | `DevicesProductFeaturesSection.tsx` | `product-key-feature` · `product-benefits` · `--list` · `desc` |
-| `common_banner_02` | `CommonBanner02.tsx` | `--expert` · Key Features 아래 |
+<!-- 260812 start -->
+| `common_banner_02` | `CommonBanner02.tsx` | `--expert` · `--arrow`(`linkIcon=arrow`) · Key Features 아래 |
+<!-- 260812 end -->
 | `devices_product_lineup` | `DevicesProductLineup.tsx` | `product-lineup` · 하드코딩 테이블 스타일 `devices-product-detail.css` 공용 · `table="susol-frame"` / `metasol-ms` / `h100-plus` / `product-template` · `items` / `frameLineup` · `__footer` |
 | `devices_product_downloads` | `DevicesProductDownloads.tsx` | `product-downloads` — list Figma 7922:118486 · Copy Link: `DevicesProductDownloadsCopyLink` (loading 1s → `Link copied!` toast 1s · `file.url`) |
 | `devices_product_video` | `DevicesProductVideo.tsx` | `product-video` |
@@ -495,7 +497,9 @@ America · LS ELECTRIC · Affiliate in America 페이지 공통 컴포넌트·�
 | 클래스 | 컴포넌트 | CSS |
 |--------|----------|-----|
 | `common_banner_01` | `CommonBanner01.tsx` | `globals.css` |
-| `common_banner_02` | `CommonBanner02.tsx` | `globals.css` · `variant` default/expert · `--expert` (product) |
+<!-- 260812 start -->
+| `common_banner_02` | `CommonBanner02.tsx` | `globals.css` · `variant` default/expert · `linkIcon` link/arrow · `--expert` · `--arrow` (product) |
+<!-- 260812 end -->
 | `common_banner_03` | `CommonBanner03.tsx`, `CommonBanner03Link.tsx` | `main.css` |
 | `common_banner_04` | `CommonBanner04.tsx` | `globals.css` · 풀폭 다크 CTA (Banner 02 expert와 별도) |
 | `common_faq` | `CommonFaq.tsx` | `globals.css` · desktop `min-width: 781px` · mobile `max-width: 780px` 공용 · 아코디언 `grid 0fr/1fr` + opacity/`translateY` · `prefers-reduced-motion` |
@@ -698,6 +702,9 @@ Figma [5966:63556](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%
 | 클래스 | 컴포넌트 | id · 비고 |
 |--------|----------|-----|
 | `support_tech_hub_view` | `TechHubView.tsx` | `support-tech-hub-view` — Figma 3670:31687 |
+<!-- 260812 start -->
+| — | `TechHubViewSeriesItem.tsx` | `series-meta--title`(9145:162721) · `series-meta--chapter`(9145:162793) |
+<!-- 260812 end -->
 
 페이지 래퍼: `.support-page--tech-hub-view`
 
@@ -708,7 +715,13 @@ Figma [5966:63556](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%
 | 클래스 | 컴포넌트 | id · 비고 |
 |--------|----------|-----------|
 | `search_all_hero` | `SearchAllHero.tsx` | `search-all-hero` — `guide_field--search` 80px · clear 30px + `ico_clear_12_black` (Figma 4701:83900 · 6571:102541) |
+<!-- 260812 start -->
 | `search_all` | `SearchAllTabContent.tsx` | `search-all` — All 탭 · AI HTML 요약(`.search_all__ai-list-text`) · Product/Documents/Media/Pages · tablet 600~780px Product/Media 2열 (Figma 4701:83900 · Pages 4701:83902) |
+| `search_all__ai` | `SearchAllAi.tsx` | default · min 198 · max 460 · 460↑ Read more (`is-clamped`) |
+| `search_all__ai` | `SearchAllAi.tsx` | short · Read more 없음 |
+| `search_all__ai` | `SearchAllAi.tsx` | expanded · `is-expanded` · Read less |
+| `search_all__ai` | `SearchAllAi.tsx` | `--skeleton` · h 460 · Figma 9145:160214 |
+<!-- 260812 end -->
 | `search_products` | `SearchProductsPanel.tsx` | `search-products` — Products 탭 · tablet 600~780px 2열 (Figma 4701:84687) |
 | `search_documents` | `SearchDocumentsPanel.tsx` | `search-documents` — Documents 탭 · MO active-filter clear `#222` (Figma 4701:85037 · 6571:105004) |
 | `search_media` | `SearchMediaPanel.tsx` | `search-media` — Media 탭 · tablet 600~780px 2열 (Figma 4701:84177) |
@@ -718,7 +731,11 @@ Figma [5966:63556](https://www.figma.com/design/FJa9pa866Be2aj5HYV717D/LSEA_%EB%
 
 | 헬퍼 (섹션 루트 아님) | 컴포넌트 | 비고 |
 |----------------------|----------|------|
+<!-- 260812 start -->
 | — | `SearchAllPage.tsx` | Hero + `SearchAllTabContent` 조합 |
+| — | `SearchAllAi.tsx` | AI 요약 상태 케이스 (default / short / expanded / skeleton) |
+| — | `SearchAllAiLoadingProvider.tsx` | 검색 시 AI `--skeleton` 로딩 (Figma 9145:160214) |
+<!-- 260812 end -->
 | — | `SearchDocumentsCard.tsx` | `search_all` 2열 · `search_documents` full-width 공유 |
 | — | `SearchTabActiveFilters.tsx` | Products/Documents active chips · `ico_clear_12` · Documents MO `brightness(25%)` → `#222` |
 | — | `SearchPageList.tsx` | All·Pages 탭 Pages 리스트 래퍼 (구분선·간격) |

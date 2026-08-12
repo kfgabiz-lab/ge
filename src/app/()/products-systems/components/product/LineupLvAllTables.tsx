@@ -26,7 +26,11 @@ export default function LineupLvAllTables({
   return (
     <section className="devices_product_lineup" id="product-lineup">
       <div className="inner">
-        <h2 className="section_tit">Lineup</h2>
+        {/* 260812 start */}
+        <div className="devices_product_lineup__head">
+          <h2 className="section_tit">Lineup</h2>
+        </div>
+        {/* 260812 end */}
         <div className="devices_product_lineup__grids devices_product_lineup__grids--lineup-lv">
           {lineupLvProducts.map((product) => (
             <article

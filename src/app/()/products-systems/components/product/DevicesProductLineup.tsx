@@ -647,7 +647,11 @@ export default function DevicesProductLineup({
   return (
     <section className="devices_product_lineup" id="product-lineup">
       <div className="inner">
-        <h2 className="section_tit">Lineup</h2>
+        {/* 260812 start */}
+        <div className="devices_product_lineup__head">
+          <h2 className="section_tit">Lineup</h2>
+        </div>
+        {/* 260812 end */}
         {table === "susol-frame" ? (
           <SusolFrameLineupTable />
         ) : table === "metasol-ms" ? (

@@ -1159,6 +1159,22 @@
     background: #888;
   }
 
+  /* 260812 start */
+  section.support_service_training_session_detail
+    .support_service_training_session_detail__meta-bullets
+    a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  section.support_service_training_session_detail
+    .support_service_training_session_detail__meta-bullets
+    a:hover {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  /* 260812 end */
+
   section.support_service_training_session_detail .support_service_training_session_detail__meta-text {
     margin: 0;
     font-size: 16px;
@@ -2835,6 +2851,24 @@
     border-radius: 0;
     background: #888;
   }
+
+  /* 260812 start */
+  section.support_service_training_session_detail
+    .support_service_training_session_detail__aside--mo
+    .support_service_training_session_detail__meta-bullets
+    a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  section.support_service_training_session_detail
+    .support_service_training_session_detail__aside--mo
+    .support_service_training_session_detail__meta-bullets
+    a:hover {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  /* 260812 end */
 
   section.support_service_training_session_detail .support_service_training_session_detail__aside--mo .support_service_training_session_detail__meta-text {
     margin: 0;
