@@ -114,6 +114,7 @@ GET /api/v1/page-data/cat-main?eq_depth=2&eq_parentId=1
 | 그 외 | String | - | data_json 필드 검색 조건 (fieldKey=value 형태) — ILIKE 부분 일치 |
 | eq_{fieldKey} | String | - | data_json 필드 **정확 일치** 조건 — `eq_` 접두사 제거 후 `=` 비교 |
 | ne_{fieldKey} | String | - | data_json 필드 **부정 일치**(제외) 조건 — 최상위 전용, NULL-safe |
+| filterExpr | String | - | 조건식 원문(`key=value,key2=value2` 형태, `sourceFilter`/`hideCondition`과 동일 문법)을 그대로 전달 — 여러 조건을 한 번에 서버로 보낼 때 사용 |
 
 > **`eq_` 접두사 규칙**: 파라미터 키가 `eq_`로 시작하면 접두사를 제거한 필드명으로 정확 일치(`=`) 검색한다.
 > 카테고리 depth/parentId 같이 정수 ID를 정확히 일치시켜야 하는 경우에 사용한다.
@@ -125,6 +126,11 @@ GET /api/v1/page-data/cat-main?eq_depth=2&eq_parentId=1
 >
 > **`ne_` 접두사 규칙**: 부정 일치(제외) 검색. 최상위 필드 전용(중첩 탐색 안 함), NULL-safe(`IS DISTINCT FROM`).
 > - `?ne_id=1863` → `data_json->>'id' IS DISTINCT FROM '1863'`
+>
+> **`filterExpr` 규칙**: 조건식 원문을 그대로 전달하면 서버가 `parseConditionExpr`로 파싱해 `AND` 결합된 정확 일치 조건으로 변환한다. 점(`.`) 없는 필드명은 루트뿐 아니라 1~2단계 중첩 섹션(`data_json->'section'->>'field'`)까지 자동으로 찾는다 — 어느 섹션에 있는지 몰라도 필드명만 알면 된다.
+> - `?filterExpr=product_type=P` → `product_type`이 루트든 `product` 섹션 안이든 상관없이 매칭
+> - `?filterExpr=product_type=P,has_training=001` → 콤마로 여러 조건 AND 결합
+> - 값에 실제로 콤마가 들어가야 하면 작은따옴표로 감싼다: `?filterExpr=title='a,b'`
 
 **Response 200:**
 ```json

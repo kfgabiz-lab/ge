@@ -1,5 +1,15 @@
 # 연결 Slug(FETCH) 다건 매칭 응답 규격
 
+## ⚠️ ARRAY_CONTAINS 설정 시 주의 (slaveSlug / slaveType)
+
+`joinType: ARRAY_CONTAINS`는 `masterKey`(master 쪽 배열 필드, 예: 멀티셀렉트가 저장한 id 배열)에 담긴 값을 `slaveSlug.slaveKey`와 매칭한다. 설정 실수가 나기 쉬운 지점:
+
+1. **`slaveSlug`는 배열에 실제로 저장되는 id의 출처 slug와 정확히 같아야 한다.** 예를 들어 멀티셀렉트의 `sourceSlug`가 `product-data`면, `masterKey` 배열에는 `product-data`의 id가 저장된다 — 이때 `slaveSlug`도 `product-data`여야 한다. 표시할 최종 텍스트가 카테고리명이라고 해서 `slaveSlug`를 `category-data`로 잡으면 안 된다(둘 다 id 체계가 다른 별개 테이블이라 매칭이 항상 0건이 된다).
+2. **`slaveType`은 대부분 `TABLE`이어야 한다.** `CATEGORY`는 카테고리 계층(depth) 탐색 전용 코드 경로(`applyArrayContainsCategoryFetchBatch`, `categoryDepth`/`categoryDepthFrom`/`includeLeaf` 사용)로 완전히 분기되므로, `slaveSlug`가 카테고리 테이블이 아니면 `CATEGORY`로 설정하지 말 것.
+3. **`fetchFields`는 콤마로 여러 경로를 나열할 수 없다.** `extractField`는 점(`.`)만 경로 구분자로 인식하므로, `fetchFields`는 단일 dot-path 하나만 지정한다 (예: `product.product_name`). 중첩 필드까지 자동으로 찾아주므로 정확한 섹션 경로를 몰라도 필드명만 맞으면 대부분 매칭된다.
+
+**참고 사례**: relation id 10(`productManager-data.ms` → `product-data`)이 위 규칙을 정확히 따르는 정상 사례다. relation id 11/32(`currDtlMgmt-data.power_list`/`automation_list` → 원래 `category-data`로 잘못 설정돼 있었음)를 `product-data`/`TABLE`로 수정해 정상화한 사례가 있다.
+
 ## 개요
 연결 Slug(FETCH) 관계에서 슬레이브 레코드가 매칭되었을 때 BE(`PageDataService.applyFetch`)가 내려주는 응답 형식을 정의한다.
 
