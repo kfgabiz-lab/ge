@@ -154,15 +154,15 @@ export default function DevicesProductNav({
     return () => observer?.disconnect();
   }, [sectionIds, syncActiveFromScroll]);
 
+  /* 260812 start — ul top 정렬, navLink 제거 */
   const handleNavClick = (
     event: React.MouseEvent<HTMLAnchorElement>,
     sectionId: ProductNavSectionId,
   ) => {
-    const navLink = event.currentTarget;
     event.preventDefault();
     setActiveId(sectionId);
 
-    if (isNearProductSection(sectionId, 48, navLink)) {
+    if (isNearProductSection(sectionId, 48)) {
       releasePendingLock();
       if (window.location.hash !== `#${sectionId}`) {
         window.history.replaceState(null, "", `#${sectionId}`);
@@ -173,13 +173,13 @@ export default function DevicesProductNav({
     lockPending(sectionId);
 
     scrollToProductSection(sectionId, {
-      navLink,
       onComplete: () => {
         setActiveId(sectionId);
         releasePendingLock();
       },
     });
   };
+  /* 260812 end */
 
   return (
     <nav className="devices_product_nav" aria-label="Page sections">

@@ -46,11 +46,12 @@ export const blogItems: BlogListItem[] = [
       "Electrical accidents remain a serious concern in industrial and commercial settings. According to the U.S. Bureau of Labor Statistics, more than 5,000 workers suffer fatal electrical injuries annually in the U.S. alone, many of which occur during maintenance or equipment servicing without proper isolation protocols in place.",
     date: "Apr 20, 2026",
     image: "/pub/img/company/blog/list_01.png",
-    tags: ["#MCCB", "#Switches", "#Air Circuit Breakers", "#Compact Switch", "#Hashtag", "#Hashtag"],
+    /* 260812 start */
+    tags: [],
+    /* 260812 end */
   },
   {
-    id: "blog-03",
-    category: "Power Distribution & Infrastructure",
+    id: "blog-03",    category: "Power Distribution & Infrastructure",
     title: "A Complete Guide to Protective Relays and Their Role in Power Systems",
     description:
       "Electrical accidents remain a serious concern in industrial and commercial settings. According to the U.S. Bureau of Labor Statistics, more than 5,000 workers suffer fatal electrical injuries annually in the U.S. alone, many of which occur during maintenance or equipment servicing without proper isolation protocols in place.",

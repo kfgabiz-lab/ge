@@ -1390,6 +1390,26 @@ export default function ComponentGuide() {
           </div>
         </div>
 
+        {/* 260812 start */}
+        <div className="component-guide__section" id="banner-02-arrow">
+          <h2 className="component-guide__section-tit">
+            common_banner_02 — expert + arrow
+          </h2>
+          <p className="component-guide__type-spec">
+            <span>Figma 9120:126428 — arrow CTA</span>
+            <span className="component-guide__type-spec-sep" />
+            <span>--expert --arrow · linkIcon=arrow · contact 없음 · icon_arrow-14</span>
+          </p>
+          <div className="component-guide__preview-banner devices-page devices-page--product">
+            <CommonBanner02
+              variant="expert"
+              linkIcon="arrow"
+              linkHref="#banner-02-arrow"
+            />
+          </div>
+        </div>
+        {/* 260812 end */}
+
         <div className="component-guide__section" id="banner-03">
           <h2 className="component-guide__section-tit">common_banner_03</h2>
           <p className="component-guide__type-spec">

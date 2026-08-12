@@ -223,6 +223,19 @@
     overflow: hidden;
   }
 
+  /* 260812 start */
+  /* 해시태그 없을 때 content-link 세로 중앙 */
+  section.company-blog-list .company-blog-list__content--no-tags {
+    justify-content: center;
+  }
+
+  section.company-blog-list
+    .company-blog-list__content--no-tags
+    .company-blog__category {
+    margin-top: 0;
+  }
+  /* 260812 end */
+
   section.company-blog-list .company-blog-list__content-link {
     display: flex;
     flex-direction: column;

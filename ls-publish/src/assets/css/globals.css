@@ -613,9 +613,9 @@ section .btn-text-30 .btn-text-30__icon {
   border-radius: 50%;
   transition: background 0.2s ease;
 }
-section .btn-text-30:hover .btn-text-30__icon {
+/* section .btn-text-30:hover .btn-text-30__icon {
   background: var(--color-accent);
-}
+} */
 section .btn-text-30 .icon_arrow-14 {
   display: block;
   width: 14px;
@@ -1324,7 +1324,9 @@ section.common_banner_01 .btn-lv01--line-solid .icon_arrow-18 {
     font-size: 34px;
     font-weight: 600;
     line-height: 44px;
-    letter-spacing: -0.34px;
+    /* 260812 start */
+    letter-spacing: -1%;
+    /* 260812 end */
     color: #fff;
     text-align: left;
   }
@@ -1351,6 +1353,23 @@ section.common_banner_01 .btn-lv01--line-solid .icon_arrow-18 {
   section.common_banner_02 .common_banner_02__link .icon_link-14 {
     background: url("/pub/ico/ico_arrow_right_18_white.svg") center / contain no-repeat;
   }
+
+  /* 260812 start */
+  /* Figma 9120:126428 — arrow CTA (linkIcon=arrow) */
+  section.common_banner_02.common_banner_02--arrow
+    .common_banner_02__link
+    .icon_arrow-14 {
+    background: url("/pub/ico/ico_arrow_right_14_white.svg") center / contain
+      no-repeat;
+    filter: none;
+  }
+
+  section.common_banner_02.common_banner_02--arrow
+    .common_banner_02__link:hover
+    .icon_arrow-14 {
+    filter: none;
+  }
+  /* 260812 end */
 }
 
 @media (max-width: 780px) {
@@ -1370,10 +1389,10 @@ section.common_banner_01 .btn-lv01--line-solid .icon_arrow-18 {
   }
 
 
-  section.common_banner_02 .common_banner_02__panel:hover .btn-text-30__icon,
+  /* section.common_banner_02 .common_banner_02__panel:hover .btn-text-30__icon,
   section.common_banner_02 .common_banner_02__link:hover .btn-text-30__icon {
     background: var(--color-accent);
-  }
+  } */
 
   section.common_banner_02 .common_banner_02__body .common_banner_02__bg {
     position: absolute;
@@ -1419,7 +1438,9 @@ section.common_banner_01 .btn-lv01--line-solid .icon_arrow-18 {
     font-size: 26px;
     font-weight: 600;
     line-height: 34px;
-    letter-spacing: -0.01em;
+    /* 260812 start */
+    letter-spacing: -1%;
+    /* 260812 end */
     color: #fff;
     text-align: left;
   }
@@ -1442,6 +1463,23 @@ section.common_banner_01 .btn-lv01--line-solid .icon_arrow-18 {
   section.common_banner_02 .common_banner_02__link .icon_link-14 {
     background: url("/pub/ico/ico_arrow_right_18_white.svg") center / contain no-repeat;
   }
+
+  /* 260812 start */
+  /* Figma 9120:126428 — arrow CTA (linkIcon=arrow) */
+  section.common_banner_02.common_banner_02--arrow
+    .common_banner_02__link
+    .icon_arrow-14 {
+    background: url("/pub/ico/ico_arrow_right_14_white.svg") center / contain
+      no-repeat;
+    filter: none;
+  }
+
+  section.common_banner_02.common_banner_02--arrow
+    .common_banner_02__link:hover
+    .icon_arrow-14 {
+    filter: none;
+  }
+  /* 260812 end */
 
   /* Figma 6584:95253 — expert variant (product detail MO) */
   section.common_banner_02.common_banner_02--expert {
@@ -1480,7 +1518,9 @@ section.common_banner_01 .btn-lv01--line-solid .icon_arrow-18 {
     font-size: 24px;
     font-weight: 600;
     line-height: 34px;
-    letter-spacing: -0.24px;
+    /* 260812 start */
+    letter-spacing: -1%;
+    /* 260812 end */
   }
 
   section.common_banner_02.common_banner_02--expert .common_banner_02__desc {
@@ -1505,11 +1545,25 @@ section.common_banner_01 .btn-lv01--line-solid .icon_arrow-18 {
     text-decoration: none;
   }
 
-  section.common_banner_02.common_banner_02--expert .btn-line-30 {
-    height: 32px;
-    min-height: 32px;
-    padding: 8px 18px;
+  /* 260812 start */
+  /* Figma 8993:165636 — Btn / 30px / Line (Copy Email) */
+  section.common_banner_02.common_banner_02--expert
+    .common_banner_02__contact
+    .btn-line-30--on-dark {
+    box-sizing: border-box;
+    width: fit-content;
+    min-width: 0;
+    max-width: none;
+    height: 30px;
+    min-height: 30px;
+    padding: 8px 14px;
+    gap: 5px;
+    font-size: 13px;
+    line-height: 14px;
+    flex: 0 0 auto;
+    white-space: nowrap;
   }
+  /* 260812 end */
 
   section.common_banner_02.common_banner_02--expert .common_banner_02__link {
     margin-top: 36px;
@@ -1525,8 +1579,8 @@ section.common_banner_01 .btn-lv01--line-solid .icon_arrow-18 {
     width: 22px;
     height: 22px;
   }
-
-  section.common_banner_02.common_banner_02--expert
+ /* 260812 start */
+  /* section.common_banner_02.common_banner_02--expert
     .common_banner_02__panel:hover
     .btn-text-30__icon {
     background: transparent;
@@ -1542,7 +1596,16 @@ section.common_banner_01 .btn-lv01--line-solid .icon_arrow-18 {
     .common_banner_02__link:hover
     .icon_link-14 {
     filter: brightness(0) invert(1);
-  }
+  } 
+
+ 
+  section.common_banner_02.common_banner_02--expert.common_banner_02--arrow
+    .common_banner_02__link:hover
+    .icon_arrow-14 {
+    filter: none;
+  }*/
+  
+  /* 260812 end */
 }
 
 /* Rolling / Swiper nav 50px */

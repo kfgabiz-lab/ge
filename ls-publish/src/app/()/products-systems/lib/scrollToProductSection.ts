@@ -19,8 +19,6 @@ function prefersReducedMotion() {
 type ScrollToProductSectionOptions = {
   updateHash?: boolean;
   onComplete?: () => void;
-  /** Reserved — alignment uses `.devices_product_nav` top, not the clicked row */
-  navLink?: HTMLElement | null;
 };
 
 export type ResolveActiveProductSectionOptions = {
@@ -28,19 +26,20 @@ export type ResolveActiveProductSectionOptions = {
   scrollDelta?: number;
 };
 
-function getProductNavElement() {
-  return document.querySelector<HTMLElement>(".devices_product_nav");
-}
-
+/* 260812 start — ul 최상단만 사용 (li·link 제외) */
 function getProductNavListElement() {
-  return document.querySelector<HTMLElement>(".devices_product_nav__list");
-}
-
-function getProductNavLinkElement(sectionId: string) {
   return document.querySelector<HTMLElement>(
-    `a.devices_product_nav__link[href="#${sectionId}"]`,
+    ".devices_product_nav > ul.devices_product_nav__list",
   );
 }
+
+function getProductNavListTop() {
+  const list = getProductNavListElement();
+  if (!list) return null;
+
+  return getSectionViewportTop(list);
+}
+/* 260812 end */
 
 function updateSectionHash(sectionId: string, enabled: boolean) {
   if (!enabled) return;
@@ -74,6 +73,10 @@ const PRODUCT_SECTION_TITLE_SELECTORS = [
   ".devices_product_applications__head .section_tit",
   ".devices_product_downloads__head .section_tit",
   ".devices_product_features__head .section_tit",
+  /* 260812 start */
+  /* Lineup — side nav anchor: section.devices_product_lineup .section_tit */
+  ".devices_product_lineup__head .section_tit",
+  /* 260812 end */
   ".devices_markets__head .section_tit",
   ".devices_help__head .section_tit",
   ".section_tit",
@@ -91,6 +94,11 @@ function resolveProductSectionScrollTarget(sectionId: string) {
   const section = document.getElementById(sectionId);
   if (!section) return null;
 
+  /* 260812 start — h2.section_tit 우선 */
+  const h2Tit = section.querySelector<HTMLElement>("h2.section_tit");
+  if (h2Tit) return h2Tit;
+  /* 260812 end */
+
   for (const selector of PRODUCT_SECTION_TITLE_SELECTORS) {
     const target = section.querySelector<HTMLElement>(selector);
     if (target) return target;
@@ -100,33 +108,22 @@ function resolveProductSectionScrollTarget(sectionId: string) {
 }
 
 /**
- * Side nav alignment line — `.devices_product_nav` top (sticky nav box).
- * `.section_tit` scroll target aligns to this viewport Y.
+ * Side nav alignment — `ul.devices_product_nav__list` 최상단.
+ * 모든 섹션 h2.section_tit이 동일한 viewport Y에 맞춰짐.
  */
-export function getProductNavAlignmentLine(
-  _sectionId?: string,
-  _navLink?: HTMLElement | null,
-) {
-  const nav = getProductNavElement();
-  if (nav) {
-    return getSectionViewportTop(nav);
-  }
-
-  const list = getProductNavListElement();
-  if (list) {
-    return getSectionViewportTop(list);
-  }
-
-  return null;
+export function getProductNavAlignmentLine() {
+  /* 260812 start */
+  return getProductNavListTop();
+  /* 260812 end */
 }
 
-function alignSectionTitToNavRow(
+/* 260812 start */
+function alignSectionTitToNavList(
   sectionId: string,
   lenis?: Lenis | null,
-  navLink?: HTMLElement | null,
 ) {
   const scrollTarget = resolveProductSectionScrollTarget(sectionId);
-  const alignmentLine = getProductNavAlignmentLine(sectionId, navLink);
+  const alignmentLine = getProductNavAlignmentLine();
   if (!scrollTarget || alignmentLine === null) return;
 
   const delta = getSectionViewportTop(scrollTarget) - alignmentLine;
@@ -146,6 +143,7 @@ function alignSectionTitToNavRow(
 
   scrollWindowTo(targetTop, { immediate: true });
 }
+/* 260812 end */
 
 function getProductSectionScrollTop(
   scrollTarget: HTMLElement,
@@ -163,7 +161,7 @@ function getProductSectionScrollTop(
 
 /**
  * Scroll to a product section.
- * Side nav — `.section_tit` top aligns with `.devices_product_nav` top.
+ * Side nav — h2.section_tit top aligns with `.devices_product_nav__list` top.
  */
 export function scrollToProductSection(
   sectionId: string,
@@ -179,13 +177,18 @@ export function scrollToProductSection(
 
   const immediate = prefersReducedMotion();
   const lenis = getLenisInstance();
-  const alignmentLine = getProductNavAlignmentLine(sectionId, options.navLink);
+  const alignmentLine = getProductNavAlignmentLine();
   const targetTop = getProductSectionScrollTop(scrollTarget, lenis, alignmentLine);
 
   const finish = () => {
-    alignSectionTitToNavRow(sectionId, lenis, options.navLink);
-    updateSectionHash(sectionId, options.updateHash !== false);
-    onComplete?.();
+    alignSectionTitToNavList(sectionId, lenis);
+    /* 260812 start — sticky 전환 후 ul top 재측정 */
+    requestAnimationFrame(() => {
+      alignSectionTitToNavList(sectionId, lenis);
+      updateSectionHash(sectionId, options.updateHash !== false);
+      onComplete?.();
+    });
+    /* 260812 end */
   };
 
   if (lenis) {
@@ -212,14 +215,12 @@ export function scrollToProductSection(
 export function isNearProductSection(
   sectionId: string,
   thresholdPx = 48,
-  navLink?: HTMLElement | null,
 ) {
   const scrollTarget = resolveProductSectionScrollTarget(sectionId);
   if (!scrollTarget) return false;
 
   const alignmentLine =
-    getProductNavAlignmentLine(sectionId, navLink) ??
-    PRODUCT_SECTION_SCROLL_OFFSET_PX;
+    getProductNavAlignmentLine() ?? PRODUCT_SECTION_SCROLL_OFFSET_PX;
 
   return (
     Math.abs(getSectionViewportTop(scrollTarget) - alignmentLine) <= thresholdPx
@@ -253,14 +254,16 @@ export function resolveActiveProductSectionId(
 
   const entries = sections.map(({ id, element }) => {
     const scrollTarget = resolveProductSectionScrollTarget(id) ?? element;
-    const linkLine = getProductNavAlignmentLine(id);
+    /* 260812 start */
+    const listLine = getProductNavAlignmentLine();
     const titTop = getSectionViewportTop(scrollTarget);
     const distance =
-      linkLine === null
+      listLine === null
         ? Math.abs(titTop - PRODUCT_SECTION_SCROLL_OFFSET_PX)
-        : Math.abs(titTop - linkLine);
+        : Math.abs(titTop - listLine);
 
-    return { id, titTop, linkLine, distance };
+    return { id, titTop, listLine, distance };
+    /* 260812 end */
   });
 
   if (isScrollingUp) {
@@ -273,13 +276,15 @@ export function resolveActiveProductSectionId(
     let passedId = sectionIds[0];
     let anyPassed = false;
 
-    for (const { id, titTop, linkLine } of entries) {
-      if (linkLine === null) continue;
-      if (titTop <= linkLine + SCROLL_SPY_THRESHOLD_PX) {
+    /* 260812 start */
+    for (const { id, titTop, listLine } of entries) {
+      if (listLine === null) continue;
+      if (titTop <= listLine + SCROLL_SPY_THRESHOLD_PX) {
         passedId = id;
         anyPassed = true;
       }
     }
+    /* 260812 end */
 
     if (anyPassed) {
       return passedId;
@@ -306,13 +311,10 @@ export function resolveActiveProductSectionId(
 }
 
 export function getProductNavObserverRootMargin() {
-  const nav = getProductNavElement();
-  const list = getProductNavListElement();
-  const rawLine = nav
-    ? getSectionViewportTop(nav)
-    : list
-      ? getSectionViewportTop(list)
-      : PRODUCT_SECTION_SCROLL_OFFSET_PX;
+  /* 260812 start */
+  const alignmentLine = getProductNavAlignmentLine();
+  const rawLine = alignmentLine ?? PRODUCT_SECTION_SCROLL_OFFSET_PX;
+  /* 260812 end */
   const line = Number.isFinite(rawLine)
     ? Math.max(0, Math.round(rawLine))
     : PRODUCT_SECTION_SCROLL_OFFSET_PX;

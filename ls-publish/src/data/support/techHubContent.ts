@@ -150,14 +150,21 @@ export const techHubProductCategories: DownloadCategoryOption[] = [
 ];
 
 /** Figma 3670:31687 — Tech Hub View */
+/* 260812 start */
+/** series-meta: title만(9145:162721) | chapter만(9145:162793) */
+export type TechHubSeriesMeta = "title" | "chapter";
+
 export type TechHubSeriesItem = {
   id: string;
   chapter: string;
   title: string | string[];
   poster: string;
   href: string;
+  /** Figma 9145:162721 title · 9145:162793 chapter */
+  meta: TechHubSeriesMeta;
   isActive?: boolean;
 };
+/* 260812 end */
 
 export type TechHubViewDetail = {
   chapter: string;
@@ -184,6 +191,9 @@ export const techHubViewDetail: TechHubViewDetail = {
     {
       id: "series-ch1",
       chapter: "Chapter1",
+      /* 260812 start */
+      meta: "title",
+      /* 260812 end */
       title: ["[X-GIPAM] HMI User", "Manual for Records View"],
       poster: techHubViewPoster,
       href: "/support/tech-hub/view",
@@ -191,6 +201,9 @@ export const techHubViewDetail: TechHubViewDetail = {
     {
       id: "series-ch2",
       chapter: "Chapter2",
+      /* 260812 start */
+      meta: "title",
+      /* 260812 end */
       title: "[MC] Terminal Cover Installation Manual",
       poster: techHubViewPoster,
       href: "/support/tech-hub/view",
@@ -198,6 +211,9 @@ export const techHubViewDetail: TechHubViewDetail = {
     {
       id: "series-ch3",
       chapter: "Chapter3",
+      /* 260812 start */
+      meta: "chapter",
+      /* 260812 end */
       title: "[X-GIPAM] HMI User Manual for Power Syst...",
       poster: techHubViewPoster,
       href: "/support/tech-hub/view",
@@ -206,6 +222,9 @@ export const techHubViewDetail: TechHubViewDetail = {
     {
       id: "series-ch4",
       chapter: "Chapter4",
+      /* 260812 start */
+      meta: "title",
+      /* 260812 end */
       title: ["[X-GIPAM] HMI User", "Manual for Records View"],
       poster: techHubViewPoster,
       href: "/support/tech-hub/view",
@@ -213,6 +232,9 @@ export const techHubViewDetail: TechHubViewDetail = {
     {
       id: "series-ch5",
       chapter: "Chapter5",
+      /* 260812 start */
+      meta: "chapter",
+      /* 260812 end */
       title: "[MC] Terminal Cover Installation Manual",
       poster: techHubViewPoster,
       href: "/support/tech-hub/view",
@@ -220,6 +242,9 @@ export const techHubViewDetail: TechHubViewDetail = {
     {
       id: "series-ch6",
       chapter: "Chapter6",
+      /* 260812 start */
+      meta: "title",
+      /* 260812 end */
       title: "[X-GIPAM] HMI User Manual for Power Syst...",
       poster: techHubViewPoster,
       href: "/support/tech-hub/view",

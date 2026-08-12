@@ -1,4 +1,7 @@
 import { Suspense } from "react";
+/* 260812 start */
+import SearchAllAiLoadingProvider from "./components/SearchAllAiLoadingProvider";
+/* 260812 end */
 import SearchAllHero from "./components/SearchAllHero";
 import SearchAllTabContent from "./components/SearchAllTabContent";
 import "@/assets/css/search.css";
@@ -26,10 +29,14 @@ function SearchAllHeroFallback() {
 export default function SearchAllRoutePage() {
   return (
     <main className="search-page" id="Page_search_all">
-      <Suspense fallback={<SearchAllHeroFallback />}>
-        <SearchAllHero />
-      </Suspense>
-      <SearchAllTabContent />
+      {/* 260812 start */}
+      <SearchAllAiLoadingProvider>
+        <Suspense fallback={<SearchAllHeroFallback />}>
+          <SearchAllHero />
+        </Suspense>
+        <SearchAllTabContent />
+      </SearchAllAiLoadingProvider>
+      {/* 260812 end */}
     </main>
   );
 }

@@ -4,6 +4,19 @@ import type { EngineeringTrainingSessionDetail } from "@/data/services/engineeri
 import { engineeringTrainingSessionAssets } from "@/data/services/engineeringTrainingSessionDetailContent";
 import EngineeringTrainingSessionCountdown from "./EngineeringTrainingSessionCountdown";
 
+/* 260812 start */
+function formatPhoneHref(phone: string) {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length === 10) {
+    return `tel:+1${digits}`;
+  }
+  if (digits.length === 11 && digits.startsWith("1")) {
+    return `tel:+${digits}`;
+  }
+  return digits ? `tel:${digits}` : undefined;
+}
+/* 260812 end */
+
 function SessionMetaLabel({
   icon,
   children,
@@ -32,6 +45,9 @@ export default function SessionDetailAside({
 }) {
   const { sidebar } = session;
   const { metaIcons } = engineeringTrainingSessionAssets;
+  /* 260812 start */
+  const phoneHref = formatPhoneHref(sidebar.location.phone);
+  /* 260812 end */
 
   return (
     <aside
@@ -85,8 +101,20 @@ export default function SessionDetailAside({
           </div>
           <ul className="support_service_training_session_detail__meta-bullets">
             <li>{sidebar.location.address}</li>
-            <li>{sidebar.location.phone}</li>
-            <li>{sidebar.location.email}</li>
+            {/* 260812 start */}
+            <li>
+              {phoneHref ? (
+                <a href={phoneHref}>{sidebar.location.phone}</a>
+              ) : (
+                sidebar.location.phone
+              )}
+            </li>
+            <li>
+              <a href={`mailto:${sidebar.location.email}`}>
+                {sidebar.location.email}
+              </a>
+            </li>
+            {/* 260812 end */}
           </ul>
         </div>
 

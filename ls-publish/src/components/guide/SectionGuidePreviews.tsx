@@ -196,12 +196,22 @@ import RequestForTrainingTitle from "@/app/()/services/request-for-training/comp
 import { requestForTrainingNavCopy, requestForTrainingRoutes } from "@/data/services/requestForTrainingContent";
 import { getEngineeringTrainingDetail } from "@/data/services/engineeringTrainingDetailContent";
 import { getEngineeringTrainingSessionDetail } from "@/data/services/engineeringTrainingSessionDetailContent";
+/* 260812 start */
+import SearchAllAi from "@/app/()/search/components/SearchAllAi";
+import SearchAllAiLoadingProvider from "@/app/()/search/components/SearchAllAiLoadingProvider";
+/* 260812 end */
 import SearchAllHero from "@/app/()/search/components/SearchAllHero";
 import SearchAllTabContent from "@/app/()/search/components/SearchAllTabContent";
 import SearchDocumentsPanel from "@/app/()/search/components/SearchDocumentsPanel";
 import SearchMediaPanel from "@/app/()/search/components/SearchMediaPanel";
 import SearchPagesPanel from "@/app/()/search/components/SearchPagesPanel";
 import SearchProductsPanel from "@/app/()/search/components/SearchProductsPanel";
+/* 260812 start */
+import {
+  searchAllAiSummaryHtml,
+  searchAllAiSummaryShortHtml,
+} from "@/data/search/searchAllContent";
+/* 260812 end */
 import { Suspense } from "react";
 import TechHubSearch from "@/app/()/support/tech-hub/components/TechHubSearch";
 import TechHubTitle from "@/app/()/support/tech-hub/components/TechHubTitle";
@@ -385,6 +395,7 @@ export function ProductSectionPreviews() {
         />
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("common_banner_02_expert")}>
+        {/* 260812 start */}
         <CommonBanner02
           variant="expert"
           linkHref={metasolMsDetail.expertBannerHref}
@@ -392,6 +403,15 @@ export function ProductSectionPreviews() {
           contactEmail={metasolMsDetail.expertContactEmail}
           backgroundSrc={metasolMsDetail.configuratorBannerBg}
         />
+        <CommonBanner02
+          variant="expert"
+          linkIcon="arrow"
+          linkHref={metasolMsDetail.expertBannerHref}
+          linkExternal={metasolMsDetail.expertBannerExternal}
+          contactEmail={metasolMsDetail.expertContactEmail}
+          backgroundSrc={metasolMsDetail.configuratorBannerBg}
+        />
+        {/* 260812 end */}
       </SectionGuideBlock>
       <SectionGuideBlock entry={block("devices_product_lineup_type1")}>
         <DevicesProductLineup
@@ -1252,7 +1272,8 @@ export function SupportTechHubViewSectionPreviews() {
 
 export function SearchSectionPreviews() {
   return (
-    <>
+    /* 260812 start */
+    <SearchAllAiLoadingProvider>
       <SectionGuideBlock entry={block("search_all_hero")}>
         <Suspense fallback={null}>
           <SearchAllHero />
@@ -1261,6 +1282,36 @@ export function SearchSectionPreviews() {
       <SectionGuideBlock entry={block("search_all")}>
         <SearchAllTabContent />
       </SectionGuideBlock>
+      {/* 260812 start */}
+      <SectionGuideBlock entry={block("search_all__ai")}>
+        <section className="search_all">
+          <div className="inner">
+            <SearchAllAi html={searchAllAiSummaryHtml} />
+          </div>
+        </section>
+      </SectionGuideBlock>
+      <SectionGuideBlock entry={block("search_all__ai_short")}>
+        <section className="search_all">
+          <div className="inner">
+            <SearchAllAi html={searchAllAiSummaryShortHtml} />
+          </div>
+        </section>
+      </SectionGuideBlock>
+      <SectionGuideBlock entry={block("search_all__ai_expanded")}>
+        <section className="search_all">
+          <div className="inner">
+            <SearchAllAi html={searchAllAiSummaryHtml} defaultExpanded />
+          </div>
+        </section>
+      </SectionGuideBlock>
+      <SectionGuideBlock entry={block("search_all__ai_skeleton")}>
+        <section className="search_all">
+          <div className="inner">
+            <SearchAllAi loading />
+          </div>
+        </section>
+      </SectionGuideBlock>
+      {/* 260812 end */}
       <SectionGuideBlock entry={block("search_products")}>
         <SearchProductsPanel />
       </SectionGuideBlock>
@@ -1273,7 +1324,8 @@ export function SearchSectionPreviews() {
       <SectionGuideBlock entry={block("search_pages")}>
         <SearchPagesPanel />
       </SectionGuideBlock>
-    </>
+    </SearchAllAiLoadingProvider>
+    /* 260812 end */
   );
 }
 

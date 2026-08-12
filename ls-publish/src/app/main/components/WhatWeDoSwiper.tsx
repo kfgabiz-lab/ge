@@ -3,13 +3,17 @@
 import Link from "next/link";
 import { useCallback, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { A11y, Autoplay, EffectFade } from "swiper/modules";
+/* 260812 start — slide (fade 제거, 이미지 영역만 슬라이드) */
+import { A11y, Autoplay } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import SwiperBarControls from "@/components/swiper/SwiperBarControls";
 import "swiper/css";
-import "swiper/css/effect-fade";
+/* 260812 end */
 
 const AUTOPLAY_DELAY_MS = 4000;
+/* 260812 start */
+const WHAT_WE_DO_SLIDE_SPEED = 500;
+/* 260812 end */
 const WHAT_WE_DO_EXPLORE_HREF = "/company/ls-electric-america";
 
 const whatWeDoSlides = [
@@ -34,15 +38,17 @@ const whatWeDoSlides = [
     tit: "Automation & Industrial Control",
     txt: "We deliver advanced automation and motor control solutions including VFDs, PLCs, HMIs, and integrated control systems. Designed for North American industry, our technologies help manufacturers and operators boost productivity, reduce downtime, and drive smarter, data driven decision making.",
   },
-];
+] as const;
 
 export default function WhatWeDoSwiper() {
   const swiperRef = useRef<SwiperType | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const activeSlide = whatWeDoSlides[activeIndex] ?? whatWeDoSlides[0];
+  const loopEnabled = whatWeDoSlides.length > 1;
 
   const handleSwiper = useCallback((swiper: SwiperType) => {
     swiperRef.current = swiper;
-    setActiveIndex(swiper.realIndex);
+    setActiveIndex(swiper.activeIndex);
   }, []);
 
   const handleMouseEnter = () => {
@@ -54,11 +60,11 @@ export default function WhatWeDoSwiper() {
   };
 
   const handleSlideChange = useCallback((swiper: SwiperType) => {
-    setActiveIndex(swiper.realIndex);
+    setActiveIndex(swiper.activeIndex);
   }, []);
 
   const handlePaginationClick = (index: number) => {
-    swiperRef.current?.slideToLoop(index);
+    swiperRef.current?.slideTo(index);
   };
 
   const handlePrev = () => {
@@ -82,47 +88,50 @@ export default function WhatWeDoSwiper() {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <Swiper
-          className="swiper_type_01"
-          modules={[A11y, Autoplay, EffectFade]}
-          effect="fade"
-          fadeEffect={{ crossFade: true }}
-          slidesPerView={1}
-          speed={0}
-          loop
-          observer
-          observeParents
-          watchSlidesProgress
-          autoplay={{ delay: AUTOPLAY_DELAY_MS, disableOnInteraction: false }}
-          onSwiper={handleSwiper}
-          onSlideChange={handleSlideChange}
-        >
-          {whatWeDoSlides.map((slide, index) => (
-            <SwiperSlide key={slide.id}>
-              <div className="sl">
-                <Link href={WHAT_WE_DO_EXPLORE_HREF} className="btn-text-30 link_more">
-                  Explore
-                  <span className="btn-text-30__icon">
-                    <span className="icon_arrow-14" aria-hidden="true" />
-                  </span>
-                </Link>
-                <div className="img_area">
-                  <img
-                    src={slide.img}
-                    alt={slide.alt}
-                    className="sl_img"
-                    loading="eager"
-                    decoding="async"
-                  />
-                </div>
-                <div className="txt_area">
-                  <h3 className="tit">{slide.tit}</h3>
-                  <p className="txt">{slide.txt}</p>
-                </div>
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+        {/* 260812 start */}
+        <div className="what_we_do__stage">
+          <Link href={WHAT_WE_DO_EXPLORE_HREF} className="btn-text-30 link_more">
+            Explore
+            <span className="btn-text-30__icon">
+              <span className="icon_arrow-14" aria-hidden="true" />
+            </span>
+          </Link>
+
+          <div className="what_we_do__media">
+            <Swiper
+              className="swiper_type_01 what_we_do__media-swiper"
+              modules={[A11y, Autoplay]}
+              slidesPerView={1}
+              speed={WHAT_WE_DO_SLIDE_SPEED}
+              rewind={loopEnabled}
+              watchOverflow
+              autoplay={{ delay: AUTOPLAY_DELAY_MS, disableOnInteraction: false }}
+              onSwiper={handleSwiper}
+              onSlideChange={handleSlideChange}
+              onSlideChangeTransitionEnd={handleSlideChange}
+            >
+              {whatWeDoSlides.map((slide) => (
+                <SwiperSlide key={slide.id}>
+                  <div className="img_area">
+                    <img
+                      src={slide.img}
+                      alt={slide.alt}
+                      className="sl_img"
+                      loading="eager"
+                      decoding="async"
+                    />
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+
+          <div className="txt_area" key={activeSlide.id}>
+            <h3 className="tit">{activeSlide.tit}</h3>
+            <p className="txt">{activeSlide.txt}</p>
+          </div>
+        </div>
+        {/* 260812 end */}
 
         <SwiperBarControls
           variant="swiper_type_01"
