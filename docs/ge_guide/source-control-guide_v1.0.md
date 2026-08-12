@@ -13,7 +13,7 @@ Bo 프로젝트는 **단일 monorepo**(`C:\...\workspace\Bo`)에서 관리되며
 `bo/`, `bo-api/`, `fo/`는 **git submodule**로, `ls-publish/`는 **정식 git subtree**로 각각 별도 GitHub 리포지토리와 연결되어 있다(아래 리모트 목록 참고).
 
 ```
-workspace/Bo/          ← 루트 monorepo (리모트명: origin)
+workspace/Bo/          ← 루트 monorepo (리모트명: ge)
 ├── bo/                ← BO 프론트 (ge-bo submodule)
 ├── bo-api/            ← BE API   (ge-api submodule)
 ├── fo/                ← FO 프론트 (ge-fo submodule)
@@ -25,7 +25,7 @@ workspace/Bo/          ← 루트 monorepo (리모트명: origin)
 
 | 리모트명 | GitHub URL | 대상 | 비고 |
 |---------|-----------|------|------|
-| `origin` | https://github.com/kfgabiz-lab/ge | 루트 전체 | 전체 monorepo. 루트에서 pull/push할 때 실제로 쓰는 리모트명은 `origin`이다 |
+| `ge` | https://github.com/kfgabiz-lab/ge | 루트 전체 | 전체 monorepo. 루트에서 pull/push할 때 실제로 쓰는 리모트명은 `ge`이다 |
 | `ge-bo` | https://github.com/kfgabiz-lab/ge-bo | `bo/` | 루트에도 등록되어 있으나(참고용), 실제 pull/push는 `bo/` 폴더 안에서 `origin`으로 한다 |
 | `ge-api` | https://github.com/kfgabiz-lab/ge-api | `bo-api/` | 루트에도 등록되어 있으나(참고용), 실제 pull/push는 `bo-api/` 폴더 안에서 `origin`으로 한다 |
 | `ge-fo` | https://github.com/kfgabiz-lab/ge-fo | `fo/` | 루트에도 등록되어 있으나(참고용), 실제 pull/push는 `fo/` 폴더 안에서 `origin`으로 한다 |
@@ -109,7 +109,7 @@ submodule 안에서 push를 마쳤으면, 루트 저장소는 그 submodule이 "
 ```bash
 git add bo bo-api fo      # 변경된 submodule만 지정해도 됨
 git commit -m "chore: bo/bo-api/fo 서브모듈 포인터 업데이트"
-git push origin master
+git push ge master
 ```
 
 > `ls-publish/`는 submodule이 아니라 subtree이므로 이 절차와 무관하다 — 필요 시(레거시 원본 자체를 수정한 경우만) `git subtree push --prefix=ls-publish ls-publish-src pub`로 별도 진행.
@@ -121,7 +121,7 @@ git push origin master
 일반적인 개발 작업에서는 **루트 한 곳만 pull 받으면 충분**하다.
 
 ```bash
-git pull origin master
+git pull ge master
 ```
 
 단, submodule(`bo`/`bo-api`/`fo`)은 루트 pull만으로는 내용이 갱신되지 않는다 — 루트 저장소는 "포인터가 바뀌었다"는 것만 받아오고, 실제로 그 커밋을 받아오려면 아래를 추가로 실행해야 한다.
@@ -159,7 +159,7 @@ cd fo && git pull origin master && cd ..
 ## 7. 자주 쓰는 명령어 정리
 
 ```bash
-# 리모트 목록 확인(루트, 실제 리모트명은 origin)
+# 리모트 목록 확인(루트, 실제 리모트명은 ge)
 git remote -v
 
 # 변경 파일 확인(루트)
@@ -174,10 +174,10 @@ cd fo && git add <파일> && git commit -m "..." && git push origin master && cd
 # 루트에 submodule 포인터 반영
 git add bo bo-api fo
 git commit -m "chore: 서브모듈 포인터 업데이트"
-git push origin master
+git push ge master
 
 # 최신 내용 가져오기(루트 + submodule 포인터)
-git pull origin master
+git pull ge master
 git submodule update --init --recursive
 
 # 특정 submodule만 직접 최신화하고 싶을 때
