@@ -178,7 +178,8 @@
       "mcp__chrome-devtools__fill",
       "mcp__chrome-devtools__click",
       "Bash(mkdir -p \"C:/Users/Administrator/.gemini/workspace/Bo/.claude\")",
-      "Read(//c/Users/Administrator/.gemini/workspace/Bo/**)"
+      "Read(//c/Users/Administrator/.gemini/workspace/Bo/**)",
+      "mcp__playwright__browser_close"
     ]
   },
   "enableAllProjectMcpServers": true,
