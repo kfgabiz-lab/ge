@@ -3,6 +3,7 @@
 import { FormControl, MenuItem } from "@mui/material";
 import { GuideSelectIcon } from "@/components/form/GuideFieldIcons";
 import GuideSelect from "@/components/form/GuideSelect";
+import { emptyStateIconSrc } from "@/data/commonAssets";
 import type {
   EngineeringTrainingDetail,
   EngineeringTrainingScheduleFilter,
@@ -34,8 +35,10 @@ function ScheduleFilterSelect({ filter }: { filter: EngineeringTrainingScheduleF
 
 export default function EngineeringTrainingDetailSchedule({
   detail,
+  empty = false,
 }: {
   detail: EngineeringTrainingDetail;
+  empty?: boolean;
 }) {
   const { trainingTypeFilter, monthFilter, sessions } = detail.schedule;
 
@@ -50,16 +53,35 @@ export default function EngineeringTrainingDetailSchedule({
           <ScheduleFilterSelect filter={monthFilter} />
         </div>
 
-        <ul className="support_service_training_detail_schedule__list">
-          {sessions.map((session) => (
-            <EngineeringTrainingDetailSession
-              key={session.id}
-              courseId={detail.courseId}
-              session={session}
-              title={detail.title}
-            />
-          ))}
-        </ul>
+        {empty ? (
+          <div className="support_service_training_detail_schedule__empty">
+            <div
+              className="support_service_training_detail_schedule__empty-icon"
+              aria-hidden="true"
+            >
+              <img src={emptyStateIconSrc} alt="" />
+            </div>
+            <div className="support_service_training_detail_schedule__empty-text">
+              <p className="support_service_training_detail_schedule__empty-title">
+                There are no results
+              </p>
+              <p className="support_service_training_detail_schedule__empty-desc">
+                Try adjusting your filters
+              </p>
+            </div>
+          </div>
+        ) : (
+          <ul className="support_service_training_detail_schedule__list">
+            {sessions.map((session) => (
+              <EngineeringTrainingDetailSession
+                key={session.id}
+                courseId={detail.courseId}
+                session={session}
+                title={detail.title}
+              />
+            ))}
+          </ul>
+        )}
       </div>
     </section>
   );

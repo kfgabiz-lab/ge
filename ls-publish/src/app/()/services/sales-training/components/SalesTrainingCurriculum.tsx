@@ -6,6 +6,7 @@ import { GuideSelectIcon } from "@/components/form/GuideFieldIcons";
 import { guideSearchFieldMobileSlotProps } from "@/components/form/guideFieldMobileProps";
 import GuideSelect from "@/components/form/GuideSelect";
 import PageNumbering from "@/components/pagination/PageNumbering";
+import { emptyStateIconSrc } from "@/data/commonAssets";
 import { salesTrainingPage } from "@/data/services/salesTrainingContent";
 import SalesTrainingCard from "./SalesTrainingCard";
 
@@ -26,7 +27,11 @@ function findFilterLabel(
   return options.find((option) => option.value === value)?.label ?? value;
 }
 
-export default function SalesTrainingCurriculum() {
+export default function SalesTrainingCurriculum({
+  empty = false,
+}: {
+  empty?: boolean;
+}) {
   const { curriculum } = salesTrainingPage;
   const { category, lvCategory, subCategory } = curriculum.filters;
   const [categoryValue, setCategoryValue] = useState(category.defaultValue);
@@ -172,23 +177,44 @@ export default function SalesTrainingCurriculum() {
           />
         </div>
 
-        <ul className="support_service_training_curriculum__list">
-          {curriculum.courses.map((course) => (
-            <li
-              key={course.id}
-              className="support_service_training_curriculum__item"
+        {empty ? (
+          <div className="support_service_training_curriculum__empty">
+            <div
+              className="support_service_training_curriculum__empty-icon"
+              aria-hidden="true"
             >
-              <SalesTrainingCard course={course} />
-            </li>
-          ))}
-        </ul>
+              <img src={emptyStateIconSrc} alt="" />
+            </div>
+            <div className="support_service_training_curriculum__empty-text">
+              <p className="support_service_training_curriculum__empty-title">
+                There are no results
+              </p>
+              <p className="support_service_training_curriculum__empty-desc">
+                Try adjusting your filters or search terms.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <>
+            <ul className="support_service_training_curriculum__list">
+              {curriculum.courses.map((course) => (
+                <li
+                  key={course.id}
+                  className="support_service_training_curriculum__item"
+                >
+                  <SalesTrainingCard course={course} />
+                </li>
+              ))}
+            </ul>
 
-        <PageNumbering
-          className="support_service_training_curriculum__pagination"
-          currentPage={1}
-          totalPages={curriculum.totalPages}
-          ariaLabel="Sales training curriculum pages"
-        />
+            <PageNumbering
+              className="support_service_training_curriculum__pagination"
+              currentPage={1}
+              totalPages={curriculum.totalPages}
+              ariaLabel="Sales training curriculum pages"
+            />
+          </>
+        )}
       </div>
     </section>
   );
