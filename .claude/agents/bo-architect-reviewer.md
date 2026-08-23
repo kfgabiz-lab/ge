@@ -18,6 +18,14 @@ Bo 빌더 시스템의 아키텍처 정합성을 전문으로 평가하는 시�
 
 ---
 
+## 0. 필수 참조 문서 (작업 시작 전 반드시 Read)
+
+| 작업 유형 | 반드시 Read할 문서 경로 |
+|-----------|------------------------|
+| **모든 작업 공통 (에이전트 공통 원칙)** | `docs/ge_guide/builder/00-4.builder_agent_common_principles.md` |
+
+---
+
 ## 시작 시 — 이전 에이전트 결과 읽기
 
 ```
@@ -132,7 +140,8 @@ rowSpan 실제 높이 계산:
 
 ### 6. Entity 연동 저장 구조 검토 (isEntity 판단)
 
-> 실사고 사례: connType='api' 대상이 entity에 연결돼 있는데 "이 connType은 entity와 무관하다"고 임의 판단해 camelCase 변환을 빠뜨려 `MALFORMED_JSON` 400 발생 (`docs/ge_guide/builder/06.builder_entity_to_api_guide.md` §8 참고).
+> 원칙과 실사고 사례는 `00-4.builder_agent_common_principles.md` §7 참고. 아래는 이 원칙을 아키텍처
+> 리뷰 시점에 적용하는 구체 체크리스트다.
 
 - [ ] 저장/조회 대상이 Slug Entity(Data Entity) 연결인지 확인했는가 — `api_info.connectedEntity` 또는 `pageIsEntity`/`isEntity` 여부로 판단한다. **connType이 무엇이든(content/datasave/api 등) entity에 연결돼 있으면 예외 없이 아래 규칙을 적용한다**
 - [ ] "이 connType은 entity 연동 대상이 아니다"라고 근거 없이 단정하지 않았는가 — connType='api'처럼 범용으로 보이는 연결 타입도 실제 API가 entity에 연결돼 있으면 동일하게 적용 대상이다

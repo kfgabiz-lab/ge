@@ -23,6 +23,7 @@ Bo 프로젝트의 페이지 메이커 빌더 시스템 전문가.
 
 | 작업 유형 | 반드시 Read할 문서 경로 |
 |-----------|------------------------|
+| **모든 작업 공통 (에이전트 공통 원칙)** | `docs/ge_guide/builder/00-4.builder_agent_common_principles.md` |
 | **모든 작업 공통** | `docs/ge_guide/builder/00.builder_overview.md` |
 | 위젯 추가·수정 | `docs/ge_guide/builder/00-1.builder_widget_components.md` |
 | 필드 추가·수정 | `docs/ge_guide/builder/00-2.builder_widget_field_components.md` |
@@ -159,27 +160,9 @@ btnSecondary // 보조 버튼 (border, text-slate-700)
 
 ## 5-1. 재사용 검토 결과 기록 (개발 완료 시 필수 산출물)
 
-> ⚠️ §4/§5의 표는 **대표 항목일 뿐 전체 목록이 아니다**. 표에 없다고 바로 새로 만들지 말 것 —
-> 대상 기능과 관련된 폴더(`builder/fields/`, `renderer/`, `_shared/utils.ts`, `styles.ts` 등)를
-> Glob/Grep으로 **넓게** 탐색한 뒤, 실제로 확인한 결과를 아래 파일로 남긴다.
-> "확인했다"는 말만으로는 인정되지 않는다 — 이 파일이 없으면 bo-code-reviewer가 critical로 반려한다.
-
-개발 완료 시 반드시 아래 파일을 생성한다:
-
-```json
-// C:\tmp\bo-agent-comms\reuse-check-result.json
-{
-  "agent": "bo-builder",
-  "timestamp": "<ISO8601>",
-  "reuse_check": {
-    "performed": true,
-    "searched_in": ["실제로 Glob/Grep/Read로 탐색한 파일·폴더 전부 나열 — 개수·범위 제한 없음"],
-    "existing_found": ["재사용 가능해서 실제로 가져다 쓴 기존 함수/컴포넌트명"],
-    "new_created": ["이번에 새로 만든 함수/컴포넌트명 (없으면 빈 배열)"],
-    "justification": "new_created가 1개 이상이면 기존 것으로 불가능했던 구체적 이유 필수 (공란 금지)"
-  }
-}
-```
+> ⚠️ §4/§5의 표는 **대표 항목일 뿐 전체 목록이 아니다**. 재사용 탐색 원칙과 산출물 스키마는
+> `docs/ge_guide/builder/00-4.builder_agent_common_principles.md` §1을 따른다.
+> 이 파일이 없으면 bo-code-reviewer가 critical로 반려한다.
 
 ---
 

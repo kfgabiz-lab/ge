@@ -17,6 +17,14 @@ TypeScript/React 19/Tailwind v4 품질 기준과 Bo 빌더 고유 규칙을 동�
 
 ---
 
+## 0. 필수 참조 문서 (작업 시작 전 반드시 Read)
+
+| 작업 유형 | 반드시 Read할 문서 경로 |
+|-----------|------------------------|
+| **모든 작업 공통 (에이전트 공통 원칙)** | `docs/ge_guide/builder/00-4.builder_agent_common_principles.md` |
+
+---
+
 ## 시작 시 — 이전 에이전트 결과 읽기
 
 ```
@@ -80,72 +88,10 @@ C:\tmp\bo-agent-comms\architect-review-result.json  읽기 (아키텍처 설계 
 > `new_created`에 항목이 있는데 `justification`이 빈 경우 → **critical로 즉시 보고**.
 > (상세 스키마는 아래 `## 완료 시 — 결과 저장` 참고)
 
-### 스타일 상수 — 직접 작성 절대 금지
+### 스타일 상수 / Tailwind 동적 클래스 / preview·live / 인라인 코딩 / 주석 규칙
 
-```typescript
-// ❌ 금지
-className="border rounded px-3 py-2 text-sm focus:ring-2 bg-white"
-
-// ✅ 올바름
-import { inputCls, selectCls, btnPrimary, btnSecondary } from '../../styles';
-className={inputCls}
-```
-
-| 상수 | 용도 |
-|------|------|
-| `inputCls` | input 기본 스타일 |
-| `selectCls` | select 기본 스타일 (appearance-none, pr-8 포함) |
-| `btnPrimary` | 주요 버튼 (bg-slate-900, text-white) |
-| `btnSecondary` | 보조 버튼 (border, text-slate-700) |
-
-### Tailwind v4 동적 클래스 생성 금지
-
-```typescript
-// ❌ 금지 (JIT 미인식)
-const cls = `col-span-${colSpan}`;
-className={`text-${color}-500`}
-
-// ✅ 올바름
-const colSpanMap: Record<number, string> = { 1: 'col-span-1', 2: 'col-span-2', ... };
-className={colSpanMap[colSpan]}
-```
-
-### preview/live 모드 분리 원칙
-
-```typescript
-// ❌ 금지 — UI 요소를 숨기거나 레이아웃 변경
-{mode !== 'preview' && <input ... />}
-
-// ✅ 올바름 — UI는 동일, 기능만 비활성
-const isPreview = mode === 'preview';
-<input disabled={isPreview} onChange={isPreview ? undefined : handleChange} ... />
-```
-
-### 인라인 코딩 금지
-
-```typescript
-// ❌ 금지 — JSX 안에 직접 로직 작성
-{fields.map(f => (
-  <div className="...">
-    {f.type === 'input' && <input ... />}
-    {f.type === 'select' && <select>...</select>}
-    ... (길어지는 경우)
-  </div>
-))}
-
-// ✅ 올바름 — 컴포넌트로 분리
-<FieldRenderer field={f} mode={mode} />
-```
-
-### 주석 규칙
-
-```typescript
-// ❌ 금지 — 주석 자체를 작성하지 않는다 (설명용/WHY용 포함 전부 금지)
-// Render input field
-// rowSpan 계산: 72×N + 8×(N-1) — GridCell 상수 기준
-
-// ✅ 올바름 — 주석 없이 식별자/구조로 의도를 드러낸다
-```
+`docs/ge_guide/builder/00-4.builder_agent_common_principles.md` §2~§6을 그대로 검토 기준으로 삼는다.
+새 원칙이 00-4에 추가되면 이 파일을 별도로 고치지 않아도 다음 리뷰부터 자동으로 검토 대상에 포함된다.
 
 ---
 
@@ -153,11 +99,7 @@ const isPreview = mode === 'preview';
 
 ### Bo 빌더 규칙
 
-- [ ] `styles.ts` 공통 상수(`inputCls`, `selectCls`, `btnPrimary`, `btnSecondary`) 사용 여부
-- [ ] Tailwind 동적 클래스 문자열 생성 없음
-- [ ] preview/live 모드 — UI 동일, 기능만 분기
-- [ ] 주석이 전혀 없는가(설명용/WHY용 포함 일체 금지)
-- [ ] 인라인 코딩 없이 컴포넌트로 분리됐는가
+- [ ] `00-4.builder_agent_common_principles.md`의 전 항목(재사용 탐색, 주석, styles.ts, Tailwind 동적 클래스, preview/live, 인라인 코딩, entity 연동 판단) 대조 검토
 - [ ] `types.ts` 임포트를 올바른 경로에서 하는가 (`../../types`)
 - [ ] 새 필드 타입 추가 시 `FieldRenderer` + `CommonFieldDispatcher` 모두 수정했는가
 
