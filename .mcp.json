@@ -7,6 +7,10 @@
     "chrome-devtools": {
       "command": "npx",
       "args": ["-y", "chrome-devtools-mcp@latest"]
+    },
+    "todo": {
+      "command": "node",
+      "args": ["mcp-servers/todo-mcp/index.js"]
     }
   }
 }

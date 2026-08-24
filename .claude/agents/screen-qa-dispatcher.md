@@ -30,15 +30,17 @@ model: opus
 
 ---
 
-## 호출자(메인 세션) 책임 — 실시간 진행상황 표시가 필요할 때
+## 진행상황 표시 — 호출자(메인 세션) 책임
 
-`TaskCreate`/`TaskUpdate`는 서브에이전트 컨텍스트에서 클라이언트에 내장된 고정 규칙으로 호출이 차단되어 있어(frontmatter에 적어도 우회 불가, 실측으로 확인됨), 이 에이전트가 직접 작업목록을 만들 수 없다. 실시간 표시가 필요하면 호출자가 아래를 직접 수행한다:
+이 에이전트 자신은 진행상황을 화면에 표시할 수 없다. `mcp__todo__todo_write`를 이 에이전트가 내부에서 호출해도 상태 파일엔 기록되지만 사용자 화면엔 표시되지 않는다(서브에이전트 도구 호출은 비가시 — 2026-08-20 실측 확인됨). `TaskCreate`/`TaskUpdate`는 이 세션 환경에 도구 자체가 존재하지 않는다(2026-08-20 재검증 — 과거 "차단됨" 기록은 근거 불명확, 이 환경에서는 검색해도 나오지 않음).
+
+실시간 표시가 필요하면 **호출자(메인 세션)**가 아래를 직접 수행한다:
 
 1. 이 에이전트를 띄우기 전에 빈 진행상황 파일을 만들고(예: 스크래치패드 하위 `qa-progress-*.log`), 그 경로를 프롬프트에 포함한다.
-2. `TaskCreate`로 아래 5개를 `pending`으로 등록한다: BO/FO 자동판단, 연계 화면 탐색, 기획서 대조, bo-qa-validator/fo-qa-validator 위임 및 검증 대기, 최종 보고 작성.
+2. 아래 5개 항목을 `mcp__todo__todo_write`로 전부 `pending`으로 한 번에 등록한다: BO/FO 자동판단, 연계 화면 탐색, 기획서 대조, bo-qa-validator/fo-qa-validator 위임 및 검증 대기, 최종 보고 작성.
 3. `Monitor`로 그 파일을 `tail -f`로 감시 시작한다(전체 실행이 30분 이상 걸릴 수 있으므로 `persistent: true` 또는 큰 `timeout_ms` 사용).
-4. `STEP<n> START ...` / `STEP<n> DONE` 줄이 알림으로 올 때마다 해당 태스크를 `TaskUpdate`로 `in_progress`/`completed`로 갱신한다.
-5. 최종 보고(task-notification)를 받으면 마지막 태스크를 `completed`로 바꾸고 Monitor를 정리한다(`TaskStop` 또는 타임아웃에 맡김).
+4. `STEP<n> START ...` / `STEP<n> DONE` 줄이 알림으로 올 때마다, 호출자가 `mcp__todo__todo_write`를 다시 호출해 해당 항목을 `in_progress`/`completed`로 갱신한다(전체 목록을 다시 전달 — 부분 갱신 아님).
+5. 최종 보고(task-notification)를 받으면 마지막 항목을 `completed`로 바꾸고 Monitor를 정리한다(`TaskStop` 또는 타임아웃에 맡김).
 
 ---
 
@@ -50,7 +52,7 @@ model: opus
 
 ### 0-1. 진행상황 파일 기록 (실시간 진행상황 표시)
 
-입력으로 진행상황 파일 경로를 받았다면, `Bash`로 그 파일에 아래 형식을 append한다(`TaskCreate`는 이 컨텍스트에서 쓸 수 없으므로 호출자가 대신 갱신한다 — 위 "호출자 책임" 참고):
+입력으로 진행상황 파일 경로를 받았다면, `Bash`로 그 파일에 아래 형식을 append한다(이 에이전트는 화면에 체크리스트를 직접 띄울 수 없으므로 호출자가 `mcp__todo__todo_write`로 대신 갱신한다 — 위 "진행상황 표시" 참고):
 
 ```
 echo "STEP<n> START <한줄 설명>" >> "<진행상황 파일 경로>"
