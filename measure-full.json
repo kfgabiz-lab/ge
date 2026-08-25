@@ -1,0 +1,739 @@
+[
+  {
+    "label": "Training 과정*",
+    "desc": null,
+    "descRect": null,
+    "cellStyle": "grid-area: span 1 / span 8;",
+    "cellRect": {
+      "t": 131,
+      "b": 203,
+      "h": 72
+    },
+    "bodyRect": {
+      "t": 151,
+      "b": 203,
+      "h": 52
+    },
+    "innerTag": "DIV.flex items-center gap-4 py-2",
+    "innerRect": {
+      "t": 149,
+      "b": 205,
+      "h": 56
+    },
+    "innerScrollH": 56,
+    "innerChildren": [
+      {
+        "tag": "LABEL",
+        "cls": "flex items-center gap-2 cursor-pointer",
+        "h": 40
+      },
+      {
+        "tag": "LABEL",
+        "cls": "flex items-center gap-2 cursor-pointer",
+        "h": 40
+      },
+      {
+        "tag": "LABEL",
+        "cls": "flex items-center gap-2 cursor-pointer",
+        "h": 40
+      }
+    ],
+    "overlapPx": null,
+    "overflowPx": 4
+  },
+  {
+    "label": "Course 선택*",
+    "desc": null,
+    "descRect": null,
+    "cellStyle": "grid-area: span 1 / span 8;",
+    "cellRect": {
+      "t": 211,
+      "b": 283,
+      "h": 72
+    },
+    "bodyRect": {
+      "t": 231,
+      "b": 283,
+      "h": 52
+    },
+    "innerTag": "DIV.relative",
+    "innerRect": {
+      "t": 238,
+      "b": 276,
+      "h": 38
+    },
+    "innerScrollH": 38,
+    "innerChildren": [
+      {
+        "tag": "INPUT",
+        "cls": "w-full border border-slate-200 rounded-md px-3 py-2 text-sm ",
+        "h": 38
+      }
+    ],
+    "overlapPx": null,
+    "overflowPx": -14
+  },
+  {
+    "label": "Training Type*",
+    "desc": null,
+    "descRect": null,
+    "cellStyle": "grid-area: span 1 / span 8;",
+    "cellRect": {
+      "t": 291,
+      "b": 363,
+      "h": 72
+    },
+    "bodyRect": {
+      "t": 311,
+      "b": 363,
+      "h": 52
+    },
+    "innerTag": "DIV.flex items-center gap-4 py-2",
+    "innerRect": {
+      "t": 319,
+      "b": 355,
+      "h": 36
+    },
+    "innerScrollH": 36,
+    "innerChildren": [
+      {
+        "tag": "LABEL",
+        "cls": "flex items-center gap-2 cursor-pointer",
+        "h": 20
+      },
+      {
+        "tag": "LABEL",
+        "cls": "flex items-center gap-2 cursor-pointer",
+        "h": 20
+      }
+    ],
+    "overlapPx": null,
+    "overflowPx": -16
+  },
+  {
+    "label": "제목*",
+    "desc": "Session 페이지를 설명하는 타이틀 입니다.",
+    "descRect": {
+      "t": 391,
+      "b": 409,
+      "h": 18
+    },
+    "cellStyle": "grid-area: span 1 / span 8;",
+    "cellRect": {
+      "t": 371,
+      "b": 443,
+      "h": 72
+    },
+    "bodyRect": {
+      "t": 411,
+      "b": 443,
+      "h": 32
+    },
+    "innerTag": "DIV.",
+    "innerRect": {
+      "t": 400,
+      "b": 455,
+      "h": 55
+    },
+    "innerScrollH": 55,
+    "innerChildren": [
+      {
+        "tag": "INPUT",
+        "cls": "w-full border border-slate-200 rounded-md px-3 py-2 text-sm ",
+        "h": 38
+      },
+      {
+        "tag": "DIV",
+        "cls": "text-right text-[10px] text-slate-400 mt-0.5",
+        "h": 15
+      }
+    ],
+    "overlapPx": 10,
+    "overflowPx": 23
+  },
+  {
+    "label": "접수 기간*",
+    "desc": "미 선택 시 게시된 일자부터 접수가 시작됩니다.",
+    "descRect": {
+      "t": 471,
+      "b": 489,
+      "h": 18
+    },
+    "cellStyle": "grid-area: span 1 / span 8;",
+    "cellRect": {
+      "t": 451,
+      "b": 523,
+      "h": 72
+    },
+    "bodyRect": {
+      "t": 491,
+      "b": 523,
+      "h": 32
+    },
+    "innerTag": "DIV.flex items-center gap-2",
+    "innerRect": {
+      "t": 488,
+      "b": 526,
+      "h": 38
+    },
+    "innerScrollH": 38,
+    "innerChildren": [
+      {
+        "tag": "DIV",
+        "cls": "relative flex-1",
+        "h": 38
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-sm text-slate-400 flex-shrink-0",
+        "h": 20
+      },
+      {
+        "tag": "DIV",
+        "cls": "relative flex-1",
+        "h": 38
+      }
+    ],
+    "overlapPx": 1,
+    "overflowPx": 6
+  },
+  {
+    "label": "교육 시간*",
+    "desc": null,
+    "descRect": null,
+    "cellStyle": "grid-area: span 1 / span 8;",
+    "cellRect": {
+      "t": 531,
+      "b": 603,
+      "h": 72
+    },
+    "bodyRect": {
+      "t": 551,
+      "b": 603,
+      "h": 52
+    },
+    "innerTag": "DIV.",
+    "innerRect": {
+      "t": 550,
+      "b": 605,
+      "h": 55
+    },
+    "innerScrollH": 55,
+    "innerChildren": [
+      {
+        "tag": "INPUT",
+        "cls": "w-full border border-slate-200 rounded-md px-3 py-2 text-sm ",
+        "h": 38
+      },
+      {
+        "tag": "DIV",
+        "cls": "text-right text-[10px] text-slate-400 mt-0.5",
+        "h": 15
+      }
+    ],
+    "overlapPx": null,
+    "overflowPx": 3
+  },
+  {
+    "label": "교육 인원*",
+    "desc": "최소 인원 최대 인원을 '-'로 구분하여 입력해주세요.",
+    "descRect": {
+      "t": 631,
+      "b": 649,
+      "h": 18
+    },
+    "cellStyle": "grid-area: span 1 / span 8;",
+    "cellRect": {
+      "t": 611,
+      "b": 683,
+      "h": 72
+    },
+    "bodyRect": {
+      "t": 651,
+      "b": 683,
+      "h": 32
+    },
+    "innerTag": "DIV.",
+    "innerRect": {
+      "t": 640,
+      "b": 695,
+      "h": 55
+    },
+    "innerScrollH": 55,
+    "innerChildren": [
+      {
+        "tag": "INPUT",
+        "cls": "w-full border border-slate-200 rounded-md px-3 py-2 text-sm ",
+        "h": 38
+      },
+      {
+        "tag": "DIV",
+        "cls": "text-right text-[10px] text-slate-400 mt-0.5",
+        "h": 15
+      }
+    ],
+    "overlapPx": 10,
+    "overflowPx": 23
+  },
+  {
+    "label": null,
+    "desc": null,
+    "descRect": null,
+    "cellStyle": "grid-area: span 1 / span 1;",
+    "cellRect": {
+      "t": 611,
+      "b": 683,
+      "h": 72
+    },
+    "bodyRect": {
+      "t": 611,
+      "b": 683,
+      "h": 72
+    },
+    "innerTag": null,
+    "innerRect": null,
+    "innerScrollH": null,
+    "innerChildren": [],
+    "overlapPx": null,
+    "overflowPx": null
+  },
+  {
+    "label": null,
+    "desc": null,
+    "descRect": null,
+    "cellStyle": "grid-area: span 1 / span 1;",
+    "cellRect": {
+      "t": 611,
+      "b": 683,
+      "h": 72
+    },
+    "bodyRect": {
+      "t": 611,
+      "b": 683,
+      "h": 72
+    },
+    "innerTag": null,
+    "innerRect": null,
+    "innerScrollH": null,
+    "innerChildren": [],
+    "overlapPx": null,
+    "overflowPx": null
+  },
+  {
+    "label": null,
+    "desc": null,
+    "descRect": null,
+    "cellStyle": "grid-area: span 1 / span 1;",
+    "cellRect": {
+      "t": 611,
+      "b": 683,
+      "h": 72
+    },
+    "bodyRect": {
+      "t": 611,
+      "b": 683,
+      "h": 72
+    },
+    "innerTag": null,
+    "innerRect": null,
+    "innerScrollH": null,
+    "innerChildren": [],
+    "overlapPx": null,
+    "overflowPx": null
+  },
+  {
+    "label": null,
+    "desc": null,
+    "descRect": null,
+    "cellStyle": "grid-area: span 1 / span 1;",
+    "cellRect": {
+      "t": 611,
+      "b": 683,
+      "h": 72
+    },
+    "bodyRect": {
+      "t": 611,
+      "b": 683,
+      "h": 72
+    },
+    "innerTag": null,
+    "innerRect": null,
+    "innerScrollH": null,
+    "innerChildren": [],
+    "overlapPx": null,
+    "overflowPx": null
+  },
+  {
+    "label": "국가 코드*",
+    "desc": null,
+    "descRect": null,
+    "cellStyle": "grid-area: span 1 / span 2;",
+    "cellRect": {
+      "t": 691,
+      "b": 763,
+      "h": 72
+    },
+    "bodyRect": {
+      "t": 711,
+      "b": 763,
+      "h": 52
+    },
+    "innerTag": "DIV.relative",
+    "innerRect": {
+      "t": 718,
+      "b": 756,
+      "h": 38
+    },
+    "innerScrollH": 38,
+    "innerChildren": [
+      {
+        "tag": "SELECT",
+        "cls": "w-full appearance-none border border-slate-200 rounded-md px",
+        "h": 38
+      },
+      {
+        "tag": "svg",
+        "cls": "[object SVGAnimatedString]",
+        "h": 14
+      }
+    ],
+    "overlapPx": null,
+    "overflowPx": -14
+  },
+  {
+    "label": "연락처*",
+    "desc": null,
+    "descRect": null,
+    "cellStyle": "grid-area: span 1 / span 6;",
+    "cellRect": {
+      "t": 691,
+      "b": 763,
+      "h": 72
+    },
+    "bodyRect": {
+      "t": 711,
+      "b": 763,
+      "h": 52
+    },
+    "innerTag": "INPUT.w-full border border-slate-200 rounded-md px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all bg-white disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed disabled:border-slate-200",
+    "innerRect": {
+      "t": 718,
+      "b": 756,
+      "h": 38
+    },
+    "innerScrollH": 36,
+    "innerChildren": [],
+    "overlapPx": null,
+    "overflowPx": -14
+  },
+  {
+    "label": "이메일*",
+    "desc": null,
+    "descRect": null,
+    "cellStyle": "grid-area: span 1 / span 8;",
+    "cellRect": {
+      "t": 771,
+      "b": 843,
+      "h": 72
+    },
+    "bodyRect": {
+      "t": 791,
+      "b": 843,
+      "h": 52
+    },
+    "innerTag": "INPUT.w-full border border-slate-200 rounded-md px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 transition-all bg-white disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed disabled:border-slate-200",
+    "innerRect": {
+      "t": 798,
+      "b": 836,
+      "h": 38
+    },
+    "innerScrollH": 36,
+    "innerChildren": [],
+    "overlapPx": null,
+    "overflowPx": -14
+  },
+  {
+    "label": null,
+    "desc": null,
+    "descRect": null,
+    "cellStyle": "grid-area: span 3 / span 8;",
+    "cellRect": {
+      "t": 851,
+      "b": 1083,
+      "h": 232
+    },
+    "bodyRect": {
+      "t": 851,
+      "b": 1083,
+      "h": 232
+    },
+    "innerTag": "DIV.w-full border border-slate-300 rounded overflow-hidden bg-white flex flex-col",
+    "innerRect": {
+      "t": 863,
+      "b": 1071,
+      "h": 208
+    },
+    "innerScrollH": 206,
+    "innerChildren": [
+      {
+        "tag": "DIV",
+        "cls": "flex flex-wrap items-center gap-0.5 px-2 py-1.5 border-b bor",
+        "h": 101
+      },
+      {
+        "tag": "DIV",
+        "cls": "flex-1 overflow-y-auto px-4 py-3 min-h-0 flex flex-col",
+        "h": 105
+      }
+    ],
+    "overlapPx": null,
+    "overflowPx": -24
+  },
+  {
+    "label": "교육 일정 등록*",
+    "desc": "교육 시작/종료 일자",
+    "descRect": {
+      "t": 1111,
+      "b": 1129,
+      "h": 18
+    },
+    "cellStyle": "grid-area: span 1 / span 8;",
+    "cellRect": {
+      "t": 1091,
+      "b": 1163,
+      "h": 72
+    },
+    "bodyRect": {
+      "t": 1131,
+      "b": 1163,
+      "h": 32
+    },
+    "innerTag": "DIV.flex items-center gap-2",
+    "innerRect": {
+      "t": 1128,
+      "b": 1166,
+      "h": 38
+    },
+    "innerScrollH": 38,
+    "innerChildren": [
+      {
+        "tag": "DIV",
+        "cls": "relative flex-1",
+        "h": 38
+      },
+      {
+        "tag": "SPAN",
+        "cls": "text-sm text-slate-400 flex-shrink-0",
+        "h": 20
+      },
+      {
+        "tag": "DIV",
+        "cls": "relative flex-1",
+        "h": 38
+      }
+    ],
+    "overlapPx": 1,
+    "overflowPx": 6
+  },
+  {
+    "label": "교육 비용*",
+    "desc": "Training Session 메일 발송 시 비용 관련 영역에 표시됩니다.",
+    "descRect": {
+      "t": 1511,
+      "b": 1529,
+      "h": 18
+    },
+    "cellStyle": "grid-area: span 1 / span 5;",
+    "cellRect": {
+      "t": 1491,
+      "b": 1563,
+      "h": 72
+    },
+    "bodyRect": {
+      "t": 1531,
+      "b": 1563,
+      "h": 32
+    },
+    "innerTag": "DIV.flex items-center gap-4 py-2",
+    "innerRect": {
+      "t": 1529,
+      "b": 1565,
+      "h": 36
+    },
+    "innerScrollH": 36,
+    "innerChildren": [
+      {
+        "tag": "LABEL",
+        "cls": "flex items-center gap-2 cursor-pointer",
+        "h": 20
+      },
+      {
+        "tag": "LABEL",
+        "cls": "flex items-center gap-2 cursor-pointer",
+        "h": 20
+      }
+    ],
+    "overlapPx": 0,
+    "overflowPx": 4
+  },
+  {
+    "label": "공개설정*",
+    "desc": null,
+    "descRect": null,
+    "cellStyle": "grid-area: span 1 / span 8;",
+    "cellRect": {
+      "t": 1571,
+      "b": 1643,
+      "h": 72
+    },
+    "bodyRect": {
+      "t": 1591,
+      "b": 1643,
+      "h": 52
+    },
+    "innerTag": "DIV.flex items-center gap-4 py-2",
+    "innerRect": {
+      "t": 1599,
+      "b": 1635,
+      "h": 36
+    },
+    "innerScrollH": 36,
+    "innerChildren": [
+      {
+        "tag": "LABEL",
+        "cls": "flex items-center gap-2 cursor-pointer",
+        "h": 20
+      },
+      {
+        "tag": "LABEL",
+        "cls": "flex items-center gap-2 cursor-pointer",
+        "h": 20
+      }
+    ],
+    "overlapPx": null,
+    "overflowPx": -16
+  },
+  {
+    "label": "Slug",
+    "desc": "제목을 기반으로 자동 생성되며, 직접 수정할 수 있습니다. (띄어쓰기 및 특수문자는 -로, 영문 소문자, 숫자만 입력 가능).",
+    "descRect": {
+      "t": 1671,
+      "b": 1689,
+      "h": 18
+    },
+    "cellStyle": "grid-area: span 1 / span 8;",
+    "cellRect": {
+      "t": 1651,
+      "b": 1723,
+      "h": 72
+    },
+    "bodyRect": {
+      "t": 1691,
+      "b": 1723,
+      "h": 32
+    },
+    "innerTag": "DIV.",
+    "innerRect": {
+      "t": 1680,
+      "b": 1735,
+      "h": 55
+    },
+    "innerScrollH": 55,
+    "innerChildren": [
+      {
+        "tag": "INPUT",
+        "cls": "w-full border border-slate-200 rounded-md px-3 py-2 text-sm ",
+        "h": 38
+      },
+      {
+        "tag": "DIV",
+        "cls": "text-right text-[10px] text-slate-400 mt-0.5",
+        "h": 15
+      }
+    ],
+    "overlapPx": 10,
+    "overflowPx": 23
+  },
+  {
+    "label": "Meta Title",
+    "desc": "제목을 기반으로 자동 생성되며, 직접 수정할 수 있습니다.",
+    "descRect": {
+      "t": 1751,
+      "b": 1769,
+      "h": 18
+    },
+    "cellStyle": "grid-area: span 1 / span 8;",
+    "cellRect": {
+      "t": 1731,
+      "b": 1803,
+      "h": 72
+    },
+    "bodyRect": {
+      "t": 1771,
+      "b": 1803,
+      "h": 32
+    },
+    "innerTag": "DIV.",
+    "innerRect": {
+      "t": 1760,
+      "b": 1815,
+      "h": 55
+    },
+    "innerScrollH": 55,
+    "innerChildren": [
+      {
+        "tag": "INPUT",
+        "cls": "w-full border border-slate-200 rounded-md px-3 py-2 text-sm ",
+        "h": 38
+      },
+      {
+        "tag": "DIV",
+        "cls": "text-right text-[10px] text-slate-400 mt-0.5",
+        "h": 15
+      }
+    ],
+    "overlapPx": 10,
+    "overflowPx": 23
+  },
+  {
+    "label": "Meta Description",
+    "desc": "미입력 시 본문 내용 중 180자를 추출하여 자동 적용됩니다.",
+    "descRect": {
+      "t": 1831,
+      "b": 1849,
+      "h": 18
+    },
+    "cellStyle": "grid-area: span 3 / span 8;",
+    "cellRect": {
+      "t": 1811,
+      "b": 2043,
+      "h": 232
+    },
+    "bodyRect": {
+      "t": 1851,
+      "b": 2043,
+      "h": 192
+    },
+    "innerTag": "DIV.flex flex-col h-full",
+    "innerRect": {
+      "t": 1851,
+      "b": 2043,
+      "h": 192
+    },
+    "innerScrollH": 192,
+    "innerChildren": [
+      {
+        "tag": "TEXTAREA",
+        "cls": "w-full border border-slate-200 rounded-md px-3 py-2 text-sm ",
+        "h": 175
+      },
+      {
+        "tag": "DIV",
+        "cls": "text-right text-[10px] text-slate-400 mt-0.5",
+        "h": 15
+      }
+    ],
+    "overlapPx": -2,
+    "overflowPx": 0
+  }
+]
