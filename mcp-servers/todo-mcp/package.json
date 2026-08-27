@@ -1,0 +1,9 @@
+{
+  "name": "todo-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0"
+  }
+}
