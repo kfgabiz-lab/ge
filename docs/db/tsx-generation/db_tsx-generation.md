@@ -9,7 +9,7 @@ erDiagram
         VARCHAR(100) name "NOT NULL - 생성 파일명(식별용)"
         VARCHAR(100) folder_name "NOT NULL - 저장 폴더명 (ex: admin/board)"
         VARCHAR(100) file_name "NOT NULL - 저장 파일명 (ex: page.tsx)"
-        VARCHAR(20) template_type "NOT NULL - LIST / LAYER"
+        VARCHAR(20) template_type "NOT NULL - LIST / LAYER / PAGE"
         TEXT config_json "NOT NULL - 빌더 설정 JSON (재사용·수정 기반)"
         TEXT tsx_code "NOT NULL - 실제 생성된 TSX 코드 전문"
         VARCHAR(100) created_by "NULL - 생성자 (로그인 관리자 이메일)"
@@ -34,7 +34,7 @@ erDiagram
 | `name` | VARCHAR(100) | NO | - | 이력 식별용 이름 (ex: `게시판 목록`) |
 | `folder_name` | VARCHAR(100) | NO | - | 생성된 파일의 폴더 경로 (ex: `admin/board`) |
 | `file_name` | VARCHAR(100) | NO | - | 생성된 파일명 (ex: `page.tsx`) |
-| `template_type` | VARCHAR(20) | NO | - | `LIST` 또는 `LAYER` |
+| `template_type` | VARCHAR(20) | NO | - | `LIST` / `LAYER` / `PAGE` |
 | `config_json` | TEXT | NO | - | 빌더 설정 JSON 전체 (재편집 기반) |
 | `tsx_code` | TEXT | NO | - | 실제 생성된 TSX 코드 전문 |
 | `created_by` | VARCHAR(100) | YES | NULL | 생성자 (JWT에서 추출한 이메일) |

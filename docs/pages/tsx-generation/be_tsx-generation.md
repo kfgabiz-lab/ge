@@ -9,6 +9,32 @@
   - 생성 이력의 `configJson`을 다시 불러와 빌더에서 재편집·재생성 가능
   - 동일 경로에 여러 이력이 누적됨 (덮어쓰기 X)
 
+### 1.1 두 개의 API가 한 쌍으로 동작한다
+
+`[생성]` 버튼 한 번에 **두 개의 API가 순차 호출**된다. 둘은 담당이 다르므로 혼동하지 말 것.
+
+| 순서 | API | 담당 | DB |
+|:---|:---|:---|:---|
+| 1 | `POST /api/v1/page-templates/generate` | **실제 tsx 파일 쓰기** (디스크) | 저장 없음 |
+| 2 | `POST /api/v1/tsx-generation` | **생성 이력 적재** (재편집용 configJson + tsxCode) | `tsx_generation` |
+
+이 문서의 §2~§11은 **2번(이력)** 도메인 설계다. **1번(파일 쓰기)** 의 경로 규칙은 §12를 참고할 것.
+
+### 1.2 이 API를 사용하는 빌더 (호출처)
+
+`tsx-generation`은 특정 빌더 전용이 아니다. 페이지 메이커의 **모든 빌더가 공유하는 공통 이력 저장소**이며,
+빌더마다 `templateType` 값만 다르게 넣어 구분한다.
+
+| 빌더 화면 | 경로 | `templateType` | 생성 코드 종류 |
+|:---|:---|:---|:---|
+| List 빌더 | `/admin/templates/make/list` | `LIST` | 검색폼 + 테이블 고정 조합 |
+| Grid-Layout 빌더 | `/admin/templates/make/grid-layout` | `LIST` | 검색폼 + 테이블 고정 조합 |
+| Layer 빌더 | (레이어 팝업 계열) | `LAYER` | 팝업 컴포넌트 |
+| **Widget 빌더** | `/admin/templates/make/widget` | **`PAGE`** | **위젯 타입별 블록 조립 (신규)** |
+
+> Widget 빌더의 `PAGE` 타입 tsx 생성(= "파일빌드") FE 설계는
+> [fe_tsx-generation_widget.md](./fe_tsx-generation_widget.md) 참고.
+
 ---
 
 ## 2. 파일 구조
@@ -40,7 +66,7 @@ com.ge.bo/
 | name | name | String | @Column(length=100, NOT NULL) | 이력 식별 이름 (ex: `게시판 목록`) |
 | folderName | folder_name | String | @Column(length=100, NOT NULL) | 저장 폴더 경로 (ex: `admin/board`) |
 | fileName | file_name | String | @Column(length=100, NOT NULL) | 저장 파일명 (ex: `page.tsx`) |
-| templateType | template_type | String | @Column(length=20, NOT NULL) | `LIST` 또는 `LAYER` |
+| templateType | template_type | String | @Column(length=20, NOT NULL) | `LIST` / `LAYER` / `PAGE` (§1.2 참고) |
 | configJson | config_json | String | @Column(columnDefinition="text", NOT NULL) | 빌더 설정 JSON 전문 |
 | tsxCode | tsx_code | String | @Column(columnDefinition="text", NOT NULL) | 생성된 TSX 코드 전문 |
 | createdBy | created_by | String | @CreatedBy, @Column(length=100) | 생성자 |
@@ -60,7 +86,7 @@ com.ge.bo/
 | name | String | Y | @NotBlank | 이력 식별 이름 |
 | folderName | String | Y | @NotBlank | 저장 폴더 경로 |
 | fileName | String | Y | @NotBlank | 저장 파일명 |
-| templateType | String | Y | @NotBlank | `LIST` 또는 `LAYER` |
+| templateType | String | Y | @NotBlank | `LIST` / `LAYER` / `PAGE` — 값 목록을 enum으로 강제하지 않음(문자열 그대로 저장) |
 | configJson | String | Y | @NotBlank | 빌더 설정 JSON |
 | tsxCode | String | Y | @NotBlank | 생성된 TSX 코드 |
 
@@ -72,7 +98,7 @@ com.ge.bo/
 | name | String | 이력 식별 이름 |
 | folderName | String | 저장 폴더 경로 |
 | fileName | String | 저장 파일명 |
-| templateType | String | `LIST` 또는 `LAYER` |
+| templateType | String | `LIST` / `LAYER` / `PAGE` |
 | configJson | String | 빌더 설정 JSON (재편집용) |
 | tsxCode | String | 생성된 TSX 코드 전문 |
 | createdBy | String | 생성자 |
@@ -125,7 +151,7 @@ GET /api/v1/tsx-generation?templateType=LIST&page=0&size=20
 
 | 파라미터 | 타입 | 기본값 | 설명 |
 |:---|:---|:---|:---|
-| templateType | String | - | `LIST` / `LAYER` 필터 (선택) |
+| templateType | String | - | `LIST` / `LAYER` / `PAGE` 필터 (선택) |
 | page | int | 0 | 페이지 번호 (0-based) |
 | size | int | 20 | 페이지 크기 |
 
@@ -331,3 +357,107 @@ flowchart TD
 - [ ] `[생성]` 버튼 클릭 시 TSX 파일 생성 + 이력 저장이 동시에 동작하는가?
 - [ ] 이력 목록에서 불러오기 클릭 시 빌더에 configJson이 복원되는가?
 - [ ] 이력 삭제 시 목록에서 해당 행이 제거되는가?
+- [ ] 응답 `pageUrl`의 경로가 실제 파일이 쓰인 위치(`/admin/generated/...`)와 일치하는가? (§12.3)
+
+---
+
+## 12. 파일 생성 API (`POST /api/v1/page-templates/generate`)
+
+> 이력 도메인과 짝을 이루는 **실제 파일 쓰기** API. 담당 클래스가 다르므로 별도로 정리한다.
+> 이 API는 `PageTemplate` **DB에 아무것도 저장하지 않는다** — 오직 디스크에 tsx 파일만 만든다.
+
+### 12.1 담당 클래스
+
+| 역할 | 클래스 | 비고 |
+|:---|:---|:---|
+| 엔드포인트 | `controller/PageTemplateController#generate` | `@PreAuthorize("@securityService.isSystemAdmin(authentication)")` |
+| 요청 DTO | `dto/PageTemplateGenerateRequest` | `slug` / `tsxCode` / `templateType` / `fileName` |
+| 파일명·URL 결정 | `service/PageTemplateService#generateFile` | 응답 `pageUrl` 문자열을 만드는 곳 |
+| 디스크 쓰기 | `service/PageTemplateFileService#writeFile` | 실제 경로를 결정하는 곳 |
+
+### 12.2 요청 필드와 검증
+
+| 필드 | 검증 | 설명 |
+|:---|:---|:---|
+| slug | `@NotBlank`, `^[a-zA-Z0-9_-]+$`, max 100 | 생성될 **폴더명** |
+| tsxCode | `@NotBlank` | FE가 조립한 tsx 코드 전문 |
+| templateType | `@NotBlank` | 값 목록을 enum/`@Pattern`으로 제한하지 않음 → `PAGE` 등 새 타입을 **BE 수정 없이** 그대로 받을 수 있다 |
+| fileName | `^[a-zA-Z0-9_-]*$`, max 100 | 확장자 제외 파일명. 비우면 기본값 적용 |
+
+**파일명 기본값 규칙** (`fileName`을 비웠을 때):
+
+| templateType | 기본 파일명 |
+|:---|:---|
+| `LAYER` | `LayerPopup.tsx` |
+| **그 외 전부** (`LIST`, `PAGE`, …) | `page.tsx` |
+
+> 코드가 `"LAYER".equals(templateType)` 단일 분기이므로, `PAGE`는 자동으로 `page.tsx`로 떨어진다.
+> 즉 **Widget 빌더의 `PAGE` 타입을 지원하기 위해 파일명 로직을 고칠 필요는 없다.**
+
+### 12.3 저장 경로 — `widgetSub`가 아니라 `generated`
+
+실제 쓰기 경로는 코드에 박혀 있지 않고 **설정값 하나로 결정된다.**
+
+```yml
+# bo-api/src/main/resources/application-{local,dev,developer,prod}.yml
+page-template:
+  output-dir: "../bo/src/app/admin/generated"
+```
+
+```
+쓰기 경로 = {output-dir}/{slug}/{fileName}
+         = bo/src/app/admin/generated/{slug}/{fileName}.tsx
+```
+
+`PageTemplateFileService`는 `output-dir`을 절대경로로 정규화한 뒤
+결과 경로가 그 하위인지 검사(Path Traversal 차단)하고, 상위 디렉토리를 자동 생성한 후 덮어쓰기로 쓴다.
+
+⚠️ **주의해서 볼 지점**: 응답으로 내려주는 `pageUrl` 문자열은
+`PageTemplateService#generateFile`에 **별도로 하드코딩**되어 있어서, 위 설정과 자동으로 동기화되지 않는다.
+과거 `output-dir`이 `widgetSub`였던 시절의 값이 그대로 남아 있어
+**"파일은 `generated`에 쓰이는데 응답 URL은 `widgetSub`를 가리키는" 불일치**가 존재한다.
+
+| 항목 | 값 |
+|:---|:---|
+| 실제 쓰기 위치 | `bo/src/app/admin/generated/{slug}/{fileName}.tsx` |
+| 응답 `pageUrl` (수정 전) | `/admin/widgetSub/{slug}/{fileName}.tsx` ← 잘못된 값 |
+| 응답 `pageUrl` (수정 후) | `/admin/generated/{slug}/{fileName}.tsx` |
+
+수정 대상은 `PageTemplateService#generateFile`의 반환 문자열 **한 줄**뿐이다.
+
+```java
+// AS-IS
+return "/admin/widgetSub/" + slug + "/" + resolvedName;
+// TO-BE
+return "/admin/generated/" + slug + "/" + resolvedName;
+```
+
+> 이 값은 `[생성]` 완료 토스트 메시지에 그대로 노출되므로, 잘못된 경로를 안내하면
+> 개발자가 산출물을 못 찾는다. 상위 아키텍처 문서
+> [`docs/03-architect/page/page-templates.md`](../../03-architect/page/page-templates.md) 역시
+> 처음부터 `/admin/generated/{slug}`를 정본으로 기술하고 있으므로, `generated`가 맞는 값이다.
+
+### 12.4 `generated` 와 `widgetSub` 의 역할 구분 (헷갈리기 쉬움)
+
+두 디렉토리는 이름만 비슷할 뿐 **목적이 완전히 다르다. 서로 건드리지 말 것.**
+
+| 디렉토리 | 목적 | 누가 만드나 | 실행 시점 |
+|:---|:---|:---|:---|
+| `bo/src/app/admin/generated/{slug}/` | **파일빌드 산출물.** 개발자가 가져가 커스터마이징하는 tsx 소스 | 이 API가 디스크에 씀 | 빌드 타임(정적 파일) |
+| `bo/src/app/admin/widgetSub/[slug]/` | **런타임 위젯 렌더링.** DB의 `configJson`을 읽어 그때그때 화면을 그림 | 사람이 작성한 고정 라우트 | 런타임(동적) |
+
+즉 `generated`는 "인계용 코드 결과물", `widgetSub`는 "빌더로 만든 화면의 실제 운영 페이지"다.
+파일빌드 기능은 `generated`만 사용하며 `widgetSub` 쪽 코드는 일절 수정하지 않는다.
+
+### 12.5 응답
+
+```json
+{ "pageUrl": "/admin/generated/board/page.tsx" }
+```
+
+| 예외 상황 | HTTP | 비고 |
+|:---|:---|:---|
+| slug/tsxCode/templateType 누락 | 400 | Bean Validation |
+| `output-dir` 경계 이탈 | 500 | `PAGE_TEMPLATE_FILE_ERROR` |
+| 디스크 쓰기 실패(IOException) | 500 | `PAGE_TEMPLATE_FILE_ERROR` |
+| 시스템관리자 아님 | 403 | `@PreAuthorize` |
