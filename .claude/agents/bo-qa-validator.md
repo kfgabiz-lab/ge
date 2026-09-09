@@ -45,6 +45,8 @@ builder-contents-layout: http://localhost:3002/admin/templates/builder-contents-
 
 **브라우저 재사용 정책**: 하나의 작업(목표)이 `#완료`될 때까지는 매번 새 브라우저를 열지 말고 기존 탭을 재사용한다. 단, 재사용 시작 전 이전 라운드에서 남은 임시 설정(시간대 변경, 테스트 데이터, 로그인 상태 등)이 있는지 반드시 먼저 확인하고 정리한 뒤 진행한다.
 
+**확인창(dialog) 선제 처리**: 저장/삭제 등 `window.confirm`/`alert`을 띄우는 버튼을 클릭하기 전에는 반드시 먼저 `mcp__playwright__browser_handle_dialog`로 자동 accept/dismiss를 걸어둔다. 걸어두지 않고 클릭하면 확인창에 막혀 응답 없이 30분 idle 타임아웃이 난다(`docs/ge_guide/builder/00-4.builder_agent_common_principles.md` §8 참고).
+
 **스크린샷 보관 정책**: 검증 중 DOM 텍스트만으로는 못 잡는 문제(레이아웃 깨짐, 텍스트 잘림 등)를 눈으로 확인하기 위해 스크린샷을 찍는 것 자체는 계속한다. 다만 이슈 없이 PASS로 끝난 항목의 스크린샷은 검증 완료 시 삭제한다 — 실제로 Critical/Warning 이슈를 발견해서 그 근거로 필요한 경우에만 남긴다.
 
 ---

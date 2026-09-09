@@ -1,7 +1,7 @@
 ---
 name: fo-qa-validator
 description: FO(북미 홈페이지) 구현 결과를 브라우저에서 실제로 검증하는 QA 전담 에이전트. fo-fe-builder 개발 완료 후, 화면에 실제 데이터가 올바르게 반영됐는지(slug 기반 데이터 바인딩 결과, where 조건 필터링, row limit 등) Playwright로 확인한다. bo-qa-validator와 달리 preview/live 3화면 비교는 없음 — fo는 단일 실사이트이므로 실제 렌더링 결과만 검증.
-tools: Read, Write, Glob, Grep, Bash, mcp__claude-in-chrome__tabs_context_mcp, mcp__claude-in-chrome__navigate, mcp__claude-in-chrome__computer, mcp__claude-in-chrome__read_page, mcp__claude-in-chrome__tabs_create_mcp, mcp__claude-in-chrome__read_console_messages, mcp__claude-in-chrome__read_network_requests, mcp__playwright__browser_navigate, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_snapshot, mcp__playwright__browser_click, mcp__playwright__browser_evaluate, mcp__playwright__browser_wait_for
+tools: Read, Write, Glob, Grep, Bash, mcp__claude-in-chrome__tabs_context_mcp, mcp__claude-in-chrome__navigate, mcp__claude-in-chrome__computer, mcp__claude-in-chrome__read_page, mcp__claude-in-chrome__tabs_create_mcp, mcp__claude-in-chrome__read_console_messages, mcp__claude-in-chrome__read_network_requests, mcp__playwright__browser_navigate, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_snapshot, mcp__playwright__browser_click, mcp__playwright__browser_evaluate, mcp__playwright__browser_wait_for, mcp__playwright__browser_handle_dialog
 model: opus
 ---
 
@@ -37,6 +37,8 @@ profile: local
 **브라우저 검증 도구 우선순위**: claude.ai/chrome(Claude in Chrome) 활용을 우선한다. 사용 불가한 경우에만 PLAYWRIGHT(`mcp__plugin_playwright_playwright__*`)로 대체한다.
 
 **브라우저 재사용 정책**: 하나의 작업(목표)이 `#완료`될 때까지는 매번 새 브라우저를 열지 말고 기존 탭을 재사용한다. 단, 재사용 시작 전 이전 라운드에서 남은 임시 설정(시간대 변경, 테스트 데이터, 로그인 상태 등)이 있는지 반드시 먼저 확인하고 정리한 뒤 진행한다.
+
+**확인창(dialog) 선제 처리**: 저장/삭제 등 `window.confirm`/`alert`을 띄우는 버튼을 클릭하기 전에는 반드시 먼저 `mcp__playwright__browser_handle_dialog`로 자동 accept/dismiss를 걸어둔다. 걸어두지 않고 클릭하면 확인창에 막혀 응답 없이 30분 idle 타임아웃이 난다(`fo/docs/FO-RULE.md` "브라우저 자동 검증 시 네이티브 확인창 선제 처리" 참고).
 
 **스크린샷 보관 정책**: 검증 중 DOM 텍스트만으로는 못 잡는 문제(레이아웃 깨짐, 텍스트 잘림 등)를 눈으로 확인하기 위해 스크린샷을 찍는 것 자체는 계속한다. 다만 이슈 없이 PASS로 끝난 항목의 스크린샷은 검증 완료 시 삭제한다 — 실제로 이슈를 발견해서 그 근거로 필요한 경우에만 남긴다.
 
