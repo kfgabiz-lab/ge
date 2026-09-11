@@ -10,3 +10,15 @@
 	path = bo
 	url = https://github.com/kfgabiz-lab/ge-bo
 	branch = master
+[submodule "lse-na-api"]
+	path = lse-na-api
+	url = http://10.153.10.150:4000/lse-na/lse-na-api.git
+	branch = master
+[submodule "lse-na-fo"]
+	path = lse-na-fo
+	url = http://10.153.10.150:4000/lse-na/lse-na-fo.git
+	branch = master
+[submodule "lse-na-bo"]
+	path = lse-na-bo
+	url = http://10.153.10.150:4000/lse-na/lse-na-bo.git
+	branch = master
